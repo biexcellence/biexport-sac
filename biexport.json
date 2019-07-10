@@ -12,14 +12,12 @@
         {
             "kind": "main",
             "tag": "com-biexcellence-openbi-sap-sac-export",
-            "url": "https://github.wdf.sap.corp/pages/d023588/orca_customWidget_samples/gauge/webcomponent.js",
-            "integrity": "sha256-XqSGKI4ZczQZMybktv3B28NF8/Quuif+F2/tkCRDkxg="
+            "url": "https://raw.githubusercontent.com/biexcellence/biexport-sac/master/biexport.js"
         },
         {
             "kind": "styling",
             "tag": "com-biexcellence-openbi-sap-sac-export-aps",
-            "url": "https://github.wdf.sap.corp/pages/d023588/orca_customWidget_samples/gauge/aps_webcomponent.js",
-            "integrity": "sha256-DaurM6nR3pUTok+WLC4Fb2mLV0FfmVt66rZKcQ51KMI="
+            "url": "https://raw.githubusercontent.com/biexcellence/biexport-sac/master/aps_biexport.js"
         }
     ],
     "properties": {
