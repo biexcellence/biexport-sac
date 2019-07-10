@@ -1,4 +1,4 @@
-(function () {
+(function() {
     let tmpl = document.createElement("template");
     tmpl.innerHTML = `
       <style>

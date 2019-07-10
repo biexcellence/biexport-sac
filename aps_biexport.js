@@ -1,4 +1,4 @@
-(function()  {
+(function() {
     let tmpl = document.createElement('template');
     tmpl.innerHTML = `
       <form id="form">
@@ -14,7 +14,7 @@
         <button type="submit">Submit</button>
       </form>
     `;
-    
+
     class BiExportAps extends HTMLElement {
         constructor() {
             super();
@@ -22,7 +22,7 @@
             this._shadowRoot.appendChild(tmpl.content.cloneNode(true));
             this._shadowRoot.getElementById("form").addEventListener("submit", this._submit.bind(this));
         }
-    
+
         _submit(e) {
             e.preventDefault();
             this.dispatchEvent(new CustomEvent("propertiesChanged", {
@@ -52,5 +52,5 @@
             }
         }
     }
-    customElements.define("com-biexcellence-openbi-sap-sac-export", BiExportAps);
+    customElements.define("com-biexcellence-openbi-sap-sac-export-aps", BiExportAps);
 })();
