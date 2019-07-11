@@ -393,7 +393,11 @@
                     let ctx = canvas.getContext("2d");
                     ctx.drawImage(node, 0, 0, actualWidth, actualHeight, 0, 0, canvas.width, canvas.height);
 
-                    attributes["src"] = canvas.toDataURL("image/png");
+                    // try catch for now...
+                    // should create a new image with temp.setAttribute("crossOrigin", "anonymous"); and use that instead
+                    try {
+                        attributes["src"] = canvas.toDataURL("image/png");
+                    } catch (e) {}
                 }
                 break;
             case "STYLE":
