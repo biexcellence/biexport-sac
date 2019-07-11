@@ -2,9 +2,6 @@
     let tmpl = document.createElement("template");
     tmpl.innerHTML = `
       <style>
-      *,button,div {
-          font-size: 24pt;
-      }
       </style>
       <div id="biexport">
         <button id="pdfButton">PDF Export</button>
@@ -345,6 +342,9 @@
     }
 
     function cloneNode(node) {
+        if (node.nodeType == 8) {
+            return "<!--" + node.nodeValue + "-->";
+        }
         if (node.nodeType == 3) {
             return node.nodeValue.replace(/&/g, "&amp;").replace(/</g, "&gt;").replace(/>/g, "&lt;");
         }
