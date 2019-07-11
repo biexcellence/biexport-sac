@@ -216,7 +216,6 @@
             let sendHtml = true;
             if (sendHtml) {
                 getHtml().then((html) => {
-                    debugger;
                     this.submitExport(settings, html);
                 });
             } else {
@@ -279,7 +278,11 @@
                         "X-Requested-With": "XMLHttpRequest"
                     }
                 }).then((response) => {
-                    return response.text();
+                    if (response.ok) {
+                        return response.text();
+                    } else {
+                        throw new Error(response.status + " - " + response.statusText);
+                    }
                 }).catch((reason) => {
                     callback(reason);
                 }).then((text) => {
