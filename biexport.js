@@ -190,6 +190,14 @@
         }
 
         doExport(format, settings, overrideSettings) {
+            // detect designmode:
+            // - mode=edit => designmode
+            // - no mode => designmode
+            // else => runtimemode (embed / present)
+            if (location.href.indexOf("mode=edit") > -1 || location.href.indexOf("mode=") == -1) {
+                return false;
+            }
+
             if (overrideSettings) {
                 let set = JSON.parse(overrideSettings);
                 set.forEach((s) => {
