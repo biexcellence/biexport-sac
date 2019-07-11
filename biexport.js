@@ -393,7 +393,7 @@
                     let ctx = canvas.getContext("2d");
                     ctx.drawImage(node, 0, 0, actualWidth, actualHeight, 0, 0, canvas.width, canvas.height);
 
-                    attributes["src"] = ctx.toDataURL("image/png");
+                    attributes["src"] = canvas.toDataURL("image/png");
                 }
                 break;
             case "STYLE":
