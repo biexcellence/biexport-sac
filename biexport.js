@@ -175,6 +175,10 @@
             this.updateSettings();
         }
 
+        set execute(value) {
+            this.startExport(value.format);
+        }
+
         // METHODS
 
         updateSettings() {
