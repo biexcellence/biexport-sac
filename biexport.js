@@ -283,9 +283,8 @@
             };
 
             if (url.indexOf(location.protocol) == 0 || url.indexOf("https:") == 0) { // same protocol => use fetch?
-                fetch({
-                    url: url,
-                    method: "post",
+                fetch(url, {
+                    method: "POST",
                     mode: "cors",
                     body: new FormData(form),
                     headers: {
