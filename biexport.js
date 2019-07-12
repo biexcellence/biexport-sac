@@ -176,7 +176,9 @@
         }
 
         set execute(value) {
-            this.startExport(value.format);
+            if (value && value.format) {
+                this.startExport(value.format);
+            }
         }
 
         // METHODS

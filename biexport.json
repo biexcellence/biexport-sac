@@ -55,13 +55,10 @@
             "description": "The text that is displayed on the XLS Export Button. Empty the property to hide the button.",
             "default": "XLS Export"
         },
-        "width": {
-            "type": "number",
-            "default": 200
-        },
-        "height": {
-            "type": "number",
-            "default": 100
+        "execute": {
+            "type": "any",
+            "description": "For internal use only",
+            "default": null
         }
     },
     "methods": {
