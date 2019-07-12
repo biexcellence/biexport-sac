@@ -251,7 +251,7 @@
             }
 
             let host = settings.server_urls;
-            let url = host + "/sac/sacexport.html";
+            let url = host + "/sac/export.html";
             let target = "_biexportresult_" + createGuid();
 
             let callback = window[target] = (error, filename) => {
@@ -264,7 +264,7 @@
                         detail: settings
                     }));
 
-                    let downloadUrl = host + "/sac/sacexport.html?FILE=" + encodeURIComponent(filename);
+                    let downloadUrl = host + "/sac/download.html?FILE=" + encodeURIComponent(filename);
 
                     window.open(downloadUrl, "_blank");
                 }
