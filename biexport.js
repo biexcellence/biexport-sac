@@ -260,6 +260,7 @@
             let url = host + "/sac/export.html";
             let target = "_biexportresult_" + createGuid();
 
+            // handle response types
             let callback = window[target] = (error, filename, blob) => {
                 if (error) {
                     this.dispatchEvent(new Event("onErrorExport", {

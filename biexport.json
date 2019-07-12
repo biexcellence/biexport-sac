@@ -33,7 +33,7 @@
         "filename": {
             "type": "string",
             "description": "The file name of the export document. The extension will be determined automatically. You can use placeholders (manual section 3.9).",
-            "default": 0
+            "default": "SACExport_%EXECUTION_DATE_SHORT%_%EXECUTION_TIME_SHORT%"
         },
         "pdfButton": {
             "type": "string",
