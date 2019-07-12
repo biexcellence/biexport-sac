@@ -1,4 +1,4 @@
-(function() {
+(function () {
     let tmpl = document.createElement("template");
     tmpl.innerHTML = `
       <style>
@@ -89,7 +89,7 @@
 
             this._export_settings.filename = "";
             this._export_settings.seperate_files = "";
-            this._export_settings.publish_mode = "ONLINE";
+            this._export_settings.publish_mode = "";
             this._export_settings.publish_sync = false;
             this._export_settings.parse_css = "";
             this._export_settings.mail_to = "";
@@ -260,11 +260,23 @@
             let url = host + "/sac/export.html";
             let target = "_biexportresult_" + createGuid();
 
-            let callback = window[target] = (error, filename) => {
+            let callback = window[target] = (error, filename, blob) => {
                 if (error) {
                     this.dispatchEvent(new Event("onErrorExport", {
                         detail: error
                     }));
+                } else if (blob) {
+                    let downloadUrl = URL.createObjectURL(blob);
+                    let a = document.createElement("a");
+                    a.download = filename;
+                    a.href = downloadUrl;
+                    document.body.appendChild(a);
+                    a.click();
+
+                    setTimeout(() => {
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(downloadUrl);
+                    }, 0);
                 } else if (filename) {
                     this.dispatchEvent(new Event("onReturnExport", {
                         detail: settings
@@ -292,12 +304,18 @@
                     }
                 }).then((response) => {
                     if (response.ok) {
-                        return response.text();
+                        let contentDisposition = response.headers.get("Content-Disposition");
+                        if (contentDisposition) {
+                            return response.blob().then((blob) => {
+                                callback(null, /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(contentDisposition)[1], blob);
+                            });
+                        }
+                        return response.text().then((text) => {
+                            callback(null, text);
+                        });
                     } else {
                         throw new Error(response.status + " - " + response.statusText);
                     }
-                }).then((text) => {
-                    callback(null, text);
                 }).catch((reason) => {
                     callback(reason);
                 });
@@ -370,7 +388,7 @@
         let name = node.localName;
         let content = null;
         let attributes = Object.create(null);
-        for (let i = 0; i < node.attributes.length; i ++) {
+        for (let i = 0; i < node.attributes.length; i++) {
             let attribute = node.attributes[i];
             attributes[attribute.name] = attribute.value;
         }
@@ -405,7 +423,7 @@
                     let canvas = document.createElement("canvas");
                     canvas.width = node.width;
                     canvas.height = node.height;
-                    
+
                     let ctx = canvas.getContext("2d");
                     ctx.drawImage(node, 0, 0, actualWidth, actualHeight, 0, 0, canvas.width, canvas.height);
 
@@ -413,7 +431,7 @@
                     // should create a new image with temp.setAttribute("crossOrigin", "anonymous"); and use that instead
                     try {
                         attributes["src"] = canvas.toDataURL("image/png");
-                    } catch (e) {}
+                    } catch (e) { }
                 }
                 break;
             case "STYLE":
@@ -554,7 +572,7 @@
                         let canvas = document.createElement("canvas");
                         canvas.width = node.width;
                         canvas.height = node.height;
-                        
+
                         let ctx = canvas.getContext("2d");
                         ctx.drawImage(node, 0, 0, actualWidth, actualHeight, 0, 0, canvas.width, canvas.height);
 
