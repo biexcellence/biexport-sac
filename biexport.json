@@ -58,7 +58,7 @@
         "execute": {
             "type": "any",
             "description": "For internal use only",
-            "default": null
+            "default": ""
         }
     },
     "methods": {
