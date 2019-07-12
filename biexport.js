@@ -89,7 +89,7 @@
 
             this._export_settings.filename = "";
             this._export_settings.seperate_files = "";
-            this._export_settings.publish_mode = "";
+            this._export_settings.publish_mode = "ONLINE";
             this._export_settings.publish_sync = false;
             this._export_settings.parse_css = "";
             this._export_settings.mail_to = "";
