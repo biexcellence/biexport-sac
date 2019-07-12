@@ -100,8 +100,8 @@
             this._export_settings.array_var = "";
             this._export_settings.array_param = "";
             this._export_settings.array_text = "";
-            this._export_settings.fixed_width = "";
-            this._export_settings.fixed_height = "";
+            this._export_settings.fixed_width = "0";
+            this._export_settings.fixed_height = "0";
             this._export_settings.sessionid = "";
             this._export_settings.executeid = "";
             this._export_settings.scheduling = "";
@@ -296,10 +296,10 @@
                     } else {
                         throw new Error(response.status + " - " + response.statusText);
                     }
-                }).catch((reason) => {
-                    callback(reason);
                 }).then((text) => {
                     callback(null, text);
+                }).catch((reason) => {
+                    callback(reason);
                 });
             } else { // use iframe
                 let iframe = document.createElement("iframe");
