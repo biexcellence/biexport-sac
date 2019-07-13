@@ -88,6 +88,7 @@
             </tr>
           </table>
         </fieldset>
+        <fieldset>
         <legend>Display</legend>
           <table>
             <tr>
@@ -123,7 +124,7 @@
         _submit(e) {
             e.preventDefault();
             let properties = {};
-            for (let name of observedAttributes()) {
+            for (let name of BiExportAps.observedAttributes()) {
                 properties[name] = this[name];
             }
             this.dispatchEvent(new CustomEvent("propertiesChanged", {
