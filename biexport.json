@@ -185,7 +185,7 @@
             "body": "this.exportLanguage = value;"
         },
         "getStaticWidth": {
-            "returnType": "string",
+            "returnType": "int",
             "description": "Get the Static Width",
             "parameters": [],
             "body": "return this.screenWidth;"
@@ -195,14 +195,14 @@
             "parameters": [
                 {
                     "name": "value",
-                    "type": "string",
+                    "type": "int",
                     "description": "The new Static Width"
                 }
             ],
             "body": "this.screenWidth = value;"
         },
         "getStaticHeight": {
-            "returnType": "string",
+            "returnType": "int",
             "description": "Get the Static Height",
             "parameters": [],
             "body": "return this.screenHeight;"
@@ -212,7 +212,7 @@
             "parameters": [
                 {
                     "name": "value",
-                    "type": "string",
+                    "type": "int",
                     "description": "The new Screen Height"
                 }
             ],
