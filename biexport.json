@@ -167,6 +167,210 @@
             ],
             "body": "this.filename = value;"
         },
+        "getExportLanguage": {
+            "returnType": "string",
+            "description": "Get the Export Language",
+            "parameters": [],
+            "body": "return this.exportLanguage;"
+        },
+        "setExportLanguage": {
+            "description": "Set the Export Language",
+            "parameters": [
+                {
+                    "name": "value",
+                    "type": "string",
+                    "description": "The new Export Language"
+                }
+            ],
+            "body": "this.exportLanguage = value;"
+        },
+        "getStaticWidth": {
+            "returnType": "string",
+            "description": "Get the Static Width",
+            "parameters": [],
+            "body": "return this.screenWidth;"
+        },
+        "setStaticWidth": {
+            "description": "Set the Static Width",
+            "parameters": [
+                {
+                    "name": "value",
+                    "type": "string",
+                    "description": "The new Static Width"
+                }
+            ],
+            "body": "this.screenWidth = value;"
+        },
+        "getStaticHeight": {
+            "returnType": "string",
+            "description": "Get the Static Height",
+            "parameters": [],
+            "body": "return this.screenHeight;"
+        },
+        "setStaticHeight": {
+            "description": "Set the Static Height",
+            "parameters": [
+                {
+                    "name": "value",
+                    "type": "string",
+                    "description": "The new Screen Height"
+                }
+            ],
+            "body": "this.screenHeight = value;"
+        },
+        "getPdfTemplate": {
+            "returnType": "string",
+            "description": "Get the PDF Template",
+            "parameters": [],
+            "body": "return this.pdfTemplate;"
+        },
+        "setPdfTemplate": {
+            "description": "Set the PDF Template",
+            "parameters": [
+                {
+                    "name": "value",
+                    "type": "string",
+                    "description": "The new PDF Template"
+                }
+            ],
+            "body": "this.pdfTemplate = value;"
+        },
+        "getPptTemplate": {
+            "returnType": "string",
+            "description": "Get the PPT Template",
+            "parameters": [],
+            "body": "return this.pptTemplate;"
+        },
+        "setPptTemplate": {
+            "description": "Set the PPT Template",
+            "parameters": [
+                {
+                    "name": "value",
+                    "type": "string",
+                    "description": "The new PPT Template"
+                }
+            ],
+            "body": "this.pptTemplate = value;"
+        },
+        "getDocTemplate": {
+            "returnType": "string",
+            "description": "Get the DOC Template",
+            "parameters": [],
+            "body": "return this.docTemplate;"
+        },
+        "setDocTemplate": {
+            "description": "Set the DOC Template",
+            "parameters": [
+                {
+                    "name": "value",
+                    "type": "string",
+                    "description": "The new DOC Template"
+                }
+            ],
+            "body": "this.docTemplate = value;"
+        },
+        "getXlsTemplate": {
+            "returnType": "string",
+            "description": "Get the XLS Template",
+            "parameters": [],
+            "body": "return this.xlsTemplate;"
+        },
+        "setXlsTemplate": {
+            "description": "Set the XLS Template",
+            "parameters": [
+                {
+                    "name": "value",
+                    "type": "string",
+                    "description": "The new XLS Template"
+                }
+            ],
+            "body": "this.xlsTemplate = value;"
+        },
+        "getPublishMode": {
+            "returnType": "string",
+            "description": "Get the Publish Mode",
+            "parameters": [],
+            "body": "return this.publishMode;"
+        },
+        "sePublishMode": {
+            "description": "Set the Publish Mode",
+            "parameters": [
+                {
+                    "name": "value",
+                    "type": "string",
+                    "description": "The new Publish Mode"
+                }
+            ],
+            "body": "this.publishMode = value;"
+        },
+        "getMailFrom": {
+            "returnType": "string",
+            "description": "Get the Mail From",
+            "parameters": [],
+            "body": "return this.mailFrom;"
+        },
+        "setMailFrom": {
+            "description": "Set the Mail From",
+            "parameters": [
+                {
+                    "name": "value",
+                    "type": "string",
+                    "description": "The new Mail From"
+                }
+            ],
+            "body": "this.mailFrom = value;"
+        },
+        "getMailTo": {
+            "returnType": "string",
+            "description": "Get the Mail To",
+            "parameters": [],
+            "body": "return this.mailTo;"
+        },
+        "setMailTo": {
+            "description": "Set the Mail To",
+            "parameters": [
+                {
+                    "name": "value",
+                    "type": "string",
+                    "description": "The new Mail To"
+                }
+            ],
+            "body": "this.mailTo = value;"
+        },
+        "getMailSubject": {
+            "returnType": "string",
+            "description": "Get the Mail Subject",
+            "parameters": [],
+            "body": "return this.mailSubject;"
+        },
+        "setMailSubject": {
+            "description": "Set the mailSubject",
+            "parameters": [
+                {
+                    "name": "value",
+                    "type": "string",
+                    "description": "The new Mail Subject"
+                }
+            ],
+            "body": "this.mailSubject = value;"
+        },
+        "getMailBody": {
+            "returnType": "string",
+            "description": "Get the Mail Body",
+            "parameters": [],
+            "body": "return this.mailBody;"
+        },
+        "setMailBody": {
+            "description": "Set the Mail Body",
+            "parameters": [
+                {
+                    "name": "value",
+                    "type": "string",
+                    "description": "The new Mail Body"
+                }
+            ],
+            "body": "this.mailBody = value;"
+        },
         "getPdfButton": {
             "returnType": "string",
             "description": "Get the PDF button text",

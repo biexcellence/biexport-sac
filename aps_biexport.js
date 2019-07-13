@@ -3,7 +3,7 @@
     tmpl.innerHTML = `
       <form id="form">
         <fieldset>
-        <legend>biExport Parameters</legend>
+        <legend>Parameters</legend>
           <table>
             <tr>
               <td><label for="serverURL">Server URL</label></td>
