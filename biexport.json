@@ -344,7 +344,7 @@
             "body": "return this.mailSubject;"
         },
         "setMailSubject": {
-            "description": "Set the mailSubject",
+            "description": "Set the Mail Subject",
             "parameters": [
                 {
                     "name": "value",
