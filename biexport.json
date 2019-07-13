@@ -35,6 +35,66 @@
             "description": "The file name of the export document. The extension will be determined automatically. You can use placeholders (manual section 3.9).",
             "default": "SACExport_%EXECUTION_DATE_SHORT%_%EXECUTION_TIME_SHORT%"
         },
+        "exportLanguage": {
+            "type": "string",
+            "description": "By default, the export determines the language for the export document from the web client. The export language is used to render the correct format for date and time placeholders (manual section 3.10) and to interpret number formats correctly for Excel export (manual secion 3.11).  You can set this property explicitly to overrule the automatic determination.",
+            "default": ""
+        },
+        "screenWidth": {
+            "type": "int",
+            "description": "By default the export uses the screen width of the user to create an export document that resembles the screen display. If you experience extensive white spaces or to small font sizes, you can set this property to a static value, e.g. 1000 pixels.",
+            "default": 0
+        },
+        "screenHeight": {
+            "type": "int",
+            "description": "If you make extensive use of relative height definitions, exports to PowerPoint, Word or Excel might show to small font sizes. In this case, you can set this property to a static value, e.g. 800 pixels. You might have to combine with a Static Screen Width.",
+            "default": 0
+        },
+        "pdfTemplate": {
+            "type": "string",
+            "description": "As an alternative to the HTML Template property, you can also specify a DOC, DOCX, PPT or PPTX template which will be used as a fully formatted template for your PDF export",
+            "default": ""
+        },
+        "pptTemplate": {
+            "type": "string",
+            "description": "By specifying a template for the PowerPoint Export (in PPT or PPTX formats) you can generate complete presentations in your corporate design and with standard text",
+            "default": ""
+        },
+        "docTemplate": {
+            "type": "string",
+            "description": "By specifying a template for the Word Export (in DOC or DOCX formats) you can generate complete Word documents in your corporate design and with standard text",
+            "default": ""
+        },
+        "xlsTemplate": {
+            "type": "string",
+            "description": "By specifying a template for the Excel Export (in XLS or XLSX formats) you can generate complete Word documents in your corporate design and with standard text",
+            "default": ""
+        },
+        "publishMode": {
+            "type": "string",
+            "description": "Controls the way the Export document is delivered: ONLINE, MAIL, FILE etc.",
+            "default": ""
+        },
+        "mailFrom": {
+            "type": "string",
+            "description": "The sender of the mail (Publish Mode must be set to MAIL)",
+            "default": ""
+        },
+        "mailTo": {
+            "type": "string",
+            "description": "The recipients of the mail (Publish Mode must be set to MAIL)",
+            "default": ""
+        },
+        "mailSubject": {
+            "type": "string",
+            "description": "The subject of the mail (Publish Mode must be set to MAIL)",
+            "default": ""
+        },
+        "mailBody": {
+            "type": "string",
+            "description": "The mail body (Publish Mode must be set to MAIL)",
+            "default": ""
+        },
         "pdfButton": {
             "type": "string",
             "description": "The text that is displayed on the PDF Export Button. Empty the property to hide the button.",

@@ -175,6 +175,102 @@
             this.updateSettings();
         }
 
+        get exportLanguage() {
+            return this._export_settings.lng;
+        }
+        set exportLanguage(value) {
+            this._export_settings.lng = value;
+            this.updateSettings();
+        }
+
+        get screenWidth() {
+            return this._export_settings.fixed_width;
+        }
+        set screenWidth(value) {
+            this._export_settings.fixed_width = value;
+            this.updateSettings();
+        }
+
+        get screenHeight() {
+            return this._export_settings.fixed_height;
+        }
+        set screenHeight(value) {
+            this._export_settings.fixed_height = value;
+            this.updateSettings();
+        }
+
+        get pdfTemplate() {
+            return this._export_settings.pdf_template;
+        }
+        set pdfTemplate(value) {
+            this._export_settings.pdf_template = value;
+            this.updateSettings();
+        }
+
+        get pptTemplate() {
+            return this._export_settings.ppt_template;
+        }
+        set pptTemplate(value) {
+            this._export_settings.ppt_template = value;
+            this.updateSettings();
+        }
+
+        get docTemplate() {
+            return this._export_settings.doc_template;
+        }
+        set docTemplate(value) {
+            this._export_settings.doc_template = value;
+            this.updateSettings();
+        }
+
+        get xlsTemplate() {
+            return this._export_settings.xls_template;
+        }
+        set xlsTemplate(value) {
+            this._export_settings.xls_template = value;
+            this.updateSettings();
+        }
+
+        get publishMode() {
+            return this._export_settings.publish_mode;
+        }
+        set publishMode(value) {
+            this._export_settings.publish_mode = value;
+            this.updateSettings();
+        }
+
+        get mailFrom() {
+            return this._export_settings.mail_from;
+        }
+        set mailFrom(value) {
+            this._export_settings.mail_from = value;
+            this.updateSettings();
+        }
+
+        get mailTo() {
+            return this._export_settings.mail_to;
+        }
+        set mailTo(value) {
+            this._export_settings.mail_to = value;
+            this.updateSettings();
+        }
+
+        get mailSubject() {
+            return this._export_settings.mail_subject;
+        }
+        set mailSubject(value) {
+            this._export_settings.mail_subject = value;
+            this.updateSettings();
+        }
+
+        get mailBody() {
+            return this._export_settings.mail_body;
+        }
+        set mailBody(value) {
+            this._export_settings.mail_body = value;
+            this.updateSettings();
+        }
+
         set execute(value) {
             if (value && value.format) {
                 this.startExport(value.format);
@@ -266,7 +362,7 @@
                     this.dispatchEvent(new Event("onErrorExport", {
                         detail: error
                     }));
-                } else if (blob) {
+                } else if (blob) { // download blob
                     let downloadUrl = URL.createObjectURL(blob);
                     let a = document.createElement("a");
                     a.download = filename;
@@ -278,7 +374,7 @@
                         document.body.removeChild(a);
                         URL.revokeObjectURL(downloadUrl);
                     }, 0);
-                } else if (filename) {
+                } else if (filename) { // download via filename
                     this.dispatchEvent(new Event("onReturnExport", {
                         detail: settings
                     }));
@@ -289,10 +385,6 @@
                 }
 
                 delete window[target];
-                let iframe = this._shadowRoot.getElementById(target);
-                if (iframe) {
-                    iframe.remove();
-                }
             };
 
             if (url.indexOf(location.protocol) == 0 || url.indexOf("https:") == 0) { // same protocol => use fetch?
@@ -320,16 +412,10 @@
                 }).catch((reason) => {
                     callback(reason);
                 });
-            } else { // use iframe
-                let iframe = document.createElement("iframe");
-                iframe.id = target;
-                iframe.name = target + "_export_iframe";
-                iframe.style.display = "none";
-                this._shadowRoot.appendChild(iframe);
-
+            } else { // use form with blank target...
                 form.action = url + "?callback=" + target;
-                form.target = iframe.name;
-                form.method = "post";
+                form.target = "_blank";
+                form.method = "POST";
                 form.acceptCharset = "utf-8";
                 this._shadowRoot.appendChild(form);
 
