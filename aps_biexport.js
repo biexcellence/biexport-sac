@@ -124,7 +124,7 @@
         _submit(e) {
             e.preventDefault();
             let properties = {};
-            for (let name of BiExportAps.observedAttributes()) {
+            for (let name of BiExportAps.observedAttributes) {
                 properties[name] = this[name];
             }
             this.dispatchEvent(new CustomEvent("propertiesChanged", {
