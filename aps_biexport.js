@@ -16,6 +16,9 @@
               box-sizing: border-box;
               border: 1px solid #bfbfbf;
           }
+          input[type=checkbox] {
+              width: inherit;
+          }
       </style>
       <form id="form">
         <fieldset>
@@ -85,6 +88,10 @@
             <tr>
               <td><label for="publishMode">Publish Mode</label></td>
               <td><input id="publishMode" name="publishMode" type="text"></td>
+            </tr>
+            <tr>
+              <td><label for="publishSync">Publish Sync</label></td>
+              <td><input id="publishSync" name="publishSync" type="checkbox"></td>
             </tr>
             <tr>
               <td><label for="mailFrom">Mail From</label></td>
@@ -234,6 +241,13 @@
             this.setValue("publishMode", value);
         }
 
+        get publishSync() {
+            return this._shadowRoot.getElementById("publishSync").checked;
+        }
+        set publishSync(value) {
+            this._shadowRoot.getElementById("publishSync").checked = value;
+        }
+
         get mailFrom() {
             return this.getValue("mailFrom");
         }
@@ -309,6 +323,7 @@
                 "docTemplate",
                 "xlsTemplate",
                 "publishMode",
+                "publishSync",
                 "mailFrom",
                 "mailTo",
                 "mailSubject",

@@ -239,6 +239,14 @@
             this.updateSettings();
         }
 
+        get publishSync() {
+            return this._export_settings.publish_sync;
+        }
+        set publishSync(value) {
+            this._export_settings.publish_sync = value;
+            this.updateSettings();
+        }
+
         get mailFrom() {
             return this._export_settings.mail_from;
         }

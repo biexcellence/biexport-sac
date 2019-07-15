@@ -75,6 +75,11 @@
             "description": "Controls the way the Export document is delivered: ONLINE, MAIL, FILE etc.",
             "default": ""
         },
+        "publishSync": {
+            "type": "bool",
+            "description": "If set to true, the export process runs synchronuously even if the file shall not be returned to the user.",
+            "default": false
+        },
         "mailFrom": {
             "type": "string",
             "description": "The sender of the mail (Publish Mode must be set to MAIL)",
@@ -292,7 +297,7 @@
             "parameters": [],
             "body": "return this.publishMode;"
         },
-        "sePublishMode": {
+        "setPublishMode": {
             "description": "Set the Publish Mode",
             "parameters": [
                 {
@@ -302,6 +307,23 @@
                 }
             ],
             "body": "this.publishMode = value;"
+        },
+        "getPublishSync": {
+            "returnType": "bool",
+            "description": "Get the Publish Sync",
+            "parameters": [],
+            "body": "return this.publishSync;"
+        },
+        "setPublishSync": {
+            "description": "Set the Publish Sync",
+            "parameters": [
+                {
+                    "name": "value",
+                    "type": "bool",
+                    "description": "The new Publish Sync"
+                }
+            ],
+            "body": "this.publishSync = value;"
         },
         "getMailFrom": {
             "returnType": "string",
