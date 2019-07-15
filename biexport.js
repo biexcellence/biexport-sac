@@ -316,7 +316,9 @@
             }
 
             this.dispatchEvent(new Event("onStartExport", {
-                detail: settings
+                detail: {
+                    settings: settings
+                }
             }));
 
             let sendHtml = true;
@@ -331,7 +333,9 @@
 
         submitExport(settings, content) {
             this.dispatchEvent(new Event("onSendExport", {
-                detail: settings
+                detail: {
+                    settings: settings
+                }
             }));
 
             let form = document.createElement("form");
@@ -356,28 +360,41 @@
             let callback = window[target] = (error, filename, blob) => {
                 if (error) {
                     this.dispatchEvent(new Event("onErrorExport", {
-                        detail: error
+                        detail: {
+                            error: error,
+                            settings: settings
+                        }
                     }));
-                } else if (blob) { // download blob
-                    let downloadUrl = URL.createObjectURL(blob);
-                    let a = document.createElement("a");
-                    a.download = filename;
-                    a.href = downloadUrl;
-                    document.body.appendChild(a);
-                    a.click();
+                } else if (filename) {
+                    if (filename.indexOf("E:") === 0) {
+                        callback(new Error(filename)); // error...
+                        return;
+                    }
 
-                    setTimeout(() => {
-                        document.body.removeChild(a);
-                        URL.revokeObjectURL(downloadUrl);
-                    }, 0);
-                } else if (filename) { // download via filename
                     this.dispatchEvent(new Event("onReturnExport", {
-                        detail: settings
+                        detail: {
+                            filename: filename,
+                            settings: settings
+                        }
                     }));
 
-                    let downloadUrl = host + "/sac/download.html?FILE=" + encodeURIComponent(filename);
+                    if (blob) { // download blob
+                        let downloadUrl = URL.createObjectURL(blob);
+                        let a = document.createElement("a");
+                        a.download = filename;
+                        a.href = downloadUrl;
+                        document.body.appendChild(a);
+                        a.click();
 
-                    window.open(downloadUrl, "_blank");
+                        setTimeout(() => {
+                            document.body.removeChild(a);
+                            URL.revokeObjectURL(downloadUrl);
+                        }, 0);
+                    } else if (filename.indexOf("I:") === -1) { // download via filename and not sheduled
+                        let downloadUrl = host + "/sac/download.html?FILE=" + encodeURIComponent(filename);
+
+                        window.open(downloadUrl, "_blank");
+                    }
                 }
 
                 delete window[target];
