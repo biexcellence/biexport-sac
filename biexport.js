@@ -319,6 +319,12 @@
             settings.scroll_width = document.body.scrollWidth;
             settings.scroll_height = document.body.scrollHeight;
 
+            if (settings.lng == "" && sap.ui != null) {
+                try { // old lumira designer api, but it works in SAC too
+                    settings.lng = sap.ui.getCore().getConfiguration().getLanguage();
+                } catch (e) { /* ignore */ }
+            }
+
             if (settings.publish_mode === "" || settings.publish_mode === "ONLINE" || settings.publish_mode === "VIEWER" || settings.publish_mode === "PRINT") {
                 settings.publish_sync = true;
             }
