@@ -14,12 +14,6 @@
       <div>
     `;
 
-    // detect designmode:
-    // - mode=edit => designmode
-    // - no mode => designmode
-    // else => runtimemode (embed / present)
-    let isDesignMode = location.href.indexOf("mode=edit") > -1 || location.href.indexOf("mode=") == -1;
-
     class BiExport extends HTMLElement {
 
         constructor() {
@@ -298,7 +292,7 @@
         }
 
         doExport(format, settings, overrideSettings) {
-            if (isDesignMode) {
+            if (isDesignmode()) {
                 return false;
             }
 
@@ -444,6 +438,14 @@
     customElements.define("com-biexcellence-openbi-sap-sac-export", BiExport);
 
     // UTILS
+
+    // detect designmode:
+    // - mode=edit => designmode
+    // - no mode => designmode
+    // else => runtimemode (embed / present / view)
+    function isDesignmode() {
+        return location.href.indexOf("mode=edit") > -1 || location.href.indexOf("mode=") == -1;
+    }
 
     function createGuid() {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
