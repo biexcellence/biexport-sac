@@ -134,7 +134,10 @@
             super();
             this._shadowRoot = this.attachShadow({ mode: "open" });
             this._shadowRoot.appendChild(tmpl.content.cloneNode(true));
-            this._shadowRoot.getElementById("form").addEventListener("submit", this._submit.bind(this));
+
+            let form = this._shadowRoot.getElementById("form");
+            form.addEventListener("submit", this._submit.bind(this));
+            form.addEventListener("change", this._change.bind(this));
         }
 
         _submit(e) {
@@ -149,6 +152,16 @@
                 }
             }));
             return false;
+        }
+        _change(e) {
+            let name = e.target.name;
+            let properties = {};
+            properties[name] = this[name];
+            this.dispatchEvent(new CustomEvent("propertiesChanged", {
+                detail: {
+                    properties: properties
+                }
+            }));
         }
 
         get serverURL() {
