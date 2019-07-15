@@ -5,6 +5,7 @@
           fieldset {
               margin-bottom: 10px;
               border: 1px solid #afafaf;
+              border-radius: 3px;
           }
           table {
               width: 100%;
@@ -153,17 +154,16 @@
             for (let name of BiExportAps.observedAttributes) {
                 properties[name] = this[name];
             }
-            this.dispatchEvent(new CustomEvent("propertiesChanged", {
-                detail: {
-                    properties: properties
-                }
-            }));
+            this._firePropertiesChanged(properties);
             return false;
         }
         _change(e) {
             let name = e.target.name;
             let properties = {};
             properties[name] = this[name];
+            this._firePropertiesChanged(properties);
+        }
+        _firePropertiesChanged(properties) {
             this.dispatchEvent(new CustomEvent("propertiesChanged", {
                 detail: {
                     properties: properties
