@@ -1,6 +1,22 @@
 (function () {
     let tmpl = document.createElement('template');
     tmpl.innerHTML = `
+      <style>
+          fieldset {
+              margin-bottom: 10px;
+              border: 1px solid #afafaf;
+          }
+          table {
+              width: 100%;
+          }
+          input, textarea {
+              font-family: "72",Arial,Helvetica,sans-serif;
+              width: 100%;
+              padding: 4px;
+              box-sizing: border-box;
+              border: 1px solid #bfbfbf;
+          }
+      </style>
       <form id="form">
         <fieldset>
         <legend>Parameters</legend>
