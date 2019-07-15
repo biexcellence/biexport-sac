@@ -319,10 +319,18 @@
             settings.scroll_width = document.body.scrollWidth;
             settings.scroll_height = document.body.scrollHeight;
 
-            if (settings.lng == "" && sap.ui != null) {
-                try { // old lumira designer api, but it works in SAC too
-                    settings.lng = sap.ui.getCore().getConfiguration().getLanguage();
-                } catch (e) { /* ignore */ }
+            if (window.sap && sap.fpa && sap.fpa.ui && sap.fpa.ui.infra && sap.fpa.ui.infra.common) {
+                var context = sap.fpa.ui.infra.common.getContext();
+
+                var app = context.getAppArgument();
+                settings.appid = app.appId;
+
+                var user = context.getUser();
+                settings.user = user.getUsername();
+
+                if (settings.lng == "") {
+                    settings.lng = context.getLanguage();
+                }
             }
 
             if (settings.publish_mode === "" || settings.publish_mode === "ONLINE" || settings.publish_mode === "VIEWER" || settings.publish_mode === "PRINT") {
