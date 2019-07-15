@@ -19,7 +19,7 @@
       </style>
       <form id="form">
         <fieldset>
-        <legend>Parameters</legend>
+        <legend>Properties</legend>
           <table>
             <tr>
               <td><label for="serverURL">Server URL</label></td>
