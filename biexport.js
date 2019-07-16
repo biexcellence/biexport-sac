@@ -376,10 +376,9 @@
 
             let host = settings.server_urls;
             let url = host + "/sac/export.html";
-            let target = "_biexportresult_" + createGuid();
 
             // handle response types
-            let callback = window[target] = (error, filename, blob) => {
+            let callback = (error, filename, blob) => {
                 if (error) {
                     this.dispatchEvent(new CustomEvent("onErrorExport", {
                         detail: {
@@ -418,8 +417,6 @@
                         window.open(downloadUrl, "_blank");
                     }
                 }
-
-                delete window[target];
             };
 
             if (url.indexOf(location.protocol) == 0 || url.indexOf("https:") == 0) { // same protocol => use fetch?
@@ -448,7 +445,7 @@
                     callback(reason);
                 });
             } else { // use form with blank target...
-                form.action = url + "?callback=" + target;
+                form.action = url;
                 form.target = "_blank";
                 form.method = "POST";
                 form.acceptCharset = "utf-8";
@@ -456,20 +453,9 @@
 
                 form.submit();
 
-                form.remove(); // TODO: browser support
+                form.remove();
 
-                if (settings.publish_mode !== "ONLINE" && settings.publish_mode !== "PRINT" && settings.publish_mode !== "VIEWER") {
-                    this.dispatchEvent(new CustomEvent("onReturnExport", {
-                        detail: settings
-                    }));
-                } else {
-                    // else: relax domain 
-                    try {
-                        parent.document.domain = document.domain.split('.').slice(-2).join('.');
-                        document.domain = document.domain.split('.').slice(-2).join('.');
-                    }
-                    catch (e) { /* ignore */ }
-                }
+                callback(null, "I:Export running in separate tab");
             }
         }
 
