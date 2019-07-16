@@ -11,7 +11,7 @@
         <form id="form" method="post" accept-charset="utf-8" action="">
             <input id="settings" name="bie_openbi_export_settings_json" type="hidden">
         </form>
-      <div>
+      </div>
     `;
 
     class BiExport extends HTMLElement {
