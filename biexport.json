@@ -119,11 +119,6 @@
             "type": "string",
             "description": "The text that is displayed on the XLS Export Button. Empty the property to hide the button.",
             "default": "XLS Export"
-        },
-        "execute": {
-            "type": "any",
-            "description": "For internal use only",
-            "default": ""
         }
     },
     "methods": {
@@ -135,8 +130,7 @@
                     "type": "string",
                     "description": "The export format: \"PDF\", \"PPTX\", \"DOCX\", \"XLSX\""
                 }
-            ],
-            "body": "this.execute = { format: format };"
+            ]
         },
         "getServerUrl": {
             "returnType": "string",

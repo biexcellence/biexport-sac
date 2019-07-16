@@ -22,16 +22,16 @@
             this._shadowRoot.appendChild(tmpl.content.cloneNode(true));
 
             this.buttonPdf = this._shadowRoot.querySelector("#pdfButton");
-            this.buttonPdf.onclick = () => this.startExport("PDF");
+            this.buttonPdf.onclick = () => this.doExport("PDF");
 
             this.buttonPpt = this._shadowRoot.querySelector("#pptButton");
-            this.buttonPpt.onclick = () => this.startExport("PPTX");
+            this.buttonPpt.onclick = () => this.doExport("PPTX");
 
             this.buttonDoc = this._shadowRoot.querySelector("#docButton");
-            this.buttonDoc.onclick = () => this.startExport("DOCX");
+            this.buttonDoc.onclick = () => this.doExport("DOCX");
 
             this.buttonXls = this._shadowRoot.querySelector("#xlsButton");
-            this.buttonXls.onclick = () => this.startExport("XLSX");
+            this.buttonXls.onclick = () => this.doExport("XLSX");
 
             this.form = this._shadowRoot.querySelector("#form");
             this.settings = this._shadowRoot.querySelector("#settings");
@@ -120,7 +120,7 @@
             this._export_settings.bianalytics = false;
             this._export_settings.parseCssClassFilter = "";
 
-            this.updateSettings();
+            this._updateSettings();
         }
 
         // BUTTONS
@@ -164,7 +164,7 @@
         }
         set serverURL(value) {
             this._export_settings.server_urls = value;
-            this.updateSettings();
+            this._updateSettings();
         }
 
         get filename() {
@@ -172,7 +172,7 @@
         }
         set filename(value) {
             this._export_settings.filename = value;
-            this.updateSettings();
+            this._updateSettings();
         }
 
         get exportLanguage() {
@@ -180,7 +180,7 @@
         }
         set exportLanguage(value) {
             this._export_settings.lng = value;
-            this.updateSettings();
+            this._updateSettings();
         }
 
         get screenWidth() {
@@ -188,7 +188,7 @@
         }
         set screenWidth(value) {
             this._export_settings.fixed_width = value;
-            this.updateSettings();
+            this._updateSettings();
         }
 
         get screenHeight() {
@@ -196,7 +196,7 @@
         }
         set screenHeight(value) {
             this._export_settings.fixed_height = value;
-            this.updateSettings();
+            this._updateSettings();
         }
 
         get pdfTemplate() {
@@ -204,7 +204,7 @@
         }
         set pdfTemplate(value) {
             this._export_settings.pdf_template = value;
-            this.updateSettings();
+            this._updateSettings();
         }
 
         get pptTemplate() {
@@ -212,7 +212,7 @@
         }
         set pptTemplate(value) {
             this._export_settings.ppt_template = value;
-            this.updateSettings();
+            this._updateSettings();
         }
 
         get docTemplate() {
@@ -220,7 +220,7 @@
         }
         set docTemplate(value) {
             this._export_settings.doc_template = value;
-            this.updateSettings();
+            this._updateSettings();
         }
 
         get xlsTemplate() {
@@ -228,7 +228,7 @@
         }
         set xlsTemplate(value) {
             this._export_settings.xls_template = value;
-            this.updateSettings();
+            this._updateSettings();
         }
 
         get publishMode() {
@@ -236,7 +236,7 @@
         }
         set publishMode(value) {
             this._export_settings.publish_mode = value;
-            this.updateSettings();
+            this._updateSettings();
         }
 
         get publishSync() {
@@ -244,7 +244,7 @@
         }
         set publishSync(value) {
             this._export_settings.publish_sync = value;
-            this.updateSettings();
+            this._updateSettings();
         }
 
         get mailFrom() {
@@ -252,7 +252,7 @@
         }
         set mailFrom(value) {
             this._export_settings.mail_from = value;
-            this.updateSettings();
+            this._updateSettings();
         }
 
         get mailTo() {
@@ -260,7 +260,7 @@
         }
         set mailTo(value) {
             this._export_settings.mail_to = value;
-            this.updateSettings();
+            this._updateSettings();
         }
 
         get mailSubject() {
@@ -268,7 +268,7 @@
         }
         set mailSubject(value) {
             this._export_settings.mail_subject = value;
-            this.updateSettings();
+            this._updateSettings();
         }
 
         get mailBody() {
@@ -276,30 +276,24 @@
         }
         set mailBody(value) {
             this._export_settings.mail_body = value;
-            this.updateSettings();
-        }
-
-        set execute(value) {
-            if (value && value.format) {
-                this.startExport(value.format);
-            }
+            this._updateSettings();
         }
 
         // METHODS
 
-        updateSettings() {
+        _updateSettings() {
             this.settings.value = JSON.stringify(this._export_settings);
         }
 
-        startExport(format, overrideSettings) {
+        doExport(format, overrideSettings) {
             let settings = JSON.parse(JSON.stringify(this._export_settings));
 
             setTimeout(() => {
-                this.doExport(format, settings, overrideSettings);
+                this._doExport(format, settings, overrideSettings);
             }, 200);
         }
 
-        doExport(format, settings, overrideSettings) {
+        _doExport(format, settings, overrideSettings) {
             if (isDesignmode()) {
                 return false;
             }
@@ -346,14 +340,14 @@
             let sendHtml = true;
             if (sendHtml) {
                 getHtml().then((html) => {
-                    this.submitExport(settings, html);
+                    this._submitExport(settings, html);
                 });
             } else {
-                this.submitExport(settings, null);
+                this._submitExport(settings, null);
             }
         }
 
-        submitExport(settings, content) {
+        _submitExport(settings, content) {
             this.dispatchEvent(new CustomEvent("onSendExport", {
                 detail: {
                     settings: settings
