@@ -3,7 +3,7 @@
     tmpl.innerHTML = `
       <style>
       </style>
-      <div id="biexport">
+      <div id="biexport" class="openbihideonprint">
         <button id="pdfButton">PDF Export</button>
         <button id="pptButton">PPT Export</button>
         <button id="docButton">DOC Export</button>
