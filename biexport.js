@@ -337,7 +337,7 @@
                 settings.publish_sync = true;
             }
 
-            this.dispatchEvent(new Event("onStartExport", {
+            this.dispatchEvent(new CustomEvent("onStartExport", {
                 detail: {
                     settings: settings
                 }
@@ -354,7 +354,7 @@
         }
 
         submitExport(settings, content) {
-            this.dispatchEvent(new Event("onSendExport", {
+            this.dispatchEvent(new CustomEvent("onSendExport", {
                 detail: {
                     settings: settings
                 }
@@ -381,7 +381,7 @@
             // handle response types
             let callback = window[target] = (error, filename, blob) => {
                 if (error) {
-                    this.dispatchEvent(new Event("onErrorExport", {
+                    this.dispatchEvent(new CustomEvent("onErrorExport", {
                         detail: {
                             error: error,
                             settings: settings
@@ -393,7 +393,7 @@
                         return;
                     }
 
-                    this.dispatchEvent(new Event("onReturnExport", {
+                    this.dispatchEvent(new CustomEvent("onReturnExport", {
                         detail: {
                             filename: filename,
                             settings: settings
@@ -459,7 +459,7 @@
                 form.remove(); // TODO: browser support
 
                 if (settings.publish_mode !== "ONLINE" && settings.publish_mode !== "PRINT" && settings.publish_mode !== "VIEWER") {
-                    this.dispatchEvent(new Event("onReturnExport", {
+                    this.dispatchEvent(new CustomEvent("onReturnExport", {
                         detail: settings
                     }));
                 } else {
