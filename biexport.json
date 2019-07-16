@@ -41,12 +41,12 @@
             "default": ""
         },
         "screenWidth": {
-            "type": "int",
+            "type": "number",
             "description": "By default the export uses the screen width of the user to create an export document that resembles the screen display. If you experience extensive white spaces or to small font sizes, you can set this property to a static value, e.g. 1000 pixels.",
             "default": 0
         },
         "screenHeight": {
-            "type": "int",
+            "type": "number",
             "description": "If you make extensive use of relative height definitions, exports to PowerPoint, Word or Excel might show to small font sizes. In this case, you can set this property to a static value, e.g. 800 pixels. You might have to combine with a Static Screen Width.",
             "default": 0
         },
@@ -184,7 +184,7 @@
             "body": "this.exportLanguage = value;"
         },
         "getStaticWidth": {
-            "returnType": "int",
+            "returnType": "number",
             "description": "Get the Static Width",
             "parameters": [],
             "body": "return this.screenWidth;"
@@ -194,14 +194,14 @@
             "parameters": [
                 {
                     "name": "value",
-                    "type": "int",
+                    "type": "number",
                     "description": "The new Static Width"
                 }
             ],
             "body": "this.screenWidth = value;"
         },
         "getStaticHeight": {
-            "returnType": "int",
+            "returnType": "number",
             "description": "Get the Static Height",
             "parameters": [],
             "body": "return this.screenHeight;"
@@ -211,7 +211,7 @@
             "parameters": [
                 {
                     "name": "value",
-                    "type": "int",
+                    "type": "number",
                     "description": "The new Screen Height"
                 }
             ],
