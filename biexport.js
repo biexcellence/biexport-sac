@@ -486,11 +486,11 @@
     }
 
     function cloneNode(node) {
-        if (node.nodeType == 8) {
-            return "<!--" + node.nodeValue + "-->";
-        }
-        if (node.nodeType == 3) {
+        if (node.nodeType == 3) { // TEXT
             return node.nodeValue.replace(/&/g, "&amp;").replace(/</g, "&gt;").replace(/>/g, "&lt;");
+        }
+        if (node.nodeType == 8) { // COMMENT
+            return "<!--" + node.nodeValue + "-->";
         }
 
         if (node.tagName == "SCRIPT") return "";
@@ -544,6 +544,11 @@
                     } catch (e) { }
                 }
                 break;
+            case "LINK":
+                if (node.tagName == "LINK" && node.rel == "preload") {
+                    return "";
+                }
+                break;
             case "STYLE":
                 let sheet = node.sheet;
                 if (sheet) {
@@ -576,6 +581,16 @@
                             }
                             css.push("}");
                         }
+                    } else {
+                        try {
+                            for (let i = 0; i < sheet.rules.length; i++) {
+                                if (rule.styleSheet) { // TODO: imports
+
+                                } else {
+                                    css.push(rule.cssText);
+                                }
+                            }
+                        } catch (e) {/* ignore */ }
                     }
 
                     content = css.join("");
