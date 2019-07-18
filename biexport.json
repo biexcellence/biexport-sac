@@ -119,6 +119,11 @@
             "type": "string",
             "description": "The text that is displayed on the XLS Export Button. Empty the property to hide the button.",
             "default": "XLS Export"
+        },
+        "metadata": {
+            "type": "string",
+            "description": "Application Metadata",
+            "default": "For internal use"
         }
     },
     "methods": {
