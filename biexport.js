@@ -355,6 +355,38 @@
             this._updateSettings();
         }
 
+        get pdfExclude() {
+            return this._export_settings.pdf_exclude;
+        }
+        set pdfExclude(value) {
+            this._export_settings.pdf_exclude = value;
+            this._updateSettings();
+        }
+
+        get pptExclude() {
+            return this._export_settings.ppt_exclude;
+        }
+        set pptExclude(value) {
+            this._export_settings.ppt_exclude = value;
+            this._updateSettings();
+        }
+
+        get docExclude() {
+            return this._export_settings.doc_exclude;
+        }
+        set docExclude(value) {
+            this._export_settings.doc_exclude = value;
+            this._updateSettings();
+        }
+
+        get xlsExclude() {
+            return this._export_settings.xls_exclude;
+        }
+        set xlsExclude(value) {
+            this._export_settings.xls_exclude = value;
+            this._updateSettings();
+        }
+
         get metadata() {
             return this._export_settings.metadata;
         }
@@ -404,12 +436,12 @@
             settings.scroll_height = document.body.scrollHeight;
 
             if (window.sap && sap.fpa && sap.fpa.ui && sap.fpa.ui.infra && sap.fpa.ui.infra.common) {
-                var context = sap.fpa.ui.infra.common.getContext();
+                let context = sap.fpa.ui.infra.common.getContext();
 
-                var app = context.getAppArgument();
+                let app = context.getAppArgument();
                 settings.appid = app.appId;
 
-                var user = context.getUser();
+                let user = context.getUser();
                 settings.user = user.getUsername();
 
                 if (settings.lng == "") {

@@ -54,6 +54,13 @@
               <td><label for="pdfTemplate">Template</label></td>
               <td><input id="pdfTemplate" name="pdfTemplate" type="text"></td>
             </tr>
+            <tr>
+              <td colspan="2">
+                <details id="pdfExclude">
+                  <summary>Visible Components</summary>
+                </details>
+              </td>
+            </tr>
           </table>
         </fieldset>
         <fieldset>
@@ -62,6 +69,13 @@
             <tr>
               <td><label for="pptTemplate">Template</label></td>
               <td><input id="pptTemplate" name="pptTemplate" type="text"></td>
+            </tr>
+            <tr>
+              <td colspan="2">
+                <details id="pptExclude">
+                  <summary>Visible Components</summary>
+                </details>
+              </td>
             </tr>
           </table>
         </fieldset>
@@ -72,6 +86,13 @@
               <td><label for="docTemplate">Template</label></td>
               <td><input id="docTemplate" name="docTemplate" type="text"></td>
             </tr>
+            <tr>
+              <td colspan="2">
+                <details id="docExclude">
+                  <summary>Visible Components</summary>
+                </details>
+              </td>
+            </tr>
           </table>
         </fieldset>
         <fieldset>
@@ -80,6 +101,13 @@
             <tr>
               <td><label for="xlsTemplate">Template</label></td>
               <td><input id="xlsTemplate" name="xlsTemplate" type="text"></td>
+            </tr>
+            <tr>
+              <td colspan="2">
+                <details id="xlsExclude">
+                  <summary>Visible Components</summary>
+                </details>
+              </td>
             </tr>
           </table>
         </fieldset>
@@ -146,6 +174,48 @@
             let form = this._shadowRoot.getElementById("form");
             form.addEventListener("submit", this._submit.bind(this));
             form.addEventListener("change", this._change.bind(this));
+
+
+
+            let hoverDiv = document.createElement("div");
+            hoverDiv.style.border = "5px solid lime";
+            hoverDiv.style.position = "absolute";
+            hoverDiv.style.boxSizing = "border-box";
+            document.body.appendChild(hoverDiv);
+            let hoverDivVisible = false;
+
+
+            ["pdfExclude", "pptExclude", "docExclude", "xlsExclude"].forEach((id) => {
+                this._shadowRoot.getElementById(id).addEventListener("change", this._visibleComponentsChange.bind(this));
+
+                this._shadowRoot.getElementById(id).addEventListener("mouseover", (e) => {
+                    if (!hoverDivVisible && e.target.tagName == "LABEL") {
+                        var input = e.target.querySelector("input");
+                        let id = input.id;
+
+                        var target = document.querySelector("[data-sap-widget-id='" + id + "']");
+                        if (target) {
+                            var rect = target.getBoundingClientRect();
+
+                            hoverDiv.style.top = rect.top + "px";
+                            hoverDiv.style.left = rect.left + "px";
+                            hoverDiv.style.width = rect.width + "px";
+                            hoverDiv.style.height = rect.height + "px";
+                            hoverDiv.style.display = "block";
+
+                            hoverDivVisible = true;
+                        }
+                    }
+                });
+
+                this._shadowRoot.getElementById(id).addEventListener("mouseout", (e) => {
+                    if (hoverDivVisible && e.target.tagName == "LABEL") {
+                        hoverDiv.style.display = "none";
+
+                        hoverDivVisible = false;
+                    }
+                });
+            });
         }
 
         _submit(e) {
@@ -163,6 +233,25 @@
             properties[name] = this[name];
             this._firePropertiesChanged(properties);
         }
+
+        _visibleComponentsChange(e) {
+            let node = e.currentTarget;
+            let visibleComponents = [];
+
+            let inputs = node.querySelectorAll("input");
+            for (let i = 0; i < inputs.length; i++) {
+                let input = inputs[i];
+                visibleComponents.push({
+                    component: input.name,
+                    isExcluded: !input.checked
+                });
+            }
+
+            let properties = {};
+            this[node.id] = properties[node.id] = JSON.stringify(visibleComponents)
+            this._firePropertiesChanged(properties);
+        }
+
         _firePropertiesChanged(properties) {
             this.dispatchEvent(new CustomEvent("propertiesChanged", {
                 detail: {
@@ -304,6 +393,82 @@
             this.setValue("xlsButton", value);
         }
 
+        get pdfExclude() {
+            return this.pdf_exclude;
+        }
+        set pdfExclude(value) {
+            this.pdf_exclude = value;
+            this._renderVisibleComponents("pdfExclude", this.metadata, value);
+        }
+
+        get pptExclude() {
+            return this.ppt_exclude;
+        }
+        set pptExclude(value) {
+            this.ppt_exclude = value;
+            this._renderVisibleComponents("pptExclude", this.metadata, value);
+        }
+
+        get docExclude() {
+            return this.doc_exclude;
+        }
+        set docExclude(value) {
+            this.doc_exclude = value;
+            this._renderVisibleComponents("docExclude", this.metadata, value);
+        }
+
+        get xlsExclude() {
+            return this.xls_exclude;
+        }
+        set xlsExclude(value) {
+            this.xls_exclude = value;
+            this._renderVisibleComponents("xlsExclude", this.metadata, value);
+        }
+
+        get metadata() {
+            return this._metadata;
+        }
+        set metadata(value) {
+            this._metadata = value;
+
+            ["pdfExclude", "pptExclude", "docExclude", "xlsExclude"].forEach((id) => {
+                this._renderVisibleComponents(id, value, this[id]);
+            });
+        }
+
+        _renderVisibleComponents(id, metadata, value) {
+            let node = this._shadowRoot.getElementById(id);
+
+            while (node.lastElementChild != node.firstElementChild) {
+                node.lastElementChild.remove();
+            }
+
+            let visibleComponents = value ? JSON.parse(value) : [];
+            let components = JSON.parse(metadata)["components"];
+            for (let componentId in components) {
+                let component = components[componentId];
+
+                let div = document.createElement("div");
+                let label = document.createElement("label");
+                let checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.id = componentId;
+                checkbox.name = component.name;
+                checkbox.checked = visibleComponents.some((v) => v.component == component.name && !v.isExcluded);
+                let text = document.createTextNode(component.name);
+
+                label.appendChild(checkbox);
+                label.appendChild(text);
+
+                div.appendChild(label);
+
+                node.appendChild(div);
+            }
+
+            let summary = node.querySelector("summary");
+            summary.textContent = "Visible Components (" + (visibleComponents.filter((v) => !v.isExcluded).length || Object.keys(components).length) + ")";
+        }
+
         getValue(id) {
             return this._shadowRoot.getElementById(id).value;
         }
@@ -331,7 +496,11 @@
                 "pdfButton",
                 "pptButton",
                 "docButton",
-                "xlsButton"
+                "xlsButton",
+
+                "pdfExclude",
+
+                "metadata"
             ];
         }
 

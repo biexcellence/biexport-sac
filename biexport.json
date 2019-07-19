@@ -120,6 +120,26 @@
             "description": "The text that is displayed on the XLS Export Button. Empty the property to hide the button.",
             "default": "XLS Export"
         },
+        "pdfExclude": {
+            "type": "string",
+            "description": "",
+            "default": "PDF Excludes"
+        },
+        "pptExclude": {
+            "type": "string",
+            "description": "",
+            "default": "PPT Excludes"
+        },
+        "docExclude": {
+            "type": "string",
+            "description": "",
+            "default": "DOC Excludes"
+        },
+        "xlsExclude": {
+            "type": "string",
+            "description": "",
+            "default": "XLS Excludes"
+        },
         "metadata": {
             "type": "string",
             "description": "Application Metadata",
