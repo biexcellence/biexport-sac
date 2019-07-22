@@ -122,28 +122,28 @@
         },
         "pdfExclude": {
             "type": "string",
-            "description": "",
-            "default": "PDF Excludes"
+            "description": "PDF Excludes",
+            "default": ""
         },
         "pptExclude": {
             "type": "string",
-            "description": "",
-            "default": "PPT Excludes"
+            "description": "PPT Excludes",
+            "default": ""
         },
         "docExclude": {
             "type": "string",
-            "description": "",
-            "default": "DOC Excludes"
+            "description": "DOC Excludes",
+            "default": ""
         },
         "xlsExclude": {
             "type": "string",
-            "description": "",
-            "default": "XLS Excludes"
+            "description": "XLS Excludes",
+            "default": ""
         },
         "metadata": {
             "type": "string",
-            "description": "Application Metadata",
-            "default": "For internal use"
+            "description": "For internal use",
+            "default": ""
         }
     },
     "methods": {
