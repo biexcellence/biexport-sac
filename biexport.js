@@ -3,13 +3,13 @@
     tmpl.innerHTML = `
       <style>
       </style>
-      <div id="biexport" class="openbihideonprint">
+      <div id="export_div" class="openbihideonprint">
         <button id="pdfButton">PDF Export</button>
         <button id="pptButton">PPT Export</button>
         <button id="docButton">DOC Export</button>
         <button id="xlsButton">XLS Export</button>
         <form id="form" method="post" accept-charset="utf-8" action="">
-            <input id="settings" name="bie_openbi_export_settings_json" type="hidden">
+            <input id="export_settings_json" name="bie_openbi_export_settings_json" type="hidden">
         </form>
       </div>
     `;
@@ -20,6 +20,10 @@
             super();
             this._shadowRoot = this.attachShadow({ mode: "open" });
             this._shadowRoot.appendChild(tmpl.content.cloneNode(true));
+
+            let id = createGuid();
+
+            this._shadowRoot.querySelector("#export_div").id = id + "_export_div";
 
             this.buttonPdf = this._shadowRoot.querySelector("#pdfButton");
             this.buttonPdf.onclick = () => this.doExport("PDF");
@@ -34,7 +38,10 @@
             this.buttonXls.onclick = () => this.doExport("XLSX");
 
             this.form = this._shadowRoot.querySelector("#form");
-            this.settings = this._shadowRoot.querySelector("#settings");
+            this.form.id = id + "_form";
+
+            this.settings = this._shadowRoot.querySelector("#export_settings_json");
+            this.settings.id = id + "_export_settings_json";
 
             this._export_settings = {};
             this._export_settings.dashboard = "";
