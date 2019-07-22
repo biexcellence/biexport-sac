@@ -248,7 +248,7 @@
             }
 
             let properties = {};
-            this[node.id] = properties[node.id] = JSON.stringify(visibleComponents)
+            this[node.id] = properties[node.id] = visibleComponents.every(v => v.isExcluded) ? "" : JSON.stringify(visibleComponents)
             this._firePropertiesChanged(properties);
         }
 
