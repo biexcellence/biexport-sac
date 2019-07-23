@@ -153,7 +153,7 @@
                             for (let key in names) {
                                 let name = names[key];
 
-                                let obj = JSON.parse(key)[2];
+                                let obj = JSON.parse(key).pop();
                                 let type = Object.keys(obj)[0];
                                 let id = obj[type];
 
