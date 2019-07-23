@@ -164,7 +164,8 @@
                             }
 
                             let metadata = JSON.stringify({
-                                components: components
+                                components: components,
+                                vars: app.globalVars
                             });
 
                             if (metadata != this.metadata) {
