@@ -444,7 +444,7 @@
             }
 
             let visibleComponents = value ? JSON.parse(value) : [];
-            let components = JSON.parse(metadata)["components"];
+            let components = metadata ? JSON.parse(metadata)["components"] : {};
             for (let componentId in components) {
                 let component = components[componentId];
 
