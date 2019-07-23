@@ -603,26 +603,31 @@
     }
 
     function getHtml(cb) {
+        let html = [];
         let promises = [];
-        let html = cloneNode(document.documentElement, promises);
+        cloneNode(document.documentElement, html, promises);
         return Promise.all(promises).then(() => {
             if (document.doctype && typeof XMLSerializer != "undefined") { // <!DOCTYPE html>
-                html = new XMLSerializer().serializeToString(document.doctype) + html;
+                html.unshift(new XMLSerializer().serializeToString(document.doctype));
             }
 
-            return cb && cb(html) || html;
+            let result = html.join("");
+
+            return cb && cb(result) || result;
         });
     }
 
-    function cloneNode(node) {
+    function cloneNode(node, html, promises) {
         if (node.nodeType == 3) { // TEXT
-            return node.nodeValue.replace(/&/g, "&amp;").replace(/</g, "&gt;").replace(/>/g, "&lt;");
+            html.push(node.nodeValue.replace(/&/g, "&amp;").replace(/</g, "&gt;").replace(/>/g, "&lt;"));
+            return;
         }
         if (node.nodeType == 8) { // COMMENT
-            return "<!--" + node.nodeValue + "-->";
+            html.push("<!--" + node.nodeValue + "-->");
+            return;
         }
 
-        if (node.tagName == "SCRIPT") return "";
+        if (node.tagName == "SCRIPT") return;
 
         let name = node.localName;
         let content = null;
@@ -728,7 +733,6 @@
         }
 
 
-        let html = [];
         html.push("<");
         html.push(name);
         for (let name in attributes) {
@@ -749,18 +753,19 @@
                 child = node.shadowRoot.firstChild;
             }
             while (child) {
-                html.push(cloneNode(child));
+                html.push(cloneNode(child, html, promises));
                 child = child.nextSibling;
                 isEmpty = false;
             }
         }
-        if (true || !isEmpty) {
+        if (isEmpty && !new RegExp("</" + node.tagName + ">$", "i").test(node.outerHTML)) {
+            html.pop();
+            html.push(" />");
+        } else {
             html.push("</");
             html.push(name);
             html.push(">");
         }
-
-        return html.join("");
     }
 
 
