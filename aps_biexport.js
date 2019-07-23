@@ -177,31 +177,31 @@
 
 
 
-            let hoverDiv = document.createElement("div");
-            hoverDiv.style.border = "5px solid lime";
-            hoverDiv.style.position = "absolute";
-            hoverDiv.style.boxSizing = "border-box";
-            document.body.appendChild(hoverDiv);
+            this._hoverDiv = document.createElement("div");
+            this._hoverDiv.style.border = "5px solid lime";
+            this._hoverDiv.style.position = "absolute";
+            this._hoverDiv.style.boxSizing = "border-box";
+            this._hoverDiv.style.display = "none";
+            document.body.appendChild(this._hoverDiv);
             let hoverDivVisible = false;
-
 
             ["pdfExclude", "pptExclude", "docExclude", "xlsExclude"].forEach(id => {
                 this._shadowRoot.getElementById(id).addEventListener("change", this._visibleComponentsChange.bind(this));
 
                 this._shadowRoot.getElementById(id).addEventListener("mouseover", e => {
                     if (!hoverDivVisible && e.target.tagName == "LABEL") {
-                        var input = e.target.querySelector("input");
+                        let input = e.target.querySelector("input");
                         let id = input.id;
 
-                        var target = document.querySelector("[data-sap-widget-id='" + id + "']");
+                        let target = document.querySelector("[data-sap-widget-id='" + id + "']");
                         if (target) {
-                            var rect = target.getBoundingClientRect();
+                            let rect = target.getBoundingClientRect();
 
-                            hoverDiv.style.top = rect.top + "px";
-                            hoverDiv.style.left = rect.left + "px";
-                            hoverDiv.style.width = rect.width + "px";
-                            hoverDiv.style.height = rect.height + "px";
-                            hoverDiv.style.display = "block";
+                            this._hoverDiv.style.top = rect.top + "px";
+                            this._hoverDiv.style.left = rect.left + "px";
+                            this._hoverDiv.style.width = rect.width + "px";
+                            this._hoverDiv.style.height = rect.height + "px";
+                            this._hoverDiv.style.display = "block";
 
                             hoverDivVisible = true;
                         }
@@ -210,12 +210,18 @@
 
                 this._shadowRoot.getElementById(id).addEventListener("mouseout", e => {
                     if (hoverDivVisible && e.target.tagName == "LABEL") {
-                        hoverDiv.style.display = "none";
+                        this._hoverDiv.style.display = "none";
 
                         hoverDivVisible = false;
                     }
                 });
             });
+        }
+
+        disconnectedCallback() {
+            if (this._hoverDiv) {
+                this._hoverDiv.remove();
+            }
         }
 
         _submit(e) {
