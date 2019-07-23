@@ -535,7 +535,7 @@
                             document.body.removeChild(a);
                             URL.revokeObjectURL(downloadUrl);
                         }, 0);
-                    } else if (filename.indexOf("I:") === -1) { // download via filename and not sheduled
+                    } else if (filename.indexOf("I:") !== 0) { // download via filename and not sheduled
                         let downloadUrl = host + "/sac/download.html?FILE=" + encodeURIComponent(filename);
 
                         window.open(downloadUrl, "_blank");
@@ -556,7 +556,7 @@
                         let contentDisposition = response.headers.get("Content-Disposition");
                         if (contentDisposition) {
                             return response.blob().then(blob => {
-                                callback(null, /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(contentDisposition)[1], blob);
+                                callback(null, contentDispositionFilenameRegExp.exec(contentDisposition)[1], blob);
                             });
                         }
                         return response.text().then(text => {
@@ -588,12 +588,16 @@
 
     // UTILS
 
+    const cssUrlRegExp = /url\(["']?(.*?)["']?\)/i;
+    const contentDispositionFilenameRegExp = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/i;
+    const startsWithHttpRegExp = /^http/i;
+
     // detect designmode:
     // - mode=edit => designmode
     // - no mode => designmode
     // else => runtimemode (embed / present / view)
     function isDesignmode() {
-        return location.href.indexOf("mode=edit") > -1 || location.href.indexOf("mode=") == -1;
+        return location.href.includes("mode=edit") || !location.href.includes("mode=");
     }
 
     function createGuid() {
@@ -661,22 +665,8 @@
                 attributes["src"] = node.toDataURL("image/png");
                 break;
             case "IMG":
-                if (node.src && node.src.indexOf("data:") != 0) {
-                    let actualWidth = node.naturalWidth || node.width;
-                    let actualHeight = node.naturalHeight || node.height;
-
-                    let canvas = document.createElement("canvas");
-                    canvas.width = node.width;
-                    canvas.height = node.height;
-
-                    let ctx = canvas.getContext("2d");
-                    ctx.drawImage(node, 0, 0, actualWidth, actualHeight, 0, 0, canvas.width, canvas.height);
-
-                    // try catch for now...
-                    // should create a new image with temp.setAttribute("crossOrigin", "anonymous"); and use that instead
-                    try {
-                        attributes["src"] = canvas.toDataURL("image/png");
-                    } catch (e) { debugger; }
+                if (node.src && !node.src.includes("data:")) {
+                    attributes["src"] = getUrlAsDataUrl(node.src).then(d => d, () => node.src);
                 }
                 break;
             case "LINK":
@@ -686,36 +676,65 @@
             case "STYLE":
                 let sheet = node.sheet;
                 if (sheet) {
+                    let shadowHost = null;
+                    let parent = node.parentNode;
+                    while (parent) {
+                        if (parent.host) {
+                            shadowHost = parent.host;
+                            break;
+                        }
+                        parent = parent.parentNode;
+                    }
+
                     if (sheet.href) { // download external stylesheets
                         name = "style";
                         attributes = { "type": "text/css" };
-                        content = fetch(sheet.href).then(response => response.text());
-                        promises.push(content);
+                        content = fetch(sheet.href).then(response => response.text()).then(t => {
+                            let style = document.createElement("style");
+                            style.type = "text/css";
+                            style.appendChild(document.createTextNode(t));
+                            document.body.appendChild(style);
+                            return getCssText(style.sheet, sheet.href, shadowHost).then(r => {
+                                document.body.removeChild(style);
+                                return r;
+                            });
+                        }, reason => {
+                            return "";
+                        });
                     } else {
-                        let shadowHost = null;
-                        let parent = node.parentNode;
-                        while (parent) {
-                            if (parent.host) {
-                                shadowHost = parent.host;
-                                break;
-                            }
-                            parent = parent.parentNode;
-                        }
-
-                        content = getCss(sheet, shadowHost);
+                        content = getCssText(sheet, document.baseURI, shadowHost);
                     }
                 }
                 break;
         }
 
 
+        if (attributes["style"]) {
+            let style = attributes["style"];
+            if (style.includes("url") && !style.includes("data:")) {
+                let url = cssUrlRegExp.exec(style)[1];
+                if (url) {
+                    attributes["style"] = getUrlAsDataUrl(toAbsoluteUrl(document.baseURI, url)).then(d => style.replace(url, d), () => style);
+                }
+            }
+        }
+
+
         html.push("<");
         html.push(name);
         for (let name in attributes) {
+            let value = attributes[name];
+
             html.push(" ");
             html.push(name);
             html.push("=\"");
-            html.push(attributes[name].replace(/"/g, "&quot;"));
+            if (value.then) {
+                let index = html.length;
+                html.push(""); // placeholder
+                promises.push(value.then(v => html[index] = escapeAttributeValue(v)));
+            } else {
+                html.push(escapeAttributeValue(value));
+            }
             html.push("\"");
         }
         html.push(">");
@@ -724,7 +743,7 @@
             if (content.then) {
                 let index = html.length;
                 html.push(""); // placeholder
-                content.then(c => html[index] = escapeText(c));
+                promises.push(content.then(c => html[index] = escapeText(c)));
             } else {
                 html.push(escapeText(content));
             }
@@ -749,132 +768,122 @@
         }
     }
 
-    function getCss(sheet, shadowHost) {
+    function getCssText(sheet, baseUrl, shadowHost) {
+        return parseCssRules(sheet.rules, baseUrl, shadowHost);
+    }
+    function parseCssRules(rules, baseUrl, shadowHost) {
+        let promises = [];
         let css = [];
 
-        if (shadowHost) { // prefix with shadow host name...
-            for (let i = 0; i < sheet.rules.length; i++) {
-                let rule = sheet.rules[i];
-                css.push(shadowHost.localName);
-                css.push(" ");
-                css.push(rule.selectorText.split(",").join("," + shadowHost.localName));
-                css.push(" ");
+        for (let i = 0; i < rules.length; i++) {
+            let rule = rules[i];
+
+            if (rule.type == CSSRule.MEDIA_RULE) { // media query
+                css.push("@media ");
+                css.push(rule.conditionText);
                 css.push("{");
+
+                let index = css.length;
+                css.push(""); // placeholder
+                promises.push(parseCssRules(rule.cssRules, baseUrl, shadowHost).then(c => css[index] = c));
+
+                css.push("}");
+            } else if (rule.type == CSSRule.IMPORT_RULE) { // @import
+                let index = css.length;
+                css.push(""); // placeholder
+                promises.push(getCssText(rule.styleSheet, baseUrl, shadowHost).then(c => css[index] = c));
+            } else if (rule.type == CSSRule.STYLE_RULE) {
+                if (shadowHost) { // prefix with shadow host name...
+                    css.push(shadowHost.localName);
+                    css.push(" ");
+                    css.push(rule.selectorText.split(",").join("," + shadowHost.localName));
+                } else {
+                    css.push(rule.selectorText);
+                }
+                css.push(" {");
                 for (let j = 0; j < rule.style.length; j++) {
                     let name = rule.style[j]
+                    let value = rule.style[name];
                     css.push(name);
                     css.push(":");
-                    css.push(rule.style[name]);
+                    if (name.startsWith("background") && value && value.includes("url") && !value.includes("data:")) {
+                        let url = cssUrlRegExp.exec(value)[1];
+                        if (url) {
+                            let index = css.length;
+                            css.push(""); // placeholder
+                            promises.push(getUrlAsDataUrl(toAbsoluteUrl(baseUrl, url)).then(d => css[index] = "url(" + d + ")", () => css[index] = value));
+                        }
+                    }
+                    css.push(value);
                     css.push(";");
                 }
                 css.push("}");
-            }
-        } else {
-            try {
-                for (let i = 0; i < sheet.rules.length; i++) {
-                    if (rule.styleSheet) { // TODO: imports
-
+            } else if (rule.type == CSSRule.FONT_FACE_RULE) {
+                css.push("@font-face {");
+                for (let j = 0; j < rule.style.length; j++) {
+                    let name = rule.style[j]
+                    let value = rule.style[name];
+                    css.push(name);
+                    css.push(":");
+                    if (name == "src" && value && value.includes("url") && !value.includes("data:")) {
+                        let url = cssUrlRegExp.exec(value)[1];
+                        if (url) {
+                            let index = css.length;
+                            css.push(""); // placeholder
+                            promises.push(getUrlAsDataUrl(toAbsoluteUrl(baseUrl, url)).then(d => css[index] = "url(" + d + ")", () => css[index] = value));
+                        }
                     } else {
-                        css.push(rule.cssText);
+                        css.push(value);
                     }
+                    css.push(";");
                 }
-            } catch (e) {/* ignore */ }
+                css.push("}");
+            } else {
+                css.push(rule.cssText);
+            }
         }
 
-        return css.join("");
+        return Promise.all(promises).then(() => css.join(""));
+    }
+
+    function toAbsoluteUrl(baseUrl, url) {
+        if (startsWithHttpRegExp.test(url) || url.startsWith("//")) { // already absolute
+            return url;
+        }
+
+        let index = baseUrl.lastIndexOf("/");
+        if (index > 8) {
+            baseUrl = baseUrl.substring(0, index);
+        }
+        baseUrl += "/";
+
+        if (url.startsWith("/")) {
+            return baseUrl.substring(0, baseUrl.indexOf("/", 8)) + url;
+        }
+        return baseUrl + url;
+    }
+
+    function getUrlAsDataUrl(url) {
+        return fetch(url).then(r => r.blob()).then(b => {
+            return new Promise((resolve, reject) => {
+                let fileReader = new FileReader();
+                fileReader.onload = () => {
+                    resolve(fileReader.result);
+                };
+                fileReader.onerror = () => {
+                    reject();
+                };
+                fileReader.readAsDataURL(b);
+            });
+        });
     }
 
     function escapeText(text) {
         return text.replace(/&/g, "&amp;").replace(/</g, "&gt;").replace(/>/g, "&lt;");
     }
 
-
-    function cloneNodeOld(node, promises) {
-        let clone = node.nodeType == 3 ? document.createTextNode(node.nodeValue) : node.cloneNode(false);
-
-        let child = node.firstChild;
-        if (!child && node.shadowRoot) { // shadowRoot
-            child = node.shadowRoot.firstChild;
-        }
-        if (!child && node.tagName == "IFRAME" && (node.name || "").indexOf("_export_iframe") == -1) { // IFRAME
-            try {
-                child = node.contentWindow.document.body.firstChild;
-            } catch (e) { /* ignore */ }
-        }
-        while (child) {
-            if (child.nodeType != 1 || child.tagName != "SCRIPT") { // ignore text and script nodes
-                clone.appendChild(cloneNode(child, promises));
-            }
-            child = child.nextSibling;
-        }
-
-        if (node.nodeType == 1) {
-            let scrollTop = node.scrollTop;
-            if (scrollTop) {
-                clone.setAttribute("data-scroll-top", scrollTop);
-            }
-            let scrollLeft = node.scrollLeft;
-            if (scrollLeft) {
-                clone.setAttribute("data-scroll-left", scrollLeft);
-            }
-
-            switch (node.tagName) {
-                case "INPUT":
-                    clone.setAttribute("value", node.value);
-                    clone.removeAttribute("checked");
-                    if (node.checked) {
-                        clone.setAttribute("checked", "checked");
-                    }
-                    break;
-                case "OPTION":
-                    clone.removeAttribute("selected");
-                    if (node.selected) {
-                        clone.setAttribute("selected", "selected");
-                    }
-                    break;
-                case "TEXTAREA":
-                    clone.textContent = node.value;
-                    break;
-                case "CANVAS":
-                    clone = document.createElement("img");
-                    for (let i = 0; i < node.attributes.length; i++) {
-                        let attribute = node.attributes[i];
-                        clone.setAttribute(attribute.name, attribute.value);
-                    }
-                    clone.setAttribute("src", node.toDataURL("image/png"));
-                    break;
-                case "IMG":
-                    if (node.src && node.src.indexOf("data:") != 0) {
-                        let actualWidth = node.naturalWidth || node.width;
-                        let actualHeight = node.naturalHeight || node.height;
-
-                        let canvas = document.createElement("canvas");
-                        canvas.width = node.width;
-                        canvas.height = node.height;
-
-                        let ctx = canvas.getContext("2d");
-                        ctx.drawImage(node, 0, 0, actualWidth, actualHeight, 0, 0, canvas.width, canvas.height);
-
-                        clone.src = ctx.toDataURL("image/png");
-                    }
-                    break;
-            }
-        }
-
-        if (clone.shadowRoot) {
-            let styleSheets = clone.shadowRoot.styleSheets;
-            for (let i = 0; i < styleSheets.length; i++) {
-                let sheet = styleSheets[i];
-                let rules = sheet.cssRules;
-                for (let j = 0; j < rules.length; j++) {
-                    let rule = rules[j];
-
-                    rule.selectorText = clone.tagName + " " + rule.selectorText;
-                }
-            }
-        }
-
-        return clone;
+    function escapeAttributeValue(value) {
+        return value.replace(/"/g, "&quot;");
     }
 
 })();
