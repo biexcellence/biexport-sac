@@ -185,10 +185,10 @@
             let hoverDivVisible = false;
 
 
-            ["pdfExclude", "pptExclude", "docExclude", "xlsExclude"].forEach((id) => {
+            ["pdfExclude", "pptExclude", "docExclude", "xlsExclude"].forEach(id => {
                 this._shadowRoot.getElementById(id).addEventListener("change", this._visibleComponentsChange.bind(this));
 
-                this._shadowRoot.getElementById(id).addEventListener("mouseover", (e) => {
+                this._shadowRoot.getElementById(id).addEventListener("mouseover", e => {
                     if (!hoverDivVisible && e.target.tagName == "LABEL") {
                         var input = e.target.querySelector("input");
                         let id = input.id;
@@ -208,7 +208,7 @@
                     }
                 });
 
-                this._shadowRoot.getElementById(id).addEventListener("mouseout", (e) => {
+                this._shadowRoot.getElementById(id).addEventListener("mouseout", e => {
                     if (hoverDivVisible && e.target.tagName == "LABEL") {
                         hoverDiv.style.display = "none";
 
@@ -431,7 +431,7 @@
         set metadata(value) {
             this._metadata = value;
 
-            ["pdfExclude", "pptExclude", "docExclude", "xlsExclude"].forEach((id) => {
+            ["pdfExclude", "pptExclude", "docExclude", "xlsExclude"].forEach(id => {
                 this._renderVisibleComponents(id, value, this[id]);
             });
         }
@@ -454,7 +454,7 @@
                 checkbox.type = "checkbox";
                 checkbox.id = componentId;
                 checkbox.name = component.name;
-                checkbox.checked = visibleComponents.some((v) => v.component == component.name && !v.isExcluded);
+                checkbox.checked = visibleComponents.some(v => v.component == component.name && !v.isExcluded);
                 let text = document.createTextNode(component.name);
 
                 label.appendChild(checkbox);
@@ -466,7 +466,7 @@
             }
 
             let summary = node.querySelector("summary");
-            summary.textContent = "Visible Components (" + (visibleComponents.filter((v) => !v.isExcluded).length || Object.keys(components).length) + ")";
+            summary.textContent = "Visible Components (" + (visibleComponents.filter(v => !v.isExcluded).length || Object.keys(components).length) + ")";
         }
 
         getValue(id) {

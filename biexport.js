@@ -132,17 +132,17 @@
 
             try {
                 if (window.commonApp) {
-                    let outlineContainer = commonApp.getShell().findElements(true, (ele) => ele.sId == "__container0")[0];
+                    let outlineContainer = commonApp.getShell().findElements(true, ele => ele.sId == "__container0")[0];
                     if (outlineContainer && outlineContainer.getReactProps) {
-                        let subscribeReactStore = (store) => {
+                        let subscribeReactStore = store => {
                             this._subscription = store.subscribe({
-                                effect: (state) => {
+                                effect: state => {
                                     parseReactState(state);
                                     return { result: 1 };
                                 }
                             });
                         };
-                        let parseReactState = (state) => {
+                        let parseReactState = state => {
                             let components = {};
 
                             let globalState = state.globalState;
@@ -186,7 +186,7 @@
                             subscribeReactStore(props.store);
                         } else {
                             let oldRenderReactComponent = outlineContainer.renderReactComponent;
-                            outlineContainer.renderReactComponent = (e) => {
+                            outlineContainer.renderReactComponent = e => {
                                 let props = outlineContainer.getReactProps();
                                 subscribeReactStore(props.store);
 
@@ -430,7 +430,7 @@
 
             if (overrideSettings) {
                 let set = JSON.parse(overrideSettings);
-                set.forEach((s) => {
+                set.forEach(s => {
                     settings[s.name] = s.value;
                 });
             }
@@ -469,7 +469,7 @@
 
             let sendHtml = true;
             if (sendHtml) {
-                getHtml().then((html) => {
+                getHtml().then(html => {
                     this._submitExport(settings, html);
                 });
             } else {
@@ -551,21 +551,21 @@
                     headers: {
                         "X-Requested-With": "XMLHttpRequest"
                     }
-                }).then((response) => {
+                }).then(response => {
                     if (response.ok) {
                         let contentDisposition = response.headers.get("Content-Disposition");
                         if (contentDisposition) {
-                            return response.blob().then((blob) => {
+                            return response.blob().then(blob => {
                                 callback(null, /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(contentDisposition)[1], blob);
                             });
                         }
-                        return response.text().then((text) => {
+                        return response.text().then(text => {
                             callback(null, text);
                         });
                     } else {
                         throw new Error(response.status + " - " + response.statusText);
                     }
-                }).catch((reason) => {
+                }).catch(reason => {
                     callback(reason);
                 });
             } else { // use form with blank target...
@@ -597,7 +597,7 @@
     }
 
     function createGuid() {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
             let r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
             return v.toString(16);
         });
