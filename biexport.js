@@ -620,7 +620,7 @@
 
     function cloneNode(node, html, promises) {
         if (node.nodeType == 3) { // TEXT
-            html.push(node.nodeValue.replace(/&/g, "&amp;").replace(/</g, "&gt;").replace(/>/g, "&lt;"));
+            html.push(escapeText(node.nodeValue));
             return;
         }
         if (node.nodeType == 8) { // COMMENT
@@ -676,59 +676,34 @@
                     // should create a new image with temp.setAttribute("crossOrigin", "anonymous"); and use that instead
                     try {
                         attributes["src"] = canvas.toDataURL("image/png");
-                    } catch (e) { }
+                    } catch (e) { debugger; }
                 }
                 break;
             case "LINK":
                 if (node.tagName == "LINK" && node.rel == "preload") {
                     return "";
                 }
-                break;
             case "STYLE":
                 let sheet = node.sheet;
                 if (sheet) {
-                    let css = [];
-
-                    let shadowHost = null;
-                    let parent = node.parentNode;
-                    while (parent) {
-                        if (parent.host) {
-                            shadowHost = parent.host;
-                            break;
-                        }
-                        parent = parent.parentNode;
-                    }
-
-                    if (shadowHost) { // prefix with shadow host name...
-                        for (let i = 0; i < sheet.rules.length; i++) {
-                            let rule = sheet.rules[i];
-                            css.push(shadowHost.localName);
-                            css.push(" ");
-                            css.push(rule.selectorText.split(",").join("," + shadowHost.localName));
-                            css.push(" ");
-                            css.push("{");
-                            for (let j = 0; j < rule.style.length; j++) {
-                                let name = rule.style[j]
-                                css.push(name);
-                                css.push(":");
-                                css.push(rule.style[name]);
-                                css.push(";");
-                            }
-                            css.push("}");
-                        }
+                    if (sheet.href) { // download external stylesheets
+                        name = "style";
+                        attributes = { "type": "text/css" };
+                        content = fetch(sheet.href).then(response => response.text());
+                        promises.push(content);
                     } else {
-                        try {
-                            for (let i = 0; i < sheet.rules.length; i++) {
-                                if (rule.styleSheet) { // TODO: imports
-
-                                } else {
-                                    css.push(rule.cssText);
-                                }
+                        let shadowHost = null;
+                        let parent = node.parentNode;
+                        while (parent) {
+                            if (parent.host) {
+                                shadowHost = parent.host;
+                                break;
                             }
-                        } catch (e) {/* ignore */ }
-                    }
+                            parent = parent.parentNode;
+                        }
 
-                    content = css.join("");
+                        content = getCss(sheet, shadowHost);
+                    }
                 }
                 break;
         }
@@ -746,7 +721,13 @@
         html.push(">");
         let isEmpty = true;
         if (content) {
-            html.push(content.replace(/&/g, "&amp;").replace(/</g, "&gt;").replace(/>/g, "&lt;"));
+            if (content.then) {
+                let index = html.length;
+                html.push(""); // placeholder
+                content.then(c => html[index] = escapeText(c));
+            } else {
+                html.push(escapeText(content));
+            }
             isEmpty = false;
         } else {
             let child = node.firstChild;
@@ -766,6 +747,45 @@
             html.push(name);
             html.push(">");
         }
+    }
+
+    function getCss(sheet, shadowHost) {
+        let css = [];
+
+        if (shadowHost) { // prefix with shadow host name...
+            for (let i = 0; i < sheet.rules.length; i++) {
+                let rule = sheet.rules[i];
+                css.push(shadowHost.localName);
+                css.push(" ");
+                css.push(rule.selectorText.split(",").join("," + shadowHost.localName));
+                css.push(" ");
+                css.push("{");
+                for (let j = 0; j < rule.style.length; j++) {
+                    let name = rule.style[j]
+                    css.push(name);
+                    css.push(":");
+                    css.push(rule.style[name]);
+                    css.push(";");
+                }
+                css.push("}");
+            }
+        } else {
+            try {
+                for (let i = 0; i < sheet.rules.length; i++) {
+                    if (rule.styleSheet) { // TODO: imports
+
+                    } else {
+                        css.push(rule.cssText);
+                    }
+                }
+            } catch (e) {/* ignore */ }
+        }
+
+        return css.join("");
+    }
+
+    function escapeText(text) {
+        return text.replace(/&/g, "&amp;").replace(/</g, "&gt;").replace(/>/g, "&lt;");
     }
 
 
