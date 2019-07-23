@@ -586,6 +586,10 @@
     }
     customElements.define("com-biexcellence-openbi-sap-sac-export", BiExport);
 
+    // PUBLIC API
+
+    window.getHtml = getHtml;
+
     // UTILS
 
     const cssUrlRegExp = /url\(["']?(.*?)["']?\)/i;
