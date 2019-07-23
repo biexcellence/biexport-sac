@@ -760,8 +760,7 @@
             }
         }
         if (isEmpty && !new RegExp("</" + node.tagName + ">$", "i").test(node.outerHTML)) {
-            html.pop();
-            html.push(" />");
+            // no end tag
         } else {
             html.push("</");
             html.push(name);
