@@ -487,7 +487,7 @@
                 // NOTE: this is not "promise" save!
                 this.settings.value = JSON.stringify(settings);
 
-                getHtml().then(html => {
+                getHtml(settings).then(html => {
                     this._updateSettings(); // reset settings
 
                     this._submitExport(settings, html);
@@ -634,7 +634,7 @@
     function getHtml(settings) {
         let html = [];
         let promises = [];
-        cloneNode(document.documentElement, html, promises, settings);
+        cloneNode(document.documentElement, html, promises, settings || {});
         return Promise.all(promises).then(() => {
             if (document.doctype && typeof XMLSerializer != "undefined") { // <!DOCTYPE html>
                 html.unshift(new XMLSerializer().serializeToString(document.doctype));
@@ -777,7 +777,7 @@
                 child = node.shadowRoot.firstChild;
             }
             while (child) {
-                html.push(cloneNode(child, html, promises));
+                html.push(cloneNode(child, html, promises, settings));
                 child = child.nextSibling;
                 isEmpty = false;
             }
