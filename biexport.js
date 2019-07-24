@@ -696,6 +696,7 @@
                             style.type = "text/css";
                             style.appendChild(document.createTextNode(t));
                             document.body.appendChild(style);
+                            style.sheet.disabled = true;
                             return getCssText(style.sheet, sheet.href, shadowHost).then(r => {
                                 document.body.removeChild(style);
                                 return r;
