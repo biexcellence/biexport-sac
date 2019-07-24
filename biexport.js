@@ -282,10 +282,10 @@
         }
 
         get parseCss() {
-            return this._export_settings.parse_css == "X";
+            return this._export_settings.parse_css;
         }
         set parseCss(value) {
-            this._export_settings.parse_css = value ? "X" : "";
+            this._export_settings.parse_css = value;
             this._updateSettings();
         }
 
@@ -298,10 +298,10 @@
         }
 
         get pptSeparate() {
-            return this._export_settings.ppt_seperate;
+            return this._export_settings.ppt_seperate == "X";
         }
         set pptSeparate(value) {
-            this._export_settings.ppt_seperate = value;
+            this._export_settings.ppt_seperate = value ? "X" : "";
             this._updateSettings();
         }
 
