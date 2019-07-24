@@ -448,7 +448,7 @@
                 settings.appid = app.appId;
 
                 let user = context.getUser();
-                settings.user = user.getUsername();
+                settings.sac_user = user.getUsername();
 
                 if (settings.lng == "") {
                     settings.lng = context.getLanguage();
