@@ -19,6 +19,8 @@
           }
           input[type=checkbox] {
               width: inherit;
+              margin: 6px 3px 6px 0;
+              vertical-align: middle;
           }
       </style>
       <form id="form">
