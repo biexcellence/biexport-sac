@@ -96,7 +96,7 @@
             this._export_settings.seperate_files = "";
             this._export_settings.publish_mode = "";
             this._export_settings.publish_sync = false;
-            this._export_settings.parse_css = "";
+            this._export_settings.parse_css = false;
             this._export_settings.mail_to = "";
             this._export_settings.mail_subject = "";
             this._export_settings.mail_body = "";
