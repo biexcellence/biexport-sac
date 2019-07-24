@@ -50,10 +50,20 @@
             "description": "If you make extensive use of relative height definitions, exports to PowerPoint, Word or Excel might show to small font sizes. In this case, you can set this property to a static value, e.g. 800 pixels. You might have to combine with a Static Screen Width.",
             "default": 0
         },
+        "parseCss": {
+            "type": "bool",
+            "description": "If the Export does not show icons or images, you can set this property to true. This activates the collection of all images of the SAC application and sends them to the Export service.",
+            "default": false
+        },
         "pdfTemplate": {
             "type": "string",
             "description": "As an alternative to the HTML Template property, you can also specify a DOC, DOCX, PPT or PPTX template which will be used as a fully formatted template for your PDF export",
             "default": ""
+        },
+        "pptSeperate": {
+            "type": "bool",
+            "description": "This property only takes affect if you are not using an Export Template. If set to `false` the application is rendered onto one slide. If you set this property to `true`, each component is rendered to a separate slide.",
+            "default": true
         },
         "pptTemplate": {
             "type": "string",
@@ -242,6 +252,23 @@
             ],
             "body": "this.screenHeight = value;"
         },
+        "getParseCss": {
+            "returnType": "string",
+            "description": "Get whether Parse CSS is enabled or not",
+            "parameters": [],
+            "body": "return this.parseCss;"
+        },
+        "setParseCss": {
+            "description": "Set whether Parse CSS is enabled or not",
+            "parameters": [
+                {
+                    "name": "value",
+                    "type": "bool",
+                    "description": "The new Parse CSS"
+                }
+            ],
+            "body": "this.parseCss = value;"
+        },
         "getPdfTemplate": {
             "returnType": "string",
             "description": "Get the PDF Template",
@@ -258,6 +285,23 @@
                 }
             ],
             "body": "this.pdfTemplate = value;"
+        },
+        "getPptSeparate": {
+            "returnType": "string",
+            "description": "Get whether PPT Separate is enabled or not",
+            "parameters": [],
+            "body": "return this.pptSeparate;"
+        },
+        "setPptSeparate": {
+            "description": "Set whether PPT Separate is enabled or not",
+            "parameters": [
+                {
+                    "name": "value",
+                    "type": "bool",
+                    "description": "The new PPT Separate"
+                }
+            ],
+            "body": "this.pptSeparate = value;"
         },
         "getPptTemplate": {
             "returnType": "string",

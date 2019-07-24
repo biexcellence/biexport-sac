@@ -281,11 +281,27 @@
             this._updateSettings();
         }
 
+        get parseCss() {
+            return this._export_settings.parse_css == "X";
+        }
+        set parseCss(value) {
+            this._export_settings.parse_css = value ? "X" : "";
+            this._updateSettings();
+        }
+
         get pdfTemplate() {
             return this._export_settings.pdf_template;
         }
         set pdfTemplate(value) {
             this._export_settings.pdf_template = value;
+            this._updateSettings();
+        }
+
+        get pptSeparate() {
+            return this._export_settings.ppt_seperate;
+        }
+        set pptSeparate(value) {
+            this._export_settings.ppt_seperate = value;
             this._updateSettings();
         }
 
@@ -615,32 +631,27 @@
         });
     }
 
-    function getHtml(cb) {
+    function getHtml(settings) {
         let html = [];
         let promises = [];
-        cloneNode(document.documentElement, html, promises);
+        cloneNode(document.documentElement, html, promises, settings);
         return Promise.all(promises).then(() => {
             if (document.doctype && typeof XMLSerializer != "undefined") { // <!DOCTYPE html>
                 html.unshift(new XMLSerializer().serializeToString(document.doctype));
             }
 
-            let result = html.join("");
-
-            return cb && cb(result) || result;
+            return html.join("");
         });
     }
 
-    function cloneNode(node, html, promises) {
+    function cloneNode(node, html, promises, settings) {
+        if (node.nodeType == 8) return; // COMMENT
+        if (node.tagName == "SCRIPT") return; // SCRIPT
+
         if (node.nodeType == 3) { // TEXT
             html.push(escapeText(node.nodeValue));
             return;
         }
-        if (node.nodeType == 8) { // COMMENT
-            html.push("<!--" + node.nodeValue + "-->");
-            return;
-        }
-
-        if (node.tagName == "SCRIPT") return;
 
         let name = node.localName;
         let content = null;
@@ -694,36 +705,39 @@
                         parent = parent.parentNode;
                     }
 
-                    if (sheet.href) { // download external stylesheets
-                        name = "style";
-                        attributes = { "type": "text/css" };
-                        content = fetch(sheet.href).then(response => response.text()).then(t => {
-                            let style = document.createElement("style");
-                            style.type = "text/css";
-                            style.appendChild(document.createTextNode(t));
-                            document.body.appendChild(style);
-                            style.sheet.disabled = true;
-                            return getCssText(style.sheet, sheet.href, shadowHost).then(r => {
-                                document.body.removeChild(style);
-                                return r;
+                    if (shadowHost || settings.parse_css) {
+                        if (sheet.href) { // download external stylesheets
+                            name = "style";
+                            attributes = { "type": "text/css" };
+                            content = fetch(sheet.href).then(response => response.text()).then(t => {
+                                let style = document.createElement("style");
+                                style.type = "text/css";
+                                style.appendChild(document.createTextNode(t));
+                                document.body.appendChild(style);
+                                style.sheet.disabled = true;
+                                return getCssText(style.sheet, sheet.href, shadowHost).then(r => {
+                                    document.body.removeChild(style);
+                                    return r;
+                                });
+                            }, reason => {
+                                return "";
                             });
-                        }, reason => {
-                            return "";
-                        });
-                    } else {
-                        content = getCssText(sheet, document.baseURI, shadowHost);
+                        } else {
+                            content = getCssText(sheet, document.baseURI, shadowHost);
+                        }
                     }
                 }
                 break;
         }
 
-
-        if (attributes["style"]) {
-            let style = attributes["style"];
-            if (style.includes("url") && !style.includes("data:")) {
-                let url = cssUrlRegExp.exec(style)[1];
-                if (url) {
-                    attributes["style"] = getUrlAsDataUrl(toAbsoluteUrl(document.baseURI, url)).then(d => style.replace(url, d), () => style);
+        if (settings.parse_css) {
+            if (attributes["style"]) {
+                let style = attributes["style"];
+                if (style.includes("url") && !style.includes("data:")) {
+                    let url = cssUrlRegExp.exec(style)[1];
+                    if (url) {
+                        attributes["style"] = getUrlAsDataUrl(toAbsoluteUrl(document.baseURI, url)).then(d => style.replace(url, d), () => style);
+                    }
                 }
             }
         }

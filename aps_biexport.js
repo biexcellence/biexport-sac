@@ -23,19 +23,20 @@
       </style>
       <form id="form">
         <fieldset>
-        <legend>Properties</legend>
+          <legend>General</legend>
           <table>
             <tr>
               <td><label for="serverURL">Server URL</label></td>
               <td><input id="serverURL" name="serverURL" type="text"></td>
             </tr>
+          </table>
+        </fieldset>
+        <fieldset>
+          <legend>Export</legend>
+          <table>
             <tr>
-              <td><label for="filename">Filename</label></td>
-              <td><input id="filename" name="filename" type="text"></td>
-            </tr>
-            <tr>
-              <td><label for="exportLanguage">Language</label></td>
-              <td><input id="exportLanguage" name="exportLanguage" type="text"></td>
+              <td><label for="parseCss">Parse CSS</label></td>
+              <td><input id="parseCss" name="parseCss" type="checkbox"></td>
             </tr>
             <tr>
               <td><label for="screenWidth">Static Width</label></td>
@@ -45,10 +46,14 @@
               <td><label for="screenHeight">Static Height</label></td>
               <td><input id="screenHeight" name="screenHeight" type="number" step="1"></td>
             </tr>
+            <tr>
+              <td><label for="exportLanguage">Language</label></td>
+              <td><input id="exportLanguage" name="exportLanguage" type="text" placeholder="Using client language if emtpy"></td>
+            </tr>
           </table>
         </fieldset>
         <fieldset>
-        <legend>PDF</legend>
+          <legend>PDF</legend>
           <table>
             <tr>
               <td><label for="pdfTemplate">Template</label></td>
@@ -64,8 +69,12 @@
           </table>
         </fieldset>
         <fieldset>
-        <legend>PPT</legend>
+          <legend>PowerPoint</legend>
           <table>
+            <tr>
+              <td><label for="pptSeparate">One component per Slide</label></td>
+              <td><input id="pptSeparate" name="pptSeparate" type="checkbox"></td>
+            </tr>
             <tr>
               <td><label for="pptTemplate">Template</label></td>
               <td><input id="pptTemplate" name="pptTemplate" type="text"></td>
@@ -80,7 +89,7 @@
           </table>
         </fieldset>
         <fieldset>
-        <legend>DOC</legend>
+          <legend>Word</legend>
           <table>
             <tr>
               <td><label for="docTemplate">Template</label></td>
@@ -96,7 +105,7 @@
           </table>
         </fieldset>
         <fieldset>
-        <legend>XLS</legend>
+          <legend>Excel</legend>
           <table>
             <tr>
               <td><label for="xlsTemplate">Template</label></td>
@@ -112,7 +121,7 @@
           </table>
         </fieldset>
         <fieldset>
-        <legend>Publishing</legend>
+          <legend>Publishing</legend>
           <table>
             <tr>
               <td><label for="publishMode">Publish Mode</label></td>
@@ -121,6 +130,10 @@
             <tr>
               <td><label for="publishSync">Publish Sync</label></td>
               <td><input id="publishSync" name="publishSync" type="checkbox"></td>
+            </tr>
+            <tr>
+              <td><label for="filename">Filename</label></td>
+              <td><input id="filename" name="filename" type="text"></td>
             </tr>
             <tr>
               <td><label for="mailFrom">Mail From</label></td>
@@ -141,7 +154,7 @@
           </table>
         </fieldset>
         <fieldset>
-        <legend>Display</legend>
+          <legend>Display</legend>
           <table>
             <tr>
               <td><label for="pdfButton">PDF Button</label></td>
@@ -301,11 +314,25 @@
             this.setValue("screenHeight", value);
         }
 
+        get parseCss() {
+            return this.getBoolValue("parseCss");
+        }
+        set parseCss(value) {
+            this.setBoolValue("parseCss", value);
+        }
+
         get pdfTemplate() {
             return this.getValue("pdfTemplate");
         }
         set pdfTemplate(value) {
             this.setValue("pdfTemplate", value);
+        }
+
+        get pptSeparate() {
+            return this.getBoolValue("pptSeparate");
+        }
+        set pptSeparate(value) {
+            this.setBoolValue("pptSeparate", value);
         }
 
         get pptTemplate() {
@@ -337,10 +364,10 @@
         }
 
         get publishSync() {
-            return this._shadowRoot.getElementById("publishSync").checked;
+            return this.getBoolValue("publishSync");
         }
         set publishSync(value) {
-            this._shadowRoot.getElementById("publishSync").checked = value;
+            this.setBoolValue("publishSync", value);
         }
 
         get mailFrom() {
@@ -482,29 +509,47 @@
             this._shadowRoot.getElementById(id).value = value;
         }
 
+        getBoolValue(id) {
+            return this._shadowRoot.getElementById(id).checked;
+        }
+        setBoolValue(id, value) {
+            this._shadowRoot.getElementById(id).checked = value;
+        }
+
         static get observedAttributes() {
             return [
                 "serverURL",
-                "filename",
+
                 "exportLanguage",
                 "screenWidth",
                 "screenHeight",
+                "parseCss",
+
                 "pdfTemplate",
+                "pdfExclude",
+
+                "pptSeparate",
                 "pptTemplate",
+                "pptExclude",
+
                 "docTemplate",
+                "docExclude",
+
                 "xlsTemplate",
+                "xlsExclude",
+
                 "publishMode",
                 "publishSync",
+                "filename",
                 "mailFrom",
                 "mailTo",
                 "mailSubject",
                 "mailBody",
+
                 "pdfButton",
                 "pptButton",
                 "docButton",
                 "xlsButton",
-
-                "pdfExclude",
 
                 "metadata"
             ];
