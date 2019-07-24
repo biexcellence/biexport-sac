@@ -467,7 +467,13 @@
 
             let sendHtml = true;
             if (sendHtml) {
+                // add settings to html so they can be serialized
+                // NOTE: this is not "promise" save!
+                this.settings.value = JSON.stringify(settings);
+
                 getHtml().then(html => {
+                    this._updateSettings(); // reset settings
+
                     this._submitExport(settings, html);
                 });
             } else {
