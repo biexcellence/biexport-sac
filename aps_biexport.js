@@ -23,7 +23,7 @@
               vertical-align: middle;
           }
       </style>
-      <form id="form">
+      <form id="form" autocomplete="off">
         <fieldset>
           <legend>General</legend>
           <table>
