@@ -317,7 +317,7 @@
         }
 
         get parseCss() {
-            return this.getBoolValue("parseCss");
+            return this.getBooleanValue("parseCss");
         }
         set parseCss(value) {
             this.setBoolValue("parseCss", value);
@@ -331,7 +331,7 @@
         }
 
         get pptSeparate() {
-            return this.getBoolValue("pptSeparate");
+            return this.getBooleanValue("pptSeparate");
         }
         set pptSeparate(value) {
             this.setBoolValue("pptSeparate", value);
@@ -366,7 +366,7 @@
         }
 
         get publishSync() {
-            return this.getBoolValue("publishSync");
+            return this.getBooleanValue("publishSync");
         }
         set publishSync(value) {
             this.setBoolValue("publishSync", value);
@@ -511,7 +511,7 @@
             this._shadowRoot.getElementById(id).value = value;
         }
 
-        getBoolValue(id) {
+        getBooleanValue(id) {
             return this._shadowRoot.getElementById(id).checked;
         }
         setBoolValue(id, value) {
