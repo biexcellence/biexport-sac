@@ -126,8 +126,9 @@
             this._export_settings.parseCssClassFilter = "";
 
             this._updateSettings();
+        }
 
-
+        connectedCallback() {
             try {
                 if (window.commonApp) {
                     let outlineContainer = commonApp.getShell().findElements(true, ele => ele.hasStyleClass && ele.hasStyleClass("sapAppBuildingOutline"))[0]; // sId: "__container0"
@@ -202,6 +203,12 @@
             if (this._subscription) { // react store subscription
                 this._subscription();
                 this._subscription = null;
+            }
+        }
+
+        onCustomWidgetBeforeUpdate(changedProperties) {
+            if ("designMode" in changedProperties) {
+                this._designMode = changedProperties["designMode"];
             }
         }
 
@@ -438,7 +445,7 @@
         }
 
         _doExport(format, settings, overrideSettings) {
-            if (isDesignmode()) {
+            if (this._designMode) {
                 return false;
             }
 
@@ -615,14 +622,6 @@
     const cssUrlRegExp = /url\(["']?(.*?)["']?\)/i;
     const contentDispositionFilenameRegExp = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/i;
     const startsWithHttpRegExp = /^http/i;
-
-    // detect designmode:
-    // - mode=edit => designmode
-    // - no mode => designmode
-    // else => runtimemode (embed / present / view)
-    function isDesignmode() {
-        return location.href.includes("mode=edit") || !location.href.includes("mode=");
-    }
 
     function createGuid() {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
