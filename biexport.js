@@ -130,7 +130,7 @@
 
             try {
                 if (window.commonApp) {
-                    let outlineContainer = commonApp.getShell().findElements(true, ele => ele.sId == "__container0")[0];
+                    let outlineContainer = commonApp.getShell().findElements(true, ele => ele.hasStyleClass && ele.hasStyleClass("sapAppBuildingOutline"))[0]; // sId: "__container0"
                     if (outlineContainer && outlineContainer.getReactProps) {
                         let subscribeReactStore = store => {
                             this._subscription = store.subscribe({
