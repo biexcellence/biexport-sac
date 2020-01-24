@@ -10,7 +10,7 @@
           table {
               width: 100%;
           }
-          input, textarea {
+          input, textarea, select {
               font-family: "72",Arial,Helvetica,sans-serif;
               width: 100%;
               padding: 4px;
@@ -156,6 +156,15 @@
           </table>
         </fieldset>
         <fieldset>
+          <legend>Background Execution</legend>
+          <table>
+            <tr>
+              <td><label for="oauthId">OAuth Client</label></td>
+              <td><select id="oauthId" name="oauthId"><option value=""> - </option></select></td>
+            </tr>
+          </table>
+        </fieldset>
+        <fieldset>
           <legend>Display</legend>
           <table>
             <tr>
@@ -189,7 +198,6 @@
             let form = this._shadowRoot.getElementById("form");
             form.addEventListener("submit", this._submit.bind(this));
             form.addEventListener("change", this._change.bind(this));
-
 
 
             this._hoverDiv = document.createElement("div");
@@ -230,6 +238,24 @@
                         hoverDivVisible = false;
                     }
                 });
+            });
+        }
+
+        connectedCallback() {
+            fetch("/oauthservice/api/v1/oauthclient?tenant=" + window.TENANT).then(response => response.json()).then(oauthClients => {
+                let selectEle = this._shadowRoot.getElementById("oauthId");
+                let value = selectEle.value;
+                while (selectEle.options.length > 1) {
+                    selectEle.options.remove(1);
+                }
+
+                oauthClients.forEach(oauthClient => {
+                    if (oauthClient.apiAccessEnabled === false && oauthClient.redirectUris[0].endsWith("/sac/oauth.html")) {
+                        selectEle.options.add(new Option(oauthClient.name, oauthClient.id));
+                    }
+                });
+
+                selectEle.value = value;
             });
         }
 
@@ -288,6 +314,16 @@
             this.setValue("serverURL", value);
         }
 
+        get oauthId() {
+            return this.getValue("oauthId");
+        }
+        set oauthId(value) {
+            if (value) {
+                this._shadowRoot.getElementById("oauthId").options.add(new Option(value, value));
+            }
+            this.setValue("oauthId", value);
+        }
+
         get filename() {
             return this.getValue("filename");
         }
@@ -320,7 +356,7 @@
             return this.getBooleanValue("parseCss");
         }
         set parseCss(value) {
-            this.setBoolValue("parseCss", value);
+            this.setBooleanValue("parseCss", value);
         }
 
         get pdfTemplate() {
@@ -334,7 +370,7 @@
             return this.getBooleanValue("pptSeparate");
         }
         set pptSeparate(value) {
-            this.setBoolValue("pptSeparate", value);
+            this.setBooleanValue("pptSeparate", value);
         }
 
         get pptTemplate() {
@@ -369,7 +405,7 @@
             return this.getBooleanValue("publishSync");
         }
         set publishSync(value) {
-            this.setBoolValue("publishSync", value);
+            this.setBooleanValue("publishSync", value);
         }
 
         get mailFrom() {
@@ -514,13 +550,14 @@
         getBooleanValue(id) {
             return this._shadowRoot.getElementById(id).checked;
         }
-        setBoolValue(id, value) {
+        setBooleanValue(id, value) {
             this._shadowRoot.getElementById(id).checked = value;
         }
 
         static get observedAttributes() {
             return [
                 "serverURL",
+                "oauthId",
 
                 "exportLanguage",
                 "screenWidth",

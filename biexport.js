@@ -115,6 +115,7 @@
             this._export_settings.parse_all_styles = "";
             this._export_settings.parse_3rdparty = "";
             this._export_settings.messages = "";
+            this._export_settings.oauth_id = "";
             this._export_settings.server_urls = "";
             this._export_settings.server_waittime = 0;
             this._export_settings.server_engine = "";
@@ -253,6 +254,14 @@
         }
         set serverURL(value) {
             this._export_settings.server_urls = value;
+            this._updateSettings();
+        }
+
+        get oauthId() {
+            return this._export_settings.oauth_id;
+        }
+        set oauthId(value) {
+            this._export_settings.oauth_id = value;
             this._updateSettings();
         }
 
@@ -436,6 +445,30 @@
             this.settings.value = JSON.stringify(this._export_settings);
         }
 
+        addExportApplication(id) {
+            if (!this._export_settings.application_array) {
+                this._export_settings.application_array = [];
+            }
+            this._export_settings.application_array.push({ "application": id });
+            this._updateSettings();
+        }
+        clearExportApplications() {
+            this._export_settings.application_array = "";
+            this._updateSettings();
+        }
+
+        addURLParameter(name, values, iterative, applicationIds) {
+            if (!this._export_settings.array_var) {
+                this._export_settings.array_var = [];
+            }
+            this._export_settings.array_var.push({ "parameter": name, "values": values.join(";"), "iterative": iterative, "applications": applicationIds.join(";") });
+            this._updateSettings();
+        }
+        clearURLParameters() {
+            this._export_settings.array_var = "";
+            this._updateSettings();
+        }
+
         doExport(format, overrideSettings) {
             let settings = JSON.parse(JSON.stringify(this._export_settings));
 
@@ -464,17 +497,22 @@
             settings.scroll_width = document.body.scrollWidth;
             settings.scroll_height = document.body.scrollHeight;
 
-            if (window.sap && sap.fpa && sap.fpa.ui && sap.fpa.ui.infra && sap.fpa.ui.infra.common) {
-                let context = sap.fpa.ui.infra.common.getContext();
+            if (window.sap && sap.fpa && sap.fpa.ui && sap.fpa.ui.infra) {
+                if (sap.fpa.ui.infra.common) {
+                    let context = sap.fpa.ui.infra.common.getContext();
 
-                let app = context.getAppArgument();
-                settings.appid = app.appId;
+                    let app = context.getAppArgument();
+                    settings.appid = app.appId;
 
-                let user = context.getUser();
-                settings.sac_user = user.getUsername();
+                    let user = context.getUser();
+                    settings.sac_user = user.getUsername();
 
-                if (settings.lng == "") {
-                    settings.lng = context.getLanguage();
+                    if (settings.lng == "") {
+                        settings.lng = context.getLanguage();
+                    }
+                }
+                if (sap.fpa.ui.infra.service.AjaxHelper) {
+                    settings.tenantURL = sap.fpa.ui.infra.service.AjaxHelper.getTenantUrl(false); // true for PUBLIC_FQDN
                 }
             }
 
@@ -489,6 +527,9 @@
             }));
 
             let sendHtml = true;
+            if (settings.application_array && settings.oauth_id) {
+                sendHtml = false;
+            }
             if (sendHtml) {
                 // add settings to html so they can be serialized
                 // NOTE: this is not "promise" save!
@@ -500,7 +541,21 @@
                     this._submitExport(settings, html);
                 });
             } else {
-                this._submitExport(settings, null);
+                Promise.all([
+                    fetch("/oauthservice/api/v1/tenantinfo?tenant=" + window.TENANT).then(response => response.json()).then(tenantOauthInfo => {
+                        settings.oauth_authorization_URL = tenantOauthInfo.baseUrl + tenantOauthInfo.authEndpoint;
+                        settings.oauth_token_URL = tenantOauthInfo.baseUrl + tenantOauthInfo.tokenEndpoint;
+                    }),
+                    fetch("/oauthservice/api/v1/oauthclient/" + settings.oauth_id + "?tenant=" + window.TENANT).then(response => response.json()).then(oauthClient => {
+                        settings.oauth_client_id = oauthClient.clientId;
+                        settings.oauth_redirect_URL = oauthClient.redirectUris[0];
+                    }),
+                    fetch("/oauthservice/api/v1/oauthclient/" + settings.oauth_id + "/secret?tenant=" + window.TENANT).then(response => response.text()).then(clientSecret => {
+                        settings.oauth_client_secret = clientSecret;
+                    })
+                ]).then(() => {
+                    this._submitExport(settings, null);
+                });
             }
         }
 
@@ -527,6 +582,11 @@
 
             let host = settings.server_urls;
             let url = host + "/sac/export.html";
+
+            this._sendExportRequest(url, form, settings);
+        }
+
+        _sendExportRequest(url, form, settings) {
 
             // handle response types
             let callback = (error, filename, blob) => {
@@ -588,6 +648,21 @@
                         }
                         return response.text().then(text => {
                             callback(null, text);
+                        });
+                    } else if (response.status == 421) {
+                        response.text().then(oauthUrl => {
+                            let oauthWindow = window.open(oauthUrl, "_blank", "height=500,width=500");
+                            new Promise(resolve => {
+                                (function checkWindow() {
+                                    if (!oauthWindow || oauthWindow.closed) {
+                                        resolve();
+                                    } else {
+                                        setTimeout(checkWindow, 1000);
+                                    }
+                                })();
+                            }).then(() => {
+                                this._sendExportRequest(url, form, settings);
+                            });
                         });
                     } else {
                         throw new Error(response.status + " - " + response.statusText);

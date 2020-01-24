@@ -154,6 +154,11 @@
             "type": "string",
             "description": "For internal use",
             "default": ""
+        },
+        "oauthId": {
+            "type": "string",
+            "description": "For internal use",
+            "default": ""
         }
     },
     "methods": {
@@ -166,6 +171,47 @@
                     "description": "The export format: \"PDF\", \"PPTX\", \"DOCX\", \"XLSX\""
                 }
             ]
+        },
+        "addExportApplication": {
+            "description": "Add an application to be exported during background execution.",
+            "parameters": [
+                {
+                    "name": "id",
+                    "type": "string",
+                    "description": "The id of the application."
+                }
+            ]
+        },
+        "clearExportApplications": {
+            "description": "Clears all applications to be exported during background execution."
+        },
+        "addURLParameter": {
+            "description": "Add an URL parameter and value which is used during background execution.",
+            "parameters": [
+                {
+                    "name": "name",
+                    "type": "string",
+                    "description": "The name of the URL parameter."
+                },
+                {
+                    "name": "values",
+                    "type": "string[]",
+                    "description": "The values of the URL parameter."
+                },
+                {
+                    "name": "iterative",
+                    "type": "boolean",
+                    "description": "Whether the URL parameter values should be iterated over."
+                },
+                {
+                    "name": "applicationIds",
+                    "type": "string[]",
+                    "description": "The applications for which the URL parameter will be used, if empty the URL parameter is used for all applications."
+                }
+            ]
+        },
+        "clearURLParameters": {
+            "description": "Clears all URLs parameters which are used during background execution."
         },
         "getServerUrl": {
             "returnType": "string",
