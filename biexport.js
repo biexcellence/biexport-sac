@@ -967,7 +967,7 @@
     }
 
     function escapeText(text) {
-        return text.replace(/&/g, "&amp;").replace(/</g, "&gt;").replace(/>/g, "&lt;");
+        return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     }
 
     function escapeAttributeValue(value) {
