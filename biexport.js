@@ -21,7 +21,9 @@
             this._shadowRoot = this.attachShadow({ mode: "open" });
             this._shadowRoot.appendChild(tmpl.content.cloneNode(true));
 
-            this._shadowRoot.querySelector("#export_div").id = this.id + "_export_div";
+            let id = createGuid();
+
+            this._shadowRoot.querySelector("#export_div").id = id + "_export_div";
 
             this.buttonPdf = this._shadowRoot.querySelector("#pdfButton");
             this.buttonPdf.onclick = () => this.doExport("PDF");
@@ -36,10 +38,10 @@
             this.buttonXls.onclick = () => this.doExport("XLSX");
 
             this.form = this._shadowRoot.querySelector("#form");
-            this.form.id = this.id + "_form";
+            this.form.id = id + "_form";
 
             this.settings = this._shadowRoot.querySelector("#export_settings_json");
-            this.settings.id = this.id + "_export_settings_json";
+            this.settings.id = id + "_export_settings_json";
 
             this._export_settings = {};
             this._export_settings.dashboard = "";
