@@ -155,8 +155,8 @@
             "description": "For internal use",
             "default": ""
         },
-        "oauthId": {
-            "type": "string",
+        "oauth": {
+            "type": "any",
             "description": "For internal use",
             "default": ""
         }

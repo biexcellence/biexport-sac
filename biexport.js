@@ -115,7 +115,7 @@
             this._export_settings.parse_all_styles = "";
             this._export_settings.parse_3rdparty = "";
             this._export_settings.messages = "";
-            this._export_settings.oauth_id = "";
+            this._export_settings.oauth = null;
             this._export_settings.server_urls = "";
             this._export_settings.server_waittime = 0;
             this._export_settings.server_engine = "";
@@ -257,11 +257,11 @@
             this._updateSettings();
         }
 
-        get oauthId() {
-            return this._export_settings.oauth_id;
+        get oauth() {
+            return this._export_settings.oauth;
         }
-        set oauthId(value) {
-            this._export_settings.oauth_id = value;
+        set oauth(value) {
+            this._export_settings.oauth = value;
             this._updateSettings();
         }
 
@@ -512,7 +512,7 @@
                     }
                 }
                 if (sap.fpa.ui.infra.service.AjaxHelper) {
-                    settings.tenantURL = sap.fpa.ui.infra.service.AjaxHelper.getTenantUrl(false); // true for PUBLIC_FQDN
+                    settings.tenant_URL = sap.fpa.ui.infra.service.AjaxHelper.getTenantUrl(false); // true for PUBLIC_FQDN
                 }
             }
 
@@ -527,7 +527,7 @@
             }));
 
             let sendHtml = true;
-            if (settings.application_array && settings.oauth_id) {
+            if (settings.application_array && settings.oauth) {
                 sendHtml = false;
             }
             if (sendHtml) {
@@ -541,21 +541,7 @@
                     this._submitExport(settings, html);
                 });
             } else {
-                Promise.all([
-                    fetch("/oauthservice/api/v1/tenantinfo?tenant=" + window.TENANT).then(response => response.json()).then(tenantOauthInfo => {
-                        settings.oauth_authorization_URL = tenantOauthInfo.baseUrl + tenantOauthInfo.authEndpoint;
-                        settings.oauth_token_URL = tenantOauthInfo.baseUrl + tenantOauthInfo.tokenEndpoint;
-                    }),
-                    fetch("/oauthservice/api/v1/oauthclient/" + settings.oauth_id + "?tenant=" + window.TENANT).then(response => response.json()).then(oauthClient => {
-                        settings.oauth_client_id = oauthClient.clientId;
-                        settings.oauth_redirect_URL = oauthClient.redirectUris[0];
-                    }),
-                    fetch("/oauthservice/api/v1/oauthclient/" + settings.oauth_id + "/secret?tenant=" + window.TENANT).then(response => response.text()).then(clientSecret => {
-                        settings.oauth_client_secret = clientSecret;
-                    })
-                ]).then(() => {
-                    this._submitExport(settings, null);
-                });
+                this._submitExport(settings, null);
             }
         }
 
@@ -650,9 +636,12 @@
                             callback(null, text);
                         });
                     } else if (response.status == 401) {
-                        response.text().then(oauthUrl => {
+                        return response.text().then(oauthUrl => {
                             let oauthWindow = window.open(oauthUrl, "_blank", "height=500,width=500");
-                            new Promise(resolve => {
+                            if (!oauthWindow || oauthWindow.closed) {
+                                throw new Error("OAuth popup bocked");
+                            }
+                            return new Promise(resolve => {
                                 (function checkWindow() {
                                     if (!oauthWindow || oauthWindow.closed) {
                                         resolve();

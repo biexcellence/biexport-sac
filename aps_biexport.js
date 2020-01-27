@@ -158,10 +158,31 @@
         <fieldset>
           <legend>Background Execution</legend>
           <table>
-            <tr>
+            <tr hidden>
               <td><label for="oauthId">OAuth Client</label></td>
               <td><select id="oauthId" name="oauthId"><option value=""> - </option></select></td>
             </tr>
+            <tr>
+              <td><label for="oauthClientId">OAuth Client Id</label></td>
+              <td><input id="oauthClientId" name="oauth" type="text"></td>
+            </tr>
+            <tr>
+              <td><label for="oauthClientSecret">OAuth Client Secret</label></td>
+              <td><input id="oauthClientSecret" name="oauth" type="password"></td>
+            </tr>
+            <tr>
+              <td><label for="oauthClientRedirectURL">OAuth Client Redirect URL</label></td>
+              <td><input id="oauthClientRedirectURL" name="oauth" type="text"></td>
+            </tr>
+            <tr>
+              <td><label for="oauthAuthorizationURL">OAuth Authorization URL</label></td>
+              <td><input id="oauthAuthorizationURL" name="oauth" type="text"></td>
+            </tr>
+            <tr>
+              <td><label for="oauthTokenURL">OAuth Token URL</label></td>
+              <td><input id="oauthTokenURL" name="oauth" type="text"></td>
+            </tr>
+            <tr>
           </table>
         </fieldset>
         <fieldset>
@@ -242,20 +263,50 @@
         }
 
         connectedCallback() {
-            fetch("/oauthservice/api/v1/oauthclient?tenant=" + window.TENANT).then(response => response.json()).then(oauthClients => {
+            fetch("/oauthservice/api/v1/oauthclient?tenant=" + window.TENANT).then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error("Failed to get oauth clients: " + response.status)
+            }).then(oauthClients => {
                 let selectEle = this._shadowRoot.getElementById("oauthId");
-                let value = selectEle.value;
+                let clientId = this.getValue("oauthClientId");
                 while (selectEle.options.length > 1) {
                     selectEle.options.remove(1);
                 }
 
                 oauthClients.forEach(oauthClient => {
                     if (oauthClient.apiAccessEnabled === false && oauthClient.redirectUris[0].endsWith("/sac/oauth.html")) {
-                        selectEle.options.add(new Option(oauthClient.name, oauthClient.id));
+                        selectEle.options.add(new Option(oauthClient.name, oauthClient.id, false, oauthClient.clientId == clientId));
                     }
                 });
 
-                selectEle.value = value;
+                selectEle.addEventListener("change", () => {
+                    let value = selectEle.value;
+                    if (value) {
+                        let oauth = {};
+                        Promise.all([
+                            fetch("/oauthservice/api/v1/tenantinfo?tenant=" + window.TENANT).then(response => response.json()).then(tenantOauthInfo => {
+                                oauth.authorization_URL = tenantOauthInfo.baseUrl + tenantOauthInfo.authEndpoint;
+                                oauth.token_URL = tenantOauthInfo.baseUrl + tenantOauthInfo.tokenEndpoint;
+                            }),
+                            fetch("/oauthservice/api/v1/oauthclient/" + value + "?tenant=" + window.TENANT).then(response => response.json()).then(oauthClient => {
+                                oauth.client_id = oauthClient.clientId;
+                                oauth.client_redirect_URL = oauthClient.redirectUris[0];
+                            }),
+                            fetch("/oauthservice/api/v1/oauthclient/" + value + "/secret?tenant=" + window.TENANT).then(response => response.text()).then(clientSecret => {
+                                oauth.client_secret = clientSecret;
+                            })
+                        ]).then(() => {
+                            this.oauth = oauth;
+                            this._changeProperty("oauth");
+                        });
+                    } else {
+                        this.oauth = null;
+                        this._changeProperty("oauth");
+                    }
+                });
+                selectEle.closest("tr").hidden = false;
             });
         }
 
@@ -275,9 +326,11 @@
             return false;
         }
         _change(e) {
-            let name = e.target.name;
+            this._changeProperty(e.target.name);
+        }
+        _changeProperty(propertyName) {
             let properties = {};
-            properties[name] = this[name];
+            properties[propertyName] = this[propertyName];
             this._firePropertiesChanged(properties);
         }
 
@@ -314,14 +367,32 @@
             this.setValue("serverURL", value);
         }
 
-        get oauthId() {
-            return this.getValue("oauthId");
-        }
-        set oauthId(value) {
-            if (value) {
-                this._shadowRoot.getElementById("oauthId").options.add(new Option(value, value));
+        get oauth() {
+            if (this.getValue("oauthClientId")) {
+                return {
+                    client_id: this.getValue("oauthClientId"),
+                    client_secret: this.getValue("oauthClientSecret"),
+                    client_redirect_URL: this.getValue("oauthClientRedirectURL"),
+                    authorization_URL: this.getValue("oauthAuthorizationURL"),
+                    token_URL: this.getValue("oauthTokenURL")
+                };
             }
-            this.setValue("oauthId", value);
+            return null;
+        }
+        set oauth(value) {
+            if (value) {
+                this.setValue("oauthClientId", value.client_id);
+                this.setValue("oauthClientSecret", value.client_secret);
+                this.setValue("oauthClientRedirectURL", value.client_redirect_URL);
+                this.setValue("oauthAuthorizationURL", value.authorization_URL);
+                this.setValue("oauthTokenURL", value.token_URL);
+            } else {
+                this.setValue("oauthClientId", "");
+                this.setValue("oauthClientSecret", "");
+                this.setValue("oauthClientRedirectURL", "");
+                this.setValue("oauthAuthorizationURL", "");
+                this.setValue("oauthTokenURL", "");
+            }
         }
 
         get filename() {
@@ -557,7 +628,7 @@
         static get observedAttributes() {
             return [
                 "serverURL",
-                "oauthId",
+                "oauth",
 
                 "exportLanguage",
                 "screenWidth",
