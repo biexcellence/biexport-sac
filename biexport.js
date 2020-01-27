@@ -513,7 +513,7 @@
                         settings.lng = context.getLanguage();
                     }
                 }
-                if (sap.fpa.ui.infra.service.AjaxHelper) {
+                if (sap.fpa.ui.infra.service && sap.fpa.ui.infra.service.AjaxHelper) {
                     settings.tenant_URL = sap.fpa.ui.infra.service.AjaxHelper.getTenantUrl(false); // true for PUBLIC_FQDN
                 }
             }
