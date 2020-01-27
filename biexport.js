@@ -649,7 +649,7 @@
                         return response.text().then(text => {
                             callback(null, text);
                         });
-                    } else if (response.status == 421) {
+                    } else if (response.status == 401) {
                         response.text().then(oauthUrl => {
                             let oauthWindow = window.open(oauthUrl, "_blank", "height=500,width=500");
                             new Promise(resolve => {
