@@ -298,7 +298,7 @@
                                 oauth.client_secret = clientSecret;
                             })
                         ]).then(() => {
-                            this.oauth = oauth;
+                            this.oauth = JSON.stringify(oauth);
                             this._changeProperty("oauth");
                         });
                     } else {
@@ -369,23 +369,24 @@
 
         get oauth() {
             if (this.getValue("oauthClientId")) {
-                return {
+                return JSON.stringify({
                     client_id: this.getValue("oauthClientId"),
                     client_secret: this.getValue("oauthClientSecret"),
                     client_redirect_URL: this.getValue("oauthClientRedirectURL"),
                     authorization_URL: this.getValue("oauthAuthorizationURL"),
                     token_URL: this.getValue("oauthTokenURL")
-                };
+                });
             }
             return null;
         }
         set oauth(value) {
             if (value) {
-                this.setValue("oauthClientId", value.client_id);
-                this.setValue("oauthClientSecret", value.client_secret);
-                this.setValue("oauthClientRedirectURL", value.client_redirect_URL);
-                this.setValue("oauthAuthorizationURL", value.authorization_URL);
-                this.setValue("oauthTokenURL", value.token_URL);
+                let oauth = JSON.parse(value);
+                this.setValue("oauthClientId", oauth.client_id);
+                this.setValue("oauthClientSecret", oauth.client_secret);
+                this.setValue("oauthClientRedirectURL", oauth.client_redirect_URL);
+                this.setValue("oauthAuthorizationURL", oauth.authorization_URL);
+                this.setValue("oauthTokenURL", oauth.token_URL);
             } else {
                 this.setValue("oauthClientId", "");
                 this.setValue("oauthClientSecret", "");

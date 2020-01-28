@@ -156,7 +156,7 @@
             "default": ""
         },
         "oauth": {
-            "type": "any",
+            "type": "string",
             "description": "For internal use",
             "default": ""
         }
