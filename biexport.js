@@ -7,7 +7,7 @@
         <button id="pdfButton">PDF Export</button>
         <button id="pptButton">PPT Export</button>
         <button id="docButton">DOC Export</button>
-        <button id="xlsButton">XLS Export</button>
+        <button id="xlsButton">Excel Export</button>
         <form id="form" method="post" accept-charset="utf-8" action="">
             <input id="export_settings_json" name="bie_openbi_export_settings_json" type="hidden">
         </form>
