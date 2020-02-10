@@ -55,7 +55,7 @@
             // this.buttonXls = this._shadowRoot.querySelector("#xlsButton");
             // this.buttonXls.onclick = () => this.doExport("XLSX");
 
-            if (that.showTexts() || that.showIcons()) {
+            if (this.showTexts() || this.showIcons()) {
                 var lmenu = new sap.m.Menu({
                     title: "Export",
                     itemSelected: function (oEvent) {
