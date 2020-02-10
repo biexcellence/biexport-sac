@@ -354,7 +354,7 @@
             this._showComponentSelector = value;
         }
 
-        get showIcons() {
+        get showIcons() { 
             return this._showIcons;
         }
         set showIcons(value) {
