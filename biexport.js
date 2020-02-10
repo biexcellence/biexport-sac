@@ -55,109 +55,6 @@
             // this.buttonXls = this._shadowRoot.querySelector("#xlsButton");
             // this.buttonXls.onclick = () => this.doExport("XLSX");
 
-            if (this.showTexts() || this.showIcons()) {
-                var lmenu = new sap.m.Menu({
-                    title: "Export",
-                    itemSelected: function (oEvent) {
-                        var oItem = oEvent.getParameter("item");
-                        if (!that.showComponentSelector() && !that.showViewSelector()) {
-                            that.doExport(oItem.getId());
-                        } else {
-
-                            var ltab = new sap.m.IconTabBar({
-                                id: 'ExportTabId',
-                                expandable: false
-                            });
-
-                            if (that.showComponentSelector()) {
-                                ltab.addItem(new sap.m.IconTabFilter({
-                                    key: "components",
-                                    text: "Select Components",
-                                    icon: "",
-                                    content: [
-                                    ]
-                                }));
-                            }
-                            if (that.showViewSelector()) {
-                                ltab.addItem(new sap.m.IconTabFilter({
-                                    key: "contents",
-                                    text: "Select views",
-                                    icon: "",
-                                    content: [
-                                    ]
-                                }));
-                            }
-
-                            var dialog = new sap.m.Dialog({
-                                title: 'Configure Export',
-                                contentWidth: "400px",
-                                contentHeight: "400px",
-                                draggable: true,
-                                content: [
-                                    ltab
-                                ],
-                                beginButton: new sap.m.Button({
-                                    text: 'Submit',
-                                    press: function () {
-                                        that.doExport(oItem.getId());
-
-                                        dialog.close();
-                                    }
-
-
-                                }),
-                                endButton: new sap.m.Button({
-                                    text: 'Cancel',
-                                    press: function () {
-                                        dialog.close();
-                                    }
-                                }),
-                                afterClose: function () {
-                                    dialog.destroy();
-                                    ltab.destroy();
-                                }
-                            });
-                            dialog.open();
-
-                        }
-                    }
-                });
-
-                var ltext = "";
-                var licon = "";
-                if (this.enablePPT()) {
-                    if (this.showTexts()) { ltext = cPPT_text; }
-                    if (this.showIcons()) { licon = cPPT_icon; }
-                    lmenu.addItem(new sap.m.MenuItem({ text: ltext, id: "PPT", icon: licon }));
-                }
-                if (this.enableDOC()) {
-                    if (this.showTexts()) { ltext = cDOC_text; }
-                    if (this.showIcons()) { licon = cDOC_icon; }
-                    lmenu.addItem(new sap.m.MenuItem({ text: ltext, id: "DOC", icon: licon }));
-                }
-                if (this.enableXLS()) {
-                    if (this.showTexts()) { ltext = cXLS_text; }
-                    if (this.showIcons()) { licon = cXLS_icon; }
-                    lmenu.addItem(new sap.m.MenuItem({ text: ltext, id: "XLS", icon: licon }));
-                }
-                if (this.enableCSV()) {
-                    if (this.showTexts()) { ltext = cCSV_text; }
-                    if (this.showIcons()) { licon = cCSV_icon; }
-                    lmenu.addItem(new sap.m.MenuItem({ text: ltext, id: "CSV", icon: licon }));
-                }
-                if (this.enablePDF()) {
-                    if (this.showTexts()) { ltext = cPDF_text; }
-                    if (this.showIcons()) { licon = cPDF_icon; }
-                    lmenu.addItem(new sap.m.MenuItem({ text: ltext, id: "PDF", icon: licon }));
-                }
-
-                if (this.showTexts()) { ltext = cExport_text; }
-                if (this.showIcons()) { licon = cExport_icon; }
-
-                var lmenubutton = new sap.m.MenuButton({ id: "exportButton", text: ltext, icon: licon, menu: lmenu });
-
-                lmenubutton.placeAt("export_div");
-            }
 
             // initialize export form 
             this.form = this._shadowRoot.querySelector("#form");
@@ -336,6 +233,111 @@
             if ("designMode" in changedProperties) {
                 this._designMode = changedProperties["designMode"];
             }
+
+            if (this.showTexts || this.showIcons) {
+                var lmenu = new sap.m.Menu({
+                    title: "Export",
+                    itemSelected: function (oEvent) {
+                        var oItem = oEvent.getParameter("item");
+                        if (!that.showComponentSelector && !that.showViewSelector) {
+                            that.doExport(oItem.getId());
+                        } else {
+
+                            var ltab = new sap.m.IconTabBar({
+                                id: 'ExportTabId',
+                                expandable: false
+                            });
+
+                            if (that.showComponentSelector) {
+                                ltab.addItem(new sap.m.IconTabFilter({
+                                    key: "components",
+                                    text: "Select Components",
+                                    icon: "",
+                                    content: [
+                                    ]
+                                }));
+                            }
+                            if (that.showViewSelector) {
+                                ltab.addItem(new sap.m.IconTabFilter({
+                                    key: "contents",
+                                    text: "Select views",
+                                    icon: "",
+                                    content: [
+                                    ]
+                                }));
+                            }
+
+                            var dialog = new sap.m.Dialog({
+                                title: 'Configure Export',
+                                contentWidth: "400px",
+                                contentHeight: "400px",
+                                draggable: true,
+                                content: [
+                                    ltab
+                                ],
+                                beginButton: new sap.m.Button({
+                                    text: 'Submit',
+                                    press: function () {
+                                        that.doExport(oItem.getId());
+
+                                        dialog.close();
+                                    }
+
+
+                                }),
+                                endButton: new sap.m.Button({
+                                    text: 'Cancel',
+                                    press: function () {
+                                        dialog.close();
+                                    }
+                                }),
+                                afterClose: function () {
+                                    dialog.destroy();
+                                    ltab.destroy();
+                                }
+                            });
+                            dialog.open();
+
+                        }
+                    }
+                });
+
+                var ltext = "";
+                var licon = "";
+                if (this.enablePpt) {
+                    if (this.showTexts) { ltext = cPPT_text; }
+                    if (this.showIcons) { licon = cPPT_icon; }
+                    lmenu.addItem(new sap.m.MenuItem({ text: ltext, id: "PPT", icon: licon }));
+                }
+                if (this.enableDoc) {
+                    if (this.showTexts) { ltext = cDOC_text; }
+                    if (this.showIcons) { licon = cDOC_icon; }
+                    lmenu.addItem(new sap.m.MenuItem({ text: ltext, id: "DOC", icon: licon }));
+                }
+                if (this.enableXls()) {
+                    if (this.showTexts) { ltext = cXLS_text; }
+                    if (this.showIcons) { licon = cXLS_icon; }
+                    lmenu.addItem(new sap.m.MenuItem({ text: ltext, id: "XLS", icon: licon }));
+                }
+                if (this.enableCsv()) {
+                    if (this.showTexts) { ltext = cCSV_text; }
+                    if (this.showIcons) { licon = cCSV_icon; }
+                    lmenu.addItem(new sap.m.MenuItem({ text: ltext, id: "CSV", icon: licon }));
+                }
+                if (this.enablePdf()) {
+                    if (this.showTexts) { ltext = cPDF_text; }
+                    if (this.showIcons) { licon = cPDF_icon; }
+                    lmenu.addItem(new sap.m.MenuItem({ text: ltext, id: "PDF", icon: licon }));
+                }
+
+                if (this.showTexts()) { ltext = cExport_text; }
+                if (this.showIcons()) { licon = cExport_icon; }
+
+                var lmenubutton = new sap.m.MenuButton({ id: "exportButton", text: ltext, icon: licon, menu: lmenu });
+
+                lmenubutton.placeAt("export_div");
+            }
+
         }
 
         // DISPLAY
