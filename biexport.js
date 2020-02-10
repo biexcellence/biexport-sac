@@ -351,9 +351,9 @@
 
                 debugger;
 
-                this._shadowRoot.querySelector(this._id & "_export_div").empty();
+                this._shadowRoot.querySelector(this._id + "_export_div").empty();
 
-                    lmenubutton.placeAt(this._id & "_export_div");
+                    lmenubutton.placeAt(this._id + "_export_div");
             }
 
         }
