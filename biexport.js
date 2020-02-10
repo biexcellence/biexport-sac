@@ -6,10 +6,7 @@
       <style>
       </style>
       <div id="export_div" name="export_div" class="openbihideonprint">
-       <!-- button id="pdfButton">PDF Export</button>
-        <button id="pptButton">PPT Export</button>
-        <button id="docButton">DOC Export</button>
-        <button id="xlsButton">XLS Export</button -->
+        <div id="export_button" name="export_button" ></div>       
          <form id="form" method="post" accept-charset="utf-8" action="">
             <input id="export_settings_json" name="bie_openbi_export_settings_json" type="hidden">
         </form>
@@ -29,6 +26,7 @@
             this._id = createGuid();
 
             this._shadowRoot.querySelector("#export_div").id = this._id + "_export_div";
+            this._shadowRoot.querySelector("#export_button").id = this._id + "_export_button";
 
             this._enableCSV = false;
             this._enablePPT = true;
@@ -53,21 +51,6 @@
             this._cCSV_icon = "sap-icon://text-attachment";
             this._cExport_text = "Export";
             this._cExport_icon = "sap-icon://download";
-
-            // this.buttonPdf = this._shadowRoot.querySelector("#pdfButton");
-            // this.buttonPdf.onclick = () => this.doExport("PDF");
-
-            // this.buttonPpt = this._shadowRoot.querySelector("#pptButton");
-            // this.buttonPpt.onclick = () => this.doExport("PPTX");
-
-            // this.buttonDoc = this._shadowRoot.querySelector("#docButton");
-            // this.buttonDoc.onclick = () => this.doExport("DOCX");
-
-
-            // initialize display 
-
-            // this.buttonXls = this._shadowRoot.querySelector("#xlsButton");
-            // this.buttonXls.onclick = () => this.doExport("XLSX");
 
 
             // initialize export form 
@@ -351,9 +334,9 @@
 
                 debugger;
 
-                this._shadowRoot.querySelector(this._id + "_export_div").empty();
+                this._shadowRoot.querySelector('#' + this._id + "_export_button").empty();
 
-                    lmenubutton.placeAt(this._id + "_export_div");
+                lmenubutton.placeAt('#' + this._id + "_export_button");
             }
 
         }
