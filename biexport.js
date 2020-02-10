@@ -30,11 +30,11 @@
 
             this._shadowRoot.querySelector("#export_div").id = id + "_export_div";
 
-            this.__enableCSV = false;
-            this.__enablePPT = true;
-            this.__enableXLS = true;
-            this.__enablePDF = true;
-            this.__enableDOC = true;
+            this._enableCSV = false;
+            this._enablePPT = true;
+            this._enableXLS = true;
+            this._enablePDF = true;
+            this._enableDOC = true;
             this._showIcons = true;
             this._showTexts = true;
             this._showComponentSelector = false;
@@ -344,63 +344,63 @@
             return this._showViewSelector;
         }
         set showViewSelector(value) {
-            this.__showViewSelector = value;
+            this._showViewSelector = value;
         }
 
         get showComponentSelector() {
             return this._showComponentSelector;
         }
         set showComponentSelector(value) {
-            this.__showComponentSelector = value;
+            this._showComponentSelector = value;
         }
 
         get showIcons() {
             return this._showIcons;
         }
         set showIcons(value) {
-            this.__showIcons = value;
+            this._showIcons = value;
         }
 
         get showTexts() {
             return this._showTexts;
         }
         set showTexts(value) {
-            this.__showTexts = value;
+            this._showTexts = value;
         }
 
         get enablePPT() {
             return this._enablePPT;
         }
         set enablePPT(value) {
-            this.__enablePPT = value;
+            this._enablePPT = value;
         }
 
         get enableDOC() {
             return this._enableDOC;
         }
         set enableDOC(value) {
-            this.__enableDOC = value;
+            this._enableDOC = value;
         }
 
         get enableXLS() {
             return this._enableXLS;
         }
         set enableXLS(value) {
-            this.__enableXLS = value;
+            this._enableXLS = value;
         }
 
         get enablePDF() {
             return this._enablePDF;
         }
         set enablePDF(value) {
-            this.__enablePDF = value;
+            this._enablePDF = value;
         }
 
         get enableCSV() {
             return this._enableCSV;
         }
         set enableCSV(value) {
-            this.__enableCSV = value;
+            this._enableCSV = value;
         }
 
 
