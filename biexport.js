@@ -330,15 +330,7 @@
 
                 //var lmenubutton = new sap.m.MenuButton({ text: ltext, icon: licon, menu: lmenu });
                 var lmenubutton = new sap.m.Button({ text: ltext, icon: licon });
-
-                var lbuttonDiv = this._shadowRoot.querySelector('#export_button');
-
-                var child = lbuttonDiv.lastElementChild;
-                while (child) {
-                    lbuttonDiv.removeChild(child);
-                    child = lbuttonDiv.lastElementChild;
-                } 
-                lmenubutton.placeAt(this._shadowRoot.querySelector('#export_button'));
+                lmenubutton.placeAt(this._shadowRoot.querySelector('#export_button'), "only"    );
             }
 
         }
