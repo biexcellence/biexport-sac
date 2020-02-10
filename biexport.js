@@ -33,7 +33,7 @@
             this._enablePDF = true;
             this._enableDOC = true;
             this._showIcons = true;
-            this._showTexts = true;
+            this._showTexts = false;
             this._showComponentSelector = false;
             this._showViewSelector = false;
 
@@ -328,7 +328,8 @@
                 if (this.showTexts) { ltext = this._cExport_text; }
                 if (this.showIcons) { licon = this._cExport_icon; }
 
-                var lmenubutton = new sap.m.MenuButton({ text: ltext, icon: licon, menu: lmenu });
+                //var lmenubutton = new sap.m.MenuButton({ text: ltext, icon: licon, menu: lmenu });
+                var lmenubutton = new sap.m.Button({ text: ltext, icon: licon });
 
                 var lbuttonDiv = this._shadowRoot.querySelector('#export_button');
 
