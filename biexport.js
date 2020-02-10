@@ -248,7 +248,8 @@
                 this._designMode = changedProperties["designMode"];
             }
 
-            if (this.showTexts || this.showIcons) {
+            debugger;
+            if (that.showTexts || that.showIcons) {
                 var lmenu = new sap.m.Menu({
                     title: "Export",
                     itemSelected: function (oEvent) {
