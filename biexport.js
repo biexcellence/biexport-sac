@@ -316,8 +316,6 @@
                     }
                 });
 
-                debugger;
-
                 var ltext = "";
                 var licon = "";
                 if (this.enablePpt) {
@@ -350,6 +348,8 @@
                 if (this.showIcons) { licon = this._cExport_icon; }
 
                 var lmenubutton = new sap.m.MenuButton({ id: "exportButton", text: ltext, icon: licon, menu: lmenu });
+
+                debugger;
 
                 this._shadowRoot.querySelector(this._id & "_export_div").empty();
 
