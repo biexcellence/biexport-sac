@@ -5,7 +5,7 @@
     tmpl.innerHTML = `
       <style>
       </style>
-      <div id="export_div" class="openbihideonprint">
+      <div id="export_div" name="export_div" class="openbihideonprint">
        <!-- button id="pdfButton">PDF Export</button>
         <button id="pptButton">PPT Export</button>
         <button id="docButton">DOC Export</button>
@@ -26,9 +26,9 @@
             this._shadowRoot = this.attachShadow({ mode: "open" });
             this._shadowRoot.appendChild(tmpl.content.cloneNode(true));
 
-            let id = createGuid();
+            this._id = createGuid();
 
-            this._shadowRoot.querySelector("#export_div").id = id + "_export_div";
+            this._shadowRoot.querySelector("#export_div").id = this._id + "_export_div";
 
             this._enableCSV = false;
             this._enablePPT = true;
@@ -72,10 +72,10 @@
 
             // initialize export form 
             this.form = this._shadowRoot.querySelector("#form");
-            this.form.id = id + "_form";
+            this.form.id = this._id + "_form";
 
             this.settings = this._shadowRoot.querySelector("#export_settings_json");
-            this.settings.id = id + "_export_settings_json";
+            this.settings.id = this._id + "_export_settings_json";
 
             this._export_settings = {};
             this._export_settings.dashboard = "";
@@ -316,6 +316,8 @@
                     }
                 });
 
+                debugger;
+
                 var ltext = "";
                 var licon = "";
                 if (this.enablePpt) {
@@ -349,7 +351,9 @@
 
                 var lmenubutton = new sap.m.MenuButton({ id: "exportButton", text: ltext, icon: licon, menu: lmenu });
 
-                lmenubutton.placeAt("export_div");
+                this._shadowRoot.querySelector(this._id & "_export_div").empty();
+
+                    lmenubutton.placeAt(this._id & "_export_div");
             }
 
         }
