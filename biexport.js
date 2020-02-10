@@ -1,14 +1,16 @@
 (function () {
+    var that;
+
     let tmpl = document.createElement("template");
     tmpl.innerHTML = `
       <style>
       </style>
       <div id="export_div" class="openbihideonprint">
-        <button id="pdfButton">PDF Export</button>
+       <!-- button id="pdfButton">PDF Export</button>
         <button id="pptButton">PPT Export</button>
         <button id="docButton">DOC Export</button>
-        <button id="xlsButton">Excel Export</button>
-        <form id="form" method="post" accept-charset="utf-8" action="">
+        <button id="xlsButton">XLS Export</button -->
+         <form id="form" method="post" accept-charset="utf-8" action="">
             <input id="export_settings_json" name="bie_openbi_export_settings_json" type="hidden">
         </form>
       </div>
@@ -17,7 +19,10 @@
     class BiExport extends HTMLElement {
 
         constructor() {
+
             super();
+            that = this;
+
             this._shadowRoot = this.attachShadow({ mode: "open" });
             this._shadowRoot.appendChild(tmpl.content.cloneNode(true));
 
@@ -25,18 +30,136 @@
 
             this._shadowRoot.querySelector("#export_div").id = id + "_export_div";
 
-            this.buttonPdf = this._shadowRoot.querySelector("#pdfButton");
-            this.buttonPdf.onclick = () => this.doExport("PDF");
+            this.__enableCSV = false;
+            this.__enablePPT = true;
+            this.__enableXLS = true;
+            this.__enablePDF = true;
+            this.__enableDOC = true;
+            this._showIcons = true;
+            this._showTexts = true;
+            this._showComponentSelector = false;
+            this._showViewSelector = false;
 
-            this.buttonPpt = this._shadowRoot.querySelector("#pptButton");
-            this.buttonPpt.onclick = () => this.doExport("PPTX");
+            // this.buttonPdf = this._shadowRoot.querySelector("#pdfButton");
+            // this.buttonPdf.onclick = () => this.doExport("PDF");
 
-            this.buttonDoc = this._shadowRoot.querySelector("#docButton");
-            this.buttonDoc.onclick = () => this.doExport("DOCX");
+            // this.buttonPpt = this._shadowRoot.querySelector("#pptButton");
+            // this.buttonPpt.onclick = () => this.doExport("PPTX");
 
-            this.buttonXls = this._shadowRoot.querySelector("#xlsButton");
-            this.buttonXls.onclick = () => this.doExport("XLSX");
+            // this.buttonDoc = this._shadowRoot.querySelector("#docButton");
+            // this.buttonDoc.onclick = () => this.doExport("DOCX");
 
+
+            // initialize display 
+
+            // this.buttonXls = this._shadowRoot.querySelector("#xlsButton");
+            // this.buttonXls.onclick = () => this.doExport("XLSX");
+
+            if (that.showTexts() || that.showIcons()) { 
+            var lmenu = new sap.m.Menu({
+                title: "Export",
+                itemSelected: function (oEvent) {
+                    var oItem = oEvent.getParameter("item");
+                    if (!that.showComponentSelector() && !that.showViewSelector()) {
+                        that.doExport(oItem.getId());
+                    } else {
+
+                        var ltab = new sap.m.IconTabBar({
+                            id: 'ExportTabId',
+                            expandable: false
+                        });
+
+                        if (that.showComponentSelector()) {
+                            ltab.addItem(new sap.m.IconTabFilter({
+                                key: "components",
+                                text: "Select Components",
+                                icon: "",
+                                content: [
+                                ]
+                            }));
+                        }
+                        if (that.showViewSelector()) {
+                            ltab.addItem(new sap.m.IconTabFilter({
+                                key: "contents",
+                                text: "Select views",
+                                icon: "",
+                                content: [
+                                ]
+                            }));
+                        }
+
+                        var dialog = new sap.m.Dialog({
+                            title: 'Configure Export',
+                            contentWidth: "400px",
+                            contentHeight: "400px",
+                            draggable: true,
+                            content: [
+                                ltab
+                            ],
+                            beginButton: new sap.m.Button({
+                                text: 'Submit',
+                                press: function () {
+                                    that.doExport(oItem.getId());
+
+                                    dialog.close();
+                                }
+
+
+                            }),
+                            endButton: new sap.m.Button({
+                                text: 'Cancel',
+                                press: function () {
+                                    dialog.close();
+                                }
+                            }),
+                            afterClose: function () {
+                                dialog.destroy();
+                                ltab.destroy();
+                            }
+                        });
+                        dialog.open();
+
+                    }
+                }
+            });
+
+            var ltext = "";
+            var licon = "";
+                if (that.enablePPT()) {
+                if (that.showTexts()) { ltext = cPPT_text };
+                if (that.showIcons()) { licon = cPPT_icon };
+                lmenu.addItem(new sap.m.MenuItem({ text: ltext, id: "PPT", icon: licon }));
+            }
+                if (that.enableDOC()) {
+                if (that.showTexts() { ltext = cDOC_text };
+                if (that.showIcons()) { licon = cDOC_icon };
+                lmenu.addItem(new sap.m.MenuItem({ text: ltext, id: "DOC", icon: licon }));
+            }
+                if (that.enableXLS()) {
+                if (that.showTexts()) { ltext = cXLS_text };
+                if (that.showIcons()) { licon = cXLS_icon };
+                lmenu.addItem(new sap.m.MenuItem({ text: ltext, id: "XLS", icon: licon }));
+            }
+                if (that.enableCSV()) {
+                    if (that.showTexts()) { ltext = cCSV_text };
+                    if (that.showIcons()) { licon = cCSV_icon };
+                    lmenu.addItem(new sap.m.MenuItem({ text: ltext, id: "CSV", icon: licon }));
+            }
+                if (that.enablePDF()) {
+                if (that.showTexts()) { ltext = cPDF_text };
+                if (that.showIcons()) { licon = cPDF_icon };
+                lmenu.addItem(new sap.m.MenuItem({ text: ltext, id: "PDF", icon: licon }));
+            }
+
+                if (that.showTexts()) { ltext = cExport_text };
+                if (that.showIcons()) { licon = cExport_icon };
+
+            var lmenubutton = new sap.m.MenuButton({ id: "exportButton", text: ltext, icon: licon, menu: lmenu });
+
+            lmenubutton.placeAt("export_div");
+        }
+
+            // initialize export form 
             this.form = this._shadowRoot.querySelector("#form");
             this.form.id = id + "_form";
 
@@ -215,39 +338,71 @@
             }
         }
 
-        // BUTTONS
+        // DISPLAY
 
-        get pdfButton() {
-            return this.buttonPdf.textContent;
+        get showViewSelector() {
+            return this._showViewSelector;
         }
-        set pdfButton(value) {
-            this.buttonPdf.textContent = value;
-            this.buttonPdf.style.display = value ? "" : "none";
-        }
-
-        get pptButton() {
-            return this.buttonPpt.textContent;
-        }
-        set pptButton(value) {
-            this.buttonPpt.textContent = value;
-            this.buttonPpt.style.display = value ? "" : "none";
+        set showViewSelector(value) {
+            this.__showViewSelector = value;
         }
 
-        get docButton() {
-            return this.buttonDoc.textContent;
+        get showComponentSelector() {
+            return this._showComponentSelector;
         }
-        set docButton(value) {
-            this.buttonDoc.textContent = value;
-            this.buttonDoc.style.display = value ? "" : "none";
+        set showComponentSelector(value) {
+            this.__showComponentSelector = value;
         }
 
-        get xlsButton() {
-            return this.buttonXls.textContent;
+        get showIcons() {
+            return this._showIcons;
         }
-        set xlsButton(value) {
-            this.buttonXls.textContent = value;
-            this.buttonXls.style.display = value ? "" : "none";
+        set showIcons(value) {
+            this.__showIcons = value;
         }
+
+        get showTexts() {
+            return this._showTexts;
+        }
+        set showTexts(value) {
+            this.__showTexts = value;
+        }
+
+        get enablePPT() {
+            return this._enablePPT;
+        }
+        set enablePPT(value) {
+            this.__enablePPT = value;
+        }
+
+        get enableDOC() {
+            return this._enableDOC;
+        }
+        set enableDOC(value) {
+            this.__enableDOC = value;
+        }
+
+        get enableXLS() {
+            return this._enableXLS;
+        }
+        set enableXLS(value) {
+            this.__enableXLS = value;
+        }
+
+        get enablePDF() {
+            return this._enablePDF;
+        }
+        set enablePDF(value) {
+            this.__enablePDF = value;
+        }
+
+        get enableCSV() {
+            return this._enableCSV;
+        }
+        set enableCSV(value) {
+            this.__enableCSV = value;
+        }
+
 
         // SETTINGS
 
