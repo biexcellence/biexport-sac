@@ -189,20 +189,40 @@
           <legend>Display</legend>
           <table>
             <tr>
-              <td><label for="pdfButton">PDF Button</label></td>
-              <td><input id="pdfButton" name="pdfButton" type="text"></td>
+              <td><label for="showTexts">Show Texts</label></td>
+              <td><input id="showTexts" name="showTexts" type="checkbox"></td>
+             </tr>
+            <tr>
+              <td><label for="showIcons">Show Icons</label></td>
+              <td><input id="showIcons" name="showIcons" type="checkbox"></td>
             </tr>
             <tr>
-              <td><label for="pptButton">PPT Button</label></td>
-              <td><input id="pptButton" name="pptButton" type="text"></td>
+              <td><label for="showComponentSelector">Show Component Selector</label></td>
+              <td><input id="showComponentSelector" name="showComponentSelector" type="checkbox"></td>
             </tr>
             <tr>
-              <td><label for="docButton">DOC Button</label></td>
-              <td><input id="docButton" name="docButton" type="text"></td>
+              <td><label for="showViewSelector">Show View Selector</label></td>
+              <td><input id="showViewSelector" name="showViewSelector" type="checkbox"></td>
             </tr>
             <tr>
-              <td><label for="xlsButton">XLS Button</label></td>
-              <td><input id="xlsButton" name="xlsButton" type="text"></td>
+              <td><label for="enablePpt">Enable PowerPoint</label></td>
+              <td><input id="enablePpt" name="enablePpt" type="checkbox"></td>
+            </tr>
+            <tr>
+              <td><label for="enableDoc">Enable Word</label></td>
+              <td><input id="enableDoc" name="enableDoc" type="checkbox"></td>
+            </tr>
+            <tr>
+              <td><label for="enablePdf">Enable PDF</label></td>
+              <td><input id="enablePdf" name="enablePdf" type="checkbox"></td>
+            </tr>
+            <tr>
+              <td><label for="enableXls">Enable Excel</label></td>
+              <td><input id="enableXls" name="enableXls" type="checkbox"></td>
+            </tr>
+            <tr>
+              <td><label for="enableCsv">Enable CSV</label></td>
+              <td><input id="enableCsv" name="enableCsv" type="checkbox"></td>
             </tr>
           </table>
         </fieldset>
@@ -508,32 +528,67 @@
             this.setValue("mailBody", value);
         }
 
-        get pdfButton() {
-            return this.getValue("pdfButton");
+        get showTexts() {
+            return this.getValue("showTexts");
         }
-        set pdfButton(value) {
-            this.setValue("pdfButton", value);
-        }
-
-        get pptButton() {
-            return this.getValue("pptButton");
-        }
-        set pptButton(value) {
-            this.setValue("pptButton", value);
+        set showTexts(value) {
+            this.setValue("showTexts", value);
         }
 
-        get docButton() {
-            return this.getValue("docButton");
+        get showIcons() {
+            return this.getValue("showIcons");
         }
-        set docButton(value) {
-            this.setValue("docButton", value);
+        set showIcons(value) {
+            this.setValue("showIcons", value);
         }
 
-        get xlsButton() {
-            return this.getValue("xlsButton");
+        get showComponentSelector() {
+            return this.getValue("showComponentSelector");
         }
-        set xlsButton(value) {
-            this.setValue("xlsButton", value);
+        set showComponentSelector(value) {
+            this.setValue("showComponentSelector", value);
+        }
+
+        get showViewSelector() {
+            return this.getValue("showViewSelector");
+        }
+        set showViewSelector(value) {
+            this.setValue("showViewSelector", value);
+        }
+
+        get enablePpt() {
+            return this.getValue("enablePpt");
+        }
+        set enablePpt(value) {
+            this.setValue("enablePpt", value);
+        }
+
+        get enableDoc() {
+            return this.getValue("enableDoc");
+        }
+        set enableDoc(value) {
+            this.setValue("enableDoc", value);
+        }
+
+        get enablePdf() {
+            return this.getValue("enablePdf");
+        }
+        set enablePdf(value) {
+            this.setValue("enablePdf", value);
+        }
+
+        get enableXls() {
+            return this.getValue("enableXls");
+        }
+        set enableXls(value) {
+            this.setValue("enableXls", value);
+        }
+
+        get enableCsv() {
+            return this.getValue("enableCsv");
+        }
+        set enableCsv(value) {
+            this.setValue("enableCsv", value);
         }
 
         get pdfExclude() {
@@ -657,10 +712,15 @@
                 "mailSubject",
                 "mailBody",
 
-                "pdfButton",
-                "pptButton",
-                "docButton",
-                "xlsButton",
+                "showTexts",
+                "showIcons",
+                "showViewSelector",
+                "showComponentSelector",
+                "enablePpt",
+                "enableDoc",
+                "enablePdf",
+                "enableXls",
+                "enableCsv",
 
                 "metadata"
             ];
