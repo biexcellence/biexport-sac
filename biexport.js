@@ -325,7 +325,7 @@
                     lmenu.addItem(new sap.m.MenuItem({ text: ltext, icon: licon }));
                 }
 
-                if (this.showTexts) { ltext = this._cExport_text; }
+                if (this.showTexts) { ltext = this._cExport_text; } 
                 if (this.showIcons) { licon = this._cExport_icon; }
 
                 //var lmenubutton = new sap.m.MenuButton({ text: ltext, icon: licon, menu: lmenu });
