@@ -26,7 +26,6 @@
             this._id = createGuid();
 
             this._shadowRoot.querySelector("#export_div").id = this._id + "_export_div";
-            this._shadowRoot.querySelector("#export_button").id = "export_button_" + this._id;
 
             this._enableCSV = false;
             this._enablePPT = true;
@@ -334,9 +333,9 @@
 
                 debugger;
 
-                this._shadowRoot.querySelector('#export_button_' + this._id).empty();
+                this._shadowRoot.querySelector('#export_button').empty();
 
-                lmenubutton.placeAt('#export_button_' + this._id);
+                lmenubutton.placeAt('#export_button');
             }
 
         }
