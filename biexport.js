@@ -248,7 +248,6 @@
                 this._designMode = changedProperties["designMode"];
             }
 
-            debugger;
             if (that.showTexts || that.showIcons) {
                 var lmenu = new sap.m.Menu({
                     title: "Export",
@@ -345,8 +344,8 @@
                     lmenu.addItem(new sap.m.MenuItem({ text: ltext, id: "PDF", icon: licon }));
                 }
 
-                if (this.showTexts()) { ltext = cExport_text; }
-                if (this.showIcons()) { licon = cExport_icon; }
+                if (this.showTexts) { ltext = cExport_text; }
+                if (this.showIcons) { licon = cExport_icon; }
 
                 var lmenubutton = new sap.m.MenuButton({ id: "exportButton", text: ltext, icon: licon, menu: lmenu });
 
@@ -385,38 +384,38 @@
             this._showTexts = value;
         }
 
-        get enablePPT() {
+        get enablePpt() {
             return this._enablePPT;
         }
-        set enablePPT(value) {
+        set enablePpt(value) {
             this._enablePPT = value;
         }
 
-        get enableDOC() {
+        get enableDoc() {
             return this._enableDOC;
         }
-        set enableDOC(value) {
+        set enableDoc(value) {
             this._enableDOC = value;
         }
 
-        get enableXLS() {
+        get enableXls() {
             return this._enableXLS;
         }
-        set enableXLS(value) {
+        set enableXls(value) {
             this._enableXLS = value;
         }
 
-        get enablePDF() {
+        get enablePdf() {
             return this._enablePDF;
         }
-        set enablePDF(value) {
+        set enablePdf(value) {
             this._enablePDF = value;
         }
 
-        get enableCSV() {
+        get enableCsv() {
             return this._enableCSV;
         }
-        set enableCSV(value) {
+        set enableCsv(value) {
             this._enableCSV = value;
         }
 
