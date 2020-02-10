@@ -2,7 +2,7 @@
     "id": "com.biexcellence.openbi.sap.sac.export",
     "version": "0.0.1",
     "name": "biExport",
-    "description": "biExport 4 SAP SAC PDF/PPT/DOC/XLS",
+    "description": "biExport 4 SAP SAC to PDF/PPT/DOC/XLS/CSV",
     "newInstancePrefix": "biExport",
     "icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAABegAAAXoBMrnI/AAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAJGSURBVDiNlZNPSNNxGMY/399+++OWuKaJQ0MtBItBhYwEEexQhNglECLq0EU9mZ06Ti8dIujQITqEBy+B1wjrkFEQBWqUaC3NBUtLs7ma+/v783YQl3MW9MD38uV5PvA+Ly8iwt/e8Jvj/uHJLv1fHiUi7NTIfMhF1hoUuA7UAIgtQ1o4eieC2OxSCWBkPrSPnDUjQstuI6hH6uH7c5FIKUQrhsdDLnLmp73DANItPa1ju3+LADlk3xZRtXuHi7o4Mn3kTNkIg4st7sBPPVdmt7Wn8c/dE3a+qlfTkh8DwVdL3sofffXKd7CvbcoA0AGqk84WUaVlGob7QezDpbDfp92s8gsOpcKpRJjkerzf0Tx7ARj7M4JXW98ZLuR9d+fnLp91u7TDfp/QUKM4VOek2qfjMCvvff1S4yjt4OjcmhJiAAoVn5o534mFXwMcCjy64HFChbsCpYR0siFy690xXxEQQey8wzyJKHPmbdt9KIQsFAVT2MzCSkIRWy0Q9DZxwBdkv9ffNPHC4ynZwo0TC98XYgPtqZRnwJY0hpkiYxgkMibLGxmWN35RsDUEjcbqZnTcjcUSt7Xy7fQVHF2WLY/HDSvemc276iwLMpoBKs3i2hIBXxXR1XnyhmOpDCDQhjjrhZ5eCzNhW6+fmXY0q6uNAKRbp+MrVbZkcpYEr04OTSbLAEAMaN8qUw/YdHQVpIPC1oY3ESMqyjma9mRGtwMlADOr9esemQU5hVK1ILYgawrmNOF5zgo8eXmtIbszU3aN/6vfbVAouCAyeN4AAAAASUVORK5CYII=",
     "vendor": "bi excellence Software GmbH",
@@ -518,85 +518,17 @@
             "parameters": [],
             "body": "return this.mailBody;"
         },
-        "setMailBody": {
-            "description": "Set the Mail Body",
-            "parameters": [
-                {
-                    "name": "value",
-                    "type": "string",
-                    "description": "The new Mail Body"
-                }
-            ],
-            "body": "this.mailBody = value;"
-        },
-        "getPdfButton": {
-            "returnType": "string",
-            "description": "Get the PDF button text",
-            "parameters": [],
-            "body": "return this.pdfButton;"
-        },
-        "setPdfButton": {
-            "description": "Set the PDF button text",
-            "parameters": [
-                {
-                    "name": "value",
-                    "type": "string",
-                    "description": "The new PDF button text"
-                }
-            ],
-            "body": "this.pdfButton = value;"
-        },
-        "getPptButton": {
-            "returnType": "string",
-            "description": "Get the PPT button text",
-            "parameters": [],
-            "body": "return this.pptButton;"
-        },
-        "setPptButton": {
-            "description": "Set the PPT button text",
-            "parameters": [
-                {
-                    "name": "value",
-                    "type": "string",
-                    "description": "The new PPT button text"
-                }
-            ],
-            "body": "this.pptButton = value;"
-        },
-        "getDocButton": {
-            "returnType": "string",
-            "description": "Get the DOC button text",
-            "parameters": [],
-            "body": "return this.docButton;"
-        },
-        "setDocButton": {
-            "description": "Set the DOC button text",
-            "parameters": [
-                {
-                    "name": "value",
-                    "type": "string",
-                    "description": "The new DOC button text"
-                }
-            ],
-            "body": "this.docButton = value;"
-        },
-        "getXlsButton": {
-            "returnType": "string",
-            "description": "Get the XLS button text",
-            "parameters": [],
-            "body": "return this.xlsButton;"
-        },
-        "setXlsButton": {
-            "description": "Set the XLS button text",
-            "parameters": [
-                {
-                    "name": "value",
-                    "type": "string",
-                    "description": "The new XLS button text"
-                }
-            ],
-            "body": "this.xlsButton = value;"
-        }
+      "setMailBody": {
+        "description": "Set the Mail Body",
+        "parameters": [
+          {
+            "name": "value",
+            "type": "string",
+            "description": "The new Mail Body"
+          }
+        ],
+        "body": "this.mailBody = value;"
+      }
     },
     "events": {
         "onStartExport": {
