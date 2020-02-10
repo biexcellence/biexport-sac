@@ -40,6 +40,20 @@
             this._showComponentSelector = false;
             this._showViewSelector = false;
 
+
+            this._cPPT_text = "PowerPoint";
+            this._cDOC_text = "Word";
+            this._cPDF_text = "PDF";
+            this._cXLS_text = "Excel";
+            this._cCSV_text = "CSV";
+            this._cExport_text = "Export";
+            this._cExport_icon = "sap-icon://download";
+            this._cPPT_icon = "sap-icon://ppt-attachment";
+            this._cDOC_icon = "sap-icon://doc-attachment";
+            this._cPDF_icon = "sap-icon://pdf-attachment";
+            this._cXLS_icon = "sap-icon://excel-attachment";
+            this._cCSV_icon = "sap-icon://text-attachment";
+
             // this.buttonPdf = this._shadowRoot.querySelector("#pdfButton");
             // this.buttonPdf.onclick = () => this.doExport("PDF");
 
@@ -305,28 +319,28 @@
                 var ltext = "";
                 var licon = "";
                 if (this.enablePpt) {
-                    if (this.showTexts) { ltext = cPPT_text; }
-                    if (this.showIcons) { licon = cPPT_icon; }
+                    if (this.showTexts) { ltext = this._cPPT_text; }
+                    if (this.showIcons) { licon = this._cPPT_icon; }
                     lmenu.addItem(new sap.m.MenuItem({ text: ltext, id: "PPT", icon: licon }));
                 }
                 if (this.enableDoc) {
-                    if (this.showTexts) { ltext = cDOC_text; }
-                    if (this.showIcons) { licon = cDOC_icon; }
+                    if (this.showTexts) { ltext = this._cDOC_text; }
+                    if (this.showIcons) { licon = this._cDOC_icon; }
                     lmenu.addItem(new sap.m.MenuItem({ text: ltext, id: "DOC", icon: licon }));
                 }
-                if (this.enableXls()) {
-                    if (this.showTexts) { ltext = cXLS_text; }
-                    if (this.showIcons) { licon = cXLS_icon; }
+                if (this.enableXls) {
+                    if (this.showTexts) { ltext = this._cXLS_text; }
+                    if (this.showIcons) { licon = this._cXLS_icon; }
                     lmenu.addItem(new sap.m.MenuItem({ text: ltext, id: "XLS", icon: licon }));
                 }
-                if (this.enableCsv()) {
-                    if (this.showTexts) { ltext = cCSV_text; }
-                    if (this.showIcons) { licon = cCSV_icon; }
+                if (this.enableCsv) {
+                    if (this.showTexts) { ltext = this._cCSV_text; }
+                    if (this.showIcons) { licon = this._cCSV_icon; }
                     lmenu.addItem(new sap.m.MenuItem({ text: ltext, id: "CSV", icon: licon }));
                 }
-                if (this.enablePdf()) {
-                    if (this.showTexts) { ltext = cPDF_text; }
-                    if (this.showIcons) { licon = cPDF_icon; }
+                if (this.enablePdf) {
+                    if (this.showTexts) { ltext = this._cPDF_text; }
+                    if (this.showIcons) { licon = this._cPDF_icon; }
                     lmenu.addItem(new sap.m.MenuItem({ text: ltext, id: "PDF", icon: licon }));
                 }
 
