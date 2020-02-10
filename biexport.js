@@ -125,34 +125,34 @@
 
                 var ltext = "";
                 var licon = "";
-                if (that.enablePPT()) {
-                    if (that.showTexts()) { ltext = cPPT_text };
-                    if (that.showIcons()) { licon = cPPT_icon };
+                if (this.enablePPT()) {
+                    if (this.showTexts()) { ltext = cPPT_text; }
+                    if (this.showIcons()) { licon = cPPT_icon; }
                     lmenu.addItem(new sap.m.MenuItem({ text: ltext, id: "PPT", icon: licon }));
                 }
-                if (that.enableDOC()) {
-                    if (that.showTexts()) { ltext = cDOC_text };
-                    if (that.showIcons()) { licon = cDOC_icon };
+                if (this.enableDOC()) {
+                    if (this.showTexts()) { ltext = cDOC_text; }
+                    if (this.showIcons()) { licon = cDOC_icon; }
                     lmenu.addItem(new sap.m.MenuItem({ text: ltext, id: "DOC", icon: licon }));
                 }
-                if (that.enableXLS()) {
-                    if (that.showTexts()) { ltext = cXLS_text };
-                    if (that.showIcons()) { licon = cXLS_icon };
+                if (this.enableXLS()) {
+                    if (this.showTexts()) { ltext = cXLS_text; }
+                    if (this.showIcons()) { licon = cXLS_icon; }
                     lmenu.addItem(new sap.m.MenuItem({ text: ltext, id: "XLS", icon: licon }));
                 }
-                if (that.enableCSV()) {
-                    if (that.showTexts()) { ltext = cCSV_text };
-                    if (that.showIcons()) { licon = cCSV_icon };
+                if (this.enableCSV()) {
+                    if (this.showTexts()) { ltext = cCSV_text; }
+                    if (this.showIcons()) { licon = cCSV_icon; }
                     lmenu.addItem(new sap.m.MenuItem({ text: ltext, id: "CSV", icon: licon }));
                 }
-                if (that.enablePDF()) {
-                    if (that.showTexts()) { ltext = cPDF_text };
-                    if (that.showIcons()) { licon = cPDF_icon };
+                if (this.enablePDF()) {
+                    if (this.showTexts()) { ltext = cPDF_text; }
+                    if (this.showIcons()) { licon = cPDF_icon; }
                     lmenu.addItem(new sap.m.MenuItem({ text: ltext, id: "PDF", icon: licon }));
                 }
 
-                if (that.showTexts()) { ltext = cExport_text };
-                if (that.showIcons()) { licon = cExport_icon };
+                if (this.showTexts()) { ltext = cExport_text; }
+                if (this.showIcons()) { licon = cExport_icon; }
 
                 var lmenubutton = new sap.m.MenuButton({ id: "exportButton", text: ltext, icon: licon, menu: lmenu });
 
