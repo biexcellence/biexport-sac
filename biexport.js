@@ -46,13 +46,13 @@
             this._cPDF_text = "PDF";
             this._cXLS_text = "Excel";
             this._cCSV_text = "CSV";
-            this._cExport_text = "Export";
-            this._cExport_icon = "sap-icon://download";
             this._cPPT_icon = "sap-icon://ppt-attachment";
             this._cDOC_icon = "sap-icon://doc-attachment";
             this._cPDF_icon = "sap-icon://pdf-attachment";
             this._cXLS_icon = "sap-icon://excel-attachment";
             this._cCSV_icon = "sap-icon://text-attachment";
+            this._cExport_text = "Export";
+            this._cExport_icon = "sap-icon://download";
 
             // this.buttonPdf = this._shadowRoot.querySelector("#pdfButton");
             // this.buttonPdf.onclick = () => this.doExport("PDF");
@@ -346,8 +346,8 @@
                     lmenu.addItem(new sap.m.MenuItem({ text: ltext, id: "PDF", icon: licon }));
                 }
 
-                if (this.showTexts) { ltext = cExport_text; }
-                if (this.showIcons) { licon = cExport_icon; }
+                if (this.showTexts) { ltext = this._cExport_text; }
+                if (this.showIcons) { licon = this._cExport_icon; }
 
                 var lmenubutton = new sap.m.MenuButton({ id: "exportButton", text: ltext, icon: licon, menu: lmenu });
 
