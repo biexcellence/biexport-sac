@@ -333,9 +333,14 @@
 
                 debugger;
 
-                this._shadowRoot.querySelector('#export_button').empty();
+                var lbuttonDiv = this._shadowRoot.querySelector('#export_button');
 
-                lmenubutton.placeAt('#export_button');
+                var child = lbuttonDiv.lastElementChild;
+                while (child) {
+                    lbuttonDiv.removeChild(child);
+                    child = lbuttonDiv.lastElementChild;
+                } 
+                lmenubutton.placeAt(this._shadowRoot.querySelector('#export_button'));
             }
 
         }
