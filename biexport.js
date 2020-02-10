@@ -328,7 +328,7 @@
                 if (this.showTexts) { ltext = this._cExport_text; }
                 if (this.showIcons) { licon = this._cExport_icon; }
 
-                var lmenubutton = new sap.m.MenuButton({ text: ltext, icon: licon }); //, menu: lmenu });
+                var lmenubutton = new sap.m.MenuButton({ text: ltext, icon: licon, menu: lmenu });
 
                 var lbuttonDiv = this._shadowRoot.querySelector('#export_button');
 
