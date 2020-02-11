@@ -250,11 +250,31 @@
                             });
 
                             if (this.showComponentSelector) {
+                                let ltext = that[oItem.getKey().toLowerCase() + "Exclude"];
+                                let components = that.metadata ? JSON.parse(that.metadata)["components"] : {};
+                                let preselected = llext ? JSON.parse(ltext) : [];
+
+                                var lcomponent_box = new sap.m.VBox();
+                                for (let componentId in components) {
+                                    let component = components[componentId];
+                                    var lfound = true;
+                                    for (i = 0; i < preselected.length; i++) {
+                                        if (preselected[i].component == component.name) {
+                                            lfound = !preselected[i].isExcluded;
+                                            break;
+                                        }
+                                    }
+                                    if (lfound) {
+                                        lvbox.addItem(new sap.m.CheckBox({ text: component.name }));
+                                    }
+                                }
+
                                 ltab.addItem(new sap.m.IconTabFilter({
                                     key: "components",
                                     text: "Select Components",
                                     icon: "",
                                     content: [
+                                        lcomponent_box
                                     ]
                                 }));
                             }
@@ -332,6 +352,9 @@
                 if (this.showIcons) { licon = this._cExport_icon; }
 
                 var lmenubutton = new sap.m.MenuButton({ text: ltext, icon: licon, menu: lmenu });
+                if (this._designMode) {
+                    lmenubutton.setEnabled(false);
+                }
 
                 lmenubutton.placeAt(this._buttonSlot);
             }
