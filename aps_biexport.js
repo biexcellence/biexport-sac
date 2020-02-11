@@ -650,6 +650,10 @@
             for (let componentId in components) {
                 let component = components[componentId];
 
+                if (component.type == "sdk_com_biexcellence_openbi_sap_sac_export__0") {
+                    continue;
+                }
+
                 let div = document.createElement("div");
                 let label = document.createElement("label");
                 let checkbox = document.createElement("input");

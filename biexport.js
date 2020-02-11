@@ -257,15 +257,10 @@
                                 var lcomponent_box = new sap.m.VBox();
                                 for (let componentId in components) {
                                     let component = components[componentId];
-                                    var lfound = true;
-                                    for (i = 0; i < preselected.length; i++) {
-                                        if (preselected[i].component == component.name) {
-                                            lfound = !preselected[i].isExcluded;
-                                            break;
+                                    if (visibleComponents.length == 0 || visibleComponents.some(v => v.component == component.name && !v.isExcluded)) {
+                                        if (component.type != "sdk_com_biexcellence_openbi_sap_sac_export__0") {
+                                            lvbox.addItem(new sap.m.CheckBox({ text: component.name }));
                                         }
-                                    }
-                                    if (lfound) {
-                                        lvbox.addItem(new sap.m.CheckBox({ text: component.name }));
                                     }
                                 }
 
