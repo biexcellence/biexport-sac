@@ -249,9 +249,9 @@
                                 expandable: false
                             });
 
-                            if (this.showComponentSelector) {
+                            if (this.showComponentSelector && oItem.getKey() != "CSV") {
                                 let components = this.metadata ? JSON.parse(this.metadata)["components"] : {};
-                                let preselected = this[oItem.getKey().toLowerCase() + "Exclude"] ? JSON.parse(this[oItem.getKey().toLowerCase() + "Exclude"]) : [];
+                                let visibleComponents = this[oItem.getKey().toLowerCase() + "Exclude"] ? JSON.parse(this[oItem.getKey().toLowerCase() + "Exclude"]) : [];
 
                                 var lcomponent_box = new sap.m.VBox();
                                 for (let componentId in components) {
