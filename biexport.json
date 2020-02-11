@@ -8,6 +8,7 @@
     "vendor": "bi excellence Software GmbH",
     "eula": "",
     "license": "",
+    "imports": ["input-controls"],
     "webcomponents": [
         {
             "kind": "main",
@@ -24,170 +25,170 @@
             "ignoreIntegrity": true
         }
     ],
-  "properties": {
-    "serverURL": {
-      "type": "string",
-      "description": "The URL to the open bi Repository installation that handles the export. If you use an installation on your local machine, change this property to http://localhost:9091, otherwise to the address and port of your installation.",
-      "default": "https://designstudioexport.biexcellence.com"
-    },
-    "filename": {
-      "type": "string",
-      "description": "The file name of the export document. The extension will be determined automatically. You can use placeholders (manual section 3.9).",
-      "default": "SACExport_%EXECUTION_DATE_SHORT%_%EXECUTION_TIME_SHORT%"
-    },
-    "exportLanguage": {
-      "type": "string",
-      "description": "By default, the export determines the language for the export document from the web client. The export language is used to render the correct format for date and time placeholders (manual section 3.10) and to interpret number formats correctly for Excel export (manual secion 3.11).  You can set this property explicitly to overrule the automatic determination.",
-      "default": ""
-    },
-    "screenWidth": {
-      "type": "integer",
-      "description": "By default the export uses the screen width of the user to create an export document that resembles the screen display. If you experience extensive white spaces or to small font sizes, you can set this property to a static value, e.g. 1000 pixels.",
-      "default": 0
-    },
-    "screenHeight": {
-      "type": "integer",
-      "description": "If you make extensive use of relative height definitions, exports to PowerPoint, Word or Excel might show to small font sizes. In this case, you can set this property to a static value, e.g. 800 pixels. You might have to combine with a Static Screen Width.",
-      "default": 0
-    },
-    "parseCss": {
-      "type": "boolean",
-      "description": "If the Export does not show icons or images, you can set this property to true. This activates the collection of all images of the SAC application and sends them to the Export service.",
-      "default": false
-    },
-    "pdfTemplate": {
-      "type": "string",
-      "description": "As an alternative to the HTML Template property, you can also specify a DOC, DOCX, PPT or PPTX template which will be used as a fully formatted template for your PDF export",
-      "default": ""
-    },
-    "pptSeperate": {
-      "type": "boolean",
-      "description": "This property only takes affect if you are not using an Export Template. If set to `false` the application is rendered onto one slide. If you set this property to `true`, each component is rendered to a separate slide.",
-      "default": true
-    },
-    "pptTemplate": {
-      "type": "string",
-      "description": "By specifying a template for the PowerPoint Export (in PPT or PPTX formats) you can generate complete presentations in your corporate design and with standard text",
-      "default": ""
-    },
-    "docTemplate": {
-      "type": "string",
-      "description": "By specifying a template for the Word Export (in DOC or DOCX formats) you can generate complete Word documents in your corporate design and with standard text",
-      "default": ""
-    },
-    "xlsTemplate": {
-      "type": "string",
-      "description": "By specifying a template for the Excel Export (in XLS or XLSX formats) you can generate complete Word documents in your corporate design and with standard text",
-      "default": ""
-    },
-    "publishMode": {
-      "type": "string",
-      "description": "Controls the way the Export document is delivered: ONLINE, MAIL, FILE etc.",
-      "default": ""
-    },
-    "publishSync": {
-      "type": "boolean",
-      "description": "If set to true, the export process runs synchronuously even if the file shall not be returned to the user.",
-      "default": false
-    },
-    "mailFrom": {
-      "type": "string",
-      "description": "The sender of the mail (Publish Mode must be set to MAIL)",
-      "default": ""
-    },
-    "mailTo": {
-      "type": "string",
-      "description": "The recipients of the mail (Publish Mode must be set to MAIL)",
-      "default": ""
-    },
-    "mailSubject": {
-      "type": "string",
-      "description": "The subject of the mail (Publish Mode must be set to MAIL)",
-      "default": ""
-    },
-    "mailBody": {
-      "type": "string",
-      "description": "The mail body (Publish Mode must be set to MAIL)",
-      "default": ""
-    },
+    "properties": {
+        "serverURL": {
+            "type": "string",
+            "description": "The URL to the open bi Repository installation that handles the export. If you use an installation on your local machine, change this property to http://localhost:9091, otherwise to the address and port of your installation.",
+            "default": "https://designstudioexport.biexcellence.com"
+        },
+        "filename": {
+            "type": "string",
+            "description": "The file name of the export document. The extension will be determined automatically. You can use placeholders (manual section 3.9).",
+            "default": "SACExport_%EXECUTION_DATE_SHORT%_%EXECUTION_TIME_SHORT%"
+        },
+        "exportLanguage": {
+            "type": "string",
+            "description": "By default, the export determines the language for the export document from the web client. The export language is used to render the correct format for date and time placeholders (manual section 3.10) and to interpret number formats correctly for Excel export (manual secion 3.11).  You can set this property explicitly to overrule the automatic determination.",
+            "default": ""
+        },
+        "screenWidth": {
+            "type": "integer",
+            "description": "By default the export uses the screen width of the user to create an export document that resembles the screen display. If you experience extensive white spaces or to small font sizes, you can set this property to a static value, e.g. 1000 pixels.",
+            "default": 0
+        },
+        "screenHeight": {
+            "type": "integer",
+            "description": "If you make extensive use of relative height definitions, exports to PowerPoint, Word or Excel might show to small font sizes. In this case, you can set this property to a static value, e.g. 800 pixels. You might have to combine with a Static Screen Width.",
+            "default": 0
+        },
+        "parseCss": {
+            "type": "boolean",
+            "description": "If the Export does not show icons or images, you can set this property to true. This activates the collection of all images of the SAC application and sends them to the Export service.",
+            "default": false
+        },
+        "pdfTemplate": {
+            "type": "string",
+            "description": "As an alternative to the HTML Template property, you can also specify a DOC, DOCX, PPT or PPTX template which will be used as a fully formatted template for your PDF export",
+            "default": ""
+        },
+        "pptSeperate": {
+            "type": "boolean",
+            "description": "This property only takes affect if you are not using an Export Template. If set to `false` the application is rendered onto one slide. If you set this property to `true`, each component is rendered to a separate slide.",
+            "default": true
+        },
+        "pptTemplate": {
+            "type": "string",
+            "description": "By specifying a template for the PowerPoint Export (in PPT or PPTX formats) you can generate complete presentations in your corporate design and with standard text",
+            "default": ""
+        },
+        "docTemplate": {
+            "type": "string",
+            "description": "By specifying a template for the Word Export (in DOC or DOCX formats) you can generate complete Word documents in your corporate design and with standard text",
+            "default": ""
+        },
+        "xlsTemplate": {
+            "type": "string",
+            "description": "By specifying a template for the Excel Export (in XLS or XLSX formats) you can generate complete Word documents in your corporate design and with standard text",
+            "default": ""
+        },
+        "publishMode": {
+            "type": "string",
+            "description": "Controls the way the Export document is delivered: ONLINE, MAIL, FILE etc.",
+            "default": ""
+        },
+        "publishSync": {
+            "type": "boolean",
+            "description": "If set to true, the export process runs synchronuously even if the file shall not be returned to the user.",
+            "default": false
+        },
+        "mailFrom": {
+            "type": "string",
+            "description": "The sender of the mail (Publish Mode must be set to MAIL)",
+            "default": ""
+        },
+        "mailTo": {
+            "type": "string",
+            "description": "The recipients of the mail (Publish Mode must be set to MAIL)",
+            "default": ""
+        },
+        "mailSubject": {
+            "type": "string",
+            "description": "The subject of the mail (Publish Mode must be set to MAIL)",
+            "default": ""
+        },
+        "mailBody": {
+            "type": "string",
+            "description": "The mail body (Publish Mode must be set to MAIL)",
+            "default": ""
+        },
 
-    "showIcons": {
-      "type": "boolean",
-      "description": "Show icons in the export buttons",
-      "default": true
-    },
-    "showTexts": {
-      "type": "boolean",
-      "description": "Show texts in the export buttons",
-      "default": true
-    },
-    "enablePpt": {
-      "type": "boolean",
-      "description": "Show PowerPoint option",
-      "default": true
-    },
-    "enableDoc": {
-      "type": "boolean",
-      "description": "Show Word option",
-      "default": true
-    },
-    "enablePdf": {
-      "type": "boolean",
-      "description": "Show PDF option",
-      "default": true
-    },
-    "enableXls": {
-      "type": "boolean",
-      "description": "Show Excel option",
-      "default": true
-    },
-    "enableCsv": {
-      "type": "boolean",
-      "description": "Show CSV Export option",
-      "default": false
-    },
-    "showViewSelector": {
-      "type": "boolean",
-      "description": "Show view selector before exporting",
-      "default": false
-    },
-    "showComponentSelector": {
-      "type": "boolean",
-      "description": "Show component selector before exporting",
-      "default": false
-    },
+        "showIcons": {
+            "type": "boolean",
+            "description": "Show icons in the export buttons",
+            "default": true
+        },
+        "showTexts": {
+            "type": "boolean",
+            "description": "Show texts in the export buttons",
+            "default": true
+        },
+        "showViewSelector": {
+            "type": "boolean",
+            "description": "Show view selector before exporting",
+            "default": false
+        },
+        "showComponentSelector": {
+            "type": "boolean",
+            "description": "Show component selector before exporting",
+            "default": false
+        },
+        "enablePpt": {
+            "type": "boolean",
+            "description": "Show PowerPoint option",
+            "default": true
+        },
+        "enableDoc": {
+            "type": "boolean",
+            "description": "Show Word option",
+            "default": true
+        },
+        "enablePdf": {
+            "type": "boolean",
+            "description": "Show PDF option",
+            "default": true
+        },
+        "enableXls": {
+            "type": "boolean",
+            "description": "Show Excel option",
+            "default": true
+        },
+        "enableCsv": {
+            "type": "boolean",
+            "description": "Show CSV Export option",
+            "default": false
+        },
 
-    "pdfExclude": {
-      "type": "string",
-      "description": "PDF Excludes",
-      "default": ""
+        "pdfExclude": {
+            "type": "string",
+            "description": "PDF Excludes",
+            "default": ""
+        },
+        "pptExclude": {
+            "type": "string",
+            "description": "PPT Excludes",
+            "default": ""
+        },
+        "docExclude": {
+            "type": "string",
+            "description": "DOC Excludes",
+            "default": ""
+        },
+        "xlsExclude": {
+            "type": "string",
+            "description": "XLS Excludes",
+            "default": ""
+        },
+        "metadata": {
+            "type": "string",
+            "description": "For internal use",
+            "default": ""
+        },
+        "oauth": {
+            "type": "string",
+            "description": "For internal use",
+            "default": ""
+        }
     },
-    "pptExclude": {
-      "type": "string",
-      "description": "PPT Excludes",
-      "default": ""
-    },
-    "docExclude": {
-      "type": "string",
-      "description": "DOC Excludes",
-      "default": ""
-    },
-    "xlsExclude": {
-      "type": "string",
-      "description": "XLS Excludes",
-      "default": ""
-    },
-    "metadata": {
-      "type": "string",
-      "description": "For internal use",
-      "default": ""
-    },
-    "oauth": {
-      "type": "string",
-      "description": "For internal use",
-      "default": ""
-    }
-  },
     "methods": {
         "doExport": {
             "description": "Triggers the export process.",
@@ -518,17 +519,17 @@
             "parameters": [],
             "body": "return this.mailBody;"
         },
-      "setMailBody": {
-        "description": "Set the Mail Body",
-        "parameters": [
-          {
-            "name": "value",
-            "type": "string",
-            "description": "The new Mail Body"
-          }
-        ],
-        "body": "this.mailBody = value;"
-      }
+        "setMailBody": {
+            "description": "Set the Mail Body",
+            "parameters": [
+                {
+                    "name": "value",
+                    "type": "string",
+                    "description": "The new Mail Body"
+                }
+            ],
+            "body": "this.mailBody = value;"
+        }
     },
     "events": {
         "onStartExport": {

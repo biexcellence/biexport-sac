@@ -246,7 +246,7 @@
             this._hoverDiv.style.position = "absolute";
             this._hoverDiv.style.boxSizing = "border-box";
             this._hoverDiv.style.display = "none";
-            document.body.appendChild(this._hoverDiv);
+
             let hoverDivVisible = false;
 
             ["pdfExclude", "pptExclude", "docExclude", "xlsExclude"].forEach(id => {
@@ -266,6 +266,10 @@
                             this._hoverDiv.style.width = rect.width + "px";
                             this._hoverDiv.style.height = rect.height + "px";
                             this._hoverDiv.style.display = "block";
+
+                            if (!this._hoverDiv.parentElement) {
+                                document.body.appendChild(this._hoverDiv);
+                            }
 
                             hoverDivVisible = true;
                         }
@@ -529,66 +533,66 @@
         }
 
         get showTexts() {
-            return this.getValue("showTexts");
+            return this.getBooleanValue("showTexts");
         }
         set showTexts(value) {
-            this.setValue("showTexts", value);
+            this.setBooleanValue("showTexts", value);
         }
 
         get showIcons() {
-            return this.getValue("showIcons");
+            return this.getBooleanValue("showIcons");
         }
         set showIcons(value) {
-            this.setValue("showIcons", value);
+            this.setBooleanValue("showIcons", value);
         }
 
         get showComponentSelector() {
-            return this.getValue("showComponentSelector");
+            return this.getBooleanValue("showComponentSelector");
         }
         set showComponentSelector(value) {
-            this.setValue("showComponentSelector", value);
+            this.setBooleanValue("showComponentSelector", value);
         }
 
         get showViewSelector() {
-            return this.getValue("showViewSelector");
+            return this.getBooleanValue("showViewSelector");
         }
         set showViewSelector(value) {
-            this.setValue("showViewSelector", value);
+            this.setBooleanValue("showViewSelector", value);
         }
 
         get enablePpt() {
-            return this.getValue("enablePpt");
+            return this.getBooleanValue("enablePpt");
         }
         set enablePpt(value) {
-            this.setValue("enablePpt", value);
+            this.setBooleanValue("enablePpt", value);
         }
 
         get enableDoc() {
-            return this.getValue("enableDoc");
+            return this.getBooleanValue("enableDoc");
         }
         set enableDoc(value) {
-            this.setValue("enableDoc", value);
+            this.setBooleanValue("enableDoc", value);
         }
 
         get enablePdf() {
-            return this.getValue("enablePdf");
+            return this.getBooleanValue("enablePdf");
         }
         set enablePdf(value) {
-            this.setValue("enablePdf", value);
+            this.setBooleanValue("enablePdf", value);
         }
 
         get enableXls() {
-            return this.getValue("enableXls");
+            return this.getBooleanValue("enableXls");
         }
         set enableXls(value) {
-            this.setValue("enableXls", value);
+            this.setBooleanValue("enableXls", value);
         }
 
         get enableCsv() {
-            return this.getValue("enableCsv");
+            return this.getBooleanValue("enableCsv");
         }
         set enableCsv(value) {
-            this.setValue("enableCsv", value);
+            this.setBooleanValue("enableCsv", value);
         }
 
         get pdfExclude() {
