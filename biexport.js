@@ -269,7 +269,7 @@
                                                 select: function (oEvent) {
                                                     debugger;
                                                     var objIndex = visibleComponents.findIndex((v => v.component == oEvent.getParameter("id")));
-                                                    if objIndex > -1) {
+                                                    if (objIndex > -1) {
                                                         visibleComponents[objIndex].isExcluded = !oEvent.getParameter("selected");
                                                     } else {
                                                         var lcomp = {};
