@@ -14,7 +14,6 @@
     class BiExport extends HTMLElement {
 
         constructor() {
-
             super();
 
             this._shadowRoot = this.attachShadow({ mode: "open" });
@@ -145,18 +144,11 @@
         }
 
         connectedCallback() {
+            // try detect components in edit mode
             try {
                 if (window.commonApp) {
                     let outlineContainer = commonApp.getShell().findElements(true, ele => ele.hasStyleClass && ele.hasStyleClass("sapAppBuildingOutline"))[0]; // sId: "__container0"
                     if (outlineContainer && outlineContainer.getReactProps) {
-                        let subscribeReactStore = store => {
-                            this._subscription = store.subscribe({
-                                effect: state => {
-                                    parseReactState(state);
-                                    return { result: 1 };
-                                }
-                            });
-                        };
                         let parseReactState = state => {
                             let components = {};
 
@@ -194,6 +186,15 @@
                                     }
                                 }));
                             }
+                        };
+
+                        let subscribeReactStore = store => {
+                            this._subscription = store.subscribe({
+                                effect: state => {
+                                    parseReactState(state);
+                                    return { result: 1 };
+                                }
+                            });
                         };
 
                         let props = outlineContainer.getReactProps();
@@ -237,15 +238,15 @@
             this.appendChild(this._buttonSlot);
 
             if (this.showTexts || this.showIcons) {
-                var lmenu = new sap.m.Menu({
+                let lmenu = new sap.m.Menu({
                     title: "Export",
                     itemSelected: oEvent => {
-                        var oItem = oEvent.getParameter("item");
+                        let oItem = oEvent.getParameter("item");
                         if (!this.showComponentSelector && !this.showViewSelector) {
                             this.doExport(oItem.getKey());
                         } else {
 
-                            var ltab = new sap.m.IconTabBar({
+                            let ltab = new sap.m.IconTabBar({
                                 expandable: false
                             });
 
@@ -253,35 +254,37 @@
                                 let components = this.metadata ? JSON.parse(this.metadata)["components"] : {};
                                 let visibleComponents = this[oItem.getKey().toLowerCase() + "Exclude"] ? JSON.parse(this[oItem.getKey().toLowerCase() + "Exclude"]) : [];
 
-                                var lcomponent_box = new sap.ui.layout.form.SimpleForm({
+                                let lcomponent_box = new sap.ui.layout.form.SimpleForm({
                                     layout: sap.ui.layout.form.SimpleFormLayout.ResponsiveGridLayout,
                                     columnsM: 2,
                                     columnsL: 4
-                                }); 
+                                });
 
                                 for (let componentId in components) {
                                     let component = components[componentId];
+
+                                    if (component.type == "sdk_com_biexcellence_openbi_sap_sac_export__0") {
+                                        continue;
+                                    }
+
                                     if (visibleComponents.length == 0 || visibleComponents.some(v => v.component == component.name && !v.isExcluded)) {
-                                        if (component.type != "sdk_com_biexcellence_openbi_sap_sac_export__0") {
-                                            var ltext = component.name.replace(/_/g, ' ');
-                                            lcomponent_box.addContent(new sap.m.CheckBox({
-                                                id: component.name,
-                                                text: ltext,
-                                                select: function (oEvent) {
-                                                    debugger;
-                                                    var objIndex = visibleComponents.findIndex((v => v.component == oEvent.getParameter("id")));
-                                                    if (objIndex > -1) {
-                                                        visibleComponents[objIndex].isExcluded = !oEvent.getParameter("selected");
-                                                    } else {
-                                                        var lcomp = {};
-                                                        lcomp.component = oEvent.getParameter("id");
-                                                        lcomp.isExcluded = !oEvent.getParameter("selected");
-                                                        visibleComponents.push(lcomp);
-                                                    }
-                                                    this[oItem.getKey().toLowerCase() + "Exclude"] = JSON.stringify(visibleComponents);
+                                        let ltext = component.name.replace(/_/g, ' ');
+                                        lcomponent_box.addContent(new sap.m.CheckBox({
+                                            id: component.name,
+                                            text: ltext,
+                                            select: oEvent => {
+                                                let objIndex = visibleComponents.findIndex(v => v.component == oEvent.getParameter("id"));
+                                                if (objIndex > -1) {
+                                                    visibleComponents[objIndex].isExcluded = !oEvent.getParameter("selected");
+                                                } else {
+                                                    visibleComponents.push({
+                                                        component: oEvent.getParameter("id"),
+                                                        isExcluded: !oEvent.getParameter("selected")
+                                                    });
                                                 }
-                                            }));
-                                        }
+                                                this[oItem.getKey().toLowerCase() + "Exclude"] = JSON.stringify(visibleComponents);
+                                            }
+                                        }));
                                     }
                                 }
 
@@ -296,7 +299,7 @@
                             }
                             if (this.showViewSelector) {
                                 let vars = this.metadata ? JSON.parse(this.metadata)["vars"] : {};
-                                var lview_box = new sap.ui.layout.form.SimpleForm({
+                                let lview_box = new sap.ui.layout.form.SimpleForm({
                                     layout: sap.ui.layout.form.SimpleFormLayout.ResponsiveGridLayout,
                                     columnsM: 3,
                                     columnsL: 3
@@ -314,24 +317,24 @@
                                 for (let varId in vars) {
                                     let varObj = vars[varId];
                                     if (varObj.isExposed) {
-                                       lview_box.addContent(new sap.m.Label({
-                                           "text": varObj.description
+                                        lview_box.addContent(new sap.m.Label({
+                                            "text": varObj.description
                                         }));
-                                    lview_box.addContent(new sap.m.Input({
-                                        "id": varObj.name + "_value",
-                                        "change": function (oEvent) {
-                                            debugger;
-                                        }
-                                        // "valueHelpRequest": this.onHandleVariableSuggest,
-                                        // "showValueHelp": true
-                                    }));
-                                            lview_box.addContent(new sap.m.CheckBox({
-                                                "id": varObj.name + "_iterative",
-                                                text: "Iterative",
-                                                select: function (oEvent) {
-                                                    debugger;
-                                                }
-                                            }));
+                                        lview_box.addContent(new sap.m.Input({
+                                            "id": varObj.name + "_value",
+                                            "change": oEvent => {
+                                                //debugger;
+                                            }
+                                            // "valueHelpRequest": this.onHandleVariableSuggest,
+                                            // "showValueHelp": true
+                                        }));
+                                        lview_box.addContent(new sap.m.CheckBox({
+                                            "id": varObj.name + "_iterative",
+                                            text: "Iterative",
+                                            select: oEvent => {
+                                                //debugger;
+                                            }
+                                        }));
                                     }
                                 }
 
@@ -349,10 +352,10 @@
                                 lview_box.addContent(new sap.m.Label({
                                     "text": "Mail Recipient"
                                 }));
-                                var lmail = new sap.m.Input({
+                                let lmail = new sap.m.Input({
                                     "id": "mail_to",
-                                    "change": function (oEvent) {
-                                        debugger;
+                                    "change": oEvent => {
+                                        //debugger;
                                     }
                                 });
                                 lmail.setValue(sap.fpa.ui.infra.common.getContext().getUser().getEmail());
@@ -370,7 +373,7 @@
                                 }));
                             }
 
-                            var dialog = new sap.m.Dialog({
+                            let dialog = new sap.m.Dialog({
                                 title: 'Configure Export',
                                 contentWidth: "400px",
                                 contentHeight: "400px",
@@ -388,11 +391,11 @@
                                 }),
                                 endButton: new sap.m.Button({
                                     text: 'Cancel',
-                                    press: function () {
+                                    press: () => {
                                         dialog.close();
                                     }
                                 }),
-                                afterClose: function () {
+                                afterClose: () => {
                                     if (lcomponent_box != null) { lcomponent_box.destroy(); }
                                     if (lview_box != null) { lview_box.destroy(); }
                                     ltab.destroy();
@@ -405,8 +408,8 @@
                     }
                 });
 
-                var ltext = "";
-                var licon = "";
+                let ltext = "";
+                let licon = "";
                 if (this.enablePpt) {
                     if (this.showTexts) { ltext = this._cPPT_text; }
                     if (this.showIcons) { licon = this._cPPT_icon; }
@@ -436,7 +439,7 @@
                 if (this.showTexts) { ltext = this._cExport_text; }
                 if (this.showIcons) { licon = this._cExport_icon; }
 
-                var lmenubutton = new sap.m.MenuButton({ text: ltext, icon: licon, menu: lmenu });
+                let lmenubutton = new sap.m.MenuButton({ text: ltext, icon: licon, menu: lmenu });
                 if (this._designMode) {
                     lmenubutton.setEnabled(false);
                 }
@@ -761,6 +764,7 @@
             settings.scroll_width = document.body.scrollWidth;
             settings.scroll_height = document.body.scrollHeight;
 
+            // try detect runtime settings
             if (window.sap && sap.fpa && sap.fpa.ui && sap.fpa.ui.infra) {
                 if (sap.fpa.ui.infra.common) {
                     let context = sap.fpa.ui.infra.common.getContext();
@@ -802,14 +806,16 @@
                 getHtml(settings).then(html => {
                     this._updateSettings(); // reset settings
 
-                    this._submitExport(settings, html);
+                    this._createExportForm(settings, html);
+                }, reason => {
+                    console.error("Error in getHtml:", reason);
                 });
             } else {
-                this._submitExport(settings, null);
+                this._createExportForm(settings, null);
             }
         }
 
-        _submitExport(settings, content) {
+        _createExportForm(settings, content) {
             this.dispatchEvent(new CustomEvent("onSendExport", {
                 detail: {
                     settings: settings
@@ -833,10 +839,10 @@
             let host = settings.server_urls;
             let url = host + "/sac/export.html";
 
-            this._sendExportRequest(url, form, settings);
+            this._submitExport(url, form, settings);
         }
 
-        _sendExportRequest(url, form, settings) {
+        _submitExport(url, form, settings) {
 
             // handle response types
             let callback = (error, filename, blob) => {
@@ -914,7 +920,8 @@
                                     }
                                 })();
                             }).then(() => {
-                                this._sendExportRequest(url, form, settings);
+                                // try again after oauth
+                                this._submitExport(url, form, settings);
                             });
                         });
                     } else {
@@ -1016,9 +1023,10 @@
                 }
                 break;
             case "LINK":
-                if (node.tagName == "LINK" && node.rel == "preload") {
+                if (node.rel == "preload") {
                     return "";
                 }
+            // fallthrough
             case "STYLE":
                 let sheet = node.sheet;
                 if (sheet) {
@@ -1221,7 +1229,7 @@
                     resolve(fileReader.result);
                 };
                 fileReader.onerror = () => {
-                    reject();
+                    reject(new Error("Failed to convert URL to data URL: " + url));
                 };
                 fileReader.readAsDataURL(b);
             });
