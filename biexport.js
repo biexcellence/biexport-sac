@@ -273,16 +273,16 @@
                             expandable: false
                         });
 
+                        let lcomponent_box;
                         if (this.showComponentSelector && oItem.getKey() != "CSV") {
-                            let components = this.metadata ? JSON.parse(this.metadata)["components"] : {};
-                            let visibleComponents = this[oItem.getKey().toLowerCase() + "Exclude"] ? JSON.parse(this[oItem.getKey().toLowerCase() + "Exclude"]) : [];
-
-                            let lcomponent_box = new sap.ui.layout.form.SimpleForm({
+                            lcomponent_box = new sap.ui.layout.form.SimpleForm({
                                 layout: sap.ui.layout.form.SimpleFormLayout.ResponsiveGridLayout,
                                 columnsM: 2,
                                 columnsL: 4
                             });
 
+                            let components = this.metadata ? JSON.parse(this.metadata)["components"] : {};
+                            let visibleComponents = this[oItem.getKey().toLowerCase() + "Exclude"] ? JSON.parse(this[oItem.getKey().toLowerCase() + "Exclude"]) : [];
                             for (let componentId in components) {
                                 let component = components[componentId];
 
@@ -320,9 +320,10 @@
                                 ]
                             }));
                         }
+
+                        let lview_box;
                         if (this.showViewSelector) {
-                            let vars = this.metadata ? JSON.parse(this.metadata)["vars"] : {};
-                            let lview_box = new sap.ui.layout.form.SimpleForm({
+                            lview_box = new sap.ui.layout.form.SimpleForm({
                                 layout: sap.ui.layout.form.SimpleFormLayout.ResponsiveGridLayout,
                                 columnsM: 3,
                                 columnsL: 3
@@ -337,6 +338,7 @@
                                 ]
                             }));
 
+                            let vars = this.metadata ? JSON.parse(this.metadata)["vars"] : {};
                             for (let varId in vars) {
                                 let varObj = vars[varId];
                                 if (varObj.isExposed) {
