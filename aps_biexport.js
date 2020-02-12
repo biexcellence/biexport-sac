@@ -1,5 +1,5 @@
 (function () {
-    let tmpl = document.createElement('template');
+    let tmpl = document.createElement("template");
     tmpl.innerHTML = `
       <style>
           fieldset {

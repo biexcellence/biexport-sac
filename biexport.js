@@ -22,17 +22,10 @@
             this._id = createGuid();
 
             this._shadowRoot.querySelector("#export_div").id = this._id + "_export_div";
+            this._shadowRoot.querySelector("#form").id = this._id + "_form";
 
-            this._enableCSV = false;
-            this._enablePPT = true;
-            this._enableXLS = true;
-            this._enablePDF = true;
-            this._enableDOC = true;
-            this._showIcons = true;
-            this._showTexts = false;
-            this._showComponentSelector = false;
-            this._showViewSelector = false;
-
+            this.settings = this._shadowRoot.querySelector("#export_settings_json");
+            this.settings.id = this._id + "_export_settings_json";
 
             this._cPPT_text = "PowerPoint";
             this._cDOC_text = "Word";
@@ -47,13 +40,15 @@
             this._cExport_text = "Export";
             this._cExport_icon = "sap-icon://download";
 
-
-            // initialize export form 
-            this.form = this._shadowRoot.querySelector("#form");
-            this.form.id = this._id + "_form";
-
-            this.settings = this._shadowRoot.querySelector("#export_settings_json");
-            this.settings.id = this._id + "_export_settings_json";
+            this._showIcons = true;
+            this._showTexts = false;
+            this._showViewSelector = false;
+            this._showComponentSelector = false;
+            this._enableCSV = false;
+            this._enablePPT = true;
+            this._enableXLS = true;
+            this._enablePDF = true;
+            this._enableDOC = true;
 
             this._export_settings = {};
             this._export_settings.dashboard = "";
@@ -262,7 +257,7 @@
 
         _renderExportButton() {
             let menu = new sap.m.Menu({
-                title: "Export",
+                title: this._cExport_text,
                 itemSelected: oEvent => {
                     let oItem = oEvent.getParameter("item");
                     if (!this.showComponentSelector && !this.showViewSelector) {
@@ -291,7 +286,7 @@
                                 }
 
                                 if (visibleComponents.length == 0 || visibleComponents.some(v => v.component == component.name && !v.isExcluded)) {
-                                    let ltext = component.name.replace(/_/g, ' ');
+                                    let ltext = component.name.replace(/_/g, " ");
                                     lcomponent_box.addContent(new sap.m.CheckBox({
                                         id: component.name,
                                         text: ltext,
@@ -399,7 +394,7 @@
                         }
 
                         let dialog = new sap.m.Dialog({
-                            title: 'Configure Export',
+                            title: "Configure Export",
                             contentWidth: "400px",
                             contentHeight: "400px",
                             draggable: true,
@@ -408,14 +403,14 @@
                                 ltab
                             ],
                             beginButton: new sap.m.Button({
-                                text: 'Submit',
+                                text: "Submit",
                                 press: () => {
                                     this.doExport(oItem.getKey());
                                     dialog.close();
                                 }
                             }),
                             endButton: new sap.m.Button({
-                                text: 'Cancel',
+                                text: "Cancel",
                                 press: () => {
                                     dialog.close();
                                 }
@@ -967,8 +962,8 @@
     const startsWithHttpRegExp = /^http/i;
 
     function createGuid() {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-            let r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
+            let r = Math.random() * 16 | 0, v = c === "x" ? r : (r & 0x3 | 0x8);
             return v.toString(16);
         });
     }
