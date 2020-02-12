@@ -258,7 +258,7 @@
                                     let component = components[componentId];
                                     if (visibleComponents.length == 0 || visibleComponents.some(v => v.component == component.name && !v.isExcluded)) {
                                         if (component.type != "sdk_com_biexcellence_openbi_sap_sac_export__0") {
-                                            lvbox.addItem(new sap.m.CheckBox({
+                                            lcomponent_box.addItem(new sap.m.CheckBox({
                                                 id: component.name,
                                                 text: component.name,
                                                 select: function (oEvent) {
