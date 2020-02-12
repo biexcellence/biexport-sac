@@ -309,20 +309,20 @@
                                 }));
 
                                 for (let varId in vars) {
-                                    let var = vars[varId];
-                                    if (var.isExposed) {
+                                    let varObj = vars[varId];
+                                    if (varObj.isExposed) {
                                        lview_box.addContent(new sap.m.Label({
-                                            "text": var.description
+                                           "text": varObj.description
                                         }));
                                     lview_box.addContent(new sap.m.Input({
-                                        "id": var.name,
+                                        "id": varObj.name,
                                         "change": function (oEvent) {
                                         }
                                         // "valueHelpRequest": this.onHandleVariableSuggest,
                                         // "showValueHelp": true
                                     }));
                                             lview_box.addContent(new sap.m.CheckBox({
-                                                "id": var.name,
+                                                "id": varObj.name,
                                                 text: "Iterative",
                                                 select: function (oEvent) {
                                                 }
