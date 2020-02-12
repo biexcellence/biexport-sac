@@ -315,16 +315,18 @@
                                            "text": varObj.description
                                         }));
                                     lview_box.addContent(new sap.m.Input({
-                                        "id": varObj.name,
+                                        "id": varObj.name + "_value",
                                         "change": function (oEvent) {
+                                            debugger;
                                         }
                                         // "valueHelpRequest": this.onHandleVariableSuggest,
                                         // "showValueHelp": true
                                     }));
                                             lview_box.addContent(new sap.m.CheckBox({
-                                                "id": varObj.name,
+                                                "id": varObj.name + "_iterative",
                                                 text: "Iterative",
                                                 select: function (oEvent) {
+                                                    debugger;
                                                 }
                                             }));
                                     }
@@ -363,8 +365,10 @@
                                     }
                                 }),
                                 afterClose: function () {
-                                    dialog.destroy();
+                                    if (lcomponent_box != null) { lcomponent_box.destroy(); }
+                                    if (lview_box != null) { lview_box.destroy(); }
                                     ltab.destroy();
+                                    dialog.destroy();
                                 }
                             });
 
