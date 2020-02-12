@@ -253,18 +253,30 @@
                                 let components = this.metadata ? JSON.parse(this.metadata)["components"] : {};
                                 let visibleComponents = this[oItem.getKey().toLowerCase() + "Exclude"] ? JSON.parse(this[oItem.getKey().toLowerCase() + "Exclude"]) : [];
 
-                                var lcomponent_box = new sap.m.VBox();
+                                var lcomponent_box = new sap.ui.layout.form.SimpleForm({
+                                    layout: sap.ui.layout.form.SimpleFormLayout.ResponsiveGridLayout,
+                                    columnsM: 2,
+                                    columnsL: 4
+                                }); 
+
                                 for (let componentId in components) {
                                     let component = components[componentId];
                                     if (visibleComponents.length == 0 || visibleComponents.some(v => v.component == component.name && !v.isExcluded)) {
                                         if (component.type != "sdk_com_biexcellence_openbi_sap_sac_export__0") {
-                                            lcomponent_box.addItem(new sap.m.CheckBox({
+                                            lcomponent_box.addContent(new sap.m.CheckBox({
                                                 id: component.name,
                                                 text: component.name,
                                                 select: function (oEvent) {
                                                     debugger;
                                                     var objIndex = visibleComponents.findIndex((v => v.component == oEvent.getParameter("id")));
-                                                    visibleComponents[objIndex].isExcluded = !oEvent.getParameter("selected");
+                                                    if objIndex > -1) {
+                                                        visibleComponents[objIndex].isExcluded = !oEvent.getParameter("selected");
+                                                    } else {
+                                                        var lcomp = {};
+                                                        lcomp.component = oEvent.getParameter("id");
+                                                        lcomp.isExcluded = !oEvent.getParameter("selected");
+                                                        visibleComponents.push(lcomp);
+                                                    }
                                                     this[oItem.getKey().toLowerCase() + "Exclude"] = JSON.stringify(visibleComponents);
                                                 }
                                             }));
@@ -282,11 +294,48 @@
                                 }));
                             }
                             if (this.showViewSelector) {
+                                let vars = this.metadata ? JSON.parse(this.metadata)["vars"] : {};
+                                var lview_box = new sap.ui.layout.form.SimpleForm({
+                                    layout: sap.ui.layout.form.SimpleFormLayout.ResponsiveGridLayout,
+                                    columnsM: 3,
+                                    columnsL: 3
+                                });
+                                lview_box.addContent(new sap.m.Toolbar({
+                                    design: sap.m.ToolbarDesign.Info,
+                                    content: [
+                                        new sap.m.Button({ icon: "sap-icon://download" }),
+                                        new sap.m.Button({ icon: "sap-icon://upload" })
+                                    ]
+                                }));
+
+                                for (let varId in vars) {
+                                    let var = vars[varId];
+                                    if (var.isExposed) {
+                                       lview_box.addContent(new sap.m.Label({
+                                            "text": var.description
+                                        }));
+                                    lview_box.addContent(new sap.m.Input({
+                                        "id": var.name,
+                                        "change": function (oEvent) {
+                                        }
+                                        // "valueHelpRequest": this.onHandleVariableSuggest,
+                                        // "showValueHelp": true
+                                    }));
+                                            lview_box.addContent(new sap.m.CheckBox({
+                                                "id": var.name,
+                                                text: "Iterative",
+                                                select: function (oEvent) {
+                                                }
+                                            }));
+                                    }
+                                }
+
                                 ltab.addItem(new sap.m.IconTabFilter({
                                     key: "contents",
                                     text: "Select views",
                                     icon: "",
                                     content: [
+                                        lview_box
                                     ]
                                 }));
                             }
@@ -296,6 +345,7 @@
                                 contentWidth: "400px",
                                 contentHeight: "400px",
                                 draggable: true,
+                                resizable: true,
                                 content: [
                                     ltab
                                 ],
