@@ -301,7 +301,7 @@
                                     columnsL: 3
                                 });
                                 lview_box.addContent(new sap.m.Toolbar({
-                                    ariaLabelledBy="Title1",
+                                    ariaLabelledBy: "Title1",
                                     content: [
                                         new sap.m.Title({ id: "Title1", text: "Views" }),
                                         new sap.m.ToolbarSpacer(),
@@ -335,7 +335,7 @@
                                 }
 
                                 lview_box.addContent(new sap.m.Toolbar({
-                                    ariaLabelledBy="Title2",
+                                    ariaLabelledBy: "Title2",
                                     content: [
                                         new sap.m.Title({ id: "Title2", text: "Mail" }),
                                         new sap.m.ToolbarSpacer(),
