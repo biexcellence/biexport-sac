@@ -842,10 +842,10 @@
             let host = settings.server_urls;
             let url = host + "/sac/export.html";
 
-            this._submitExport(url, form, settings);
+            this._submitExport(host, url, form, settings);
         }
 
-        _submitExport(url, form, settings) {
+        _submitExport(host, exportUrl, form, settings) {
 
             // handle response types
             let callback = (error, filename, blob) => {
@@ -856,6 +856,8 @@
                             settings: settings
                         }
                     }));
+
+                    console.error("Export failed:", error);
                 } else if (filename) {
                     if (filename.indexOf("E:") === 0) {
                         callback(new Error(filename)); // error...
@@ -881,7 +883,7 @@
                             document.body.removeChild(a);
                             URL.revokeObjectURL(downloadUrl);
                         }, 0);
-                    } else if (filename.indexOf("I:") !== 0) { // download via filename and not sheduled
+                    } else if (filename.indexOf("I:") !== 0) { // download via filename and not scheduled
                         let downloadUrl = host + "/sac/download.html?FILE=" + encodeURIComponent(filename);
 
                         window.open(downloadUrl, "_blank");
@@ -889,8 +891,8 @@
                 }
             };
 
-            if (url.indexOf(location.protocol) == 0 || url.indexOf("https:") == 0) { // same protocol => use fetch?
-                fetch(url, {
+            if (exportUrl.indexOf(location.protocol) == 0 || exportUrl.indexOf("https:") == 0) { // same protocol => use fetch?
+                fetch(exportUrl, {
                     method: "POST",
                     mode: "cors",
                     body: new FormData(form),
@@ -924,17 +926,17 @@
                                 })();
                             }).then(() => {
                                 // try again after oauth
-                                this._submitExport(url, form, settings);
+                                this._submitExport(host, exportUrl, form, settings);
                             });
                         });
                     } else {
-                        throw new Error(response.status + " - " + response.statusText);
+                        throw new Error(response.status + ": " + response.statusText);
                     }
                 }).catch(reason => {
                     callback(reason);
                 });
             } else { // use form with blank target...
-                form.action = url;
+                form.action = exportUrl;
                 form.target = "_blank";
                 form.method = "POST";
                 form.acceptCharset = "utf-8";
