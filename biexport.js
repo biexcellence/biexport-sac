@@ -263,9 +263,10 @@
                                     let component = components[componentId];
                                     if (visibleComponents.length == 0 || visibleComponents.some(v => v.component == component.name && !v.isExcluded)) {
                                         if (component.type != "sdk_com_biexcellence_openbi_sap_sac_export__0") {
+                                            var ltext = component.name.replace(/_/g, ' ');
                                             lcomponent_box.addContent(new sap.m.CheckBox({
                                                 id: component.name,
-                                                text: component.name,
+                                                text: ltext,
                                                 select: function (oEvent) {
                                                     debugger;
                                                     var objIndex = visibleComponents.findIndex((v => v.component == oEvent.getParameter("id")));
@@ -303,7 +304,7 @@
                                 lview_box.addContent(new sap.m.Toolbar({
                                     ariaLabelledBy: "Title1",
                                     content: [
-                                        new sap.m.Title({ id: "Title1", text: "Views" }),
+                                        new sap.m.Title({ id: "Title1", text: "Application Parameters" }),
                                         new sap.m.ToolbarSpacer(),
                                         new sap.m.Button({ icon: "sap-icon://download" }),
                                         new sap.m.Button({ icon: "sap-icon://upload" })
@@ -337,7 +338,7 @@
                                 lview_box.addContent(new sap.m.Toolbar({
                                     ariaLabelledBy: "Title2",
                                     content: [
-                                        new sap.m.Title({ id: "Title2", text: "Mail" }),
+                                        new sap.m.Title({ id: "Title2", text: "Document Delivery" }),
                                         new sap.m.ToolbarSpacer(),
                                     ]
                                 }));
@@ -348,16 +349,20 @@
                                 lview_box.addContent(new sap.m.Label({
                                     "text": "Mail Recipient"
                                 }));
-                                lview_box.addContent(new sap.m.Input({
+                                var lmail = new sap.m.Input({
                                     "id": "mail_to",
                                     "change": function (oEvent) {
                                         debugger;
                                     }
-                                }));
+                                });
+                                lmail.setValue(sap.fpa.ui.infra.common.getContext().getUser().getEmail());
+
+                                lview_box.addContent(lmail);
+
 
                                 ltab.addItem(new sap.m.IconTabFilter({
                                     key: "contents",
-                                    text: "Define Views",
+                                    text: "Define Briefing Book Views",
                                     icon: "",
                                     content: [
                                         lview_box
