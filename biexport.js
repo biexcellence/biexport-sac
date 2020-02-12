@@ -141,6 +141,8 @@
             this._export_settings.parseCssClassFilter = "";
 
             this._updateSettings();
+
+            this._renderExportButton();
         }
 
         connectedCallback() {
@@ -230,222 +232,226 @@
         }
 
         onCustomWidgetAfterUpdate(changedProperties) {
-            if (this._buttonSlot) {
-                this._buttonSlot.remove();
+            this._pptMenuItem.setVisible(this.enablePpt);
+            this._pptMenuItem.setText(this.showTexts ? this._cPPT_text : null);
+            this._pptMenuItem.setIcon(this.showIcons ? this._cPPT_icon : null);
+
+            this._docMenuItem.setVisible(this.enableDoc);
+            this._docMenuItem.setText(this.showTexts ? this._cDOC_text : null);
+            this._docMenuItem.setIcon(this.showIcons ? this._cDOC_icon : null);
+
+            this._xlsMenuItem.setVisible(this.enableXls);
+            this._xlsMenuItem.setText(this.showTexts ? this._cXLS_text : null);
+            this._xlsMenuItem.setIcon(this.showIcons ? this._cXLS_icon : null);
+
+            this._csvMenuItem.setVisible(this.enableCsv);
+            this._csvMenuItem.setText(this.showTexts ? this._cCSV_text : null);
+            this._csvMenuItem.setIcon(this.showIcons ? this._cCSV_icon : null);
+
+            this._pdfMenuItem.setVisible(this.enablePdf);
+            this._pdfMenuItem.setText(this.showTexts ? this._cPDF_text : null);
+            this._pdfMenuItem.setIcon(this.showIcons ? this._cPDF_icon : null);
+
+            this._exportButton.setVisible(this.showTexts || this.showIcons);
+            this._exportButton.setText(this.showTexts ? this._cExport_text : null);
+            this._exportButton.setIcon(this.showIcons ? this._cExport_icon : null);
+            if (this._designMode) {
+                this._exportButton.setEnabled(false);
             }
-            this._buttonSlot = document.createElement("div");
-            this._buttonSlot.slot = "export_button";
-            this.appendChild(this._buttonSlot);
+        }
 
-            if (this.showTexts || this.showIcons) {
-                let lmenu = new sap.m.Menu({
-                    title: "Export",
-                    itemSelected: oEvent => {
-                        let oItem = oEvent.getParameter("item");
-                        if (!this.showComponentSelector && !this.showViewSelector) {
-                            this.doExport(oItem.getKey());
-                        } else {
+        _renderExportButton() {
+            let menu = new sap.m.Menu({
+                title: "Export",
+                itemSelected: oEvent => {
+                    let oItem = oEvent.getParameter("item");
+                    if (!this.showComponentSelector && !this.showViewSelector) {
+                        this.doExport(oItem.getKey());
+                    } else {
 
-                            let ltab = new sap.m.IconTabBar({
-                                expandable: false
+                        let ltab = new sap.m.IconTabBar({
+                            expandable: false
+                        });
+
+                        if (this.showComponentSelector && oItem.getKey() != "CSV") {
+                            let components = this.metadata ? JSON.parse(this.metadata)["components"] : {};
+                            let visibleComponents = this[oItem.getKey().toLowerCase() + "Exclude"] ? JSON.parse(this[oItem.getKey().toLowerCase() + "Exclude"]) : [];
+
+                            let lcomponent_box = new sap.ui.layout.form.SimpleForm({
+                                layout: sap.ui.layout.form.SimpleFormLayout.ResponsiveGridLayout,
+                                columnsM: 2,
+                                columnsL: 4
                             });
 
-                            if (this.showComponentSelector && oItem.getKey() != "CSV") {
-                                let components = this.metadata ? JSON.parse(this.metadata)["components"] : {};
-                                let visibleComponents = this[oItem.getKey().toLowerCase() + "Exclude"] ? JSON.parse(this[oItem.getKey().toLowerCase() + "Exclude"]) : [];
+                            for (let componentId in components) {
+                                let component = components[componentId];
 
-                                let lcomponent_box = new sap.ui.layout.form.SimpleForm({
-                                    layout: sap.ui.layout.form.SimpleFormLayout.ResponsiveGridLayout,
-                                    columnsM: 2,
-                                    columnsL: 4
-                                });
-
-                                for (let componentId in components) {
-                                    let component = components[componentId];
-
-                                    if (component.type == "sdk_com_biexcellence_openbi_sap_sac_export__0") {
-                                        continue;
-                                    }
-
-                                    if (visibleComponents.length == 0 || visibleComponents.some(v => v.component == component.name && !v.isExcluded)) {
-                                        let ltext = component.name.replace(/_/g, ' ');
-                                        lcomponent_box.addContent(new sap.m.CheckBox({
-                                            id: component.name,
-                                            text: ltext,
-                                            select: oEvent => {
-                                                let objIndex = visibleComponents.findIndex(v => v.component == oEvent.getParameter("id"));
-                                                if (objIndex > -1) {
-                                                    visibleComponents[objIndex].isExcluded = !oEvent.getParameter("selected");
-                                                } else {
-                                                    visibleComponents.push({
-                                                        component: oEvent.getParameter("id"),
-                                                        isExcluded: !oEvent.getParameter("selected")
-                                                    });
-                                                }
-                                                this[oItem.getKey().toLowerCase() + "Exclude"] = JSON.stringify(visibleComponents);
-                                            }
-                                        }));
-                                    }
+                                if (component.type == "sdk_com_biexcellence_openbi_sap_sac_export__0") {
+                                    continue;
                                 }
 
-                                ltab.addItem(new sap.m.IconTabFilter({
-                                    key: "components",
-                                    text: "Select Components",
-                                    icon: "",
-                                    content: [
-                                        lcomponent_box
-                                    ]
-                                }));
-                            }
-                            if (this.showViewSelector) {
-                                let vars = this.metadata ? JSON.parse(this.metadata)["vars"] : {};
-                                let lview_box = new sap.ui.layout.form.SimpleForm({
-                                    layout: sap.ui.layout.form.SimpleFormLayout.ResponsiveGridLayout,
-                                    columnsM: 3,
-                                    columnsL: 3
-                                });
-                                lview_box.addContent(new sap.m.Toolbar({
-                                    ariaLabelledBy: "Title1",
-                                    content: [
-                                        new sap.m.Title({ id: "Title1", text: "Application Parameters" }),
-                                        new sap.m.ToolbarSpacer(),
-                                        new sap.m.Button({ icon: "sap-icon://download" }),
-                                        new sap.m.Button({ icon: "sap-icon://upload" })
-                                    ]
-                                }));
-
-                                for (let varId in vars) {
-                                    let varObj = vars[varId];
-                                    if (varObj.isExposed) {
-                                        lview_box.addContent(new sap.m.Label({
-                                            "text": varObj.description || varObj.name
-                                        }));
-                                        lview_box.addContent(new sap.m.Input({
-                                            "id": varObj.name + "_value",
-                                            "change": oEvent => {
-                                                //debugger;
+                                if (visibleComponents.length == 0 || visibleComponents.some(v => v.component == component.name && !v.isExcluded)) {
+                                    let ltext = component.name.replace(/_/g, ' ');
+                                    lcomponent_box.addContent(new sap.m.CheckBox({
+                                        id: component.name,
+                                        text: ltext,
+                                        select: oEvent => {
+                                            let objIndex = visibleComponents.findIndex(v => v.component == oEvent.getParameter("id"));
+                                            if (objIndex > -1) {
+                                                visibleComponents[objIndex].isExcluded = !oEvent.getParameter("selected");
+                                            } else {
+                                                visibleComponents.push({
+                                                    component: oEvent.getParameter("id"),
+                                                    isExcluded: !oEvent.getParameter("selected")
+                                                });
                                             }
-                                            // "valueHelpRequest": this.onHandleVariableSuggest,
-                                            // "showValueHelp": true
-                                        }));
-                                        lview_box.addContent(new sap.m.CheckBox({
-                                            "id": varObj.name + "_iterative",
-                                            text: "Iterative",
-                                            select: oEvent => {
-                                                //debugger;
-                                            }
-                                        }));
-                                    }
+                                            this[oItem.getKey().toLowerCase() + "Exclude"] = JSON.stringify(visibleComponents);
+                                        }
+                                    }));
                                 }
-
-                                lview_box.addContent(new sap.m.Toolbar({
-                                    ariaLabelledBy: "Title2",
-                                    content: [
-                                        new sap.m.Title({ id: "Title2", text: "Document Delivery" }),
-                                        new sap.m.ToolbarSpacer(),
-                                    ]
-                                }));
-
-                                lview_box.addContent(new sap.m.Text({
-                                    "text": "The generation of Briefing Books with multiple views might take a while. Activate mail delivery to receive the document via mail"
-                                }));
-                                lview_box.addContent(new sap.m.Label({
-                                    "text": "Mail Recipient"
-                                }));
-                                let lmail = new sap.m.Input({
-                                    "id": "mail_to",
-                                    "change": oEvent => {
-                                        //debugger;
-                                    }
-                                });
-                                lmail.setValue(sap.fpa.ui.infra.common.getContext().getUser().getEmail());
-
-                                lview_box.addContent(lmail);
-
-
-                                ltab.addItem(new sap.m.IconTabFilter({
-                                    key: "contents",
-                                    text: "Define Briefing Book Views",
-                                    icon: "",
-                                    content: [
-                                        lview_box
-                                    ]
-                                }));
                             }
 
-                            let dialog = new sap.m.Dialog({
-                                title: 'Configure Export',
-                                contentWidth: "400px",
-                                contentHeight: "400px",
-                                draggable: true,
-                                resizable: true,
+                            ltab.addItem(new sap.m.IconTabFilter({
+                                key: "components",
+                                text: "Select Components",
+                                icon: "",
                                 content: [
-                                    ltab
-                                ],
-                                beginButton: new sap.m.Button({
-                                    text: 'Submit',
-                                    press: () => {
-                                        this.doExport(oItem.getKey());
-                                        dialog.close();
-                                    }
-                                }),
-                                endButton: new sap.m.Button({
-                                    text: 'Cancel',
-                                    press: () => {
-                                        dialog.close();
-                                    }
-                                }),
-                                afterClose: () => {
-                                    if (lcomponent_box != null) { lcomponent_box.destroy(); }
-                                    if (lview_box != null) { lview_box.destroy(); }
-                                    ltab.destroy();
-                                    dialog.destroy();
+                                    lcomponent_box
+                                ]
+                            }));
+                        }
+                        if (this.showViewSelector) {
+                            let vars = this.metadata ? JSON.parse(this.metadata)["vars"] : {};
+                            let lview_box = new sap.ui.layout.form.SimpleForm({
+                                layout: sap.ui.layout.form.SimpleFormLayout.ResponsiveGridLayout,
+                                columnsM: 3,
+                                columnsL: 3
+                            });
+                            lview_box.addContent(new sap.m.Toolbar({
+                                ariaLabelledBy: "Title1",
+                                content: [
+                                    new sap.m.Title({ id: "Title1", text: "Application Parameters" }),
+                                    new sap.m.ToolbarSpacer(),
+                                    new sap.m.Button({ icon: "sap-icon://download" }),
+                                    new sap.m.Button({ icon: "sap-icon://upload" })
+                                ]
+                            }));
+
+                            for (let varId in vars) {
+                                let varObj = vars[varId];
+                                if (varObj.isExposed) {
+                                    lview_box.addContent(new sap.m.Label({
+                                        "text": varObj.description || varObj.name
+                                    }));
+                                    lview_box.addContent(new sap.m.Input({
+                                        "id": varObj.name + "_value",
+                                        "change": oEvent => {
+                                            //debugger;
+                                        }
+                                        // "valueHelpRequest": this.onHandleVariableSuggest,
+                                        // "showValueHelp": true
+                                    }));
+                                    lview_box.addContent(new sap.m.CheckBox({
+                                        "id": varObj.name + "_iterative",
+                                        text: "Iterative",
+                                        select: oEvent => {
+                                            //debugger;
+                                        }
+                                    }));
+                                }
+                            }
+
+                            lview_box.addContent(new sap.m.Toolbar({
+                                ariaLabelledBy: "Title2",
+                                content: [
+                                    new sap.m.Title({ id: "Title2", text: "Document Delivery" }),
+                                    new sap.m.ToolbarSpacer(),
+                                ]
+                            }));
+
+                            lview_box.addContent(new sap.m.Text({
+                                "text": "The generation of Briefing Books with multiple views might take a while. Activate mail delivery to receive the document via mail"
+                            }));
+                            lview_box.addContent(new sap.m.Label({
+                                "text": "Mail Recipient"
+                            }));
+                            let lmail = new sap.m.Input({
+                                "id": "mail_to",
+                                "change": oEvent => {
+                                    //debugger;
                                 }
                             });
+                            lmail.setValue(sap.fpa.ui.infra.common.getContext().getUser().getEmail());
 
-                            dialog.open();
+                            lview_box.addContent(lmail);
+
+
+                            ltab.addItem(new sap.m.IconTabFilter({
+                                key: "contents",
+                                text: "Define Briefing Book Views",
+                                icon: "",
+                                content: [
+                                    lview_box
+                                ]
+                            }));
                         }
+
+                        let dialog = new sap.m.Dialog({
+                            title: 'Configure Export',
+                            contentWidth: "400px",
+                            contentHeight: "400px",
+                            draggable: true,
+                            resizable: true,
+                            content: [
+                                ltab
+                            ],
+                            beginButton: new sap.m.Button({
+                                text: 'Submit',
+                                press: () => {
+                                    this.doExport(oItem.getKey());
+                                    dialog.close();
+                                }
+                            }),
+                            endButton: new sap.m.Button({
+                                text: 'Cancel',
+                                press: () => {
+                                    dialog.close();
+                                }
+                            }),
+                            afterClose: () => {
+                                if (lcomponent_box != null) { lcomponent_box.destroy(); }
+                                if (lview_box != null) { lview_box.destroy(); }
+                                ltab.destroy();
+                                dialog.destroy();
+                            }
+                        });
+
+                        dialog.open();
                     }
-                });
+                }
+            });
 
-                let ltext = "";
-                let licon = "";
-                if (this.enablePpt) {
-                    if (this.showTexts) { ltext = this._cPPT_text; }
-                    if (this.showIcons) { licon = this._cPPT_icon; }
-                    lmenu.addItem(new sap.m.MenuItem({ text: ltext, icon: licon, key: "PPT" }));
-                }
-                if (this.enableDoc) {
-                    if (this.showTexts) { ltext = this._cDOC_text; }
-                    if (this.showIcons) { licon = this._cDOC_icon; }
-                    lmenu.addItem(new sap.m.MenuItem({ text: ltext, icon: licon, key: "DOC" }));
-                }
-                if (this.enableXls) {
-                    if (this.showTexts) { ltext = this._cXLS_text; }
-                    if (this.showIcons) { licon = this._cXLS_icon; }
-                    lmenu.addItem(new sap.m.MenuItem({ text: ltext, icon: licon, key: "XLS" }));
-                }
-                if (this.enableCsv) {
-                    if (this.showTexts) { ltext = this._cCSV_text; }
-                    if (this.showIcons) { licon = this._cCSV_icon; }
-                    lmenu.addItem(new sap.m.MenuItem({ text: ltext, icon: licon, key: "CSV" }));
-                }
-                if (this.enablePdf) {
-                    if (this.showTexts) { ltext = this._cPDF_text; }
-                    if (this.showIcons) { licon = this._cPDF_icon; }
-                    lmenu.addItem(new sap.m.MenuItem({ text: ltext, icon: licon, key: "PDF" }));
-                }
+            this._pptMenuItem = new sap.m.MenuItem({ key: "PPT" });
+            menu.addItem(this._pptMenuItem);
 
-                if (this.showTexts) { ltext = this._cExport_text; }
-                if (this.showIcons) { licon = this._cExport_icon; }
+            this._docMenuItem = new sap.m.MenuItem({ key: "DOC" });
+            menu.addItem(this._docMenuItem);
 
-                let lmenubutton = new sap.m.MenuButton({ text: ltext, icon: licon, menu: lmenu });
-                if (this._designMode) {
-                    lmenubutton.setEnabled(false);
-                }
+            this._xlsMenuItem = new sap.m.MenuItem({ key: "XLS" });
+            menu.addItem(this._xlsMenuItem);
 
-                lmenubutton.placeAt(this._buttonSlot);
-            }
+            this._csvMenuItem = new sap.m.MenuItem({ key: "CSV" });
+            menu.addItem(this._csvMenuItem);
+
+            this._pdfMenuItem = new sap.m.MenuItem({ key: "PDF" });
+            menu.addItem(this._pdfMenuItem);
+
+            let buttonSlot = document.createElement("div");
+            buttonSlot.slot = "export_button";
+            this.appendChild(buttonSlot);
+
+            this._exportButton = new sap.m.MenuButton({ menu: menu, visible: false });
+            this._exportButton.placeAt(buttonSlot);
         }
 
         // DISPLAY
