@@ -301,8 +301,10 @@
                                     columnsL: 3
                                 });
                                 lview_box.addContent(new sap.m.Toolbar({
-                                    design: sap.m.ToolbarDesign.Info,
+                                    ariaLabelledBy="Title1",
                                     content: [
+                                        new sap.m.Title({ id: "Title1", text: "Views" }),
+                                        new sap.m.ToolbarSpacer(),
                                         new sap.m.Button({ icon: "sap-icon://download" }),
                                         new sap.m.Button({ icon: "sap-icon://upload" })
                                     ]
@@ -332,9 +334,30 @@
                                     }
                                 }
 
+                                lview_box.addContent(new sap.m.Toolbar({
+                                    ariaLabelledBy="Title2",
+                                    content: [
+                                        new sap.m.Title({ id: "Title2", text: "Mail" }),
+                                        new sap.m.ToolbarSpacer(),
+                                    ]
+                                }));
+
+                                lview_box.addContent(new sap.m.Text({
+                                    "text": "The generation of Briefing Books with multiple views might take a while. Activate mail delivery to receive the document via mail"
+                                }));
+                                lview_box.addContent(new sap.m.Label({
+                                    "text": "Mail Recipient"
+                                }));
+                                lview_box.addContent(new sap.m.Input({
+                                    "id": "mail_to",
+                                    "change": function (oEvent) {
+                                        debugger;
+                                    }
+                                }));
+
                                 ltab.addItem(new sap.m.IconTabFilter({
                                     key: "contents",
-                                    text: "Select views",
+                                    text: "Define Views",
                                     icon: "",
                                     content: [
                                         lview_box
