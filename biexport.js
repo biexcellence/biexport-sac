@@ -318,7 +318,7 @@
                                     let varObj = vars[varId];
                                     if (varObj.isExposed) {
                                         lview_box.addContent(new sap.m.Label({
-                                            "text": varObj.description
+                                            "text": varObj.description || varObj.name
                                         }));
                                         lview_box.addContent(new sap.m.Input({
                                             "id": varObj.name + "_value",
