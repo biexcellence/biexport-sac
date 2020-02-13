@@ -320,8 +320,8 @@
                         if (this.showViewSelector) {
                             lview_box = new sap.ui.layout.form.SimpleForm({
                                 layout: sap.ui.layout.form.SimpleFormLayout.ResponsiveGridLayout,
-                                columnsM: 3,
-                                columnsL: 3
+                                columnsM: 1,
+                                columnsL: 1
                             });
                             lview_box.addContent(new sap.m.Toolbar({
                                 ariaLabelledBy: "Title1",
@@ -338,21 +338,52 @@
                                 let varObj = vars[varId];
                                 if (varObj.isExposed) {
                                     lview_box.addContent(new sap.m.Label({
-                                        "text": varObj.description || varObj.name
+                                        text: varObj.description || varObj.name
                                     }));
                                     lview_box.addContent(new sap.m.Input({
-                                        "id": varObj.name + "_value",
-                                        "change": oEvent => {
+                                        id: varObj.name + "_value",
+                                        change: oEvent => {
                                             //debugger;
+                                            let context = sap.fpa.ui.infra.common.getContext();
+
+                                            var lmetadata = that.metadata ? JSON.parse(that.metadata);
+                                            lmetadata.application_array = [];
+                                            lmetadata.application_array.push({ "application": context.getAppArgument().appId });
+
+                                            let objIndex = lmetadata.array_var.findIndex(v => v.parameter == oEvent.getParameter("id").replace("_value", ""));
+                                            if (objIndex > -1) {
+                                                metadata.array_var[objIndex].value = oEvent.getParameter("value");
+                                            } else {
+                                                lmetadata.array_var.push({ "parameter": oEvent.getParameter("id").replace("_value", ""), "values": oEvent.getParameter("value"), "iterative": false, "applications": "" });
+                                            }
+
+                                            that.metadata = JSON.stringify(lmetadata);
+
+
+
                                         }
                                         // "valueHelpRequest": this.onHandleVariableSuggest,
                                         // "showValueHelp": true
                                     }));
                                     lview_box.addContent(new sap.m.CheckBox({
-                                        "id": varObj.name + "_iterative",
+                                        id: varObj.name + "_iterative",
                                         text: "Iterative",
                                         select: oEvent => {
                                             //debugger;
+                                            let context = sap.fpa.ui.infra.common.getContext();
+
+                                            var lmetadata = that.metadata ? JSON.parse(that.metadata);
+                                            lmetadata.application_array = [];
+                                            lmetadata.application_array.push({ "application": context.getAppArgument().appId });
+
+                                            let objIndex = lmetadata.array_var.findIndex(v => v.parameter == oEvent.getParameter("id").replace("_iterative", ""));
+                                            if (objIndex > -1) {
+                                                metadata.array_var[objIndex].iterative = oEvent.getParameter("selected");
+                                            } else {
+                                                lmetadata.array_var.push({ "parameter": oEvent.getParameter("id").replace("_iterative", ""), "values": "", "iterative": oEvent.getParameter("selected"), "applications": "" });
+                                            }
+
+                                            that.metadata = JSON.stringify(lmetadata);
                                         }
                                     }));
                                 }
@@ -367,21 +398,33 @@
                                 }));
 
                             lview_box.addContent(new sap.m.Text({
-                                "text": "The generation of Briefing Books with multiple views might take a while. Activate mail delivery to receive the document via mail"
+                                text: "The generation of Briefing Books with multiple views might take a while. Activate mail delivery to receive the document via mail"
+                            }));
+                            lview_box.addContent(new sap.m.CheckBox({
+                                text: "Activate Mail Delivery",
+                                select: oEvent => {
+                                    debugger;
+                                    this.getView().byId("mail_to").setEnabled(true);
+                                    var lmetadata = that.metadata ? JSON.parse(that.metadata);
+                                    lmetadata.mail_to = sap.fpa.ui.infra.common.getContext().getUser().getEmail();
+                                    that.metadata = JSON.stringify(lmetadata);
+                                }
                             }));
                             lview_box.addContent(new sap.m.Label({
-                                "text": "Mail Recipient"
+                                text: "Recipient"
                             }));
                             let lmail = new sap.m.Input({
-                                "id": "mail_to",
-                                "change": oEvent => {
-                                    //debugger;
+                                id: "mail_to",
+                                enabled: false,
+                                change: oEvent => {
+                                    debugger;
+                                    var lmetadata = that.metadata ? JSON.parse(that.metadata);
+                                    lmetadata.mail_to = oEvent.getParameter("value");
+                                    that.metadata = JSON.stringify(lmetadata);
                                 }
                             });
                             lmail.setValue(sap.fpa.ui.infra.common.getContext().getUser().getEmail());
-
                             lview_box.addContent(lmail);
-
 
                             ltab.addItem(new sap.m.IconTabFilter({
                                 key: "contents",
@@ -395,7 +438,7 @@
 
                         let dialog = new sap.m.Dialog({
                             title: "Configure Export",
-                            contentWidth: "400px",
+                            contentWidth: "500px",
                             contentHeight: "400px",
                             draggable: true,
                             resizable: true,
