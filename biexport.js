@@ -298,8 +298,8 @@
                                 let vars = this.metadata ? JSON.parse(this.metadata)["vars"] : {};
                                 var lview_box = new sap.ui.layout.form.SimpleForm({
                                     layout: sap.ui.layout.form.SimpleFormLayout.ResponsiveGridLayout,
-                                    columnsM: 3,
-                                    columnsL: 3
+                                    columnsM: 1,
+                                    columnsL: 1
                                 });
                                 lview_box.addContent(new sap.m.Toolbar({
                                     ariaLabelledBy: "Title1",
@@ -321,6 +321,9 @@
                                         "id": varObj.name + "_value",
                                         "change": function (oEvent) {
                                             debugger;
+
+                                            let context = sap.fpa.ui.infra.common.getContext();
+                                            let appId = context.getAppArgument().appId;
                                         }
                                         // "valueHelpRequest": this.onHandleVariableSuggest,
                                         // "showValueHelp": true
@@ -330,6 +333,9 @@
                                                 text: "Iterative",
                                                 select: function (oEvent) {
                                                     debugger;
+
+                                                    let context = sap.fpa.ui.infra.common.getContext();
+                                                    let appId = context.getAppArgument().appId;
                                                 }
                                             }));
                                     }
@@ -339,12 +345,18 @@
                                     ariaLabelledBy: "Title2",
                                     content: [
                                         new sap.m.Title({ id: "Title2", text: "Document Delivery" }),
-                                        new sap.m.ToolbarSpacer(),
+                                        new sap.m.ToolbarSpacer()
                                     ]
                                 }));
 
                                 lview_box.addContent(new sap.m.Text({
                                     "text": "The generation of Briefing Books with multiple views might take a while. Activate mail delivery to receive the document via mail"
+                                }));
+                                lview_box.addContent(new sap.m.CheckBox({
+                                    text: "Activate Mail Delivery",
+                                    select: function (oEvent) {
+                                        debugger;
+                                    }
                                 }));
                                 lview_box.addContent(new sap.m.Label({
                                     "text": "Mail Recipient"
@@ -372,7 +384,7 @@
 
                             var dialog = new sap.m.Dialog({
                                 title: 'Configure Export',
-                                contentWidth: "400px",
+                                contentWidth: "500px",
                                 contentHeight: "400px",
                                 draggable: true,
                                 resizable: true,
