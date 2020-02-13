@@ -61,7 +61,7 @@
             "description": "As an alternative to the HTML Template property, you can also specify a DOC, DOCX, PPT or PPTX template which will be used as a fully formatted template for your PDF export",
             "default": ""
         },
-        "pptSeperate": {
+        "pptSeparate": {
             "type": "boolean",
             "description": "This property only takes affect if you are not using an Export Template. If set to `false` the application is rendered onto one slide. If you set this property to `true`, each component is rendered to a separate slide.",
             "default": true
@@ -178,6 +178,7 @@
             "description": "XLS Excludes",
             "default": ""
         },
+
         "metadata": {
             "type": "string",
             "description": "For internal use",

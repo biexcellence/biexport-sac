@@ -1,5 +1,5 @@
 (function () {
-    let tmpl = document.createElement('template');
+    let tmpl = document.createElement("template");
     tmpl.innerHTML = `
       <style>
           fieldset {
@@ -245,19 +245,18 @@
             this._hoverDiv.style.border = "5px solid lime";
             this._hoverDiv.style.position = "absolute";
             this._hoverDiv.style.boxSizing = "border-box";
-            this._hoverDiv.style.display = "none";
-
-            let hoverDivVisible = false;
 
             ["pdfExclude", "pptExclude", "docExclude", "xlsExclude"].forEach(id => {
-                this._shadowRoot.getElementById(id).addEventListener("change", this._visibleComponentsChange.bind(this));
+                let excludeDetails = this._shadowRoot.getElementById(id);
 
-                this._shadowRoot.getElementById(id).addEventListener("mouseover", e => {
-                    if (!hoverDivVisible && e.target.tagName == "LABEL") {
+                excludeDetails.addEventListener("change", this._visibleComponentsChange.bind(this));
+
+                excludeDetails.addEventListener("mouseover", e => {
+                    if (e.target.tagName == "LABEL" && !this._hoverDiv.parentElement) {
                         let input = e.target.querySelector("input");
-                        let id = input.id;
+                        let componentId = input.value;
 
-                        let target = document.querySelector("[data-sap-widget-id='" + id + "']");
+                        let target = document.querySelector("[data-sap-widget-id='" + componentId + "']");
                         if (target) {
                             let rect = target.getBoundingClientRect();
 
@@ -265,48 +264,42 @@
                             this._hoverDiv.style.left = rect.left + "px";
                             this._hoverDiv.style.width = rect.width + "px";
                             this._hoverDiv.style.height = rect.height + "px";
-                            this._hoverDiv.style.display = "block";
 
-                            if (!this._hoverDiv.parentElement) {
-                                document.body.appendChild(this._hoverDiv);
-                            }
-
-                            hoverDivVisible = true;
+                            document.body.appendChild(this._hoverDiv);
                         }
                     }
                 });
 
-                this._shadowRoot.getElementById(id).addEventListener("mouseout", e => {
-                    if (hoverDivVisible && e.target.tagName == "LABEL") {
-                        this._hoverDiv.style.display = "none";
-
-                        hoverDivVisible = false;
+                excludeDetails.addEventListener("mouseout", e => {
+                    if (e.target.tagName == "LABEL" && this._hoverDiv.parentElement) {
+                        this._hoverDiv.remove();
                     }
                 });
             });
         }
 
         connectedCallback() {
+            // try to load oauth info
             fetch("/oauthservice/api/v1/oauthclient?tenant=" + window.TENANT).then(response => {
                 if (response.ok) {
                     return response.json();
                 }
                 throw new Error("Failed to get oauth clients: " + response.status)
             }).then(oauthClients => {
-                let selectEle = this._shadowRoot.getElementById("oauthId");
+                let oauthSelect = this._shadowRoot.getElementById("oauthId");
                 let clientId = this.getValue("oauthClientId");
-                while (selectEle.options.length > 1) {
-                    selectEle.options.remove(1);
+                while (oauthSelect.options.length > 1) {
+                    oauthSelect.options.remove(1);
                 }
 
                 oauthClients.forEach(oauthClient => {
                     if (oauthClient.apiAccessEnabled === false && oauthClient.redirectUris[0].endsWith("/sac/oauth.html")) {
-                        selectEle.options.add(new Option(oauthClient.name, oauthClient.id, false, oauthClient.clientId == clientId));
+                        oauthSelect.options.add(new Option(oauthClient.name, oauthClient.id, false, oauthClient.clientId == clientId));
                     }
                 });
 
-                selectEle.addEventListener("change", () => {
-                    let value = selectEle.value;
+                oauthSelect.addEventListener("change", () => {
+                    let value = oauthSelect.value;
                     if (value) {
                         let oauth = {};
                         Promise.all([
@@ -330,7 +323,7 @@
                         this._changeProperty("oauth");
                     }
                 });
-                selectEle.closest("tr").hidden = false;
+                oauthSelect.closest("tr").hidden = false;
             });
         }
 
@@ -352,9 +345,9 @@
         _change(e) {
             this._changeProperty(e.target.name);
         }
-        _changeProperty(propertyName) {
+        _changeProperty(name) {
             let properties = {};
-            properties[propertyName] = this[propertyName];
+            properties[name] = this[name];
             this._firePropertiesChanged(properties);
         }
 
@@ -639,10 +632,10 @@
         }
 
         _renderVisibleComponents(id, metadata, value) {
-            let node = this._shadowRoot.getElementById(id);
+            let excludeDetails = this._shadowRoot.getElementById(id);
 
-            while (node.lastElementChild != node.firstElementChild) {
-                node.lastElementChild.remove();
+            while (excludeDetails.lastElementChild != excludeDetails.firstElementChild) {
+                excludeDetails.lastElementChild.remove();
             }
 
             let visibleComponents = value ? JSON.parse(value) : [];
@@ -654,24 +647,23 @@
                     continue;
                 }
 
-                let div = document.createElement("div");
-                let label = document.createElement("label");
                 let checkbox = document.createElement("input");
                 checkbox.type = "checkbox";
-                checkbox.id = componentId;
                 checkbox.name = component.name;
+                checkbox.value = componentId;
                 checkbox.checked = visibleComponents.some(v => v.component == component.name && !v.isExcluded);
-                let text = document.createTextNode(component.name);
 
+                let label = document.createElement("label");
                 label.appendChild(checkbox);
-                label.appendChild(text);
+                label.appendChild(document.createTextNode(component.name));
 
+                let div = document.createElement("div");
                 div.appendChild(label);
 
-                node.appendChild(div);
+                excludeDetails.appendChild(div);
             }
 
-            let summary = node.querySelector("summary");
+            let summary = excludeDetails.querySelector("summary");
             summary.textContent = "Visible Components (" + (visibleComponents.filter(v => !v.isExcluded).length || Object.keys(components).length) + ")";
         }
 
