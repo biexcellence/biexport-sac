@@ -346,20 +346,17 @@
                                             //debugger;
                                             let context = sap.fpa.ui.infra.common.getContext();
 
-                                            var lmetadata = that.metadata ? JSON.parse(that.metadata);
-                                            lmetadata.application_array = [];
-                                            lmetadata.application_array.push({ "application": context.getAppArgument().appId });
+                                            this._export_settings.application_array = [];
+                                            this._export_settings.application_array.push({ "application": context.getAppArgument().appId });
 
-                                            let objIndex = lmetadata.array_var.findIndex(v => v.parameter == oEvent.getParameter("id").replace("_value", ""));
+                                            let objIndex = this._export_settings.array_var.findIndex(v => v.parameter == oEvent.getParameter("id").replace("_value", ""));
                                             if (objIndex > -1) {
-                                                metadata.array_var[objIndex].value = oEvent.getParameter("value");
+                                                this._export_settings.array_var[objIndex].value = oEvent.getParameter("value");
                                             } else {
-                                                lmetadata.array_var.push({ "parameter": oEvent.getParameter("id").replace("_value", ""), "values": oEvent.getParameter("value"), "iterative": false, "applications": "" });
+                                                this._export_settings.array_var.push({ "parameter": oEvent.getParameter("id").replace("_value", ""), "values": oEvent.getParameter("value"), "iterative": false, "applications": "" });
                                             }
 
-                                            that.metadata = JSON.stringify(lmetadata);
-
-
+                                            this._updateSettings();
 
                                         }
                                         // "valueHelpRequest": this.onHandleVariableSuggest,
@@ -372,18 +369,17 @@
                                             //debugger;
                                             let context = sap.fpa.ui.infra.common.getContext();
 
-                                            var lmetadata = that.metadata ? JSON.parse(that.metadata);
-                                            lmetadata.application_array = [];
-                                            lmetadata.application_array.push({ "application": context.getAppArgument().appId });
+                                            this._export_settings.application_array = [];
+                                            this._export_settings.application_array.push({ "application": context.getAppArgument().appId });
 
-                                            let objIndex = lmetadata.array_var.findIndex(v => v.parameter == oEvent.getParameter("id").replace("_iterative", ""));
+                                            let objIndex = this._export_settings.array_var.findIndex(v => v.parameter == oEvent.getParameter("id").replace("_iterative", ""));
                                             if (objIndex > -1) {
-                                                metadata.array_var[objIndex].iterative = oEvent.getParameter("selected");
+                                                this._export_settings.array_var[objIndex].iterative = oEvent.getParameter("selected");
                                             } else {
-                                                lmetadata.array_var.push({ "parameter": oEvent.getParameter("id").replace("_iterative", ""), "values": "", "iterative": oEvent.getParameter("selected"), "applications": "" });
+                                                this._export_settings.push({ "parameter": oEvent.getParameter("id").replace("_iterative", ""), "values": "", "iterative": oEvent.getParameter("selected"), "applications": "" });
                                             }
 
-                                            that.metadata = JSON.stringify(lmetadata);
+                                            this._updateSettings();
                                         }
                                     }));
                                 }
@@ -405,9 +401,8 @@
                                 select: oEvent => {
                                     debugger;
                                     this.getView().byId("mail_to").setEnabled(true);
-                                    var lmetadata = that.metadata ? JSON.parse(that.metadata);
-                                    lmetadata.mail_to = sap.fpa.ui.infra.common.getContext().getUser().getEmail();
-                                    that.metadata = JSON.stringify(lmetadata);
+                                    this._export_settings.mail_to = sap.fpa.ui.infra.common.getContext().getUser().getEmail();
+                                    this._updateSettings();
                                 }
                             }));
                             lview_box.addContent(new sap.m.Label({
@@ -418,9 +413,8 @@
                                 enabled: false,
                                 change: oEvent => {
                                     debugger;
-                                    var lmetadata = that.metadata ? JSON.parse(that.metadata);
-                                    lmetadata.mail_to = oEvent.getParameter("value");
-                                    that.metadata = JSON.stringify(lmetadata);
+                                    this._export_settings.mail_to = oEvent.getParameter("value");
+                                    this._updateSettings();
                                 }
                             });
                             lmail.setValue(sap.fpa.ui.infra.common.getContext().getUser().getEmail());
