@@ -343,7 +343,6 @@
                                     lview_box.addContent(new sap.m.Input({
                                         id: varObj.name + "_value",
                                         change: oEvent => {
-                                            debugger;
                                             let context = sap.fpa.ui.infra.common.getContext();
 
                                             this._export_settings.application_array = [];
@@ -367,7 +366,6 @@
                                         id: varObj.name + "_iterative",
                                         text: "Iterative",
                                         select: oEvent => {
-                                            debugger;
                                             let context = sap.fpa.ui.infra.common.getContext();
 
                                             this._export_settings.application_array = [];
@@ -380,7 +378,7 @@
                                             if (objIndex > -1) {
                                                 this._export_settings.array_var[objIndex].iterative = oEvent.getParameter("selected");
                                             } else {
-                                                this._export_settings.push({ "parameter": oEvent.getParameter("id").replace("_iterative", ""), "values": "", "iterative": oEvent.getParameter("selected"), "applications": "" });
+                                                this._export_settings.array_var.push({ "parameter": oEvent.getParameter("id").replace("_iterative", ""), "values": "", "iterative": oEvent.getParameter("selected"), "applications": "" });
                                             }
 
                                         }
@@ -402,7 +400,6 @@
                             lview_box.addContent(new sap.m.CheckBox({
                                 text: "Activate Mail Delivery",
                                 select: oEvent => {
-                                    debugger;
                                     if (this._mail_to != null) {
                                         this._mail_to.setEnabled(oEvent.getParameter("selected"));
                                     }
@@ -420,7 +417,6 @@
                                 id: "mail_to",
                                 enabled: false,
                                 change: oEvent => {
-                                    debugger;
                                     this._export_settings.mail_to = oEvent.getParameter("value");
                                 }
                             });
