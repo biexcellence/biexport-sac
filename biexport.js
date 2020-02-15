@@ -424,8 +424,8 @@
                                     this._export_settings.mail_to = oEvent.getParameter("value");
                                 }
                             });
-                            lmail.setValue(sap.fpa.ui.infra.common.getContext().getUser().getEmail());
-                            lview_box.addContent(lmail);
+                            this._mail_to.setValue(sap.fpa.ui.infra.common.getContext().getUser().getEmail());
+                            lview_box.addContent(this._mail_to);
 
                             ltab.addItem(new sap.m.IconTabFilter({
                                 key: "contents",
