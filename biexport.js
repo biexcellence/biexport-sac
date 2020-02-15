@@ -354,7 +354,7 @@
                                             }
                                             let objIndex = this._export_settings.array_var.findIndex(v => v.parameter == oEvent.getParameter("id").replace("_value", ""));
                                             if (objIndex > -1) {
-                                                this._export_settings.array_var[objIndex].value = oEvent.getParameter("value");
+                                                this._export_settings.array_var[objIndex].values = oEvent.getParameter("value");
                                             } else {
                                                 this._export_settings.array_var.push({ "parameter": oEvent.getParameter("id").replace("_value", ""), "values": oEvent.getParameter("value"), "iterative": false, "applications": "" });
                                             }
