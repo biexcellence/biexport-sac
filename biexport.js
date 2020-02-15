@@ -400,7 +400,9 @@
                                 text: "Activate Mail Delivery",
                                 select: oEvent => {
                                     debugger;
-                                    this.getView().byId("mail_to").setEnabled(true);
+                                    if (this._mail_to != null) {
+                                        this._mail_to.setEnabled(true);
+                                    }
                                     this._export_settings.mail_to = sap.fpa.ui.infra.common.getContext().getUser().getEmail();
                                     this._updateSettings();
                                 }
@@ -408,7 +410,7 @@
                             lview_box.addContent(new sap.m.Label({
                                 text: "Recipient"
                             }));
-                            let lmail = new sap.m.Input({
+                            this._mail_to = new sap.m.Input({
                                 id: "mail_to",
                                 enabled: false,
                                 change: oEvent => {
