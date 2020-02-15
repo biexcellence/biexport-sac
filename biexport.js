@@ -351,7 +351,7 @@
 
                                             let objIndex = -1;
                                             if (this._export_settings.array_var != "") {
-                                                objIndex = this._export_settings.array_var.findIndex(v => v.parameter == oEvent.getParameter("id").replace("_iterative", 
+                                                objIndex = this._export_settings.array_var.findIndex(v => v.parameter == oEvent.getParameter("id").replace("_value", ""));
                                             }
                                             if (objIndex > -1) {
                                                 this._export_settings.array_var[objIndex].value = oEvent.getParameter("value");
@@ -375,7 +375,7 @@
 
                                             let objIndex = -1;
                                             if (this._export_settings.array_var != "") {
-                                                objIndex = this._export_settings.array_var.findIndex(v => v.parameter == oEvent.getParameter("id").replace("_iterative", 
+                                                objIndex = this._export_settings.array_var.findIndex(v => v.parameter == oEvent.getParameter("id").replace("_iterative", ""));
                                             }
                                             if (objIndex > -1) {
                                                 this._export_settings.array_var[objIndex].iterative = oEvent.getParameter("selected");
