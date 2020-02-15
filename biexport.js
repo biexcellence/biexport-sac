@@ -343,20 +343,21 @@
                                     lview_box.addContent(new sap.m.Input({
                                         id: varObj.name + "_value",
                                         change: oEvent => {
-                                            //debugger;
+                                            debugger;
                                             let context = sap.fpa.ui.infra.common.getContext();
 
                                             this._export_settings.application_array = [];
                                             this._export_settings.application_array.push({ "application": context.getAppArgument().appId });
 
-                                            let objIndex = this._export_settings.array_var.findIndex(v => v.parameter == oEvent.getParameter("id").replace("_value", ""));
+                                            let objIndex = -1;
+                                            if (this._export_settings.array_var != "") {
+                                                objIndex = this._export_settings.array_var.findIndex(v => v.parameter == oEvent.getParameter("id").replace("_iterative", 
+                                            }
                                             if (objIndex > -1) {
                                                 this._export_settings.array_var[objIndex].value = oEvent.getParameter("value");
                                             } else {
                                                 this._export_settings.array_var.push({ "parameter": oEvent.getParameter("id").replace("_value", ""), "values": oEvent.getParameter("value"), "iterative": false, "applications": "" });
                                             }
-
-                                            this._updateSettings();
 
                                         }
                                         // "valueHelpRequest": this.onHandleVariableSuggest,
@@ -366,20 +367,22 @@
                                         id: varObj.name + "_iterative",
                                         text: "Iterative",
                                         select: oEvent => {
-                                            //debugger;
+                                            debugger;
                                             let context = sap.fpa.ui.infra.common.getContext();
 
                                             this._export_settings.application_array = [];
                                             this._export_settings.application_array.push({ "application": context.getAppArgument().appId });
 
-                                            let objIndex = this._export_settings.array_var.findIndex(v => v.parameter == oEvent.getParameter("id").replace("_iterative", ""));
+                                            let objIndex = -1;
+                                            if (this._export_settings.array_var != "") {
+                                                objIndex = this._export_settings.array_var.findIndex(v => v.parameter == oEvent.getParameter("id").replace("_iterative", 
+                                            }
                                             if (objIndex > -1) {
                                                 this._export_settings.array_var[objIndex].iterative = oEvent.getParameter("selected");
                                             } else {
                                                 this._export_settings.push({ "parameter": oEvent.getParameter("id").replace("_iterative", ""), "values": "", "iterative": oEvent.getParameter("selected"), "applications": "" });
                                             }
 
-                                            this._updateSettings();
                                         }
                                     }));
                                 }
@@ -401,10 +404,13 @@
                                 select: oEvent => {
                                     debugger;
                                     if (this._mail_to != null) {
-                                        this._mail_to.setEnabled(true);
+                                        this._mail_to.setEnabled(oEvent.getParameter("selected"));
                                     }
-                                    this._export_settings.mail_to = sap.fpa.ui.infra.common.getContext().getUser().getEmail();
-                                    this._updateSettings();
+                                    if (oEvent.getParameter("selected")) {
+                                        this._export_settings.mail_to = sap.fpa.ui.infra.common.getContext().getUser().getEmail();
+                                    } else {
+                                        this._export_settings.mail_to = "";
+                                    }
                                 }
                             }));
                             lview_box.addContent(new sap.m.Label({
@@ -416,7 +422,6 @@
                                 change: oEvent => {
                                     debugger;
                                     this._export_settings.mail_to = oEvent.getParameter("value");
-                                    this._updateSettings();
                                 }
                             });
                             lmail.setValue(sap.fpa.ui.infra.common.getContext().getUser().getEmail());
@@ -444,6 +449,7 @@
                             beginButton: new sap.m.Button({
                                 text: "Submit",
                                 press: () => {
+                                    this._updateSettings();
                                     this.doExport(oItem.getKey());
                                     dialog.close();
                                 }
