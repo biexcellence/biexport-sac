@@ -374,7 +374,7 @@
                                             if (!this._export_settings.array_var) {
                                                 this._export_settings.array_var = [];
                                             }
-                                            let objIndex = this._export_settings.array_var.findIndex(v => v.parameter == oEvent.getParameter("id").replace("_iterative", ""));                     
+                                            let objIndex = this._export_settings.array_var.findIndex(v => v.parameter == oEvent.getParameter("id").replace("_iterative", ""));
                                             if (objIndex > -1) {
                                                 this._export_settings.array_var[objIndex].iterative = oEvent.getParameter("selected");
                                             } else {
@@ -386,13 +386,13 @@
                                 }
                             }
 
-                                lview_box.addContent(new sap.m.Toolbar({
-                                    ariaLabelledBy: "Title2",
-                                    content: [
-                                        new sap.m.Title({ id: "Title2", text: "Document Delivery" }),
-                                        new sap.m.ToolbarSpacer()
-                                    ]
-                                }));
+                            lview_box.addContent(new sap.m.Toolbar({
+                                ariaLabelledBy: "Title2",
+                                content: [
+                                    new sap.m.Title({ id: "Title2", text: "Document Delivery" }),
+                                    new sap.m.ToolbarSpacer()
+                                ]
+                            }));
 
                             lview_box.addContent(new sap.m.Text({
                                 text: "The generation of Briefing Books with multiple views might take a while. Activate mail delivery to receive the document via mail"
