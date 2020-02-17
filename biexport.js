@@ -277,7 +277,10 @@
                             });
 
                             let components = this.metadata ? JSON.parse(this.metadata)["components"] : {};
-                            let visibleComponents = this[oItem.getKey().toLowerCase() + "Exclude"] ? JSON.parse(this[oItem.getKey().toLowerCase() + "Exclude"]) : [];
+                            if (this[_initialVisibleComponents + oItem.getKey()] == null) {
+                                this[_initialVisibleComponents + oItem.getKey()] = this[oItem.getKey().toLowerCase() + "Exclude"] ? JSON.parse(this[oItem.getKey().toLowerCase() + "Exclude"]) : [];
+                            }
+
                             for (let componentId in components) {
                                 let component = components[componentId];
 
@@ -285,7 +288,7 @@
                                     continue;
                                 }
 
-                                if (visibleComponents.length == 0 || visibleComponents.some(v => v.component == component.name && !v.isExcluded)) {
+                                if (this[_initialVisibleComponents + oItem.getKey()].length == 0 || this[_initialVisibleComponents + oItem.getKey()].some(v => v.component == component.name && !v.isExcluded)) {
                                     let ltext = component.name.replace(/_/g, " ");
                                     lcomponent_box.addContent(new sap.m.CheckBox({
                                         id: component.name,
