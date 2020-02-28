@@ -290,9 +290,11 @@
 
                                 if (this["_initialVisibleComponents" + oItem.getKey()].length == 0 || this["_initialVisibleComponents" + oItem.getKey()].some(v => v.component == component.name && !v.isExcluded)) {
                                     let ltext = component.name.replace(/_/g, " ");
+
                                     lcomponent_box.addContent(new sap.m.CheckBox({
                                         id: component.name,
                                         text: ltext,
+                                        selected: true,
                                         select: oEvent => {
                                             let visibleComponents = JSON.parse(this[oItem.getKey().toLowerCase() + "Exclude"]);
                                             let objIndex = visibleComponents.findIndex(v => v.component == oEvent.getParameter("id"));
