@@ -294,6 +294,7 @@
                                         id: component.name,
                                         text: ltext,
                                         select: oEvent => {
+                                            let visibleComponents = JSON.parse(this[oItem.getKey().toLowerCase() + "Exclude"]);
                                             let objIndex = visibleComponents.findIndex(v => v.component == oEvent.getParameter("id"));
                                             if (objIndex > -1) {
                                                 visibleComponents[objIndex].isExcluded = !oEvent.getParameter("selected");
