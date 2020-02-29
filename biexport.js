@@ -294,7 +294,7 @@
                                     lcomponent_box.addContent(new sap.m.CheckBox({
                                         id: component.name,
                                         text: ltext,
-                                        selected: true,
+                                        selected: false,
                                         select: oEvent => {
                                             let visibleComponents = JSON.parse(this[oItem.getKey().toLowerCase() + "Exclude"]);
                                             let objIndex = visibleComponents.findIndex(v => v.component == oEvent.getParameter("id"));
