@@ -296,8 +296,13 @@
                                         text: ltext,
                                         selected: true,
                                         select: oEvent => {
-                                            let visibleComponents = JSON.parse(this[oItem.getKey().toLowerCase() + "Exclude"]);
-                                            let objIndex = visibleComponents.findIndex(v => v.component == oEvent.getParameter("id"));
+                                            let visibleComponents = [];
+                                            let objIndex = -1;
+
+                                            if (this[oItem.getKey().toLowerCase() + "Exclude"] != "") {
+                                                visibleComponents = JSON.parse(this[oItem.getKey().toLowerCase() + "Exclude"]);
+                                                objIndex = visibleComponents.findIndex(v => v.component == oEvent.getParameter("id"));
+                                            }
                                             if (objIndex > -1) {
                                                 visibleComponents[objIndex].isExcluded = !oEvent.getParameter("selected");
                                             } else {
