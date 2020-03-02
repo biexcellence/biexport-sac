@@ -1,3 +1,3 @@
 # biExport for SAP Analytics Cloud (SAC)
 
-For more information see http://sac-export.com/
+For more information see https://sac-export.com/
