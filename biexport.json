@@ -328,7 +328,7 @@
             "body": "this.screenHeight = value;"
         },
         "getParseCss": {
-            "returnType": "string",
+            "returnType": "boolean",
             "description": "Get whether Parse CSS is enabled or not",
             "parameters": [],
             "body": "return this.parseCss;"
@@ -362,7 +362,7 @@
             "body": "this.pdfTemplate = value;"
         },
         "getPptSeparate": {
-            "returnType": "string",
+            "returnType": "boolean",
             "description": "Get whether PPT Separate is enabled or not",
             "parameters": [],
             "body": "return this.pptSeparate;"
