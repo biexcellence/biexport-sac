@@ -62,11 +62,7 @@
               <td><input id="pdfTemplate" name="pdfTemplate" type="text"></td>
             </tr>
             <tr>
-              <td colspan="2">
-                <details id="pdfExclude">
-                  <summary>Visible Components</summary>
-                </details>
-              </td>
+              <td colspan="2"><slot name="pdf_exclude"></slot></td>
             </tr>
           </table>
         </fieldset>
@@ -82,11 +78,7 @@
               <td><input id="pptTemplate" name="pptTemplate" type="text"></td>
             </tr>
             <tr>
-              <td colspan="2">
-                <details id="pptExclude">
-                  <summary>Visible Components</summary>
-                </details>
-              </td>
+              <td colspan="2"><slot name="ppt_exclude"></slot></td>
             </tr>
           </table>
         </fieldset>
@@ -98,11 +90,7 @@
               <td><input id="docTemplate" name="docTemplate" type="text"></td>
             </tr>
             <tr>
-              <td colspan="2">
-                <details id="docExclude">
-                  <summary>Visible Components</summary>
-                </details>
-              </td>
+              <td colspan="2"><slot name="doc_exclude"></slot></td>
             </tr>
           </table>
         </fieldset>
@@ -114,11 +102,7 @@
               <td><input id="xlsTemplate" name="xlsTemplate" type="text"></td>
             </tr>
             <tr>
-              <td colspan="2">
-                <details id="xlsExclude">
-                  <summary>Visible Components</summary>
-                </details>
-              </td>
+              <td colspan="2"><slot name="xls_exclude"></slot></td>
             </tr>
           </table>
         </fieldset>
@@ -240,41 +224,85 @@
             form.addEventListener("submit", this._submit.bind(this));
             form.addEventListener("change", this._change.bind(this));
 
+            // visible components
+            ["pdf_exclude", "ppt_exclude", "doc_exclude", "xls_exclude"].forEach(slotId => {
+                let id = slotId.replace("_e", "E");
+                
+                let filterList = new sap.m.FacetFilterList({
+                    title: "Visible Components",
+                    items: {
+                        path: "/",
+                        template: new sap.m.FacetFilterItem({
+                            key: "{name}",
+                            text: "{name}"
+                        })
+                    },
+                    listOpen: oEvent => {
+                        let list = oEvent.getSource();
 
-            this._hoverDiv = document.createElement("div");
-            this._hoverDiv.style.border = "5px solid lime";
-            this._hoverDiv.style.position = "absolute";
-            this._hoverDiv.style.boxSizing = "border-box";
+                        let value = this[id];
+                        let metadata = this.metadata;
+                
+                        let visibleComponents = value ? JSON.parse(value) : [];
+                        let allComponents = metadata ? JSON.parse(metadata)["components"] : {};
+                        let components = [];
+                        let selectedComponents = {};
+                        for (let componentId in allComponents) {
+                            let component = allComponents[componentId];
+            
+                            if (component.type == "sdk_com_biexcellence_openbi_sap_sac_export__0") {
+                                continue;
+                            }
 
-            ["pdfExclude", "pptExclude", "docExclude", "xlsExclude"].forEach(id => {
-                let excludeDetails = this._shadowRoot.getElementById(id);
+                            components.push(component);
 
-                excludeDetails.addEventListener("change", this._visibleComponentsChange.bind(this));
-
-                excludeDetails.addEventListener("mouseover", e => {
-                    if (e.target.tagName == "LABEL" && !this._hoverDiv.parentElement) {
-                        let input = e.target.querySelector("input");
-                        let componentId = input.value;
-
-                        let target = document.querySelector("[data-sap-widget-id='" + componentId + "']");
-                        if (target) {
-                            let rect = target.getBoundingClientRect();
-
-                            this._hoverDiv.style.top = rect.top + "px";
-                            this._hoverDiv.style.left = rect.left + "px";
-                            this._hoverDiv.style.width = rect.width + "px";
-                            this._hoverDiv.style.height = rect.height + "px";
-
-                            document.body.appendChild(this._hoverDiv);
+                            if (!visibleComponents.some(v => v.component == component.name && v.isExcluded)) {
+                                selectedComponents[component.name] = component.name;
+                            }
                         }
+
+                        list.setModel(new sap.ui.model.json.JSONModel(components));
+                        if (Object.keys(selectedComponents).length != components.length) {
+                            list.setSelectedKeys(selectedComponents);
+                        }
+                    },
+                    listClose: oEvent => {
+                        let list = oEvent.getSource();
+
+                        let selectedComponents = list.getSelectedKeys();
+                        let metadata = this.metadata;
+                
+                        let allComponents = metadata ? JSON.parse(metadata)["components"] : {};
+                        let visibleComponents = [];
+                        for (let componentId in allComponents) {
+                            let component = allComponents[componentId];
+            
+                            if (component.type == "sdk_com_biexcellence_openbi_sap_sac_export__0") {
+                                continue;
+                            }
+
+                            component.isExcluded = !(component.name in selectedComponents);
+
+                            visibleComponents.push(component);
+                        }
+
+                        let properties = {};
+                        this[id] = properties[id] = visibleComponents.every(v => v.isExcluded) ? "" : JSON.stringify(visibleComponents)
+                        this._firePropertiesChanged(properties);
                     }
                 });
 
-                excludeDetails.addEventListener("mouseout", e => {
-                    if (e.target.tagName == "LABEL" && this._hoverDiv.parentElement) {
-                        this._hoverDiv.remove();
-                    }
+                let excludeSlot = document.createElement("div");
+                excludeSlot.slot = slotId;
+                this.appendChild(excludeSlot);
+
+                let filter = new sap.m.FacetFilter({
+                    lists: [filterList],
+                    showReset: false,
+                    showPopoverOKButton: true
                 });
+                filter.addStyleClass("sapUiSizeCompact");
+                filter.placeAt(excludeSlot);
             });
         }
 
@@ -327,12 +355,6 @@
             });
         }
 
-        disconnectedCallback() {
-            if (this._hoverDiv) {
-                this._hoverDiv.remove();
-            }
-        }
-
         _submit(e) {
             e.preventDefault();
             let properties = {};
@@ -348,24 +370,6 @@
         _changeProperty(name) {
             let properties = {};
             properties[name] = this[name];
-            this._firePropertiesChanged(properties);
-        }
-
-        _visibleComponentsChange(e) {
-            let node = e.currentTarget;
-            let visibleComponents = [];
-
-            let inputs = node.querySelectorAll("input");
-            for (let i = 0; i < inputs.length; i++) {
-                let input = inputs[i];
-                visibleComponents.push({
-                    component: input.name,
-                    isExcluded: !input.checked
-                });
-            }
-
-            let properties = {};
-            this[node.id] = properties[node.id] = visibleComponents.every(v => v.isExcluded) ? "" : JSON.stringify(visibleComponents)
             this._firePropertiesChanged(properties);
         }
 
@@ -593,7 +597,6 @@
         }
         set pdfExclude(value) {
             this.pdf_exclude = value;
-            this._renderVisibleComponents("pdfExclude", this.metadata, value);
         }
 
         get pptExclude() {
@@ -601,7 +604,6 @@
         }
         set pptExclude(value) {
             this.ppt_exclude = value;
-            this._renderVisibleComponents("pptExclude", this.metadata, value);
         }
 
         get docExclude() {
@@ -609,7 +611,6 @@
         }
         set docExclude(value) {
             this.doc_exclude = value;
-            this._renderVisibleComponents("docExclude", this.metadata, value);
         }
 
         get xlsExclude() {
@@ -617,7 +618,6 @@
         }
         set xlsExclude(value) {
             this.xls_exclude = value;
-            this._renderVisibleComponents("xlsExclude", this.metadata, value);
         }
 
         get metadata() {
@@ -625,46 +625,6 @@
         }
         set metadata(value) {
             this._metadata = value;
-
-            ["pdfExclude", "pptExclude", "docExclude", "xlsExclude"].forEach(id => {
-                this._renderVisibleComponents(id, value, this[id]);
-            });
-        }
-
-        _renderVisibleComponents(id, metadata, value) {
-            let excludeDetails = this._shadowRoot.getElementById(id);
-
-            while (excludeDetails.lastElementChild != excludeDetails.firstElementChild) {
-                excludeDetails.lastElementChild.remove();
-            }
-
-            let visibleComponents = value ? JSON.parse(value) : [];
-            let components = metadata ? JSON.parse(metadata)["components"] : {};
-            for (let componentId in components) {
-                let component = components[componentId];
-
-                if (component.type == "sdk_com_biexcellence_openbi_sap_sac_export__0") {
-                    continue;
-                }
-
-                let checkbox = document.createElement("input");
-                checkbox.type = "checkbox";
-                checkbox.name = component.name;
-                checkbox.value = componentId;
-                checkbox.checked = visibleComponents.some(v => v.component == component.name && !v.isExcluded);
-
-                let label = document.createElement("label");
-                label.appendChild(checkbox);
-                label.appendChild(document.createTextNode(component.name));
-
-                let div = document.createElement("div");
-                div.appendChild(label);
-
-                excludeDetails.appendChild(div);
-            }
-
-            let summary = excludeDetails.querySelector("summary");
-            summary.textContent = "Visible Components (" + (visibleComponents.filter(v => !v.isExcluded).length || Object.keys(components).length) + ")";
         }
 
         getValue(id) {
