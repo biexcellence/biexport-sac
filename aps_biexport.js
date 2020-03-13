@@ -262,8 +262,8 @@
                         }
 
                         let model = new sap.ui.model.json.JSONModel(components);
-                        list.setModel(model);
                         model.setSizeLimit(9999);
+                        list.setModel(model);
                         if (Object.keys(selectedComponents).length != components.length) {
                             list.setSelectedKeys(selectedComponents);
                         }
