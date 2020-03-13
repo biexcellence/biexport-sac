@@ -261,7 +261,9 @@
                             }
                         }
 
-                        list.setModel(new sap.ui.model.json.JSONModel(components));
+                        let model = new sap.ui.model.json.JSONModel(components);
+                        list.setModel(model);
+                        model.setSizeLimit(5000);
                         if (Object.keys(selectedComponents).length != components.length) {
                             list.setSelectedKeys(selectedComponents);
                         }
