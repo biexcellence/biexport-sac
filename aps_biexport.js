@@ -229,7 +229,7 @@
                 let id = slotId.replace("_e", "E");
                 
                 let filterList = new sap.m.FacetFilterList({
-                    title: "Visible Components",
+                    title: "Widget Selection",
                     items: {
                         path: "/",
                         template: new sap.m.FacetFilterItem({
