@@ -1,6 +1,6 @@
 {
     "id": "com.biexcellence.openbi.sap.sac.export",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "name": "biExport",
     "description": "biExport 4 SAP SAC to PDF/PPT/DOC/XLS/CSV",
     "newInstancePrefix": "biExport",
