@@ -264,9 +264,11 @@
                         let model = new sap.ui.model.json.JSONModel(components);
                         model.setSizeLimit(9999);
                         list.setModel(model);
-                        if (Object.keys(selectedComponents).length != components.length) {
-                            list.setSelectedKeys(selectedComponents);
+
+                        if (Object.keys(selectedComponents).length == components.length) {
+                            selectedComponents = {};
                         }
+                        list.setSelectedKeys(selectedComponents);
                     },
                     listClose: oEvent => {
                         let list = oEvent.getSource();
@@ -283,13 +285,19 @@
                                 continue;
                             }
 
-                            component.isExcluded = !(component.name in selectedComponents);
+                            visibleComponents.push({
+                                component: component.name,
+                                isExcluded: !(component.name in selectedComponents)
+                            });
+                        }
 
-                            visibleComponents.push(component);
+                        let value = "";
+                        if (visibleComponents.some(v => v.isExcluded) && visibleComponents.some(v => !v.isExcluded)) {
+                            value = JSON.stringify(visibleComponents);
                         }
 
                         let properties = {};
-                        this[id] = properties[id] = visibleComponents.every(v => v.isExcluded) ? "" : JSON.stringify(visibleComponents)
+                        this[id] = properties[id] = value;
                         this._firePropertiesChanged(properties);
                     }
                 });
