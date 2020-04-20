@@ -190,348 +190,385 @@
             "default": ""
         }
     },
-    "methods": {
-        "doExport": {
-            "description": "Triggers the export process.",
-            "parameters": [
-                {
-                    "name": "format",
-                    "type": "string",
-                    "description": "The export format: \"PDF\", \"PPTX\", \"DOCX\", \"XLSX\""
-                }
-            ]
-        },
-        "addExportApplication": {
-            "description": "Add an application to be exported during background execution.",
-            "parameters": [
-                {
-                    "name": "id",
-                    "type": "string",
-                    "description": "The id of the application."
-                }
-            ]
-        },
-        "clearExportApplications": {
-            "description": "Clears all applications to be exported during background execution."
-        },
-        "addURLParameter": {
-            "description": "Add an URL parameter and value which is used during background execution.",
-            "parameters": [
-                {
-                    "name": "name",
-                    "type": "string",
-                    "description": "The name of the URL parameter."
-                },
-                {
-                    "name": "values",
-                    "type": "string[]",
-                    "description": "The values of the URL parameter."
-                },
-                {
-                    "name": "iterative",
-                    "type": "boolean",
-                    "description": "Whether the URL parameter values should be iterated over."
-                },
-                {
-                    "name": "applicationIds",
-                    "type": "string[]",
-                    "description": "The applications for which the URL parameter will be used, if empty the URL parameter is used for all applications."
-                }
-            ]
-        },
-        "clearURLParameters": {
-            "description": "Clears all URLs parameters which are used during background execution."
-        },
-        "getServerUrl": {
-            "returnType": "string",
-            "description": "Get the Server URL",
-            "parameters": [],
-            "body": "return this.serverURL;"
-        },
-        "setServerUrl": {
-            "description": "Set the Server URL",
-            "parameters": [
-                {
-                    "name": "value",
-                    "type": "string",
-                    "description": "The new Server URL"
-                }
-            ],
-            "body": "this.serverURL = value;"
-        },
-        "getFilename": {
-            "returnType": "string",
-            "description": "Get the filename",
-            "parameters": [],
-            "body": "return this.filename;"
-        },
-        "setFilename": {
-            "description": "Set the filename",
-            "parameters": [
-                {
-                    "name": "value",
-                    "type": "string",
-                    "description": "The new filename"
-                }
-            ],
-            "body": "this.filename = value;"
-        },
-        "getExportLanguage": {
-            "returnType": "string",
-            "description": "Get the Export Language",
-            "parameters": [],
-            "body": "return this.exportLanguage;"
-        },
-        "setExportLanguage": {
-            "description": "Set the Export Language",
-            "parameters": [
-                {
-                    "name": "value",
-                    "type": "string",
-                    "description": "The new Export Language"
-                }
-            ],
-            "body": "this.exportLanguage = value;"
-        },
-        "getStaticWidth": {
-            "returnType": "integer",
-            "description": "Get the Static Width",
-            "parameters": [],
-            "body": "return this.screenWidth;"
-        },
-        "setStaticWidth": {
-            "description": "Set the Static Width",
-            "parameters": [
-                {
-                    "name": "value",
-                    "type": "integer",
-                    "description": "The new Static Width"
-                }
-            ],
-            "body": "this.screenWidth = value;"
-        },
-        "getStaticHeight": {
-            "returnType": "integer",
-            "description": "Get the Static Height",
-            "parameters": [],
-            "body": "return this.screenHeight;"
-        },
-        "setStaticHeight": {
-            "description": "Set the Static Height",
-            "parameters": [
-                {
-                    "name": "value",
-                    "type": "integer",
-                    "description": "The new Screen Height"
-                }
-            ],
-            "body": "this.screenHeight = value;"
-        },
-        "getParseCss": {
-            "returnType": "boolean",
-            "description": "Get whether Parse CSS is enabled or not",
-            "parameters": [],
-            "body": "return this.parseCss;"
-        },
-        "setParseCss": {
-            "description": "Set whether Parse CSS is enabled or not",
-            "parameters": [
-                {
-                    "name": "value",
-                    "type": "boolean",
-                    "description": "The new Parse CSS"
-                }
-            ],
-            "body": "this.parseCss = value;"
-        },
-        "getPdfTemplate": {
-            "returnType": "string",
-            "description": "Get the PDF Template",
-            "parameters": [],
-            "body": "return this.pdfTemplate;"
-        },
-        "setPdfTemplate": {
-            "description": "Set the PDF Template",
-            "parameters": [
-                {
-                    "name": "value",
-                    "type": "string",
-                    "description": "The new PDF Template"
-                }
-            ],
-            "body": "this.pdfTemplate = value;"
-        },
-        "getPptSeparate": {
-            "returnType": "boolean",
-            "description": "Get whether PPT Separate is enabled or not",
-            "parameters": [],
-            "body": "return this.pptSeparate;"
-        },
-        "setPptSeparate": {
-            "description": "Set whether PPT Separate is enabled or not",
-            "parameters": [
-                {
-                    "name": "value",
-                    "type": "boolean",
-                    "description": "The new PPT Separate"
-                }
-            ],
-            "body": "this.pptSeparate = value;"
-        },
-        "getPptTemplate": {
-            "returnType": "string",
-            "description": "Get the PPT Template",
-            "parameters": [],
-            "body": "return this.pptTemplate;"
-        },
-        "setPptTemplate": {
-            "description": "Set the PPT Template",
-            "parameters": [
-                {
-                    "name": "value",
-                    "type": "string",
-                    "description": "The new PPT Template"
-                }
-            ],
-            "body": "this.pptTemplate = value;"
-        },
-        "getDocTemplate": {
-            "returnType": "string",
-            "description": "Get the DOC Template",
-            "parameters": [],
-            "body": "return this.docTemplate;"
-        },
-        "setDocTemplate": {
-            "description": "Set the DOC Template",
-            "parameters": [
-                {
-                    "name": "value",
-                    "type": "string",
-                    "description": "The new DOC Template"
-                }
-            ],
-            "body": "this.docTemplate = value;"
-        },
-        "getXlsTemplate": {
-            "returnType": "string",
-            "description": "Get the XLS Template",
-            "parameters": [],
-            "body": "return this.xlsTemplate;"
-        },
-        "setXlsTemplate": {
-            "description": "Set the XLS Template",
-            "parameters": [
-                {
-                    "name": "value",
-                    "type": "string",
-                    "description": "The new XLS Template"
-                }
-            ],
-            "body": "this.xlsTemplate = value;"
-        },
-        "getPublishMode": {
-            "returnType": "string",
-            "description": "Get the Publish Mode",
-            "parameters": [],
-            "body": "return this.publishMode;"
-        },
-        "setPublishMode": {
-            "description": "Set the Publish Mode",
-            "parameters": [
-                {
-                    "name": "value",
-                    "type": "string",
-                    "description": "The new Publish Mode"
-                }
-            ],
-            "body": "this.publishMode = value;"
-        },
-        "getPublishSync": {
-            "returnType": "boolean",
-            "description": "Get the Publish Sync",
-            "parameters": [],
-            "body": "return this.publishSync;"
-        },
-        "setPublishSync": {
-            "description": "Set the Publish Sync",
-            "parameters": [
-                {
-                    "name": "value",
-                    "type": "boolean",
-                    "description": "The new Publish Sync"
-                }
-            ],
-            "body": "this.publishSync = value;"
-        },
-        "getMailFrom": {
-            "returnType": "string",
-            "description": "Get the Mail From",
-            "parameters": [],
-            "body": "return this.mailFrom;"
-        },
-        "setMailFrom": {
-            "description": "Set the Mail From",
-            "parameters": [
-                {
-                    "name": "value",
-                    "type": "string",
-                    "description": "The new Mail From"
-                }
-            ],
-            "body": "this.mailFrom = value;"
-        },
-        "getMailTo": {
-            "returnType": "string",
-            "description": "Get the Mail To",
-            "parameters": [],
-            "body": "return this.mailTo;"
-        },
-        "setMailTo": {
-            "description": "Set the Mail To",
-            "parameters": [
-                {
-                    "name": "value",
-                    "type": "string",
-                    "description": "The new Mail To"
-                }
-            ],
-            "body": "this.mailTo = value;"
-        },
-        "getMailSubject": {
-            "returnType": "string",
-            "description": "Get the Mail Subject",
-            "parameters": [],
-            "body": "return this.mailSubject;"
-        },
-        "setMailSubject": {
-            "description": "Set the Mail Subject",
-            "parameters": [
-                {
-                    "name": "value",
-                    "type": "string",
-                    "description": "The new Mail Subject"
-                }
-            ],
-            "body": "this.mailSubject = value;"
-        },
-        "getMailBody": {
-            "returnType": "string",
-            "description": "Get the Mail Body",
-            "parameters": [],
-            "body": "return this.mailBody;"
-        },
-        "setMailBody": {
-            "description": "Set the Mail Body",
-            "parameters": [
-                {
-                    "name": "value",
-                    "type": "string",
-                    "description": "The new Mail Body"
-                }
-            ],
-            "body": "this.mailBody = value;"
+  "methods": {
+    "doExport": {
+      "description": "Triggers the export process.",
+      "parameters": [
+        {
+          "name": "format",
+          "type": "string",
+          "description": "The export format: \"PDF\", \"PPTX\", \"DOCX\", \"XLSX\""
         }
+      ]
     },
+    "addExportApplication": {
+      "description": "Add an application to be exported during background execution.",
+      "parameters": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "The id of the application."
+        }
+      ]
+    },
+    "clearExportApplications": {
+      "description": "Clears all applications to be exported during background execution."
+    },
+    "addURLParameter": {
+      "description": "Add an URL parameter and value which is used during background execution.",
+      "parameters": [
+        {
+          "name": "name",
+          "type": "string",
+          "description": "The name of the URL parameter."
+        },
+        {
+          "name": "values",
+          "type": "string[]",
+          "description": "The values of the URL parameter."
+        },
+        {
+          "name": "iterative",
+          "type": "boolean",
+          "description": "Whether the URL parameter values should be iterated over."
+        },
+        {
+          "name": "applicationIds",
+          "type": "string[]",
+          "description": "The applications for which the URL parameter will be used, if empty the URL parameter is used for all applications."
+        }
+      ]
+    },
+    " addBriefingBookDefinition": {
+      "description": "Add a Briefing Book Definition which is used during background execution.",
+      "parameters": [
+        {
+          "name": "parameters",
+          "type": "string[]",
+          "description": "\"The url parameters to be passed to the application in JSON notation {\"name\": \"myUrlParameter\", \"value\": \"itsValue\"}",
+          "\""
+        },
+        {
+          "name": "filename",
+          "type": "string",
+          "description": "Optional:The filename to which the results of the application shall be added."
+        },
+        {
+          "name": "template",
+          "type": "string",
+          "description": "Optional: The Export Template which shall be used for this particular execution."
+        },
+        {
+          "name": "index",
+          "type": "integer",
+          "description": "Ordinal of the execution."
+        },
+        {
+          "name": "selectedWidgets",
+          "type": "string[]",
+          "description": "Optional: The widgets to be added into the export document."
+        },
+        {
+          "name": "applicationIds",
+          "type": "string[]",
+          "description": "Optional: The applications for which the URL parameter will be used."
+        }
+      ]
+    },
+
+    "clearURLParameters": {
+      "description": "Clears all URLs parameters which are used during background execution."
+    },
+    "getServerUrl": {
+      "returnType": "string",
+      "description": "Get the Server URL",
+      "parameters": [],
+      "body": "return this.serverURL;"
+    },
+    "setServerUrl": {
+      "description": "Set the Server URL",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "description": "The new Server URL"
+        }
+      ],
+      "body": "this.serverURL = value;"
+    },
+    "getFilename": {
+      "returnType": "string",
+      "description": "Get the filename",
+      "parameters": [],
+      "body": "return this.filename;"
+    },
+    "setFilename": {
+      "description": "Set the filename",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "description": "The new filename"
+        }
+      ],
+      "body": "this.filename = value;"
+    },
+    "getExportLanguage": {
+      "returnType": "string",
+      "description": "Get the Export Language",
+      "parameters": [],
+      "body": "return this.exportLanguage;"
+    },
+    "setExportLanguage": {
+      "description": "Set the Export Language",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "description": "The new Export Language"
+        }
+      ],
+      "body": "this.exportLanguage = value;"
+    },
+    "getStaticWidth": {
+      "returnType": "integer",
+      "description": "Get the Static Width",
+      "parameters": [],
+      "body": "return this.screenWidth;"
+    },
+    "setStaticWidth": {
+      "description": "Set the Static Width",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "integer",
+          "description": "The new Static Width"
+        }
+      ],
+      "body": "this.screenWidth = value;"
+    },
+    "getStaticHeight": {
+      "returnType": "integer",
+      "description": "Get the Static Height",
+      "parameters": [],
+      "body": "return this.screenHeight;"
+    },
+    "setStaticHeight": {
+      "description": "Set the Static Height",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "integer",
+          "description": "The new Screen Height"
+        }
+      ],
+      "body": "this.screenHeight = value;"
+    },
+    "getParseCss": {
+      "returnType": "boolean",
+      "description": "Get whether Parse CSS is enabled or not",
+      "parameters": [],
+      "body": "return this.parseCss;"
+    },
+    "setParseCss": {
+      "description": "Set whether Parse CSS is enabled or not",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "boolean",
+          "description": "The new Parse CSS"
+        }
+      ],
+      "body": "this.parseCss = value;"
+    },
+    "getPdfTemplate": {
+      "returnType": "string",
+      "description": "Get the PDF Template",
+      "parameters": [],
+      "body": "return this.pdfTemplate;"
+    },
+    "setPdfTemplate": {
+      "description": "Set the PDF Template",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "description": "The new PDF Template"
+        }
+      ],
+      "body": "this.pdfTemplate = value;"
+    },
+    "getPptSeparate": {
+      "returnType": "boolean",
+      "description": "Get whether PPT Separate is enabled or not",
+      "parameters": [],
+      "body": "return this.pptSeparate;"
+    },
+    "setPptSeparate": {
+      "description": "Set whether PPT Separate is enabled or not",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "boolean",
+          "description": "The new PPT Separate"
+        }
+      ],
+      "body": "this.pptSeparate = value;"
+    },
+    "getPptTemplate": {
+      "returnType": "string",
+      "description": "Get the PPT Template",
+      "parameters": [],
+      "body": "return this.pptTemplate;"
+    },
+    "setPptTemplate": {
+      "description": "Set the PPT Template",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "description": "The new PPT Template"
+        }
+      ],
+      "body": "this.pptTemplate = value;"
+    },
+    "getDocTemplate": {
+      "returnType": "string",
+      "description": "Get the DOC Template",
+      "parameters": [],
+      "body": "return this.docTemplate;"
+    },
+    "setDocTemplate": {
+      "description": "Set the DOC Template",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "description": "The new DOC Template"
+        }
+      ],
+      "body": "this.docTemplate = value;"
+    },
+    "getXlsTemplate": {
+      "returnType": "string",
+      "description": "Get the XLS Template",
+      "parameters": [],
+      "body": "return this.xlsTemplate;"
+    },
+    "setXlsTemplate": {
+      "description": "Set the XLS Template",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "description": "The new XLS Template"
+        }
+      ],
+      "body": "this.xlsTemplate = value;"
+    },
+    "getPublishMode": {
+      "returnType": "string",
+      "description": "Get the Publish Mode",
+      "parameters": [],
+      "body": "return this.publishMode;"
+    },
+    "setPublishMode": {
+      "description": "Set the Publish Mode",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "description": "The new Publish Mode"
+        }
+      ],
+      "body": "this.publishMode = value;"
+    },
+    "getPublishSync": {
+      "returnType": "boolean",
+      "description": "Get the Publish Sync",
+      "parameters": [],
+      "body": "return this.publishSync;"
+    },
+    "setPublishSync": {
+      "description": "Set the Publish Sync",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "boolean",
+          "description": "The new Publish Sync"
+        }
+      ],
+      "body": "this.publishSync = value;"
+    },
+    "getMailFrom": {
+      "returnType": "string",
+      "description": "Get the Mail From",
+      "parameters": [],
+      "body": "return this.mailFrom;"
+    },
+    "setMailFrom": {
+      "description": "Set the Mail From",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "description": "The new Mail From"
+        }
+      ],
+      "body": "this.mailFrom = value;"
+    },
+    "getMailTo": {
+      "returnType": "string",
+      "description": "Get the Mail To",
+      "parameters": [],
+      "body": "return this.mailTo;"
+    },
+    "setMailTo": {
+      "description": "Set the Mail To",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "description": "The new Mail To"
+        }
+      ],
+      "body": "this.mailTo = value;"
+    },
+    "getMailSubject": {
+      "returnType": "string",
+      "description": "Get the Mail Subject",
+      "parameters": [],
+      "body": "return this.mailSubject;"
+    },
+    "setMailSubject": {
+      "description": "Set the Mail Subject",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "description": "The new Mail Subject"
+        }
+      ],
+      "body": "this.mailSubject = value;"
+    },
+    "getMailBody": {
+      "returnType": "string",
+      "description": "Get the Mail Body",
+      "parameters": [],
+      "body": "return this.mailBody;"
+    },
+    "setMailBody": {
+      "description": "Set the Mail Body",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "description": "The new Mail Body"
+        }
+      ],
+      "body": "this.mailBody = value;"
+    }
+  },
     "events": {
         "onStartExport": {
             "description": "Specify the SAC Script that shall be triggered when the Export process is started. If you set the publishing property Parse CSS to true, all image resources are collected in this phase."

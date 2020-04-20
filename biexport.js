@@ -786,6 +786,24 @@
             this._export_settings.array_var.push({ "parameter": name, "values": values.join(";"), "iterative": iterative, "applications": applicationIds.join(";") });
             this._updateSettings();
         }
+
+        addBriefingBookDefinition(parameters, filename, template, selectedWidgets, index, applicationIds) {
+            if (!this._export_settings.array_var) {
+                this._export_settings.array_var = [];
+            }
+
+            var lselected = [];
+            selectedWidgets.forEach(s => {
+                var lsel = {};
+                lsel.component = s;
+                lsel.isExcluded = false;
+                lselected.push(lsel);
+            });
+
+            this._export_settings.array_var.push({ "index": index, "filename": filename, "template": template, "parameters": parameters, "selected": lselected, "applications": applicationIds.join(";") });
+            this._updateSettings();
+        }
+
         clearURLParameters() {
             this._export_settings.array_var = "";
             this._updateSettings();
