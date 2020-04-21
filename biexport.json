@@ -248,6 +248,11 @@
           "description": "The url parameters to be passed to the application in JSON notation {\"name\": \"myUrlParameter\", \"value\": \"itsValue\"}"
         },
         {
+          "name": "index",
+          "type": "integer",
+          "description": "Ordinal of the execution."
+        },
+        {
           "name": "filename",
           "type": "string",
           "description": "Optional:The filename to which the results of the application shall be added."
@@ -256,11 +261,6 @@
           "name": "template",
           "type": "string",
           "description": "Optional: The Export Template which shall be used for this particular execution."
-        },
-        {
-          "name": "index",
-          "type": "integer",
-          "description": "Ordinal of the execution."
         },
         {
           "name": "selectedWidgets",

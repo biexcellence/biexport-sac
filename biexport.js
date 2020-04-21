@@ -787,7 +787,7 @@
             this._updateSettings();
         }
 
-        addBriefingBookDefinition(parameters, filename, template, selectedWidgets, index, applicationIds) {
+        addBriefingBookDefinition(parameters, index, filename, template, selectedWidgets, applicationIds) {
             if (!this._export_settings.array_var) {
                 this._export_settings.array_var = [];
             }
