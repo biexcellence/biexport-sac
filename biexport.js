@@ -800,7 +800,13 @@
                 lselected.push(lsel);
             });
 
-            this._export_settings.array_var.push({ "index": index, "filename": filename, "template": template, "parameters": parameters, "selected": lselected, "applications": applicationIds.join(";") });
+            var lparameters = [];
+            parameters.forEach(s => {
+                var lsel = JSON.parse(s);
+                lparameters.push(lsel);
+            });
+
+            this._export_settings.array_var.push({ "index": index, "filename": filename, "template": template, "parameters": lparameters, "selected": lselected, "applications": applicationIds.join(";") });
             this._updateSettings();
         }
 
