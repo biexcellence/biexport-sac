@@ -1,195 +1,195 @@
 {
-    "id": "com.biexcellence.openbi.sap.sac.export",
-    "version": "0.0.2",
-    "name": "biExport",
-    "description": "biExport 4 SAP SAC to PDF/PPT/DOC/XLS/CSV",
-    "newInstancePrefix": "biExport",
-    "icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAABegAAAXoBMrnI/AAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAJGSURBVDiNlZNPSNNxGMY/399+++OWuKaJQ0MtBItBhYwEEexQhNglECLq0EU9mZ06Ti8dIujQITqEBy+B1wjrkFEQBWqUaC3NBUtLs7ma+/v783YQl3MW9MD38uV5PvA+Ly8iwt/e8Jvj/uHJLv1fHiUi7NTIfMhF1hoUuA7UAIgtQ1o4eieC2OxSCWBkPrSPnDUjQstuI6hH6uH7c5FIKUQrhsdDLnLmp73DANItPa1ju3+LADlk3xZRtXuHi7o4Mn3kTNkIg4st7sBPPVdmt7Wn8c/dE3a+qlfTkh8DwVdL3sofffXKd7CvbcoA0AGqk84WUaVlGob7QezDpbDfp92s8gsOpcKpRJjkerzf0Tx7ARj7M4JXW98ZLuR9d+fnLp91u7TDfp/QUKM4VOek2qfjMCvvff1S4yjt4OjcmhJiAAoVn5o534mFXwMcCjy64HFChbsCpYR0siFy690xXxEQQey8wzyJKHPmbdt9KIQsFAVT2MzCSkIRWy0Q9DZxwBdkv9ffNPHC4ynZwo0TC98XYgPtqZRnwJY0hpkiYxgkMibLGxmWN35RsDUEjcbqZnTcjcUSt7Xy7fQVHF2WLY/HDSvemc276iwLMpoBKs3i2hIBXxXR1XnyhmOpDCDQhjjrhZ5eCzNhW6+fmXY0q6uNAKRbp+MrVbZkcpYEr04OTSbLAEAMaN8qUw/YdHQVpIPC1oY3ESMqyjma9mRGtwMlADOr9esemQU5hVK1ILYgawrmNOF5zgo8eXmtIbszU3aN/6vfbVAouCAyeN4AAAAASUVORK5CYII=",
-    "vendor": "bi excellence Software GmbH",
-    "eula": "",
-    "license": "",
-    "imports": ["input-controls"],
-    "webcomponents": [
-        {
-            "kind": "main",
-            "tag": "com-biexcellence-openbi-sap-sac-export",
-            "url": "https://biexcellence.github.io/biexport-sac/biexport.js",
-            "integrity": "",
-            "ignoreIntegrity": true
-        },
-        {
-            "kind": "styling",
-            "tag": "com-biexcellence-openbi-sap-sac-export-aps",
-            "url": "https://biexcellence.github.io/biexport-sac/aps_biexport.js",
-            "integrity": "",
-            "ignoreIntegrity": true
-        }
-    ],
-    "properties": {
-        "serverURL": {
-            "type": "string",
-            "description": "The URL to the open bi Repository installation that handles the export. If you use an installation on your local machine, change this property to http://localhost:9091, otherwise to the address and port of your installation.",
-            "default": "https://designstudioexport.biexcellence.com"
-        },
-        "filename": {
-            "type": "string",
-            "description": "The file name of the export document. The extension will be determined automatically. You can use placeholders (manual section 3.9).",
-            "default": "SACExport_%EXECUTION_DATE_SHORT%_%EXECUTION_TIME_SHORT%"
-        },
-        "exportLanguage": {
-            "type": "string",
-            "description": "By default, the export determines the language for the export document from the web client. The export language is used to render the correct format for date and time placeholders (manual section 3.10) and to interpret number formats correctly for Excel export (manual secion 3.11).  You can set this property explicitly to overrule the automatic determination.",
-            "default": ""
-        },
-        "screenWidth": {
-            "type": "integer",
-            "description": "By default the export uses the screen width of the user to create an export document that resembles the screen display. If you experience extensive white spaces or to small font sizes, you can set this property to a static value, e.g. 1000 pixels.",
-            "default": 0
-        },
-        "screenHeight": {
-            "type": "integer",
-            "description": "If you make extensive use of relative height definitions, exports to PowerPoint, Word or Excel might show to small font sizes. In this case, you can set this property to a static value, e.g. 800 pixels. You might have to combine with a Static Screen Width.",
-            "default": 0
-        },
-        "parseCss": {
-            "type": "boolean",
-            "description": "If the Export does not show icons or images, you can set this property to true. This activates the collection of all images of the SAC application and sends them to the Export service.",
-            "default": false
-        },
-        "pdfTemplate": {
-            "type": "string",
-            "description": "As an alternative to the HTML Template property, you can also specify a DOC, DOCX, PPT or PPTX template which will be used as a fully formatted template for your PDF export",
-            "default": ""
-        },
-        "pptSeparate": {
-            "type": "boolean",
-            "description": "This property only takes affect if you are not using an Export Template. If set to `false` the application is rendered onto one slide. If you set this property to `true`, each component is rendered to a separate slide.",
-            "default": true
-        },
-        "pptTemplate": {
-            "type": "string",
-            "description": "By specifying a template for the PowerPoint Export (in PPT or PPTX formats) you can generate complete presentations in your corporate design and with standard text",
-            "default": ""
-        },
-        "docTemplate": {
-            "type": "string",
-            "description": "By specifying a template for the Word Export (in DOC or DOCX formats) you can generate complete Word documents in your corporate design and with standard text",
-            "default": ""
-        },
-        "xlsTemplate": {
-            "type": "string",
-            "description": "By specifying a template for the Excel Export (in XLS or XLSX formats) you can generate complete Word documents in your corporate design and with standard text",
-            "default": ""
-        },
-        "publishMode": {
-            "type": "string",
-            "description": "Controls the way the Export document is delivered: ONLINE, MAIL, FILE etc.",
-            "default": ""
-        },
-        "publishSync": {
-            "type": "boolean",
-            "description": "If set to true, the export process runs synchronuously even if the file shall not be returned to the user.",
-            "default": false
-        },
-        "mailFrom": {
-            "type": "string",
-            "description": "The sender of the mail (Publish Mode must be set to MAIL)",
-            "default": ""
-        },
-        "mailTo": {
-            "type": "string",
-            "description": "The recipients of the mail (Publish Mode must be set to MAIL)",
-            "default": ""
-        },
-        "mailSubject": {
-            "type": "string",
-            "description": "The subject of the mail (Publish Mode must be set to MAIL)",
-            "default": ""
-        },
-        "mailBody": {
-            "type": "string",
-            "description": "The mail body (Publish Mode must be set to MAIL)",
-            "default": ""
-        },
-
-        "showIcons": {
-            "type": "boolean",
-            "description": "Show icons in the export buttons",
-            "default": true
-        },
-        "showTexts": {
-            "type": "boolean",
-            "description": "Show texts in the export buttons",
-            "default": true
-        },
-        "showViewSelector": {
-            "type": "boolean",
-            "description": "Show view selector before exporting",
-            "default": false
-        },
-        "showComponentSelector": {
-            "type": "boolean",
-            "description": "Show component selector before exporting",
-            "default": false
-        },
-        "enablePpt": {
-            "type": "boolean",
-            "description": "Show PowerPoint option",
-            "default": true
-        },
-        "enableDoc": {
-            "type": "boolean",
-            "description": "Show Word option",
-            "default": true
-        },
-        "enablePdf": {
-            "type": "boolean",
-            "description": "Show PDF option",
-            "default": true
-        },
-        "enableXls": {
-            "type": "boolean",
-            "description": "Show Excel option",
-            "default": true
-        },
-        "enableCsv": {
-            "type": "boolean",
-            "description": "Show CSV Export option",
-            "default": false
-        },
-
-        "pdfExclude": {
-            "type": "string",
-            "description": "PDF Excludes",
-            "default": ""
-        },
-        "pptExclude": {
-            "type": "string",
-            "description": "PPT Excludes",
-            "default": ""
-        },
-        "docExclude": {
-            "type": "string",
-            "description": "DOC Excludes",
-            "default": ""
-        },
-        "xlsExclude": {
-            "type": "string",
-            "description": "XLS Excludes",
-            "default": ""
-        },
-
-        "metadata": {
-            "type": "string",
-            "description": "For internal use",
-            "default": ""
-        },
-        "oauth": {
-            "type": "string",
-            "description": "For internal use",
-            "default": ""
-        }
+  "id": "com.biexcellence.openbi.sap.sac.export",
+  "version": "0.0.2",
+  "name": "biExport",
+  "description": "biExport 4 SAP SAC to PDF/PPT/DOC/XLS/CSV",
+  "newInstancePrefix": "biExport",
+  "icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAABegAAAXoBMrnI/AAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAJGSURBVDiNlZNPSNNxGMY/399+++OWuKaJQ0MtBItBhYwEEexQhNglECLq0EU9mZ06Ti8dIujQITqEBy+B1wjrkFEQBWqUaC3NBUtLs7ma+/v783YQl3MW9MD38uV5PvA+Ly8iwt/e8Jvj/uHJLv1fHiUi7NTIfMhF1hoUuA7UAIgtQ1o4eieC2OxSCWBkPrSPnDUjQstuI6hH6uH7c5FIKUQrhsdDLnLmp73DANItPa1ju3+LADlk3xZRtXuHi7o4Mn3kTNkIg4st7sBPPVdmt7Wn8c/dE3a+qlfTkh8DwVdL3sofffXKd7CvbcoA0AGqk84WUaVlGob7QezDpbDfp92s8gsOpcKpRJjkerzf0Tx7ARj7M4JXW98ZLuR9d+fnLp91u7TDfp/QUKM4VOek2qfjMCvvff1S4yjt4OjcmhJiAAoVn5o534mFXwMcCjy64HFChbsCpYR0siFy690xXxEQQey8wzyJKHPmbdt9KIQsFAVT2MzCSkIRWy0Q9DZxwBdkv9ffNPHC4ynZwo0TC98XYgPtqZRnwJY0hpkiYxgkMibLGxmWN35RsDUEjcbqZnTcjcUSt7Xy7fQVHF2WLY/HDSvemc276iwLMpoBKs3i2hIBXxXR1XnyhmOpDCDQhjjrhZ5eCzNhW6+fmXY0q6uNAKRbp+MrVbZkcpYEr04OTSbLAEAMaN8qUw/YdHQVpIPC1oY3ESMqyjma9mRGtwMlADOr9esemQU5hVK1ILYgawrmNOF5zgo8eXmtIbszU3aN/6vfbVAouCAyeN4AAAAASUVORK5CYII=",
+  "vendor": "bi excellence Software GmbH",
+  "eula": "",
+  "license": "",
+  "imports": [ "input-controls" ],
+  "webcomponents": [
+    {
+      "kind": "main",
+      "tag": "com-biexcellence-openbi-sap-sac-export",
+      "url": "https://biexcellence.github.io/biexport-sac/biexport.js",
+      "integrity": "",
+      "ignoreIntegrity": true
     },
+    {
+      "kind": "styling",
+      "tag": "com-biexcellence-openbi-sap-sac-export-aps",
+      "url": "https://biexcellence.github.io/biexport-sac/aps_biexport.js",
+      "integrity": "",
+      "ignoreIntegrity": true
+    }
+  ],
+  "properties": {
+    "serverURL": {
+      "type": "string",
+      "description": "The URL to the open bi Repository installation that handles the export. If you use an installation on your local machine, change this property to http://localhost:9091, otherwise to the address and port of your installation.",
+      "default": "https://designstudioexport.biexcellence.com"
+    },
+    "filename": {
+      "type": "string",
+      "description": "The file name of the export document. The extension will be determined automatically. You can use placeholders (manual section 3.9).",
+      "default": "SACExport_%EXECUTION_DATE_SHORT%_%EXECUTION_TIME_SHORT%"
+    },
+    "exportLanguage": {
+      "type": "string",
+      "description": "By default, the export determines the language for the export document from the web client. The export language is used to render the correct format for date and time placeholders (manual section 3.10) and to interpret number formats correctly for Excel export (manual secion 3.11).  You can set this property explicitly to overrule the automatic determination.",
+      "default": ""
+    },
+    "screenWidth": {
+      "type": "integer",
+      "description": "By default the export uses the screen width of the user to create an export document that resembles the screen display. If you experience extensive white spaces or to small font sizes, you can set this property to a static value, e.g. 1000 pixels.",
+      "default": 0
+    },
+    "screenHeight": {
+      "type": "integer",
+      "description": "If you make extensive use of relative height definitions, exports to PowerPoint, Word or Excel might show to small font sizes. In this case, you can set this property to a static value, e.g. 800 pixels. You might have to combine with a Static Screen Width.",
+      "default": 0
+    },
+    "parseCss": {
+      "type": "boolean",
+      "description": "If the Export does not show icons or images, you can set this property to true. This activates the collection of all images of the SAC application and sends them to the Export service.",
+      "default": false
+    },
+    "pdfTemplate": {
+      "type": "string",
+      "description": "As an alternative to the HTML Template property, you can also specify a DOC, DOCX, PPT or PPTX template which will be used as a fully formatted template for your PDF export",
+      "default": ""
+    },
+    "pptSeparate": {
+      "type": "boolean",
+      "description": "This property only takes affect if you are not using an Export Template. If set to `false` the application is rendered onto one slide. If you set this property to `true`, each component is rendered to a separate slide.",
+      "default": true
+    },
+    "pptTemplate": {
+      "type": "string",
+      "description": "By specifying a template for the PowerPoint Export (in PPT or PPTX formats) you can generate complete presentations in your corporate design and with standard text",
+      "default": ""
+    },
+    "docTemplate": {
+      "type": "string",
+      "description": "By specifying a template for the Word Export (in DOC or DOCX formats) you can generate complete Word documents in your corporate design and with standard text",
+      "default": ""
+    },
+    "xlsTemplate": {
+      "type": "string",
+      "description": "By specifying a template for the Excel Export (in XLS or XLSX formats) you can generate complete Word documents in your corporate design and with standard text",
+      "default": ""
+    },
+    "publishMode": {
+      "type": "string",
+      "description": "Controls the way the Export document is delivered: ONLINE, MAIL, FILE etc.",
+      "default": ""
+    },
+    "publishSync": {
+      "type": "boolean",
+      "description": "If set to true, the export process runs synchronuously even if the file shall not be returned to the user.",
+      "default": false
+    },
+    "mailFrom": {
+      "type": "string",
+      "description": "The sender of the mail (Publish Mode must be set to MAIL)",
+      "default": ""
+    },
+    "mailTo": {
+      "type": "string",
+      "description": "The recipients of the mail (Publish Mode must be set to MAIL)",
+      "default": ""
+    },
+    "mailSubject": {
+      "type": "string",
+      "description": "The subject of the mail (Publish Mode must be set to MAIL)",
+      "default": ""
+    },
+    "mailBody": {
+      "type": "string",
+      "description": "The mail body (Publish Mode must be set to MAIL)",
+      "default": ""
+    },
+
+    "showIcons": {
+      "type": "boolean",
+      "description": "Show icons in the export buttons",
+      "default": true
+    },
+    "showTexts": {
+      "type": "boolean",
+      "description": "Show texts in the export buttons",
+      "default": true
+    },
+    "showViewSelector": {
+      "type": "boolean",
+      "description": "Show view selector before exporting",
+      "default": false
+    },
+    "showComponentSelector": {
+      "type": "boolean",
+      "description": "Show component selector before exporting",
+      "default": false
+    },
+    "enablePpt": {
+      "type": "boolean",
+      "description": "Show PowerPoint option",
+      "default": true
+    },
+    "enableDoc": {
+      "type": "boolean",
+      "description": "Show Word option",
+      "default": true
+    },
+    "enablePdf": {
+      "type": "boolean",
+      "description": "Show PDF option",
+      "default": true
+    },
+    "enableXls": {
+      "type": "boolean",
+      "description": "Show Excel option",
+      "default": true
+    },
+    "enableCsv": {
+      "type": "boolean",
+      "description": "Show CSV Export option",
+      "default": false
+    },
+
+    "pdfExclude": {
+      "type": "string",
+      "description": "PDF Excludes",
+      "default": ""
+    },
+    "pptExclude": {
+      "type": "string",
+      "description": "PPT Excludes",
+      "default": ""
+    },
+    "docExclude": {
+      "type": "string",
+      "description": "DOC Excludes",
+      "default": ""
+    },
+    "xlsExclude": {
+      "type": "string",
+      "description": "XLS Excludes",
+      "default": ""
+    },
+
+    "metadata": {
+      "type": "string",
+      "description": "For internal use",
+      "default": ""
+    },
+    "oauth": {
+      "type": "string",
+      "description": "For internal use",
+      "default": ""
+    }
+  },
   "methods": {
     "doExport": {
       "description": "Triggers the export process.",
@@ -278,6 +278,10 @@
     "clearURLParameters": {
       "description": "Clears all URLs parameters which are used during background execution."
     },
+    "clearBriefingBookDefinitions": {
+      "description": "Clears all Briefing Book Definitions which are used during background execution."
+    },
+
     "getServerUrl": {
       "returnType": "string",
       "description": "Get the Server URL",
@@ -568,18 +572,18 @@
       "body": "this.mailBody = value;"
     }
   },
-    "events": {
-        "onStartExport": {
-            "description": "Specify the SAC Script that shall be triggered when the Export process is started. If you set the publishing property Parse CSS to true, all image resources are collected in this phase."
-        },
-        "onSendExport": {
-            "description": "Specify the SAC Script that shall be triggered when the Export process sends the content to the Export service."
-        },
-        "onReturnExport": {
-            "description": "Specify the SAC Script that shall be triggered when the Export process receives the generated document from the Export service."
-        },
-        "onErrorExport": {
-            "description": "Specify the SAC Script that shall be triggered when an error is reported by the Export process."
-        }
+  "events": {
+    "onStartExport": {
+      "description": "Specify the SAC Script that shall be triggered when the Export process is started. If you set the publishing property Parse CSS to true, all image resources are collected in this phase."
+    },
+    "onSendExport": {
+      "description": "Specify the SAC Script that shall be triggered when the Export process sends the content to the Export service."
+    },
+    "onReturnExport": {
+      "description": "Specify the SAC Script that shall be triggered when the Export process receives the generated document from the Export service."
+    },
+    "onErrorExport": {
+      "description": "Specify the SAC Script that shall be triggered when an error is reported by the Export process."
     }
+  }
 }

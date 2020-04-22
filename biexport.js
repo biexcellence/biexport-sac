@@ -815,6 +815,11 @@
             this._updateSettings();
         }
 
+        clearBriefingBookDefinitions() {
+            this._export_settings.array_var = "";
+            this._updateSettings();
+        }
+
         doExport(format, overrideSettings) {
             let settings = JSON.parse(JSON.stringify(this._export_settings));
 
