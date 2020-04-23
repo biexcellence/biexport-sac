@@ -52,6 +52,10 @@
               <td><label for="exportLanguage">Language</label></td>
               <td><input id="exportLanguage" name="exportLanguage" type="text" placeholder="Using client language if emtpy"></td>
             </tr>
+            <tr>
+              <td><label for="biAnalyticsDocument">biAnalytics Document</label></td>
+              <td><input id="biAnalyticsDocument" name="biAnalyticsDocument" type="checkbox"></td>
+            </tr>
           </table>
         </fieldset>
         <fieldset>
@@ -462,6 +466,13 @@
             this.setBooleanValue("parseCss", value);
         }
 
+        get biAnalyticsDocument() {
+            return this.getBooleanValue("biAnalyticsDocument");
+        }
+        set biAnalyticsDocument(value) {
+            this.setBooleanValue("biAnalyticsDocument", value);
+        }
+
         get pdfTemplate() {
             return this.getValue("pdfTemplate");
         }
@@ -660,6 +671,7 @@
                 "screenWidth",
                 "screenHeight",
                 "parseCss",
+                "biAnalyticsDocument",
 
                 "pdfTemplate",
                 "pdfExclude",

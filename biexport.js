@@ -627,6 +627,14 @@
             this._updateSettings();
         }
 
+        get bianalyticsDocument() {
+            return this._export_settings.bianalytics;
+        }
+        set bianalyticsDocument(value) {
+            this._export_settings.bianalytics = value;
+            this._updateSettings();
+        }
+
         get pdfTemplate() {
             return this._export_settings.pdf_template;
         }

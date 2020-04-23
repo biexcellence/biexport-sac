@@ -56,6 +56,11 @@
       "description": "If the Export does not show icons or images, you can set this property to true. This activates the collection of all images of the SAC application and sends them to the Export service.",
       "default": false
     },
+    "biAnalyticsDocument": {
+      "type": "boolean",
+      "description": "If set to true, the export automatically creates native Office objects when possible - charts, tables, dropdowns, texts etc.",
+      "default": false
+    },
     "pdfTemplate": {
       "type": "string",
       "description": "As an alternative to the HTML Template property, you can also specify a DOC, DOCX, PPT or PPTX template which will be used as a fully formatted template for your PDF export",
@@ -383,6 +388,23 @@
         }
       ],
       "body": "this.parseCss = value;"
+    },
+    "getBiAnalyticsDocument": {
+      "returnType": "boolean",
+      "description": "Get whether biAnaltics Document is enabled or not",
+      "parameters": [],
+      "body": "return this.biAnalticsDocument;"
+    },
+    "setBiAnalyticsDocument": {
+      "description": "Set whether biAnaltics Document is enabled or not",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "boolean",
+          "description": "The new biAnaltics Document"
+        }
+      ],
+      "body": "this.biAnalticsDocument = value;"
     },
     "getPdfTemplate": {
       "returnType": "string",
