@@ -391,9 +391,9 @@
     },
     "getBiAnalyticsDocument": {
       "returnType": "boolean",
-      "description": "Get whether biAnaltics Document is enabled or not",
+      "description": "Get whether biAnalytics Document is enabled or not",
       "parameters": [],
-      "body": "return this.biAnalticsDocument;"
+      "body": "return this.biAnalyticsDocument;"
     },
     "setBiAnalyticsDocument": {
       "description": "Set whether biAnaltics Document is enabled or not",
@@ -401,10 +401,10 @@
         {
           "name": "value",
           "type": "boolean",
-          "description": "The new biAnaltics Document"
+          "description": "The new biAnalytics Document"
         }
       ],
-      "body": "this.biAnalticsDocument = value;"
+      "body": "this.biAnalyticsDocument = value;"
     },
     "getPdfTemplate": {
       "returnType": "string",
