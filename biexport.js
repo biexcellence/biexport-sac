@@ -627,10 +627,10 @@
             this._updateSettings();
         }
 
-        get bianalyticsDocument() {
+        get biAnalyticsDocument() {
             return this._export_settings.bianalytics;
         }
-        set bianalyticsDocument(value) {
+        set biAnalyticsDocument(value) {
             this._export_settings.bianalytics = value;
             this._updateSettings();
         }
