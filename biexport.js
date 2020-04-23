@@ -1194,7 +1194,7 @@
             isEmpty = false;
         } else {
             let child = node.firstChild;
-            if (!child && node.shadowRoot) { // shadowRoot
+            if ((!child || node.tagName == "COM-BIEXCELLENCE-OPENBI-SAP-SAC-EXPORT") && node.shadowRoot) { // shadowRoot
                 child = node.shadowRoot.firstChild;
             }
             while (child) {
