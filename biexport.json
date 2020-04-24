@@ -227,8 +227,7 @@
       ]
     },
     "getExportTemplate": {
-      "returnType": "string",
-      "description": "Get the Export Template",
+      "description": "Add an Export Template",
       "parameters": [
         {
           "name": "format",
@@ -236,7 +235,6 @@
           "description": "The export format: \"PDF\", \"PPT\", \"DOC\", \"XLS\""
         }
       ],
-      "body": "return this.exportTemplate;"
     },
     "setExportTemplate": {
       "description": "Set the Export Template",
@@ -252,7 +250,6 @@
           "description": "The new Export Template"
         }
       ],
-      "body": "this.exportTemplate = value;"
     },
     "clearSelectedWidgets": {
       "description": "Clears all applications to be exported during background execution.",
@@ -375,6 +372,8 @@
           "description": "The new visibility"
         }
       ],
+      "body": "this.enablePpt = value;"
+    },
       "isCsvButtonVisible": {
         "returnType": "boolean",
         "description": "Get the visibility of the CSV export button",

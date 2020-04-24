@@ -545,7 +545,7 @@
         set enableDoc(value) {
             this._enableDOC = value;
         }
-
+       
         get enableXls() {
             return this._enableXLS;
         }
@@ -642,14 +642,6 @@
             this._updateSettings();
         }
 
-        get exportTemplate(format) {
-            return this._export_settings[format.toLowerCase() + "_template"];
-        }
-        set exportTemplate(format, value) {
-            this._export_settings[format.toLowerCase() + "_template"] = value;
-            this._updateSettings();
-        }
-
         get publishMode() {
             return this._export_settings.publish_mode;
         }
@@ -728,6 +720,14 @@
 
         clearSelectedWidgets(format) {
             this._export_settings[format.toLowerCase() + "_exclude"] = "";
+            this._updateSettings();
+        }
+
+        getExportTemplate(format) {
+            return this._export_settings[format.toLowerCase() + "_template"];
+        }
+        setExportTemplate(format, value) {
+            this._export_settings[format.toLowerCase() + "_template"] = value;
             this._updateSettings();
         }
 
