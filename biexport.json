@@ -163,24 +163,24 @@
       "default": false
     },
 
-    "pdfExclude": {
+    "pdfSelectedWidgets": {
       "type": "string",
-      "description": "PDF Excludes",
+      "description": "Selected Widgets for PDF export",
       "default": ""
     },
-    "pptExclude": {
+    "pptSelectedWidgets": {
       "type": "string",
-      "description": "PPT Excludes",
+      "description": "Selected Widgets for PowerPoint export",
       "default": ""
     },
-    "docExclude": {
+    "docSelectedWidgets": {
       "type": "string",
-      "description": "DOC Excludes",
+      "description": "Selected Widgets for Word export",
       "default": ""
     },
-    "xlsExclude": {
+    "xlsSelectedWidgets": {
       "type": "string",
-      "description": "XLS Excludes",
+      "description": "Selected Widgets for Excel export",
       "default": ""
     },
 

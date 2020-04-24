@@ -613,31 +613,31 @@
             this.setBooleanValue("enableCsv", value);
         }
 
-        get pdfExclude() {
+        get pdfSelectedWidgets() {
             return this.pdf_exclude;
         }
-        set pdfExclude(value) {
+        set pdfSelectedWidgets(value) {
             this.pdf_exclude = value;
         }
 
-        get pptExclude() {
+        get pptSelectedWidgets() {
             return this.ppt_exclude;
         }
-        set pptExclude(value) {
+        set pptSelectedWidgets(value) {
             this.ppt_exclude = value;
         }
 
-        get docExclude() {
+        get docSelectedWidgets() {
             return this.doc_exclude;
         }
-        set docExclude(value) {
+        set docSelectedWidgets(value) {
             this.doc_exclude = value;
         }
 
-        get xlsExclude() {
+        get xlsSelectedWidgets() {
             return this.xls_exclude;
         }
-        set xlsExclude(value) {
+        set xlsSelectedWidgets(value) {
             this.xls_exclude = value;
         }
 
@@ -674,17 +674,17 @@
                 "biAnalyticsDocument",
 
                 "pdfTemplate",
-                "pdfExclude",
+                "pdfSelectedWidgets",
 
                 "pptSeparate",
                 "pptTemplate",
-                "pptExclude",
+                "pptSelectedWidgets",
 
                 "docTemplate",
-                "docExclude",
+                "docSelectedWidgets",
 
                 "xlsTemplate",
-                "xlsExclude",
+                "xlsSelectedWidgets",
 
                 "publishMode",
                 "publishSync",
