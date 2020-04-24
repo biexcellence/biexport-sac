@@ -206,6 +206,36 @@
         }
       ]
     },
+    "addSelectedWidget": {
+      "description": "Add a widget to be exported.",
+      "parameters": [
+        {
+          "name": "format",
+          "type": "string",
+          "description": "The export format: \"PDF\", \"PPTX\", \"DOCX\", \"XLSX\""
+        },
+        {
+          "name": "widget",
+          "type": "string",
+          "description": "The name of the Widget."
+        },
+        {
+          "name": "isSelected",
+          "type": "boolean",
+          "description": "Set to true to select, set to false to exclude"
+        }
+      ]
+    },
+    "clearSelectedWidgets": {
+      "description": "Clears all applications to be exported during background execution.",
+      "parameters": [
+        {
+          "name": "format",
+          "type": "string",
+          "description": "The export format: \"PDF\", \"PPTX\", \"DOCX\", \"XLSX\""
+        }
+      ]
+    },
     "addExportApplication": {
       "description": "Add an application to be exported during background execution.",
       "parameters": [
@@ -279,81 +309,11 @@
         }
       ]
     },
-
     "clearURLParameters": {
       "description": "Clears all URLs parameters which are used during background execution."
     },
     "clearBriefingBookDefinitions": {
       "description": "Clears all Briefing Book Definitions which are used during background execution."
-    },
-
-    "getPptSelectedWidgets": {
-      "returnType": "string",
-      "description": "Get the widgets selected for PowerPoint export",
-      "parameters": [],
-      "body": "return this.pptSelectedWidgets;"
-    },
-    "setPptSelectedWidgets": {
-      "description": "Set the widgets selected for PowerPoint export",
-      "parameters": [
-        {
-          "name": "value",
-          "type": "string",
-          "description": "The new selected widgets separated by ;"
-        }
-      ],
-      "body": "this.pptSelectedWidgets = value;"
-    },
-    "getDocSelectedWidgets": {
-      "returnType": "string",
-      "description": "Get the widgets selected for Word export",
-      "parameters": [],
-      "body": "return this.docSelectedWidgets;"
-    },
-    "setDocSelectedWidgets": {
-      "description": "Set the widgets selected for Word export",
-      "parameters": [
-        {
-          "name": "value",
-          "type": "string",
-          "description": "The new selected widgets separated by ;"
-        }
-      ],
-      "body": "this.docSelectedWidgets = value;"
-    },
-    "getPdfSelectedWidgets": {
-      "returnType": "string",
-      "description": "Get the widgets selected for PDF export",
-      "parameters": [],
-      "body": "return this.pdfSelectedWidgets;"
-    },
-    "setPdfSelectedWidgets": {
-      "description": "Set the widgets selected for PDF export",
-      "parameters": [
-        {
-          "name": "value",
-          "type": "string",
-          "description": "The new selected widgets separated by ;"
-        }
-      ],
-      "body": "this.pdfSelectedWidgets = value;"
-    },
-    "getXlsSelectedWidgets": {
-      "returnType": "string",
-      "description": "Get the widgets selected for Excel export",
-      "parameters": [],
-      "body": "return this.xlsSelectedWidgets;"
-    },
-    "setXlsSelectedWidgets": {
-      "description": "Set the widgets selected for Excel export",
-      "parameters": [
-        {
-          "name": "value",
-          "type": "string",
-          "description": "The new selected widgets separated by ;"
-        }
-      ],
-      "body": "this.xlsSelectedWidgets = value;"
     },
     "isXlsButtonVisible": {
       "returnType": "boolean",

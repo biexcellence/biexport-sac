@@ -209,7 +209,6 @@
                     }
                 }
             } catch (e) {
-
             }
         }
 
@@ -255,25 +254,6 @@
             }
         }
 
-        _convertVisibleComponentsToString(value) {
-            let selected = [];
-            value.forEach(s => {
-                if (!s.isExcluded) { lselected.push(s.component); }
-            });
-            return selected.join(";");
-        }
-
-        _convertVisibleComponentsFromString(value) {
-            let selected = [];
-            value.forEach(s => {
-                lselected.push({
-                    component: s,
-                    isExcluded: false
-                });
-            });
-            return JSON.stringify(selected);
-        }
-
         _renderExportButton() {
             let menu = new sap.m.Menu({
                 title: this._cExport_text,
@@ -297,7 +277,7 @@
 
                             let components = this.metadata ? JSON.parse(this.metadata)["components"] : {};
                             if (this["_initialVisibleComponents" + oItem.getKey()] == null) {
-                                this["_initialVisibleComponents" + oItem.getKey()] = this[oItem.getKey().toLowerCase() + "Exclude"] ? JSON.parse(this[oItem.getKey().toLowerCase() + "Exclude"]) : [];
+                                this["_initialVisibleComponents" + oItem.getKey()] = this[oItem.getKey().toLowerCase() + "SelectedWidgets"] ? JSON.parse(this[oItem.getKey().toLowerCase() + "SelectedWidgets"]) : [];
                             }
 
                             for (let componentId in components) {
@@ -318,8 +298,8 @@
                                             let visibleComponents = [];
                                             let objIndex = -1;
 
-                                            if (this[oItem.getKey().toLowerCase() + "Exclude"] != "") {
-                                                visibleComponents = JSON.parse(this[oItem.getKey().toLowerCase() + "Exclude"]);
+                                            if (this[oItem.getKey().toLowerCase() + "SelectedWidgets"] != "") {
+                                                visibleComponents = JSON.parse(this[oItem.getKey().toLowerCase() + "SelectedWidgets"]);
                                                 objIndex = visibleComponents.findIndex(v => v.component == oEvent.getParameter("id"));
                                             }
                                             if (objIndex > -1) {
@@ -330,7 +310,7 @@
                                                     isExcluded: !oEvent.getParameter("selected")
                                                 });
                                             }
-                                            this[oItem.getKey().toLowerCase() + "Exclude"] = JSON.stringify(visibleComponents);
+                                            this[oItem.getKey().toLowerCase() + "SelectedWidgets"] = JSON.stringify(visibleComponents);
                                         }
                                     }));
                                 }
@@ -792,6 +772,19 @@
 
         _updateSettings() {
             this.settings.value = JSON.stringify(this._export_settings);
+        }
+
+        addSelectedWidgets(format, comp, isIncluded) {
+            let current = this[format.toLowerCase() + "_exclude"] ? JSON.parse(this[oItem.getKey().toLowerCase() + "_exclude"]) : [];
+            current.push({ comp: component, isExcluded: !isIncluded });
+
+            this._export_settings[format + "_exclude"] = JSON.stringify(current);
+            this._updateSettings();
+        }
+
+        clearSelectedWidgets(format) {
+            this._export_settings[format + "_exclude"] = "";
+            this._updateSettings();
         }
 
         addExportApplication(id) {

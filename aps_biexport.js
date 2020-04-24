@@ -230,7 +230,7 @@
 
             // visible components
             ["pdf_exclude", "ppt_exclude", "doc_exclude", "xls_exclude"].forEach(slotId => {
-                let id = slotId.replace("_e", "E");
+                let id = slotId.replace("_exclude", "SelectedWidgets");
                 
                 let filterList = new sap.m.FacetFilterList({
                     title: "Widget Selection",
