@@ -679,6 +679,7 @@
         }
         set pdfSelectedWidgets(value) {
             this._export_settings.pdf_exclude = value;
+            this._updateSettings();
         }
 
         get pptSelectedWidgets() {
@@ -686,6 +687,7 @@
         }
         set pptSelectedWidgets(value) {
             this._export_settings.ppt_exclude = value;
+            this._updateSettings();
         }
 
         get docSelectedWidgets() {
@@ -693,6 +695,7 @@
         }
         set docSelectedWidgets(value) {
             this._export_settings.doc_exclude = value;
+            this._updateSettings();
         }
 
         get xlsSelectedWidgets() {
@@ -700,7 +703,8 @@
         }
         set xlsSelectedWidgets(value) {
             this._export_settings.xls_exclude = value;
-        }
+            this._updateSettings();
+}
 
         get publishMode() {
             return this._export_settings.publish_mode;
