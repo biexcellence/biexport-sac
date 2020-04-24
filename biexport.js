@@ -634,14 +634,6 @@
             this._updateSettings();
         }
 
-        get pdfTemplate() {
-            return this._export_settings.pdf_template;
-        }
-        set pdfTemplate(value) {
-            this._export_settings.pdf_template = value;
-            this._updateSettings();
-        }
-
         get pptSeparate() {
             return this._export_settings.ppt_seperate == "X";
         }
@@ -650,27 +642,11 @@
             this._updateSettings();
         }
 
-        get pptTemplate() {
-            return this._export_settings.ppt_template;
+        get exportTemplate(format) {
+            return this._export_settings[format.toLowerCase() + "_template"];
         }
-        set pptTemplate(value) {
-            this._export_settings.ppt_template = value;
-            this._updateSettings();
-        }
-
-        get docTemplate() {
-            return this._export_settings.doc_template;
-        }
-        set docTemplate(value) {
-            this._export_settings.doc_template = value;
-            this._updateSettings();
-        }
-
-        get xlsTemplate() {
-            return this._export_settings.xls_template;
-        }
-        set xlsTemplate(value) {
-            this._export_settings.xls_template = value;
+        set exportTemplate(format, value) {
+            this._export_settings[format.toLowerCase() + "_template"] = value;
             this._updateSettings();
         }
 
@@ -722,38 +698,6 @@
             this._updateSettings();
         }
 
-        get pdfSelectedWidgets() {
-    return this._convertVisibleComponentsToString(this._export_settings.pdf_exclude);
-        }
-        set pdfSelectedWidgets(value) {         
-            this._export_settings.pdf_exclude =this. _convertVisibleComponentsFromString(value);
-            this._updateSettings();
-        }
-
-        get pptSelectedWidgets() {
-    return this._convertVisibleComponentsToString(this._export_settings.ppt_exclude);
-        }
-        set pptSelectedWidgets(value) {
-    this._export_settings.ppt_exclude = this._convertVisibleComponentsFromString(value);
-            this._updateSettings();
-        }
-
-        get docSelectedWidgets() {
-    return this._convertVisibleComponentsToString(this._export_settings.doc_exclude);
-        }
-        set docSelectedWidgets(value) {
-    this._export_settings.doc_exclude = this._convertVisibleComponentsFromString(value);
-            this._updateSettings();
-        }
-
-        get xlsSelectedWidgets() {
-    return this._convertVisibleComponentsToString(this._export_settings.xls_exclude);
-        }
-        set xlsSelectedWidgets(value) {
-    this._export_settings.xls_exclude = this._convertVisibleComponentsFromString(value);
-            this._updateSettings();
-        }
-
         get metadata() {
             return this._export_settings.metadata;
         }
@@ -775,7 +719,7 @@
         }
 
         addSelectedWidget(format, comp, isIncluded) {
-            let current = this[format.toLowerCase() + "_exclude"] ? JSON.parse(this[oItem.getKey().toLowerCase() + "_exclude"]) : [];
+            let current = this[format.toLowerCase() + "_exclude"] ? JSON.parse(format.toLowerCase() + "_exclude"]) : [];
             current.push({ component: comp, isExcluded: !isIncluded });
 
             this._export_settings[format.toLowerCase() + "_exclude"] = JSON.stringify(current);

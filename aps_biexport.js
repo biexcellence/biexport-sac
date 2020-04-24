@@ -66,7 +66,7 @@
               <td><input id="pdfTemplate" name="pdfTemplate" type="text"></td>
             </tr>
             <tr>
-              <td colspan="2"><slot name="pdf_exclude"></slot></td>
+              <td colspan="2"><slot name="pdfSelectedWidgets"></slot></td>
             </tr>
           </table>
         </fieldset>
@@ -82,7 +82,7 @@
               <td><input id="pptTemplate" name="pptTemplate" type="text"></td>
             </tr>
             <tr>
-              <td colspan="2"><slot name="ppt_exclude"></slot></td>
+              <td colspan="2"><slot name="pptSelectedWidgets"></slot></td>
             </tr>
           </table>
         </fieldset>
@@ -94,7 +94,7 @@
               <td><input id="docTemplate" name="docTemplate" type="text"></td>
             </tr>
             <tr>
-              <td colspan="2"><slot name="doc_exclude"></slot></td>
+              <td colspan="2"><slot name="docSelectedWidgets"></slot></td>
             </tr>
           </table>
         </fieldset>
@@ -106,7 +106,7 @@
               <td><input id="xlsTemplate" name="xlsTemplate" type="text"></td>
             </tr>
             <tr>
-              <td colspan="2"><slot name="xls_exclude"></slot></td>
+              <td colspan="2"><slot name="xlsSelectedWidgets"></slot></td>
             </tr>
           </table>
         </fieldset>
@@ -229,8 +229,8 @@
             form.addEventListener("change", this._change.bind(this));
 
             // visible components
-            ["pdf_exclude", "ppt_exclude", "doc_exclude", "xls_exclude"].forEach(slotId => {
-                let id = slotId.replace("_exclude", "SelectedWidgets");
+            ["pdfSelectedWidgets", "pptSelectedWidgets", "docSelectedWidgets", "xlsSelectedWidgets"].forEach(slotId => {
+                let id = slotId; //replace("_exclude", "SelectedWidgets");
                 
                 let filterList = new sap.m.FacetFilterList({
                     title: "Widget Selection",
@@ -614,31 +614,31 @@
         }
 
         get pdfSelectedWidgets() {
-            return this.pdf_exclude;
+            return this.pdfSelectedWidgets;
         }
         set pdfSelectedWidgets(value) {
-            this.pdf_exclude = value;
+            this.pdfSelectedWidgets = value;
         }
 
         get pptSelectedWidgets() {
-            return this.ppt_exclude;
+            return this.pptSelectedWidgets;
         }
         set pptSelectedWidgets(value) {
-            this.ppt_exclude = value;
+            this.pptSelectedWidgets = value;
         }
 
         get docSelectedWidgets() {
-            return this.doc_exclude;
+            return this.docSelectedWidgets;
         }
         set docSelectedWidgets(value) {
-            this.doc_exclude = value;
+            this.docSelectedWidgets = value;
         }
 
         get xlsSelectedWidgets() {
-            return this.xls_exclude;
+            return this.xlsSelectedWidgets;
         }
         set xlsSelectedWidgets(value) {
-            this.xls_exclude = value;
+            this.xlsSelectedWidgets = value;
         }
 
         get metadata() {
