@@ -66,7 +66,7 @@
               <td><input id="pdfTemplate" name="pdfTemplate" type="text"></td>
             </tr>
             <tr>
-              <td colspan="2"><slot name="pdfSelectedWidgets"></slot></td>
+              <td colspan="2"><slot name="pdf_SelectedWidgets"></slot></td>
             </tr>
           </table>
         </fieldset>
@@ -82,7 +82,7 @@
               <td><input id="pptTemplate" name="pptTemplate" type="text"></td>
             </tr>
             <tr>
-              <td colspan="2"><slot name="pptSelectedWidgets"></slot></td>
+              <td colspan="2"><slot name="ppt_SelectedWidgets"></slot></td>
             </tr>
           </table>
         </fieldset>
@@ -94,7 +94,7 @@
               <td><input id="docTemplate" name="docTemplate" type="text"></td>
             </tr>
             <tr>
-              <td colspan="2"><slot name="docSelectedWidgets"></slot></td>
+              <td colspan="2"><slot name="doc_SelectedWidgets"></slot></td>
             </tr>
           </table>
         </fieldset>
@@ -106,7 +106,7 @@
               <td><input id="xlsTemplate" name="xlsTemplate" type="text"></td>
             </tr>
             <tr>
-              <td colspan="2"><slot name="xlsSelectedWidgets"></slot></td>
+              <td colspan="2"><slot name="xls_SelectedWidgets"></slot></td>
             </tr>
           </table>
         </fieldset>
@@ -229,8 +229,8 @@
             form.addEventListener("change", this._change.bind(this));
 
             // visible components
-            ["pdfSelectedWidgets", "pptSelectedWidgets", "docSelectedWidgets", "xlsSelectedWidgets"].forEach(slotId => {
-                let id = slotId; //replace("_exclude", "SelectedWidgets");
+            ["pdf_SelectedWidgets", "ppt_SelectedWidgets", "doc_SelectedWidgets", "xls_SelectedWidgets"].forEach(slotId => {
+                let id = slotId.replace("_", "");
                 
                 let filterList = new sap.m.FacetFilterList({
                     title: "Widget Selection",
