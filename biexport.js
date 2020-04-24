@@ -742,8 +742,21 @@
             this.settings.value = JSON.stringify(this._export_settings);
         }
 
+        addCustomText(name, value) {
+            if (!this._export_settings.array_text) {
+                this._export_settings.array_text = [];
+            }
+            this._export_settings.array_text.push({ "name": name, "value": value });
+            this._updateSettings();
+        }
+
+        clearCustomTexts() {
+            this._export_settings.array_text = "";
+            this._updateSettings();
+        }
+
         addSelectedWidget(format, comp, isIncluded) {
-            let current = this[format.toLowerCase() + "_exclude"] ? JSON.parse(format.toLowerCase()) + "_exclude"]) : [];
+            let current = this[format.toLowerCase() + "_exclude"] ? JSON.parse(this[format.toLowerCase() + "_exclude"]) : []; 
             current.push({ component: comp, isExcluded: !isIncluded });
 
             this._export_settings[format.toLowerCase() + "_exclude"] = JSON.stringify(current);
@@ -783,7 +796,7 @@
             this._updateSettings();
         }
 
-        addBriefingBookDefinition(parameters, index, filename, template, selectedWidgets, applicationIds) {
+        addBriefingBookDefinition(parameters, index, filename, template, customTexts, selectedWidgets, applicationIds) {
             if (!this._export_settings.array_var) {
                 this._export_settings.array_var = [];
             }
@@ -795,13 +808,18 @@
                 });
             });
 
-            var lparameters = [];
-            parameters.forEach(s => {
-                var lsel = JSON.parse(s);
-                lparameters.push(lsel);
+            var ltexts = [];
+            customTexts.forEach(s => {
+                ltexts.push(JSON.parse(s));
             });
 
-            this._export_settings.array_var.push({ "index": index, "filename": filename, "template": template, "parameters": lparameters, "selected": lselected, "applications": applicationIds.join(";") });
+
+            var lparameters = [];
+            parameters.forEach(s => {
+                lparameters.push(JSON.parse(s));
+            });
+
+            this._export_settings.array_var.push({ "index": index, "filename": filename, "template": template, "texts": ltexts, "parameters": lparameters, "selected": lselected, "applications": applicationIds.join(";") });
             this._updateSettings();
         }
 

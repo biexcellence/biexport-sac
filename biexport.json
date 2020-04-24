@@ -236,6 +236,24 @@
         }
       ]
     },
+    "addCustomText": {
+      "description": "Add a Custom Text to replace a placeholder in the export.",
+      "parameters": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "The name of the placeholder."
+        },
+        {
+          "name": "id",
+          "type": "string",
+          "description": "The text to be displayed for the placeholder."
+        }
+      ]
+    },
+    "clearCustomTexts": {
+      "description": "Clears all Custom Texts."
+    },
     "addExportApplication": {
       "description": "Add an application to be exported during background execution.",
       "parameters": [
@@ -296,6 +314,11 @@
           "name": "template",
           "type": "string",
           "description": "Optional: The Export Template which shall be used for this particular execution."
+        },
+        {
+          "name": "customTexts",
+          "type": "string[]",
+          "description": "The custom texts to be replaced in the Export Template for this particular execution {\"name\": \"myPlaceholder\", \"value\": \"textToReplace\"}"
         },
         {
           "name": "selectedWidgets",
