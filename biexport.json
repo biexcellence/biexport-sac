@@ -356,19 +356,72 @@
       "body": "this.xlsSelectedWidgets = value;"
     },
     "isXlsButtonVisible": {
-      "returnType": "string",
+      "returnType": "boolean",
       "description": "Get the visibility of the Excel export button",
-      "parameters": []
+      "parameters": [],
+      "body": "return this.enableXls;"
     },
     "setXlsButtonVisible": {
-      "description": "Set the Server URL",
+      "description": "Set the visibility of the Excel export button",
       "parameters": [
         {
           "name": "value",
           "type": "boolean",
           "description": "The new visibility"
         }
-      ]
+      ],
+      "body": "this.enableXls = value;"
+    },
+    "isPptButtonVisible": {
+      "returnType": "boolean",
+      "description": "Get the visibility of the PowerPoint export button",
+      "parameters": [],
+      "body": "return this.enablePpt;"
+    },
+    "setPptButtonVisible": {
+      "description": "Set the visibility of the PowerPoint export button",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "boolean",
+          "description": "The new visibility"
+        }
+      ],
+      "body": "this.enableXls = value;"
+    },
+    "isDocButtonVisible": {
+      "returnType": "boolean",
+      "description": "Get the visibility of the Word export button",
+      "parameters": [],
+      "body": "return this.enableDoc;"
+    },
+    "setDocButtonVisible": {
+      "description": "Set the visibility of the Word export button",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "boolean",
+          "description": "The new visibility"
+        }
+      ],
+      "body": "this.enableDoc = value;"
+    },
+    "isPdfButtonVisible": {
+      "returnType": "boolean",
+      "description": "Get the visibility of the PDF export button",
+      "parameters": [],
+      "body": "return this.enablePdf;"
+    },
+    "setPdfButtonVisible": {
+      "description": "Set the visibility of the PDF export button",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "boolean",
+          "description": "The new visibility"
+        }
+      ],
+      "body": "this.enablePdf = value;"
     },
     "getServerUrl": {
       "returnType": "string",
