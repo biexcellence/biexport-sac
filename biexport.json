@@ -234,7 +234,7 @@
           "type": "string",
           "description": "The export format: \"PDF\", \"PPT\", \"DOC\", \"XLS\""
         }
-      ],
+      ]
     },
     "setExportTemplate": {
       "description": "Set the Export Template",
@@ -249,7 +249,7 @@
           "type": "string",
           "description": "The new Export Template"
         }
-      ],
+      ]
     },
     "clearSelectedWidgets": {
       "description": "Clears all applications to be exported during background execution.",
