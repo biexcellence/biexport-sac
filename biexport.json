@@ -287,6 +287,106 @@
       "description": "Clears all Briefing Book Definitions which are used during background execution."
     },
 
+    "getPptSelectedWidgets": {
+      "returnType": "string",
+      "description": "Get the widgets selected for PowerPoint export",
+      "parameters": [],
+      "body": "return this.pptSelectedWidgets;"
+    },
+    "setPptSelectedWidgets": {
+      "description": "Set the widgets selected for PowerPoint export",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "description": "The new selected widgets separated by ;"
+        }
+      ],
+      "body": "this.pptSelectedWidgets = value;"
+    },
+    "getDocSelectedWidgets": {
+      "returnType": "string",
+      "description": "Get the widgets selected for Word export",
+      "parameters": [],
+      "body": "return this.docSelectedWidgets;"
+    },
+    "setDocSelectedWidgets": {
+      "description": "Set the widgets selected for Word export",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "description": "The new selected widgets separated by ;"
+        }
+      ],
+      "body": "this.docSelectedWidgets = value;"
+    },
+    "getPdfSelectedWidgets": {
+      "returnType": "string",
+      "description": "Get the widgets selected for PDF export",
+      "parameters": [],
+      "body": "return this.pdfSelectedWidgets;"
+    },
+    "setPdfSelectedWidgets": {
+      "description": "Set the widgets selected for PDF export",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "description": "The new selected widgets separated by ;"
+        }
+      ],
+      "body": "this.pdfSelectedWidgets = value;"
+    },
+    "getXlsSelectedWidgets": {
+      "returnType": "string",
+      "description": "Get the widgets selected for Excel export",
+      "parameters": [],
+      "body": "return this.xlsSelectedWidgets;"
+    },
+    "setXlsSelectedWidgets": {
+      "description": "Set the widgets selected for Excel export",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "description": "The new selected widgets separated by ;"
+        }
+      ],
+      "body": "this.xlsSelectedWidgets = value;"
+    },
+    "isXlsButtonVisible": {
+      "returnType": "string",
+      "description": "Get the visibility of the Excel export button",
+      "parameters": []
+    },
+    "setXlsButtonVisible": {
+      "description": "Set the Server URL",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "boolean",
+          "description": "The new visibility"
+        }
+      ]
+    },
+    "getServerUrl": {
+      "returnType": "string",
+      "description": "Get the Server URL",
+      "parameters": [],
+      "body": "return this.serverURL;"
+    },
+    "setServerUrl": {
+      "description": "Set the Server URL",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "description": "The new Server URL"
+        }
+      ],
+      "body": "this.serverURL = value;"
+    },
     "getServerUrl": {
       "returnType": "string",
       "description": "Get the Server URL",

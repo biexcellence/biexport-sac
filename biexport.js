@@ -255,6 +255,25 @@
             }
         }
 
+        _convertVisibleComponentsToString(value) {
+            let selected = [];
+            value.forEach(s => {
+                if (!s.isExcluded) { lselected.push(s.component); }
+            });
+            return selected.join(";");
+        }
+
+        _convertVisibleComponentsFromString(value) {
+            let selected = [];
+            value.forEach(s => {
+                lselected.push({
+                    component: s,
+                    isExcluded: false
+                });
+            });
+            return JSON.stringify(selected);
+        }
+
         _renderExportButton() {
             let menu = new sap.m.Menu({
                 title: this._cExport_text,
@@ -723,35 +742,35 @@
             this._updateSettings();
         }
 
-        get pdfExclude() {
-            return this._export_settings.pdf_exclude;
+        get pdfSelectedWidgets() {
+    return this._convertVisibleComponentsToString(this._export_settings.pdf_exclude);
         }
-        set pdfExclude(value) {
-            this._export_settings.pdf_exclude = value;
+        set pdfSelectedWidgets(value) {         
+            this._export_settings.pdf_exclude =this. _convertVisibleComponentsFromString(value);
             this._updateSettings();
         }
 
-        get pptExclude() {
-            return this._export_settings.ppt_exclude;
+        get pptSelectedWidgets() {
+    return this._convertVisibleComponentsToString(this._export_settings.ppt_exclude);
         }
-        set pptExclude(value) {
-            this._export_settings.ppt_exclude = value;
+        set pptSelectedWidgets(value) {
+    this._export_settings.ppt_exclude = this._convertVisibleComponentsFromString(value);
             this._updateSettings();
         }
 
-        get docExclude() {
-            return this._export_settings.doc_exclude;
+        get docSelectedWidgets() {
+    return this._convertVisibleComponentsToString(this._export_settings.doc_exclude);
         }
-        set docExclude(value) {
-            this._export_settings.doc_exclude = value;
+        set docSelectedWidgets(value) {
+    this._export_settings.doc_exclude = this._convertVisibleComponentsFromString(value);
             this._updateSettings();
         }
 
-        get xlsExclude() {
-            return this._export_settings.xls_exclude;
+        get xlsSelectedWidgets() {
+    return this._convertVisibleComponentsToString(this._export_settings.xls_exclude);
         }
-        set xlsExclude(value) {
-            this._export_settings.xls_exclude = value;
+        set xlsSelectedWidgets(value) {
+    this._export_settings.xls_exclude = this._convertVisibleComponentsFromString(value);
             this._updateSettings();
         }
 
@@ -802,10 +821,9 @@
 
             var lselected = [];
             selectedWidgets.forEach(s => {
-                var lsel = {};
-                lsel.component = s;
-                lsel.isExcluded = false;
-                lselected.push(lsel);
+                lselected.push({
+                    component: s, isExclued: false
+                });
             });
 
             var lparameters = [];

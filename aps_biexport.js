@@ -613,31 +613,31 @@
             this.setBooleanValue("enableCsv", value);
         }
 
-        get pdfSelectedWidgets() {
+        get pdfExclude() {
             return this.pdf_exclude;
         }
-        set pdfSelectedWidgets(value) {
+        set pdfExclude(value) {
             this.pdf_exclude = value;
         }
 
-        get pptSelectedWidgets() {
+        get pptExclude() {
             return this.ppt_exclude;
         }
-        set pptSelectedWidgets(value) {
+        set pptExclude(value) {
             this.ppt_exclude = value;
         }
 
-        get docSelectedWidgets() {
+        get docExclude() {
             return this.doc_exclude;
         }
-        set docSelectedWidgets(value) {
+        set docExclude(value) {
             this.doc_exclude = value;
         }
 
-        get xlsSelectedWidgets() {
+        get xlsExclude() {
             return this.xls_exclude;
         }
-        set xlsSelectedWidgets(value) {
+        set xlsExclude(value) {
             this.xls_exclude = value;
         }
 
