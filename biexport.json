@@ -383,6 +383,33 @@
       ],
       "body": "this.xlsTemplate = value;"
     },
+
+    "getExportTemplate": {
+      "description": "Add an Export Template",
+      "parameters": [
+        {
+          "name": "format",
+          "type": "string",
+          "description": "The export format: \"PDF\", \"PPT\", \"DOC\", \"XLS\""
+        }
+      ]
+    },
+
+    "setExportTemplate": {
+      "description": "Set the Export Template",
+      "parameters": [
+        {
+          "name": "format",
+          "type": "string",
+          "description": "The export format: \"PDF\", \"PPT\", \"DOC\", \"XLS\""
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "description": "The new Export Template"
+        }
+      ]
+    },
     "isXlsButtonVisible": {
       "returnType": "boolean",
       "description": "Get the visibility of the Excel export button",
