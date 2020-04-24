@@ -440,23 +440,6 @@
       ],
       "body": "this.serverURL = value;"
     },
-    "getServerUrl": {
-      "returnType": "string",
-      "description": "Get the Server URL",
-      "parameters": [],
-      "body": "return this.serverURL;"
-    },
-    "setServerUrl": {
-      "description": "Set the Server URL",
-      "parameters": [
-        {
-          "name": "value",
-          "type": "string",
-          "description": "The new Server URL"
-        }
-      ],
-      "body": "this.serverURL = value;"
-    },
     "getFilename": {
       "returnType": "string",
       "description": "Get the filename",
