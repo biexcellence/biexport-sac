@@ -642,6 +642,38 @@
             this._updateSettings();
         }
 
+        get pdfTemplate() {
+            return this._export_settings.pdf_template;
+        }
+        set pdfTemplate(value) {
+            this._export_settings.pdf_template = value;
+            this._updateSettings();
+        }
+
+        get pptTemplate() {
+            return this._export_settings.ppt_template;
+        }
+        set pptTemplate(value) {
+            this._export_settings.ppt_template = value;
+            this._updateSettings();
+        }
+
+        get docTemplate() {
+            return this._export_settings.doc_template;
+        }
+        set docTemplate(value) {
+            this._export_settings.doc_template = value;
+            this._updateSettings();
+        }
+
+        get xlsTemplate() {
+            return this._export_settings.xls_template;
+        }
+        set xlsTemplate(value) {
+            this._export_settings.xls_template = value;
+            this._updateSettings();
+        }
+
         get publishMode() {
             return this._export_settings.publish_mode;
         }
