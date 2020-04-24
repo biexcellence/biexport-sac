@@ -614,31 +614,31 @@
         }
 
         get pdfSelectedWidgets() {
-            return this.pdfSelectedWidgets;
+            return this.pdf_SelectedWidgets;
         }
         set pdfSelectedWidgets(value) {
-            this.pdfSelectedWidgets = value;
+            this.pdf_SelectedWidgets = value;
         }
 
         get pptSelectedWidgets() {
             return this.pptSelectedWidgets;
         }
         set pptSelectedWidgets(value) {
-            this.pptSelectedWidgets = value;
+            this.ppt_SelectedWidgets = value;
         }
 
         get docSelectedWidgets() {
-            return this.docSelectedWidgets;
+            return this.doc_SelectedWidgets;
         }
         set docSelectedWidgets(value) {
-            this.docSelectedWidgets = value;
+            this.doc_SelectedWidgets = value;
         }
-
+        
         get xlsSelectedWidgets() {
-            return this.xlsSelectedWidgets;
+            return this.xls_SelectedWidgets;
         }
         set xlsSelectedWidgets(value) {
-            this.xlsSelectedWidgets = value;
+            this.xls_SelectedWidgets = value;
         }
 
         get metadata() {
