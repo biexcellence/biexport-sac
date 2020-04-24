@@ -674,6 +674,34 @@
             this._updateSettings();
         }
 
+        get pdfSelectedWidgets() {
+            return this.pdf_exclude;
+        }
+        set pdfSelectedWidgets(value) {
+            this.pdf_exclude = value;
+        }
+
+        get pptSelectedWidgets() {
+            return this.ppt_exclude;
+        }
+        set pptSelectedWidgets(value) {
+            this.ppt_exclude = value;
+        }
+
+        get docSelectedWidgets() {
+            return this.doc_exclude;
+        }
+        set docSelectedWidgets(value) {
+            this.doc_exclude = value;
+        }
+
+        get xlsSelectedWidgets() {
+            return this.xls_exclude;
+        }
+        set xlsSelectedWidgets(value) {
+            this.xls_exclude = value;
+        }
+
         get publishMode() {
             return this._export_settings.publish_mode;
         }
