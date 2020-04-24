@@ -202,7 +202,7 @@
         {
           "name": "format",
           "type": "string",
-          "description": "The export format: \"PDF\", \"PPTX\", \"DOCX\", \"XLSX\""
+          "description": "The export format: \"PDF\", \"PPT\", \"DOC\", \"XLS\""
         }
       ]
     },
@@ -212,7 +212,7 @@
         {
           "name": "format",
           "type": "string",
-          "description": "The export format: \"PDF\", \"PPTX\", \"DOCX\", \"XLSX\""
+          "description": "The export format: \"PDF\", \"PPT\", \"DOC\", \"XLS\""
         },
         {
           "name": "widget",
@@ -232,7 +232,7 @@
         {
           "name": "format",
           "type": "string",
-          "description": "The export format: \"PDF\", \"PPTX\", \"DOCX\", \"XLSX\""
+          "description": "The export format: \"PDF\", \"PPT\", \"DOC\", \"XLS\""
         }
       ]
     },

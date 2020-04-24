@@ -778,12 +778,12 @@
             let current = this[format.toLowerCase() + "_exclude"] ? JSON.parse(this[oItem.getKey().toLowerCase() + "_exclude"]) : [];
             current.push({ component: comp, isExcluded: !isIncluded });
 
-            this._export_settings[format + "_exclude"] = JSON.stringify(current);
+            this._export_settings[format.toLowerCase() + "_exclude"] = JSON.stringify(current);
             this._updateSettings();
         }
 
         clearSelectedWidgets(format) {
-            this._export_settings[format + "_exclude"] = "";
+            this._export_settings[format.toLowerCase() + "_exclude"] = "";
             this._updateSettings();
         }
 
