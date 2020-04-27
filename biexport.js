@@ -545,7 +545,7 @@
         set enableDoc(value) {
             this._enableDOC = value;
         }
-       
+
         get enableXls() {
             return this._enableXLS;
         }
@@ -704,7 +704,7 @@
         set xlsSelectedWidgets(value) {
             this._export_settings.xls_exclude = value;
             this._updateSettings();
-}
+        }
 
         get publishMode() {
             return this._export_settings.publish_mode;
@@ -788,7 +788,7 @@
         }
 
         addSelectedWidget(format, comp, isIncluded) {
-            let current = this[format.toLowerCase() + "_exclude"] ? JSON.parse(this[format.toLowerCase() + "_exclude"]) : []; 
+            let current = this[format.toLowerCase() + "_exclude"] ? JSON.parse(this[format.toLowerCase() + "_exclude"]) : [];
             current.push({ component: comp, isExcluded: !isIncluded });
 
             this._export_settings[format.toLowerCase() + "_exclude"] = JSON.stringify(current);

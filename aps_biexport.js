@@ -231,7 +231,7 @@
             // visible components
             ["pdf_SelectedWidgets", "ppt_SelectedWidgets", "doc_SelectedWidgets", "xls_SelectedWidgets"].forEach(slotId => {
                 let id = slotId.replace("_", "");
-                
+
                 let filterList = new sap.m.FacetFilterList({
                     title: "Widget Selection",
                     items: {
@@ -246,14 +246,14 @@
 
                         let value = this[id];
                         let metadata = this.metadata;
-                
+
                         let visibleComponents = value ? JSON.parse(value) : [];
                         let allComponents = metadata ? JSON.parse(metadata)["components"] : {};
                         let components = [];
                         let selectedComponents = {};
                         for (let componentId in allComponents) {
                             let component = allComponents[componentId];
-            
+
                             if (component.type == "sdk_com_biexcellence_openbi_sap_sac_export__0") {
                                 continue;
                             }
@@ -279,12 +279,12 @@
 
                         let selectedComponents = list.getSelectedKeys();
                         let metadata = this.metadata;
-                
+
                         let allComponents = metadata ? JSON.parse(metadata)["components"] : {};
                         let visibleComponents = [];
                         for (let componentId in allComponents) {
                             let component = allComponents[componentId];
-            
+
                             if (component.type == "sdk_com_biexcellence_openbi_sap_sac_export__0") {
                                 continue;
                             }
@@ -633,7 +633,7 @@
         set docSelectedWidgets(value) {
             this.doc_SelectedWidgets = value;
         }
-        
+
         get xlsSelectedWidgets() {
             return this.xls_SelectedWidgets;
         }
