@@ -64,7 +64,7 @@
             let id = "notificationBody";
                 
             let textEditor = new sap.ui.richtexteditor.RichTextEditor({
-                editorType: EditorType.TinyMCE4,
+                editorType: sap.ui.richtexteditor.EditorType.TinyMCE4,
                 width: "100%",
                 height: "600px",
                 customToolbar: true,
