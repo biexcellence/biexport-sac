@@ -71,9 +71,15 @@
                 showGroupFont: true,
                 showGroupLink: true,
                 showGroupInsert: true,
-                value: sHtmlValue,
-                ready: function () {
+                value: this[id],
+                ready: oEvent => {
                     this.addButtonGroup("styleselect").addButtonGroup("table");
+                },
+                change: oEvent => {
+                    let value = oEvent.getParameters().newValue;
+                    let properties = {};
+                    this[id] = properties[id] = value;
+                    this._firePropertiesChanged(properties);
                 }
             });
 
