@@ -73,7 +73,7 @@
                 showGroupInsert: true,
                 value: this[id],
                 ready: oEvent => {
-                    this.addButtonGroup("styleselect").addButtonGroup("table");
+                  //  this.addButtonGroup("styleselect").addButtonGroup("table");
                 },
                 change: oEvent => {
                     let value = oEvent.getParameters().newValue;
