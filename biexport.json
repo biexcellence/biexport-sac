@@ -417,7 +417,6 @@
         }
       ]
     },
-
     "setExportTemplate": {
       "description": "Set the Export Template",
       "parameters": [
@@ -808,18 +807,18 @@
       "body": "this.mailBody = value;"
     }
   },
-    "events": {
-      "onStartExport": {
-        "description": "Specify the SAC Script that shall be triggered when the Export process is started. If you set the publishing property Parse CSS to true, all image resources are collected in this phase."
-      },
-      "onSendExport": {
-        "description": "Specify the SAC Script that shall be triggered when the Export process sends the content to the Export service."
-      },
-      "onReturnExport": {
-        "description": "Specify the SAC Script that shall be triggered when the Export process receives the generated document from the Export service."
-      },
-      "onErrorExport": {
-        "description": "Specify the SAC Script that shall be triggered when an error is reported by the Export process."
-      }
+  "events": {
+    "onStartExport": {
+      "description": "Specify the SAC Script that shall be triggered when the Export process is started. If you set the publishing property Parse CSS to true, all image resources are collected in this phase."
+    },
+    "onSendExport": {
+      "description": "Specify the SAC Script that shall be triggered when the Export process sends the content to the Export service."
+    },
+    "onReturnExport": {
+      "description": "Specify the SAC Script that shall be triggered when the Export process receives the generated document from the Export service."
+    },
+    "onErrorExport": {
+      "description": "Specify the SAC Script that shall be triggered when an error is reported by the Export process."
     }
   }
+}
