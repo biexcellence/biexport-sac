@@ -61,7 +61,7 @@
 
             // visible components
             let slotId = "notifcationHtml";
-            let id = "notificationBody;
+            let id = "notificationBody";
                 
             let textEditor = new sap.ui.richtexteditor.RichTextEditor({
                 editorType: EditorType.TinyMCE4,

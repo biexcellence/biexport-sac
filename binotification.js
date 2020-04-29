@@ -12,7 +12,7 @@
     `;
 
     class BiNotification extends HTMLElement {
-
+        
         constructor() {
             super();
 
@@ -177,7 +177,7 @@
             settingsEl.value = JSON.stringify(settings);
 
             let host = settings.server_urls;
-            let url = host + "/sac/notification.html";
+            let url = host + "/notification.html";
 
             this._submitNotification(host, url, form, settings);
         }
