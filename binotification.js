@@ -120,11 +120,11 @@
             let settings = JSON.parse(JSON.stringify(this._notification_settings));
 
             setTimeout(() => {
-                this._sendNotification(type, from, to, subject);
+                this._sendNotification(settings, type, from, to, subject);
             }, 200);
         }
 
-        _sendNotification(type, from, to, subject) {
+        _sendNotification(settings, type, from, to, subject) {
             if (this._designMode) {
                 return false;
             }
