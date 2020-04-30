@@ -25,7 +25,7 @@
             this._shadowRoot.querySelector("#form").id = this._id + "_form";
 
             this.settings = this._shadowRoot.querySelector("#notification_settings_json");
-            this.settings.id = this._id + "_notification_settings_json";
+            this.settings.id = this._id + "_export_settings_json";
 
             this._notification_settings = {};
             this._notification_settings.dashboard = "";
