@@ -84,8 +84,8 @@
 
                     let dialog = new sap.m.Dialog({
                         title: "Edit HTML Notification",
-                        contentWidth: "600px",
-                        contentHeight: "400px",
+                        contentWidth: "800px",
+                        contentHeight: "500px",
                         draggable: true,
                         resizable: true,
                         content: [
