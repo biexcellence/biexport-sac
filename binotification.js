@@ -124,7 +124,7 @@
             }, 200);
         }
 
-        _sendNotfication(type, from, to, subject) {
+        _sendNotification(type, from, to, subject) {
             if (this._designMode) {
                 return false;
             }

@@ -62,24 +62,58 @@
             // visible components
             let slotId = "notifcationHtml";
             let id = "notificationBody";
-                
+
             let textEditor = new sap.ui.richtexteditor.RichTextEditor({
                 editorType: sap.ui.richtexteditor.EditorType.TinyMCE4,
                 width: "100%",
-                height: "600px",
+                height: "100%",
                 customToolbar: true,
                 showGroupFont: true,
                 showGroupLink: true,
                 showGroupInsert: true,
                 value: this[id],
                 ready: oEvent => {
-                  //  this.addButtonGroup("styleselect").addButtonGroup("table");
                 },
                 change: oEvent => {
-                    let value = oEvent.getParameters().newValue;
-                    let properties = {};
-                    this[id] = properties[id] = value;
-                    this._firePropertiesChanged(properties);
+                }
+            });
+
+            let link = new sap.m.link({
+                text: "Edit HTML Notification...",
+                press: oEvent => {
+                    let dialog = new sap.m.Dialog({
+                        title: "Edit HTML Notification",
+                        contentWidth: "600px",
+                        contentHeight: "400px",
+                        draggable: true,
+                        resizable: true,
+                        content: [
+                            textEditor
+                        ],
+                        beginButton: new sap.m.Button({
+                            text: "Submit",
+                            press: () => {
+                                let value = textEditor.getValue();
+                                let properties = {};
+                                this[id] = properties[id] = value;
+                                this._firePropertiesChanged(properties);
+                                dialog.close();
+                            }
+                        }),
+                        endButton: new sap.m.Button({
+                            text: "Cancel",
+                            press: () => {
+                                dialog.close();
+                            }
+                        }),
+                        afterClose: () => {
+                            texteditor.destroy();
+                            dialog.destroy();
+                        }
+                    });
+
+                    dialog.open();
+
                 }
             });
 
@@ -87,8 +121,8 @@
                 excludeSlot.slot = slotId;
                 this.appendChild(excludeSlot);
 
-            textEditor.addStyleClass("sapUiSizeCompact");
-            textEditor.placeAt(excludeSlot);
+            link.addStyleClass("sapUiSizeCompact");
+            link.placeAt(excludeSlot);
         }
 
         connectedCallback() {
