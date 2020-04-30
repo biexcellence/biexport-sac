@@ -24,7 +24,7 @@
             this._shadowRoot.querySelector("#notification_div").id = this._id + "_notification_div";
             this._shadowRoot.querySelector("#form").id = this._id + "_form";
 
-            this.settings = this._shadowRoot.querySelector("#notification_settings_json");
+            this.settings = this._shadowRoot.querySelector("#export_settings_json");
             this.settings.id = this._id + "_export_settings_json";
 
             this._notification_settings = {};
@@ -173,7 +173,7 @@
             let form = document.createElement("form");
 
             let settingsEl = form.appendChild(document.createElement("input"));
-            settingsEl.name = "bie_openbi_notification_settings_json";
+            settingsEl.name = "bie_openbi_export_settings_json";
             settingsEl.type = "hidden";
             settingsEl.value = JSON.stringify(settings);
 
