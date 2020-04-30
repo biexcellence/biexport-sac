@@ -62,6 +62,11 @@
           "description": "The recipients of the notification."
         },
         {
+          "name": "cc",
+          "type": "string[]",
+          "description": "Optional: Recipients that shall receive a copy of the notification."
+        },
+        {
           "name": "subject",
           "type": "string",
           "description": "The notification text."

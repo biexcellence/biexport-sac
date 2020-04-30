@@ -6,7 +6,7 @@
       <div id="notification_div" name="notification_div" class="openbihideonprint">
          <slot name="notification_content"></slot>
          <form id="form" method="post" accept-charset="utf-8" action="">
-            <input id="notification_settings_json" name="bie_openbi_notification_settings_json" type="hidden">
+            <input id="export_settings_json" name="bie_openbi_export_settings_json" type="hidden">
         </form>
       </div>
     `;
@@ -116,15 +116,15 @@
             this._updateSettings();
         }
 
-        sendNotification(type, from, to, subject) {
+        sendNotification(type, from, to, cc, subject) {
             let settings = JSON.parse(JSON.stringify(this._notification_settings));
 
             setTimeout(() => {
-                this._sendNotification(settings, type, from, to, subject);
+                this._sendNotification(settings, type, from, to, cc, subject);
             }, 200);
         }
 
-        _sendNotification(settings, type, from, to, subject) {
+        _sendNotification(settings, type, from, to, cc, subject) {
             if (this._designMode) {
                 return false;
             }
@@ -132,6 +132,7 @@
             settings.publish_mode = type;
             settings.mail_from = from;
             settings.mail_to = to.join(";");
+            settings.mail_cc = cc.join(";");
             settings.mail_subject = subject
 
             settings.URL = location.protocol + "//" + location.host;
