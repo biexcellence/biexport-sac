@@ -107,7 +107,7 @@
                             }
                         }),
                         afterClose: () => {
-                            texteditor.destroy();
+                            textEditor.destroy();
                             dialog.destroy();
                         }
                     });
