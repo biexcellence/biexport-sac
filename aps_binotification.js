@@ -78,7 +78,7 @@
                 }
             });
 
-            let link = new sap.m.link({
+            let link = new sap.m.Link({
                 text: "Edit HTML Notification...",
                 press: oEvent => {
                     let dialog = new sap.m.Dialog({
