@@ -46,7 +46,7 @@
             this._notification_settings.license = "";
             this._notification_settings.server_urls = "";
 
-            this._notification_settings.format = "MAIL";
+            this._notification_settings.publish_mode = "MAIL";
             this._notification_settings.mail_from = "";
             this._notification_settings.mail_to = "";
             this._notification_settings.mail_subject = "";
@@ -129,7 +129,7 @@
                 return false;
             }
 
-            settings.format = type;
+            settings.publish_mode = type;
             settings.mail_from = from;
             settings.mail_to = to.join(";");
             settings.mail_subject = subject
