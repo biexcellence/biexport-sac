@@ -118,11 +118,8 @@
             this._updateSettings();
         }
 
-        get serviceMessage() {
+        getServiceMessage() {
             return this._serviceMessage;
-        }
-        set serviceMessage(value) {
-            this._serviceMessage = value;
         }
 
         sendNotification(type, from, to, cc, subject) {
@@ -199,6 +196,7 @@
             // handle response types
             let callback = (error, filename, blob) => {
                 if (error) {
+                    this._serviceMessage = error;
                     this.dispatchEvent(new CustomEvent("onError", {
                         detail: {
                             error: error,
@@ -207,7 +205,6 @@
                     }));
 
                     console.error("Notification failed:", error);
-                    this._serviceMessage = error;
                 } else if (filename) {
                     if (filename.indexOf("E:") === 0) {
                         callback(new Error(filename)); // error...
