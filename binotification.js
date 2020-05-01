@@ -122,6 +122,7 @@
             return this._serviceMessage;
         }
         set serviceMessage(value) {
+            this._serviceMessage = value;
         }
 
         sendNotification(type, from, to, cc, subject) {

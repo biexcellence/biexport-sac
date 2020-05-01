@@ -125,7 +125,7 @@
           "description": "delete?"
         }
       ],
-      "body": "this.serviceMessage = '';"
+      "body": "this.serviceMessage = value;"
     },
     "getLicenseKey": {
       "returnType": "string",
