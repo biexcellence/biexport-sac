@@ -40,6 +40,11 @@
       "type": "string",
       "description": "The notification detail (in HTML format)",
       "default": ""
+    },
+    "serviceMessage": {
+      "type": "string",
+      "description": "internal use",
+      "default": ""
     }
   },
   "methods": {
@@ -104,6 +109,23 @@
         }
       ],
       "body": "this.serverURL = value;"
+    },
+    "getServiceMessage": {
+      "returnType": "string",
+      "description": "Gets the Service Message",
+      "parameters": [],
+      "body": "return this.serviceMessage;"
+    },
+    "setServiceMessage": {
+      "description": "delelte?",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "description": "delete?"
+        }
+      ],
+      "body": "this.serviceMessage = '';"
     },
     "getLicenseKey": {
       "returnType": "string",

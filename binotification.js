@@ -27,6 +27,8 @@
             this.settings = this._shadowRoot.querySelector("#export_settings_json");
             this.settings.id = this._id + "_export_settings_json";
 
+            this._serviceMessage = "";
+
             this._notification_settings = {};
             this._notification_settings.dashboard = "";
             this._notification_settings.pageid = "";
@@ -116,6 +118,12 @@
             this._updateSettings();
         }
 
+        get serviceMessage() {
+            return this._serviceMessage;
+        }
+        set serviceMessage(value) {
+        }
+
         sendNotification(type, from, to, cc, subject) {
             let settings = JSON.parse(JSON.stringify(this._notification_settings));
 
@@ -185,6 +193,8 @@
 
         _submitNotification(host, exportUrl, form, settings) {
 
+            this._serviceMessage = "";
+
             // handle response types
             let callback = (error, filename, blob) => {
                 if (error) {
@@ -196,12 +206,14 @@
                     }));
 
                     console.error("Notification failed:", error);
+                    this._serviceMessage = error;
                 } else if (filename) {
                     if (filename.indexOf("E:") === 0) {
                         callback(new Error(filename)); // error...
                         return;
                     }
 
+                    this._serviceMessage = "Notification has been sent";
                     this.dispatchEvent(new CustomEvent("onSuccess", {
                         detail: {
                             filename: filename,
