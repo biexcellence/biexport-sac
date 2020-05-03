@@ -127,6 +127,7 @@
             this._export_settings.messages = "";
             this._export_settings.oauth = null;
             this._export_settings.server_urls = "";
+            this._export_settings.license = "";
             this._export_settings.server_waittime = 0;
             this._export_settings.server_engine = "";
             this._export_settings.server_quality = 0;
@@ -576,6 +577,14 @@
         }
         set serverURL(value) {
             this._export_settings.server_urls = value;
+            this._updateSettings();
+        }
+
+        get licenseKey() {
+            return this._export_settings.license;
+        }
+        set licenseKey(value) {
+            this._export_settings.license = value;
             this._updateSettings();
         }
 

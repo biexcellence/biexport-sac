@@ -31,6 +31,10 @@
               <td><label for="serverURL">Server URL</label></td>
               <td><input id="serverURL" name="serverURL" type="text"></td>
             </tr>
+            <tr>
+              <td><label for="licenseKey">License Key</label></td>
+              <td><input id="licenseKey" name="licenseKey" type="text"></td>
+            </tr>
           </table>
         </fieldset>
         <fieldset>
@@ -402,6 +406,13 @@
             this.setValue("serverURL", value);
         }
 
+        get licenseKey() {
+            return this.getValue("licenseKey");
+        }
+        set licenseKey(value) {
+            this.setValue("licenseKey", value);
+        }
+
         get oauth() {
             if (this.getValue("oauthClientId")) {
                 return JSON.stringify({
@@ -665,6 +676,7 @@
         static get observedAttributes() {
             return [
                 "serverURL",
+                "licenseKey",
                 "oauth",
 
                 "exportLanguage",

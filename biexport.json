@@ -602,6 +602,23 @@
       ],
       "body": "this.serverURL = value;"
     },
+    "getLicenseKey": {
+      "returnType": "string",
+      "description": "Get the License Key",
+      "parameters": [],
+      "body": "return this.licenseKey;"
+    },
+    "setLicenseKey": {
+      "description": "Set the License Key",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "description": "The new License Key"
+        }
+      ],
+      "body": "this.licenseKey = value;"
+    },
     "getFilename": {
       "returnType": "string",
       "description": "Get the filename",
