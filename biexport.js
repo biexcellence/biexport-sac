@@ -932,7 +932,7 @@
                 settings.publish_sync = true;
             }
 
-            this.dispatchEvent(new CustomEvent("onStartExport", {
+            this.dispatchEvent(new CustomEvent("onStart", {
                 detail: {
                     settings: settings
                 }
@@ -960,7 +960,7 @@
         }
 
         _createExportForm(settings, content) {
-            this.dispatchEvent(new CustomEvent("onSendExport", {
+            this.dispatchEvent(new CustomEvent("onSend", {
                 detail: {
                     settings: settings
                 }
@@ -994,7 +994,7 @@
             let callback = (error, filename, blob) => {
                 if (error) {
                     this._serviceMessage = error;
-                    this.dispatchEvent(new CustomEvent("onErrorExport", {
+                    this.dispatchEvent(new CustomEvent("onError", {
                         detail: {
                             error: error,
                             settings: settings
@@ -1009,7 +1009,7 @@
                     }
 
                     this._serviceMessage = "Export has been produced";
-                    this.dispatchEvent(new CustomEvent("onReturnExport", {
+                    this.dispatchEvent(new CustomEvent("onReturn", {
                         detail: {
                             filename: filename,
                             settings: settings
