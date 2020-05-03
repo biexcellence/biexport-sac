@@ -41,7 +41,7 @@
           <legend>Notifications</legend>
           <table>
             <tr>
-              <td><label for="type"Type</label></td>
+              <td><label for="type">Type</label></td>
               <td><input id="type" name="type" type="text"></td>
             </tr>
             <tr>

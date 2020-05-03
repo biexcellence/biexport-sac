@@ -26,7 +26,7 @@
 
             this.settings = this._shadowRoot.querySelector("#export_settings_json");
             this.settings.id = this._id + "_export_settings_json";
-            this.serviceMessage = "";
+            this._serviceMessage = "";
 
             this._cPPT_text = "PowerPoint";
             this._cDOC_text = "Word";
@@ -866,8 +866,8 @@
             this._updateSettings();
         }
 
-        getServiceMessage() {
-            return this.serviceMessage;
+        get_serviceMessage() {
+            return this._serviceMessage;
         }
 
         doExport(format, overrideSettings) {
@@ -978,26 +978,12 @@
 
         _submitExport(host, exportUrl, form, settings) {
 
-            this.serviceMessage = "";
-            this.dispatchEvent(new CustomEvent("propertiesChanged", {
-                detail: {
-                    properties: {
-                        serviceMessage: this.serviceMessage
-                    }
-                }
-            }));
+            this._serviceMessage = "";
 
             // handle response types
             let callback = (error, filename, blob) => {
                 if (error) {
-                    this.serviceMessage = error;
-                    this.dispatchEvent(new CustomEvent("propertiesChanged", {
-                        detail: {
-                            properties: {
-                                serviceMessage: this.serviceMessage
-                            }
-                        }
-                    }));
+                    this._serviceMessage = error;
                      this.dispatchEvent(new CustomEvent("onErrorExport", {
                         detail: {
                             error: error,
@@ -1012,14 +998,7 @@
                         return;
                     }
 
-                    this.serviceMessage = "Export has been produced";
-                    this.dispatchEvent(new CustomEvent("propertiesChanged", {
-                        detail: {
-                            properties: {
-                                serviceMessage: this.serviceMessage
-                            }
-                        }
-                    }));
+                    this._serviceMessage = "Export has been produced";
                      this.dispatchEvent(new CustomEvent("onReturnExport", {
                         detail: {
                             filename: filename,
