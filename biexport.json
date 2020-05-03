@@ -805,6 +805,11 @@
         }
       ],
       "body": "this.mailBody = value;"
+    },
+    "getServiceMessage": {
+      "returnType": "string",
+      "description": "Gets the Service Message",
+      "parameters": []
     }
   },
   "events": {

@@ -27,7 +27,7 @@
             this.settings = this._shadowRoot.querySelector("#export_settings_json");
             this.settings.id = this._id + "_export_settings_json";
 
-            this._serviceMessage = "";
+            this.serviceMessage = "";
 
             this._notification_settings = {};
             this._notification_settings.dashboard = "";
@@ -140,7 +140,7 @@
         }
 
         getServiceMessage() {
-            return this._serviceMessage;
+            return this.serviceMessage;
         }
 
         sendNotification(to, cc, subject) {
@@ -210,12 +210,26 @@
 
         _submitNotification(host, exportUrl, form, settings) {
 
-            this._serviceMessage = "";
+            this.serviceMessage = "";
+            this.dispatchEvent(new CustomEvent("propertiesChanged", {
+                detail: {
+                    properties: {
+                        serviceMessage: this.serviceMessage
+                    }
+                }
+            }));
 
             // handle response types
             let callback = (error, filename, blob) => {
                 if (error) {
-                    this._serviceMessage = error;
+                    this.serviceMessage = error;
+                    this.dispatchEvent(new CustomEvent("propertiesChanged", {
+                        detail: {
+                            properties: {
+                                serviceMessage: this.serviceMessage
+                            }
+                        }
+                    }));
                     this.dispatchEvent(new CustomEvent("onError", {
                         detail: {
                             error: error,
@@ -230,8 +244,15 @@
                         return;
                     }
 
-                    this._serviceMessage = "Notification has been sent";
-                    this.dispatchEvent(new CustomEvent("onSuccess", {
+                    this.serviceMessage = "Notfication has been sent";
+                    this.dispatchEvent(new CustomEvent("propertiesChanged", {
+                        detail: {
+                            properties: {
+                                serviceMessage: this.serviceMessage
+                            }
+                        }
+                    }));
+                     this.dispatchEvent(new CustomEvent("onSuccess", {
                         detail: {
                             filename: filename,
                             settings: settings

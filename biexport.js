@@ -26,6 +26,7 @@
 
             this.settings = this._shadowRoot.querySelector("#export_settings_json");
             this.settings.id = this._id + "_export_settings_json";
+            this.serviceMessage = "";
 
             this._cPPT_text = "PowerPoint";
             this._cDOC_text = "Word";
@@ -865,6 +866,10 @@
             this._updateSettings();
         }
 
+        getServiceMessage() {
+            return this.serviceMessage;
+        }
+
         doExport(format, overrideSettings) {
             let settings = JSON.parse(JSON.stringify(this._export_settings));
 
@@ -973,10 +978,27 @@
 
         _submitExport(host, exportUrl, form, settings) {
 
+            this.serviceMessage = "";
+            this.dispatchEvent(new CustomEvent("propertiesChanged", {
+                detail: {
+                    properties: {
+                        serviceMessage: this.serviceMessage
+                    }
+                }
+            }));
+
             // handle response types
             let callback = (error, filename, blob) => {
                 if (error) {
-                    this.dispatchEvent(new CustomEvent("onErrorExport", {
+                    this.serviceMessage = error;
+                    this.dispatchEvent(new CustomEvent("propertiesChanged", {
+                        detail: {
+                            properties: {
+                                serviceMessage: this.serviceMessage
+                            }
+                        }
+                    }));
+                     this.dispatchEvent(new CustomEvent("onErrorExport", {
                         detail: {
                             error: error,
                             settings: settings
@@ -990,7 +1012,15 @@
                         return;
                     }
 
-                    this.dispatchEvent(new CustomEvent("onReturnExport", {
+                    this.serviceMessage = "Export has been produced";
+                    this.dispatchEvent(new CustomEvent("propertiesChanged", {
+                        detail: {
+                            properties: {
+                                serviceMessage: this.serviceMessage
+                            }
+                        }
+                    }));
+                     this.dispatchEvent(new CustomEvent("onReturnExport", {
                         detail: {
                             filename: filename,
                             settings: settings
