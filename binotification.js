@@ -98,6 +98,27 @@
             this._notification_settings.mail_body = value;
             this._updateSettings();
         }
+        get sender() {
+            return this._notification_settings.mail_from;
+        }
+        set sender(value) {
+            this._notification_settings.mail_from = value;
+            this._updateSettings();
+        }
+        get type() {
+            return this._notification_settings.publish_mode;
+        }
+        set type(value) {
+            this._notification_settings.publish_mode = value;
+            this._updateSettings();
+        }
+        get notificationBody() {
+            return this._notification_settings.mail_body;
+        }
+        set notificationBody(value) {
+            this._notification_settings.mail_body = value;
+            this._updateSettings();
+        }
 
         // METHODS
 
@@ -122,11 +143,11 @@
             return this._serviceMessage;
         }
 
-        sendNotification(type, from, to, cc, subject) {
+        sendNotification(to, cc, subject) {
             let settings = JSON.parse(JSON.stringify(this._notification_settings));
 
             setTimeout(() => {
-                this._sendNotification(settings, type, from, to, cc, subject);
+                this._sendNotification(settings, to, cc, subject);
             }, 200);
         }
 
@@ -135,8 +156,6 @@
                 return false;
             }
 
-            settings.publish_mode = type;
-            settings.mail_from = from;
             settings.mail_to = to.join(";");
             settings.mail_cc = cc.join(";");
             settings.mail_subject = subject

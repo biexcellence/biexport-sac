@@ -36,6 +36,16 @@
       "description": "The license key to be used for sending the notification (for usage tracking, usage limits, special smtp server configuration",
       "default": ""
     },
+    "type": {
+      "type": "string",
+      "description": "The notification type",
+      "default": "MAIL"
+    },
+    "sender": {
+      "type": "string",
+      "description": "The notification sender",
+      "default": ""
+    },
     "notificationBody": {
       "type": "string",
       "description": "The notification detail (in HTML format)",
@@ -46,16 +56,6 @@
     "sendNotification": {
       "description": "Sends a notification.",
       "parameters": [
-        {
-          "name": "type",
-          "type": "string",
-          "description": "The type of notification to be send (currently only MAIL is supported)."
-        },
-        {
-          "name": "from",
-          "type": "string",
-          "description": "The sender that shall appear in the notification."
-        },
         {
           "name": "to",
           "type": "string[]",
@@ -87,6 +87,40 @@
           "description": "The text to be displayed for the placeholder."
         }
       ]
+    },
+    "getType": {
+      "returnType": "string",
+      "description": "Get the Notification Type",
+      "parameters": [],
+      "body": "return this.type;"
+    },
+    "setType": {
+      "description": "Set the Notification Type",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "description": "The new Type"
+        }
+      ],
+      "body": "this.type = value;"
+    },
+    "getSender": {
+      "returnType": "string",
+      "description": "Get the Sender",
+      "parameters": [],
+      "body": "return this.sender;"
+    },
+    "setSender": {
+      "description": "Set the Sender",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "description": "The new Mail From"
+        }
+      ],
+      "body": "this.sender = value;"
     },
     "getServerUrl": {
       "returnType": "string",

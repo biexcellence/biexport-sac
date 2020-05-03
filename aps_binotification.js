@@ -38,8 +38,16 @@
           </table>
         </fieldset>
         <fieldset>
-          <legend>Notification Editor</legend>
+          <legend>Notifications</legend>
           <table>
+            <tr>
+              <td><label for="type"Type</label></td>
+              <td><input id="type" name="type" type="text"></td>
+            </tr>
+            <tr>
+              <td><label for="sender">Sender</label></td>
+              <td><input id="sender" name="sender" type="text"></td>
+            </tr>
             <tr>
               <td colspan="2"><slot name="notifcationHtml"></slot></td>
             </tr>
@@ -157,6 +165,20 @@
             }));
         }
 
+        get sender() {
+            return this.getValue("sender");
+        }
+        set sender(value) {
+            this.setValue("sender", value);
+        }
+
+        get type() {
+            return this.getValue("type");
+        }
+        set type(value) {
+            this.setValue("type", value);
+        }
+
         get serverURL() {
             return this.getValue("serverURL");
         }
@@ -189,6 +211,8 @@
             return [
                 "serverURL",
                 "licenseKey",
+                "type",
+                "sender",
                 "notifcationBody"
             ];
         }
