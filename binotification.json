@@ -182,15 +182,15 @@
       "body": "this.notificationBody = value;"
     }
   },
-    "events": {
-      "onSend": {
-        "description": "Specify the SAC Script that shall be triggered when the notification is sent to the Export service."
-      },
-      "onSuccess": {
-        "description": "Specify the SAC Script that shall be triggered when successful execution is reported by the Export service."
-      },
-      "onError": {
-        "description": "Specify the SAC Script that shall be triggered when an error is reported by the Export service."
-      }
+  "events": {
+    "onSend": {
+      "description": "Specify the SAC Script that shall be triggered when the notification is sent to the Export service."
+    },
+    "onSuccess": {
+      "description": "Specify the SAC Script that shall be triggered when successful execution is reported by the Export service."
+    },
+    "onError": {
+      "description": "Specify the SAC Script that shall be triggered when an error is reported by the Export service."
     }
   }
+}
