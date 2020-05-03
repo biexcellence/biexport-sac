@@ -12,7 +12,7 @@
     `;
 
     class BiNotification extends HTMLElement {
-        
+
         constructor() {
             super();
 
@@ -58,19 +58,10 @@
             this._updateSettings();
         }
 
-        connectedCallback() {            
-        }
-
-        disconnectedCallback() {
-        }
-
         onCustomWidgetBeforeUpdate(changedProperties) {
             if ("designMode" in changedProperties) {
                 this._designMode = changedProperties["designMode"];
             }
-        }
-
-        onCustomWidgetAfterUpdate(changedProperties) {
         }
 
         // SETTINGS
@@ -231,7 +222,7 @@
                     }
 
                     this._serviceMessage = "Notfication has been sent";
-                     this.dispatchEvent(new CustomEvent("onSuccess", {
+                    this.dispatchEvent(new CustomEvent("onSuccess", {
                         detail: {
                             filename: filename,
                             settings: settings
@@ -286,9 +277,7 @@
 
     // UTILS
 
-    const cssUrlRegExp = /url\(["']?(.*?)["']?\)/i;
     const contentDispositionFilenameRegExp = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/i;
-    const startsWithHttpRegExp = /^http/i;
 
     function createGuid() {
         return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {

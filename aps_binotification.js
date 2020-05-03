@@ -118,7 +118,7 @@
                         beforeOpen: () => {
                         },
                         afterClose: () => {
-//                            textEditor.destroy();
+                            // textEditor.destroy();
                             dialog.destroy();
                         }
                     });
@@ -128,9 +128,9 @@
                 }
             });
 
-                let excludeSlot = document.createElement("div");
-                excludeSlot.slot = slotId;
-                this.appendChild(excludeSlot);
+            let excludeSlot = document.createElement("div");
+            excludeSlot.slot = slotId;
+            this.appendChild(excludeSlot);
 
             link.addStyleClass("sapUiSizeCompact");
             link.placeAt(excludeSlot);

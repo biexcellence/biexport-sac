@@ -26,6 +26,7 @@
 
             this.settings = this._shadowRoot.querySelector("#export_settings_json");
             this.settings.id = this._id + "_export_settings_json";
+
             this._serviceMessage = "";
 
             this._cPPT_text = "PowerPoint";
@@ -993,7 +994,7 @@
             let callback = (error, filename, blob) => {
                 if (error) {
                     this._serviceMessage = error;
-                     this.dispatchEvent(new CustomEvent("onErrorExport", {
+                    this.dispatchEvent(new CustomEvent("onErrorExport", {
                         detail: {
                             error: error,
                             settings: settings
@@ -1008,7 +1009,7 @@
                     }
 
                     this._serviceMessage = "Export has been produced";
-                     this.dispatchEvent(new CustomEvent("onReturnExport", {
+                    this.dispatchEvent(new CustomEvent("onReturnExport", {
                         detail: {
                             filename: filename,
                             settings: settings
