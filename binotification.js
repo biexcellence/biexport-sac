@@ -139,7 +139,7 @@
             this._updateSettings();
         }
 
-        get_serviceMessage() {
+        getServiceMessage() {
             return this._serviceMessage;
         }
 
