@@ -28,6 +28,8 @@
             this.settings.id = this._id + "_export_settings_json";
 
             this._serviceMessage = "";
+            this._channel = "";
+            this._connectParams = {};
 
             this._sharing_settings = {};
             this._sharing_settings.dashboard = "";
@@ -83,11 +85,10 @@
         }
 
         get channel() {
-            return this._sharing_settings.publish_mode;
+            return this._channel;
         }
         set channel(value) {
-            this._sharing_settings.publish_mode = value;
-            this._updateSettings();
+            this._channel = value;
         }
 
         // METHODS
@@ -97,12 +98,14 @@
         }
 
         addConnectionParameter(name, value) {
-// todo
+            this._connectParams[name] = value;            
+            this._sharing_settings.publish_mode = this._channel + "[" + JSON.stringify(this._connectParams) + "]";
             this._updateSettings();
         }
 
         clearConnectionParameters() {
-// todo
+            this._connectParams = {};
+            this._sharing_settings.publish_mode = this._channel;
             this._updateSettings();
         }
 
@@ -111,7 +114,7 @@
         }
 
         uploadToShare() {
-            let settings = JSON.parse(JSON.stringify(this._notification_settings));
+            let settings = JSON.parse(JSON.stringify(this._sharing_settings));
 
             setTimeout(() => {
                 this._upload(settings);
@@ -160,7 +163,7 @@
 
             var lupload = new sap.m.upload.UploadSet({
                 height: "100%",
-                uploadUrl: settings.server_urls + "/notification.html",
+                uploadUrl: settings.server_urls + "/upload.html",
                 name: "UploadSet", // .app
                 instantUpload: true,
                 settings: {
@@ -283,7 +286,7 @@
         }
 
     }
-    customElements.define("com-biexcellence-openbi-sap-sac-sharing", BiNotification);
+    customElements.define("com-biexcellence-openbi-sap-sac-sharing", BiSharing);
 
     // UTILS
 

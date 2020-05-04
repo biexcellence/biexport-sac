@@ -68,7 +68,7 @@
         _submit(e) {
             e.preventDefault();
             let properties = {};
-            for (let name of BiNotificationAps.observedAttributes) {
+            for (let name of BiSharingAps.observedAttributes) {
                 properties[name] = this[name];
             }
             this._firePropertiesChanged(properties);

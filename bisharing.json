@@ -1,5 +1,5 @@
 {
-  "id": "com.biexcellence.openbi.sap.sac.notification",
+  "id": "com.biexcellence.openbi.sap.sac.sharing",
   "version": "0.0.2",
   "name": "biSharing",
   "description": "upload files to share their links with others",
@@ -70,20 +70,20 @@
     },
     "getChannel": {
       "returnType": "string",
-      "description": "Get the Notification Type",
+      "description": "Get the Sharing Channel",
       "parameters": [],
-      "body": "return this.type;"
+      "body": "return this.channel;"
     },
     "setChannel": {
-      "description": "Set the Notification Type",
+      "description": "Set the Sharing Channel",
       "parameters": [
         {
           "name": "value",
           "type": "string",
-          "description": "The new Type"
+          "description": "The new Sharing Channel"
         }
       ],
-      "body": "this.type = value;"
+      "body": "this.channel = value;"
     },
     "getServerUrl": {
       "returnType": "string",
