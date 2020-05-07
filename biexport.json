@@ -20,7 +20,7 @@
     {
       "kind": "styling",
       "tag": "com-biexcellence-openbi-sap-sac-export-aps",
-      "url": "https://biexcellence.github.io/biexport-sac/aps_biexport.js",
+      "url": "https://biexcellence.github.io/biexport-sac/biexport_aps.js",
       "integrity": "",
       "ignoreIntegrity": true
     }

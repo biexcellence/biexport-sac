@@ -20,7 +20,7 @@
     {
       "kind": "styling",
       "tag": "com-biexcellence-openbi-sap-sac-notification-aps",
-      "url": "https://biexcellence.github.io/biexport-sac/aps_binotification.js",
+      "url": "https://biexcellence.github.io/biexport-sac/binotification_aps.js",
       "integrity": "",
       "ignoreIntegrity": true
     }
