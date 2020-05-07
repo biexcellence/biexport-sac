@@ -1,5 +1,5 @@
 {
-  "id": "com.biexcellence.openbi.sap.sac.notification",
+  "id": "com.biexcellence.openbi.sap.sac.sharing",
   "version": "0.0.2",
   "name": "biSharing",
   "description": "upload files to share their links with others",

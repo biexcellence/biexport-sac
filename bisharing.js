@@ -97,12 +97,12 @@
         }
 
         addConnectionParameter(name, value) {
-// todo
+            // todo
             this._updateSettings();
         }
 
         clearConnectionParameters() {
-// todo
+            // todo
             this._updateSettings();
         }
 
@@ -111,7 +111,7 @@
         }
 
         uploadToShare() {
-            let settings = JSON.parse(JSON.stringify(this._notification_settings));
+            let settings = JSON.parse(JSON.stringify(this._sharing_settings));
 
             setTimeout(() => {
                 this._upload(settings);
@@ -283,7 +283,7 @@
         }
 
     }
-    customElements.define("com-biexcellence-openbi-sap-sac-sharing", BiNotification);
+    customElements.define("com-biexcellence-openbi-sap-sac-sharing", BiSharing);
 
     // UTILS
 
