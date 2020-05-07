@@ -31,6 +31,11 @@
       "description": "The URL to the open bi Repository installation that handles the export. If you use an installation on your local machine, change this property to http://localhost:9091, otherwise to the address and port of your installation.",
       "default": "https://designstudioexport.biexcellence.com"
     },
+    "licenseKey": {
+      "type": "string",
+      "description": "The license key to be used for sending the notification (for usage tracking, usage limits, special smtp server configuration",
+      "default": ""
+    },
     "filename": {
       "type": "string",
       "description": "The file name of the export document. The extension will be determined automatically. You can use placeholders (manual section 3.9).",
