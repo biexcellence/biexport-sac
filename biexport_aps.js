@@ -632,7 +632,7 @@
         }
 
         get pptSelectedWidgets() {
-            return this.pptSelectedWidgets;
+            return this.ppt_SelectedWidgets;
         }
         set pptSelectedWidgets(value) {
             this.ppt_SelectedWidgets = value;
