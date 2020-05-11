@@ -20,7 +20,7 @@
     {
       "kind": "styling",
       "tag": "com-biexcellence-openbi-sap-sac-sharing-aps",
-      "url": "https://biexcellence.github.io/biexport-sac/aps_bisharing.js",
+      "url": "https://biexcellence.github.io/biexport-sac/bisharing_aps.js",
       "integrity": "",
       "ignoreIntegrity": true
     }
@@ -36,9 +36,9 @@
       "description": "The license key to be used for sending the notification (for usage tracking, usage limits, special smtp server configuration",
       "default": ""
     },
-    "channel": {
+    "type": {
       "type": "string",
-      "description": "The connection to be used for sharing the file.",
+      "description": "The sharing type.",
       "default": ""
     }
   },
@@ -68,7 +68,7 @@
         }
       ]
     },
-    "getChannel": {
+    "getType": {
       "returnType": "string",
       "description": "Get the Sharing Channel",
       "parameters": [],
