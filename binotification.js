@@ -66,18 +66,18 @@
 
         // SETTINGS
 
-        get serverURL() {
+        getServerURL() {
             return this._notification_settings.server_urls;
         }
-        set serverURL(value) {
+        setServerURL(value) {
             this._notification_settings.server_urls = value;
             this._updateSettings();
         }
 
-        get licenseKey() {
+        getLicenseKey() {
             return this._notification_settings.license;
         }
-        set licenseKey(value) {
+        setLicenseKey(value) {
             this._notification_settings.license = value;
             this._updateSettings();
         }
@@ -89,17 +89,17 @@
             this._notification_settings.mail_body = value;
             this._updateSettings();
         }
-        get sender() {
+        getSender() {
             return this._notification_settings.mail_from;
         }
-        set sender(value) {
+        setSender(value) {
             this._notification_settings.mail_from = value;
             this._updateSettings();
         }
-        get type() {
+        getType() {
             return this._notification_settings.publish_mode;
         }
-        set type(value) {
+        setType(value) {
             this._notification_settings.publish_mode = value;
             this._updateSettings();
         }
@@ -141,9 +141,14 @@
                 return false;
             }
 
-            settings.mail_to = to.join(";");
-            settings.mail_cc = cc.join(";");
-            settings.mail_subject = subject
+            let laddresses = [];
+            let laddress = {};
+            laddress.address = to.join(";");
+            laddress.mailcc = cc.join(";");
+            laddresses.push(laddress);
+            settings.mail_to = JSON.stringify(laddresses);
+
+            settings.mail_subject = subject;
 
             settings.URL = location.protocol + "//" + location.host;
             settings.dashboard = location.href;

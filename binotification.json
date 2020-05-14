@@ -71,8 +71,7 @@
     "getType": {
       "returnType": "string",
       "description": "Get the Notification Type",
-      "parameters": [],
-      "body": "return this.type;"
+      "parameters": []
     },
     "setType": {
       "description": "Set the Notification Type",
@@ -82,14 +81,12 @@
           "type": "string",
           "description": "The new Type"
         }
-      ],
-      "body": "this.type = value;"
+      ]
     },
     "getSender": {
       "returnType": "string",
       "description": "Get the Sender",
-      "parameters": [],
-      "body": "return this.sender;"
+      "parameters": []
     },
     "setSender": {
       "description": "Set the Sender",
@@ -99,14 +96,12 @@
           "type": "string",
           "description": "The new Mail From"
         }
-      ],
-      "body": "this.sender = value;"
+      ]
     },
     "getServerUrl": {
       "returnType": "string",
       "description": "Get the Server URL",
-      "parameters": [],
-      "body": "return this.serverURL;"
+      "parameters": []
     },
     "setServerUrl": {
       "description": "Set the Server URL",
@@ -116,8 +111,7 @@
           "type": "string",
           "description": "The new Server URL"
         }
-      ],
-      "body": "this.serverURL = value;"
+      ]
     },
     "getServiceMessage": {
       "returnType": "string",
@@ -127,8 +121,7 @@
     "getLicenseKey": {
       "returnType": "string",
       "description": "Get the License Key",
-      "parameters": [],
-      "body": "return this.licenseKey;"
+      "parameters": []
     },
     "setLicenseKey": {
       "description": "Set the License Key",
@@ -138,8 +131,7 @@
           "type": "string",
           "description": "The new License Key"
         }
-      ],
-      "body": "this.licenseKey = value;"
+      ]
     },
     "clearCustomTexts": {
       "description": "Clears all Custom Texts."
