@@ -81,6 +81,14 @@
             }));
         }
 
+        get serverURL() {
+            return this._notification_settings.server_urls;
+        }
+        set serverURL(value) {
+            this._notification_settings.server_urls = value;
+            this._updateSettings();
+        }
+
         getLicenseKey() {
             return this._notification_settings.license;
         }
@@ -130,13 +138,6 @@
         setType(value) {
             this._notification_settings.publish_mode = value;
             this._updateSettings();
-            this.dispatchEvent(new CustomEvent("propertiesChanged", {
-                detail: {
-                    properties: {
-                        type: value
-                    }
-                }
-            }));
         }
 
         // METHODS
