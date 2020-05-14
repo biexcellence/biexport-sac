@@ -104,6 +104,14 @@
             }));
         }
 
+        get licenseKey() {
+            return this._notification_settings.license;
+        }
+        set licenseKey(value) {
+            this._notification_settings.license = value;
+            this._updateSettings();
+        }
+
         getNotificationBody() {
             return this._notification_settings.mail_body;
         }
@@ -118,6 +126,15 @@
                 }
             }));
         }
+
+        get notificationBody() {
+            return this._notification_settings.mail_body;
+        }
+        set notificationBody(value) {
+            this._notification_settings.mail_body = value;
+            this._updateSettings();
+        }
+
         getSender() {
             return this._notification_settings.mail_from;
         }
@@ -132,10 +149,34 @@
                 }
             }));
         }
+
+        get sender() {
+            return this._notification_settings.mail_from;
+        }
+        set sender(value) {
+            this._notification_settings.mail_from = value;
+            this._updateSettings();
+        }
+
         getType() {
             return this._notification_settings.publish_mode;
         }
         setType(value) {
+            this._notification_settings.publish_mode = value;
+            this._updateSettings();
+            this.dispatchEvent(new CustomEvent("propertiesChanged", {
+                detail: {
+                    properties: {
+                        type: value
+                    }
+                }
+            }));
+        }
+
+        get type() {
+            return this._notification_settings.publish_mode;
+        }
+        set type(value) {
             this._notification_settings.publish_mode = value;
             this._updateSettings();
         }
