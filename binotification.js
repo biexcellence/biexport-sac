@@ -135,6 +135,16 @@
         }
 
         sendNotification(to, cc, subject) {
+
+            let settings = JSON.parse(JSON.stringify(this._notification_settings));
+
+            setTimeout(() => {
+                this._sendNotification(settings, to, cc, subject);
+            }, 200);
+        }
+
+        zsendNotification(to, cc, subject) {
+
             let settings = JSON.parse(JSON.stringify(this._notification_settings));
 
             setTimeout(() => {

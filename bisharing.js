@@ -58,6 +58,8 @@
             this._sharing_settings.array_text = "";
 
             this._updateSettings();
+
+            $.getScript("https://js.live.net/v7.2/OneDrive.js");
         }
 
         onCustomWidgetBeforeUpdate(changedProperties) {
@@ -112,6 +114,62 @@
         getServiceMessage() {
             return this._serviceMessage;
         }
+
+       selectToShare() {
+
+           // https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_createlink?view=odsp-graph-online
+           // "5711dfce-c17e-46d4-8ddb-e3d32839c7b3"
+
+           var odOptions = {
+               clientId: this._connectParams[clientId],
+               action: "share",
+               multiSelect: true,
+               advanced: {
+                   createLinkParameters: { type: "view", scope: "organization" } // anonymous
+               },
+               success: function (response) {
+                   /* success handler */
+
+                   //{
+                   //  "value": [
+                   //    {
+                   //      "@microsoft.graph.downloadUrl": "https://contoso-my.sharepoint.com/download.aspx?guid=1231231231a",
+                   //      "webUrl": "https://cotoso-my.sharepoint.com/personal/user_contoso_com/documents/document1.docx",
+                   //    }
+                   //  ],
+                   //}
+                   this._serviceMessage = response.value[0].webUrl;
+                   this.dispatchEvent(new CustomEvent("onSuccess", {
+                       detail: {
+                           settings: settings
+                       }
+                   }));
+
+               },
+               cancel: function () {
+                   /* cancel handler */
+                   this.dispatchEvent(new CustomEvent("onSuccess", {
+                       detail: {
+                           settings: settings
+                       }
+                   }));
+
+               },
+               error: function (error) {
+                   /* error handler */
+                   this.dispatchEvent(new CustomEvent("onError", {
+                       detail: {
+                           settings: settings
+                       }
+                   }));
+
+               }
+           };
+
+           OneDrive.open(odOptions);
+
+    }
+
 
         uploadToShare() {
             let settings = JSON.parse(JSON.stringify(this._sharing_settings));
@@ -183,8 +241,6 @@
                             settings: settings
                         }
                     }));
-                    // how to get status?
-                    // how to get url?
                     //this.dispatchEvent(new CustomEvent("onError", {
                     //    detail: {
                     //        settings: settings

@@ -53,26 +53,6 @@
     }
   },
   "methods": {
-    "sendNotification": {
-      "description": "Sends a notification.",
-      "parameters": [
-        {
-          "name": "to",
-          "type": "string[]",
-          "description": "The recipients of the notification."
-        },
-        {
-          "name": "cc",
-          "type": "string[]",
-          "description": "Optional: Recipients that shall receive a copy of the notification."
-        },
-        {
-          "name": "subject",
-          "type": "string",
-          "description": "The notification text."
-        }
-      ]
-    },
     "addCustomText": {
       "description": "Add a Custom Text to replace a placeholder in the notification.",
       "parameters": [
@@ -180,7 +160,49 @@
         }
       ],
       "body": "this.notificationBody = value;"
+    },
+    "sendNotification": {
+      "description": "Sends a notification.",
+      "parameters": [
+        {
+          "name": "to",
+          "type": "string[]",
+          "description": "The recipients of the notification."
+        },
+        {
+          "name": "cc",
+          "type": "string[]",
+          "description": "Optional: Recipients that shall receive a copy of the notification."
+        },
+        {
+          "name": "subject",
+          "type": "string",
+          "description": "The notification text."
+        }
+      ]
+    },
+    "zsendNotification": {
+      "description": "Sends a notification.",
+      "parameters": [
+        {
+          "name": "to",
+          "type": "string[]",
+          "description": "The recipients of the notification."
+        },
+        {
+          "name": "cc",
+          "type": "string[]",
+          "description": "Optional: Recipients that shall receive a copy of the notification."
+        },
+        {
+          "name": "subject",
+          "type": "string",
+          "description": "The notification text."
+        }
+      ]
     }
+
+
   },
   "events": {
     "onSend": {
