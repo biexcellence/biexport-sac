@@ -82,10 +82,10 @@
             this._updateSettings();
         }
 
-        get notificationBody() {
+        getNotificationBody() {
             return this._notification_settings.mail_body;
         }
-        set notificationBody(value) {
+        setNotificationBody(value) {
             this._notification_settings.mail_body = value;
             this._updateSettings();
         }
@@ -135,15 +135,6 @@
         }
 
         sendNotification(to, cc, subject) {
-
-            let settings = JSON.parse(JSON.stringify(this._notification_settings));
-
-            setTimeout(() => {
-                this._sendNotification(settings, to, cc, subject);
-            }, 200);
-        }
-
-        zsendNotification(to, cc, subject) {
 
             let settings = JSON.parse(JSON.stringify(this._notification_settings));
 

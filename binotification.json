@@ -148,7 +148,6 @@
       "returnType": "string",
       "description": "Get the Notification detail",
       "parameters": [],
-      "body": "return this.notificationBody;"
     },
     "setNotificationBody": {
       "description": "Set the Notification detail",
@@ -159,7 +158,6 @@
           "description": "The new notification detail"
         }
       ],
-      "body": "this.notificationBody = value;"
     },
     "sendNotification": {
       "description": "Sends a notification.",
@@ -180,28 +178,7 @@
           "description": "The notification text."
         }
       ]
-    },
-    "zsendNotification": {
-      "description": "Sends a notification.",
-      "parameters": [
-        {
-          "name": "to",
-          "type": "string[]",
-          "description": "The recipients of the notification."
-        },
-        {
-          "name": "cc",
-          "type": "string[]",
-          "description": "Optional: Recipients that shall receive a copy of the notification."
-        },
-        {
-          "name": "subject",
-          "type": "string",
-          "description": "The notification text."
-        }
-      ]
     }
-
 
   },
   "events": {
