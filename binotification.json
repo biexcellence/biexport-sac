@@ -147,7 +147,7 @@
     "getNotificationBody": {
       "returnType": "string",
       "description": "Get the Notification detail",
-      "parameters": [],
+      "parameters": []
     },
     "setNotificationBody": {
       "description": "Set the Notification detail",
@@ -157,7 +157,7 @@
           "type": "string",
           "description": "The new notification detail"
         }
-      ],
+      ]
     },
     "sendNotification": {
       "description": "Sends a notification.",
