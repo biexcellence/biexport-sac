@@ -103,13 +103,6 @@
             this._notification_settings.publish_mode = value;
             this._updateSettings();
         }
-        get notificationBody() {
-            return this._notification_settings.mail_body;
-        }
-        set notificationBody(value) {
-            this._notification_settings.mail_body = value;
-            this._updateSettings();
-        }
 
         // METHODS
 
