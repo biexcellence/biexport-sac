@@ -142,6 +142,11 @@
       "description": "Show component selector before exporting",
       "default": false
     },
+    "enablePdf": {
+      "type": "boolean",
+      "description": "Show PDF option",
+      "default": true
+    },
     "enablePpt": {
       "type": "boolean",
       "description": "Show PowerPoint option",
@@ -150,11 +155,6 @@
     "enableDoc": {
       "type": "boolean",
       "description": "Show Word option",
-      "default": true
-    },
-    "enablePdf": {
-      "type": "boolean",
-      "description": "Show PDF option",
       "default": true
     },
     "enableXls": {
@@ -201,13 +201,448 @@
     }
   },
   "methods": {
-    "doExport": {
-      "description": "Triggers the export process.",
+    "getServerUrl": {
+      "returnType": "string",
+      "description": "Get the Server URL",
+      "parameters": []
+    },
+    "setServerUrl": {
+      "description": "Set the Server URL",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "description": "The new Server URL"
+        }
+      ]
+    },
+    "getLicenseKey": {
+      "returnType": "string",
+      "description": "Get the License Key",
+      "parameters": []
+    },
+    "setLicenseKey": {
+      "description": "Set the License Key",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "description": "The new License Key"
+        }
+      ]
+    },
+    "getFilename": {
+      "returnType": "string",
+      "description": "Get the filename",
+      "parameters": []
+    },
+    "setFilename": {
+      "description": "Set the filename",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "description": "The new filename"
+        }
+      ]
+    },
+    "getExportLanguage": {
+      "returnType": "string",
+      "description": "Get the Export Language",
+      "parameters": []
+    },
+    "setExportLanguage": {
+      "description": "Set the Export Language",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "description": "The new Export Language"
+        }
+      ]
+    },
+    "getStaticWidth": {
+      "returnType": "integer",
+      "description": "Get the Static Width",
+      "parameters": []
+    },
+    "setStaticWidth": {
+      "description": "Set the Static Width",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "integer",
+          "description": "The new Static Width"
+        }
+      ]
+    },
+    "getStaticHeight": {
+      "returnType": "integer",
+      "description": "Get the Static Height",
+      "parameters": []
+    },
+    "setStaticHeight": {
+      "description": "Set the Static Height",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "integer",
+          "description": "The new Screen Height"
+        }
+      ]
+    },
+    "getParseCss": {
+      "returnType": "boolean",
+      "description": "Get whether Parse CSS is enabled or not",
+      "parameters": []
+    },
+    "setParseCss": {
+      "description": "Set whether Parse CSS is enabled or not",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "boolean",
+          "description": "The new Parse CSS"
+        }
+      ]
+    },
+    "getBiAnalyticsDocument": {
+      "returnType": "boolean",
+      "description": "Get whether biAnalytics Document is enabled or not",
+      "parameters": []
+    },
+    "setBiAnalyticsDocument": {
+      "description": "Set whether biAnaltics Document is enabled or not",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "boolean",
+          "description": "The new biAnalytics Document"
+        }
+      ]
+    },
+    "getPdfTemplate": {
+      "returnType": "string",
+      "description": "Get the PDF Template",
+      "parameters": []
+    },
+    "setPdfTemplate": {
+      "description": "Set the PDF Template",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "description": "The new PDF Template"
+        }
+      ]
+    },
+    "getPptSeparateSlides": {
+      "returnType": "boolean",
+      "description": "Gets the Property 'One Component by Slide' for PowerPoint Export",
+      "parameters": []
+    },
+    "setPptSeparateSlides": {
+      "description": "Sets the Property 'One Component by Slide' for PowerPoint Export.",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "boolean",
+          "description": "The new biAnalytics Document"
+        }
+      ]
+    },
+    "getPptTemplate": {
+      "returnType": "string",
+      "description": "Get the PPT Template",
+      "parameters": []
+    },
+    "setPptTemplate": {
+      "description": "Set the PPT Template",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "description": "The new PPT Template"
+        }
+      ]
+    },
+    "getDocTemplate": {
+      "returnType": "string",
+      "description": "Get the DOC Template",
+      "parameters": []
+    },
+    "setDocTemplate": {
+      "description": "Set the DOC Template",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "description": "The new DOC Template"
+        }
+      ]
+    },
+    "getXlsTemplate": {
+      "returnType": "string",
+      "description": "Get the XLS Template",
+      "parameters": []
+    },
+    "setXlsTemplate": {
+      "description": "Set the XLS Template",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "description": "The new XLS Template"
+        }
+      ]
+    },
+    "getExportTemplate": {
+      "description": "Add an Export Template",
       "parameters": [
         {
           "name": "format",
           "type": "string",
           "description": "The export format: \"PDF\", \"PPT\", \"DOC\", \"XLS\""
+        }
+      ]
+    },
+    "setExportTemplate": {
+      "description": "Set the Export Template",
+      "parameters": [
+        {
+          "name": "format",
+          "type": "string",
+          "description": "The export format: \"PDF\", \"PPT\", \"DOC\", \"XLS\""
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "description": "The new Export Template"
+        }
+      ]
+    },
+    "getPublishMode": {
+      "returnType": "string",
+      "description": "Get the Publish Mode",
+      "parameters": []
+    },
+    "setPublishMode": {
+      "description": "Set the Publish Mode",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "description": "The new Publish Mode"
+        }
+      ]
+    },
+    "getPublishSync": {
+      "returnType": "boolean",
+      "description": "Get the Publish Sync",
+      "parameters": []
+    },
+    "setPublishSync": {
+      "description": "Set the Publish Sync",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "boolean",
+          "description": "The new Publish Sync"
+        }
+      ]
+    },
+    "getMailFrom": {
+      "returnType": "string",
+      "description": "Get the Mail From",
+      "parameters": []
+    },
+    "setMailFrom": {
+      "description": "Set the Mail From",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "description": "The new Mail From"
+        }
+      ]
+    },
+    "getMailTo": {
+      "returnType": "string",
+      "description": "Get the Mail To",
+      "parameters": []
+    },
+    "setMailTo": {
+      "description": "Set the Mail To",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "description": "The new Mail To"
+        }
+      ]
+    },
+    "getMailSubject": {
+      "returnType": "string",
+      "description": "Get the Mail Subject",
+      "parameters": []
+    },
+    "setMailSubject": {
+      "description": "Set the Mail Subject",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "description": "The new Mail Subject"
+        }
+      ]
+    },
+    "getMailBody": {
+      "returnType": "string",
+      "description": "Get the Mail Body",
+      "parameters": []
+    },
+    "setMailBody": {
+      "description": "Set the Mail Body",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "description": "The new Mail Body"
+        }
+      ]
+    },
+    "getButtonIconVisible": {
+      "returnType": "boolean",
+      "description": "Get the visibility of the button icon",
+      "parameters": []
+    },
+    "setButtonIconVisible": {
+      "description": "Set the visibility of the button text",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "boolean",
+          "description": "The new visibility"
+        }
+      ]
+    },
+    "getButtonTextVisible": {
+      "returnType": "boolean",
+      "description": "Get the visibility of the button text",
+      "parameters": []
+    },
+    "setButtonTextVisible": {
+      "description": "Set the visibility of the button text",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "boolean",
+          "description": "The new visibility"
+        }
+      ]
+    },
+    "getViewSelectorVisible": {
+      "returnType": "boolean",
+      "description": "Get the visibility of the view selector",
+      "parameters": []
+    },
+    "setViewSelectorVisible": {
+      "description": "Set the visibility of the view selector",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "boolean",
+          "description": "The new visibility"
+        }
+      ]
+    },
+    "getWidgetSelectorVisible": {
+      "returnType": "boolean",
+      "description": "Get the visibility of the widget selector",
+      "parameters": []
+    },
+    "setWidgetSelectorVisible": {
+      "description": "Set the visibility of the widget selector",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "boolean",
+          "description": "The new visibility"
+        }
+      ]
+    },
+    "getPdfButtonVisible": {
+      "returnType": "boolean",
+      "description": "Get the visibility of the PDF export button",
+      "parameters": []
+    },
+    "setPdfButtonVisible": {
+      "description": "Set the visibility of the PDF export button",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "boolean",
+          "description": "The new visibility"
+        }
+      ]
+    },
+    "getPptButtonVisible": {
+      "returnType": "boolean",
+      "description": "Get the visibility of the PowerPoint export button",
+      "parameters": []
+    },
+    "setPptButtonVisible": {
+      "description": "Set the visibility of the PowerPoint export button",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "boolean",
+          "description": "The new visibility"
+        }
+      ]
+    },
+    "getDocButtonVisible": {
+      "returnType": "boolean",
+      "description": "Get the visibility of the Word export button",
+      "parameters": []
+    },
+    "setDocButtonVisible": {
+      "description": "Set the visibility of the Word export button",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "boolean",
+          "description": "The new visibility"
+        }
+      ]
+    },
+    "getXlsButtonVisible": {
+      "returnType": "boolean",
+      "description": "Get the visibility of the Excel export button",
+      "parameters": []
+    },
+    "setXlsButtonVisible": {
+      "description": "Set the visibility of the Excel export button",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "boolean",
+          "description": "The new visibility"
+        }
+      ]
+    },
+    "getCsvButtonVisible": {
+      "returnType": "boolean",
+      "description": "Get the visibility of the CSV export button",
+      "parameters": []
+    },
+    "setCsvButtonVisible": {
+      "description": "Set the visibility of the CSV export button",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "boolean",
+          "description": "The new visibility"
         }
       ]
     },
@@ -297,6 +732,9 @@
         }
       ]
     },
+    "clearURLParameters": {
+      "description": "Clears all URLs parameters which are used during background execution."
+    },
     "addBriefingBookDefinition": {
       "description": "Add a Briefing Book Definition which is used during background execution.",
       "parameters": [
@@ -337,501 +775,23 @@
         }
       ]
     },
-    "clearURLParameters": {
-      "description": "Clears all URLs parameters which are used during background execution."
-    },
     "clearBriefingBookDefinitions": {
       "description": "Clears all Briefing Book Definitions which are used during background execution."
-    },
-    "getPdfTemplate": {
-      "returnType": "string",
-      "description": "Get the PDF Template",
-      "parameters": [],
-      "body": "return this.pdfTemplate;"
-    },
-    "setPdfTemplate": {
-      "description": "Set the PDF Template",
-      "parameters": [
-        {
-          "name": "value",
-          "type": "string",
-          "description": "The new PDF Template"
-        }
-      ],
-      "body": "this.pdfTemplate = value;"
-    },
-    "getPptTemplate": {
-      "returnType": "string",
-      "description": "Get the PPT Template",
-      "parameters": [],
-      "body": "return this.pptTemplate;"
-    },
-    "setPptTemplate": {
-      "description": "Set the PPT Template",
-      "parameters": [
-        {
-          "name": "value",
-          "type": "string",
-          "description": "The new PPT Template"
-        }
-      ],
-      "body": "this.pptTemplate = value;"
-    },
-    "getDocTemplate": {
-      "returnType": "string",
-      "description": "Get the DOC Template",
-      "parameters": [],
-      "body": "return this.docTemplate;"
-    },
-    "setDocTemplate": {
-      "description": "Set the DOC Template",
-      "parameters": [
-        {
-          "name": "value",
-          "type": "string",
-          "description": "The new DOC Template"
-        }
-      ],
-      "body": "this.docTemplate = value;"
-    },
-    "getXlsTemplate": {
-      "returnType": "string",
-      "description": "Get the XLS Template",
-      "parameters": [],
-      "body": "return this.xlsTemplate;"
-    },
-    "setXlsTemplate": {
-      "description": "Set the XLS Template",
-      "parameters": [
-        {
-          "name": "value",
-          "type": "string",
-          "description": "The new XLS Template"
-        }
-      ],
-      "body": "this.xlsTemplate = value;"
-    },
-
-    "getExportTemplate": {
-      "description": "Add an Export Template",
-      "parameters": [
-        {
-          "name": "format",
-          "type": "string",
-          "description": "The export format: \"PDF\", \"PPT\", \"DOC\", \"XLS\""
-        }
-      ]
-    },
-    "setExportTemplate": {
-      "description": "Set the Export Template",
-      "parameters": [
-        {
-          "name": "format",
-          "type": "string",
-          "description": "The export format: \"PDF\", \"PPT\", \"DOC\", \"XLS\""
-        },
-        {
-          "name": "value",
-          "type": "string",
-          "description": "The new Export Template"
-        }
-      ]
-    },
-    "isXlsButtonVisible": {
-      "returnType": "boolean",
-      "description": "Get the visibility of the Excel export button",
-      "parameters": [],
-      "body": "return this.enableXls;"
-    },
-    "setXlsButtonVisible": {
-      "description": "Set the visibility of the Excel export button",
-      "parameters": [
-        {
-          "name": "value",
-          "type": "boolean",
-          "description": "The new visibility"
-        }
-      ],
-      "body": "this.enableXls = value;"
-    },
-    "isPptButtonVisible": {
-      "returnType": "boolean",
-      "description": "Get the visibility of the PowerPoint export button",
-      "parameters": [],
-      "body": "return this.enablePpt;"
-    },
-    "setPptButtonVisible": {
-      "description": "Set the visibility of the PowerPoint export button",
-      "parameters": [
-        {
-          "name": "value",
-          "type": "boolean",
-          "description": "The new visibility"
-        }
-      ],
-      "body": "this.enablePpt = value;"
-    },
-    "isCsvButtonVisible": {
-      "returnType": "boolean",
-      "description": "Get the visibility of the CSV export button",
-      "parameters": [],
-      "body": "return this.enableCsv;"
-    },
-    "setCsvButtonVisible": {
-      "description": "Set the visibility of the CSV export button",
-      "parameters": [
-        {
-          "name": "value",
-          "type": "boolean",
-          "description": "The new visibility"
-        }
-      ],
-      "body": "this.enableCsv = value;"
-    },
-    "isDocButtonVisible": {
-      "returnType": "boolean",
-      "description": "Get the visibility of the Word export button",
-      "parameters": [],
-      "body": "return this.enableDoc;"
-    },
-    "setDocButtonVisible": {
-      "description": "Set the visibility of the Word export button",
-      "parameters": [
-        {
-          "name": "value",
-          "type": "boolean",
-          "description": "The new visibility"
-        }
-      ],
-      "body": "this.enableDoc = value;"
-    },
-    "isPdfButtonVisible": {
-      "returnType": "boolean",
-      "description": "Get the visibility of the PDF export button",
-      "parameters": [],
-      "body": "return this.enablePdf;"
-    },
-    "setPdfButtonVisible": {
-      "description": "Set the visibility of the PDF export button",
-      "parameters": [
-        {
-          "name": "value",
-          "type": "boolean",
-          "description": "The new visibility"
-        }
-      ],
-      "body": "this.enablePdf = value;"
-    },
-    "isButtonTextVisible": {
-      "returnType": "boolean",
-      "description": "Get the visibility of the button text",
-      "parameters": [],
-      "body": "return this.showTexts;"
-    },
-    "setButtonTextVisible": {
-      "description": "Set the visibility of the button text",
-      "parameters": [
-        {
-          "name": "value",
-          "type": "boolean",
-          "description": "The new visibility"
-        }
-      ],
-      "body": "this.showTexts = value;"
-    },
-    "isButtonIconVisible": {
-      "returnType": "boolean",
-      "description": "Get the visibility of the button icon",
-      "parameters": [],
-      "body": "return this.showIcons;"
-    },
-    "setButtonIconVisible": {
-      "description": "Set the visibility of the button text",
-      "parameters": [
-        {
-          "name": "value",
-          "type": "boolean",
-          "description": "The new visibility"
-        }
-      ],
-      "body": "this.showIcons = value;"
-    },
-    "isWidgetSelectorVisible": {
-      "returnType": "boolean",
-      "description": "Get the visibility of the widget selector",
-      "parameters": [],
-      "body": "return this.showComponentSelector;"
-    },
-    "setWidgetSelectorVisible": {
-      "description": "Set the visibility of the widget selector",
-      "parameters": [
-        {
-          "name": "value",
-          "type": "boolean",
-          "description": "The new visibility"
-        }
-      ],
-      "body": "this.showComponentSelector = value;"
-    },
-    "isViewSelectorVisible": {
-      "returnType": "boolean",
-      "description": "Get the visibility of the view selector",
-      "parameters": [],
-      "body": "return this.showViewSelector;"
-    },
-    "setViewSelectorVisible": {
-      "description": "Set the visibility of the view selector",
-      "parameters": [
-        {
-          "name": "value",
-          "type": "boolean",
-          "description": "The new visibility"
-        }
-      ],
-      "body": "this.showViewSelector = value;"
-    },
-    "getServerUrl": {
-      "returnType": "string",
-      "description": "Get the Server URL",
-      "parameters": [],
-      "body": "return this.serverURL;"
-    },
-    "setServerUrl": {
-      "description": "Set the Server URL",
-      "parameters": [
-        {
-          "name": "value",
-          "type": "string",
-          "description": "The new Server URL"
-        }
-      ],
-      "body": "this.serverURL = value;"
-    },
-    "getLicenseKey": {
-      "returnType": "string",
-      "description": "Get the License Key",
-      "parameters": [],
-      "body": "return this.licenseKey;"
-    },
-    "setLicenseKey": {
-      "description": "Set the License Key",
-      "parameters": [
-        {
-          "name": "value",
-          "type": "string",
-          "description": "The new License Key"
-        }
-      ],
-      "body": "this.licenseKey = value;"
-    },
-    "getFilename": {
-      "returnType": "string",
-      "description": "Get the filename",
-      "parameters": [],
-      "body": "return this.filename;"
-    },
-    "setFilename": {
-      "description": "Set the filename",
-      "parameters": [
-        {
-          "name": "value",
-          "type": "string",
-          "description": "The new filename"
-        }
-      ],
-      "body": "this.filename = value;"
-    },
-    "getExportLanguage": {
-      "returnType": "string",
-      "description": "Get the Export Language",
-      "parameters": [],
-      "body": "return this.exportLanguage;"
-    },
-    "setExportLanguage": {
-      "description": "Set the Export Language",
-      "parameters": [
-        {
-          "name": "value",
-          "type": "string",
-          "description": "The new Export Language"
-        }
-      ],
-      "body": "this.exportLanguage = value;"
-    },
-    "getStaticWidth": {
-      "returnType": "integer",
-      "description": "Get the Static Width",
-      "parameters": [],
-      "body": "return this.screenWidth;"
-    },
-    "setStaticWidth": {
-      "description": "Set the Static Width",
-      "parameters": [
-        {
-          "name": "value",
-          "type": "integer",
-          "description": "The new Static Width"
-        }
-      ],
-      "body": "this.screenWidth = value;"
-    },
-    "getStaticHeight": {
-      "returnType": "integer",
-      "description": "Get the Static Height",
-      "parameters": [],
-      "body": "return this.screenHeight;"
-    },
-    "setStaticHeight": {
-      "description": "Set the Static Height",
-      "parameters": [
-        {
-          "name": "value",
-          "type": "integer",
-          "description": "The new Screen Height"
-        }
-      ],
-      "body": "this.screenHeight = value;"
-    },
-    "getParseCss": {
-      "returnType": "boolean",
-      "description": "Get whether Parse CSS is enabled or not",
-      "parameters": [],
-      "body": "return this.parseCss;"
-    },
-    "setParseCss": {
-      "description": "Set whether Parse CSS is enabled or not",
-      "parameters": [
-        {
-          "name": "value",
-          "type": "boolean",
-          "description": "The new Parse CSS"
-        }
-      ],
-      "body": "this.parseCss = value;"
-    },
-    "getBiAnalyticsDocument": {
-      "returnType": "boolean",
-      "description": "Get whether biAnalytics Document is enabled or not",
-      "parameters": [],
-      "body": "return this.biAnalyticsDocument;"
-    },
-    "setBiAnalyticsDocument": {
-      "description": "Set whether biAnaltics Document is enabled or not",
-      "parameters": [
-        {
-          "name": "value",
-          "type": "boolean",
-          "description": "The new biAnalytics Document"
-        }
-      ],
-      "body": "this.biAnalyticsDocument = value;"
-    },
-    "getPublishMode": {
-      "returnType": "string",
-      "description": "Get the Publish Mode",
-      "parameters": [],
-      "body": "return this.publishMode;"
-    },
-    "setPublishMode": {
-      "description": "Set the Publish Mode",
-      "parameters": [
-        {
-          "name": "value",
-          "type": "string",
-          "description": "The new Publish Mode"
-        }
-      ],
-      "body": "this.publishMode = value;"
-    },
-    "getPublishSync": {
-      "returnType": "boolean",
-      "description": "Get the Publish Sync",
-      "parameters": [],
-      "body": "return this.publishSync;"
-    },
-    "setPublishSync": {
-      "description": "Set the Publish Sync",
-      "parameters": [
-        {
-          "name": "value",
-          "type": "boolean",
-          "description": "The new Publish Sync"
-        }
-      ],
-      "body": "this.publishSync = value;"
-    },
-    "getMailFrom": {
-      "returnType": "string",
-      "description": "Get the Mail From",
-      "parameters": [],
-      "body": "return this.mailFrom;"
-    },
-    "setMailFrom": {
-      "description": "Set the Mail From",
-      "parameters": [
-        {
-          "name": "value",
-          "type": "string",
-          "description": "The new Mail From"
-        }
-      ],
-      "body": "this.mailFrom = value;"
-    },
-    "getMailTo": {
-      "returnType": "string",
-      "description": "Get the Mail To",
-      "parameters": [],
-      "body": "return this.mailTo;"
-    },
-    "setMailTo": {
-      "description": "Set the Mail To",
-      "parameters": [
-        {
-          "name": "value",
-          "type": "string",
-          "description": "The new Mail To"
-        }
-      ],
-      "body": "this.mailTo = value;"
-    },
-    "getMailSubject": {
-      "returnType": "string",
-      "description": "Get the Mail Subject",
-      "parameters": [],
-      "body": "return this.mailSubject;"
-    },
-    "setMailSubject": {
-      "description": "Set the Mail Subject",
-      "parameters": [
-        {
-          "name": "value",
-          "type": "string",
-          "description": "The new Mail Subject"
-        }
-      ],
-      "body": "this.mailSubject = value;"
-    },
-    "getMailBody": {
-      "returnType": "string",
-      "description": "Get the Mail Body",
-      "parameters": [],
-      "body": "return this.mailBody;"
-    },
-    "setMailBody": {
-      "description": "Set the Mail Body",
-      "parameters": [
-        {
-          "name": "value",
-          "type": "string",
-          "description": "The new Mail Body"
-        }
-      ],
-      "body": "this.mailBody = value;"
     },
     "getServiceMessage": {
       "returnType": "string",
       "description": "Gets the Service Message",
       "parameters": []
+    },
+    "doExport": {
+      "description": "Triggers the export process.",
+      "parameters": [
+        {
+          "name": "format",
+          "type": "string",
+          "description": "The export format: \"PDF\", \"PPT\", \"DOC\", \"XLS\""
+        }
+      ]
     }
   },
   "events": {

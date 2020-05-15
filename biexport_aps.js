@@ -333,7 +333,7 @@
                 throw new Error("Failed to get oauth clients: " + response.status)
             }).then(oauthClients => {
                 let oauthSelect = this._shadowRoot.getElementById("oauthId");
-                let clientId = this.getValue("oauthClientId");
+                let clientId = this._getValue("oauthClientId");
                 while (oauthSelect.options.length > 1) {
                     oauthSelect.options.remove(1);
                 }
@@ -400,228 +400,199 @@
         }
 
         get serverURL() {
-            return this.getValue("serverURL");
+            return this._getValue("serverURL");
         }
         set serverURL(value) {
-            this.setValue("serverURL", value);
+            this._setValue("serverURL", value);
         }
 
         get licenseKey() {
-            return this.getValue("licenseKey");
+            return this._getValue("licenseKey");
         }
         set licenseKey(value) {
-            this.setValue("licenseKey", value);
-        }
-
-        get oauth() {
-            if (this.getValue("oauthClientId")) {
-                return JSON.stringify({
-                    client_id: this.getValue("oauthClientId"),
-                    client_secret: this.getValue("oauthClientSecret"),
-                    client_redirect_URL: this.getValue("oauthClientRedirectURL"),
-                    authorization_URL: this.getValue("oauthAuthorizationURL"),
-                    token_URL: this.getValue("oauthTokenURL")
-                });
-            }
-            return null;
-        }
-        set oauth(value) {
-            if (value) {
-                let oauth = JSON.parse(value);
-                this.setValue("oauthClientId", oauth.client_id);
-                this.setValue("oauthClientSecret", oauth.client_secret);
-                this.setValue("oauthClientRedirectURL", oauth.client_redirect_URL);
-                this.setValue("oauthAuthorizationURL", oauth.authorization_URL);
-                this.setValue("oauthTokenURL", oauth.token_URL);
-            } else {
-                this.setValue("oauthClientId", "");
-                this.setValue("oauthClientSecret", "");
-                this.setValue("oauthClientRedirectURL", "");
-                this.setValue("oauthAuthorizationURL", "");
-                this.setValue("oauthTokenURL", "");
-            }
+            this._setValue("licenseKey", value);
         }
 
         get filename() {
-            return this.getValue("filename");
+            return this._getValue("filename");
         }
         set filename(value) {
-            this.setValue("filename", value);
+            this._setValue("filename", value);
         }
 
         get exportLanguage() {
-            return this.getValue("exportLanguage");
+            return this._getValue("exportLanguage");
         }
         set exportLanguage(value) {
-            this.setValue("exportLanguage", value);
+            this._setValue("exportLanguage", value);
         }
 
         get screenWidth() {
-            return this.getValue("screenWidth");
+            return this._getValue("screenWidth");
         }
         set screenWidth(value) {
-            this.setValue("screenWidth", value);
+            this._setValue("screenWidth", value);
         }
 
         get screenHeight() {
-            return this.getValue("screenHeight");
+            return this._getValue("screenHeight");
         }
         set screenHeight(value) {
-            this.setValue("screenHeight", value);
+            this._setValue("screenHeight", value);
         }
 
         get parseCss() {
-            return this.getBooleanValue("parseCss");
+            return this._getBooleanValue("parseCss");
         }
         set parseCss(value) {
-            this.setBooleanValue("parseCss", value);
+            this._setBooleanValue("parseCss", value);
         }
 
         get biAnalyticsDocument() {
-            return this.getBooleanValue("biAnalyticsDocument");
+            return this._getBooleanValue("biAnalyticsDocument");
         }
         set biAnalyticsDocument(value) {
-            this.setBooleanValue("biAnalyticsDocument", value);
+            this._setBooleanValue("biAnalyticsDocument", value);
         }
 
         get pdfTemplate() {
-            return this.getValue("pdfTemplate");
+            return this._getValue("pdfTemplate");
         }
         set pdfTemplate(value) {
-            this.setValue("pdfTemplate", value);
+            this._setValue("pdfTemplate", value);
         }
 
         get pptSeparate() {
-            return this.getBooleanValue("pptSeparate");
+            return this._getBooleanValue("pptSeparate");
         }
         set pptSeparate(value) {
-            this.setBooleanValue("pptSeparate", value);
+            this._setBooleanValue("pptSeparate", value);
         }
 
         get pptTemplate() {
-            return this.getValue("pptTemplate");
+            return this._getValue("pptTemplate");
         }
         set pptTemplate(value) {
-            this.setValue("pptTemplate", value);
+            this._setValue("pptTemplate", value);
         }
 
         get docTemplate() {
-            return this.getValue("docTemplate");
+            return this._getValue("docTemplate");
         }
         set docTemplate(value) {
-            this.setValue("docTemplate", value);
+            this._setValue("docTemplate", value);
         }
 
         get xlsTemplate() {
-            return this.getValue("xlsTemplate");
+            return this._getValue("xlsTemplate");
         }
         set xlsTemplate(value) {
-            this.setValue("xlsTemplate", value);
+            this._setValue("xlsTemplate", value);
         }
 
         get publishMode() {
-            return this.getValue("publishMode");
+            return this._getValue("publishMode");
         }
         set publishMode(value) {
-            this.setValue("publishMode", value);
+            this._setValue("publishMode", value);
         }
 
         get publishSync() {
-            return this.getBooleanValue("publishSync");
+            return this._getBooleanValue("publishSync");
         }
         set publishSync(value) {
-            this.setBooleanValue("publishSync", value);
+            this._setBooleanValue("publishSync", value);
         }
 
         get mailFrom() {
-            return this.getValue("mailFrom");
+            return this._getValue("mailFrom");
         }
         set mailFrom(value) {
-            this.setValue("mailFrom", value);
+            this._setValue("mailFrom", value);
         }
 
         get mailTo() {
-            return this.getValue("mailTo");
+            return this._getValue("mailTo");
         }
         set mailTo(value) {
-            this.setValue("mailTo", value);
+            this._setValue("mailTo", value);
         }
 
         get mailSubject() {
-            return this.getValue("mailSubject");
+            return this._getValue("mailSubject");
         }
         set mailSubject(value) {
-            this.setValue("mailSubject", value);
+            this._setValue("mailSubject", value);
         }
 
         get mailBody() {
-            return this.getValue("mailBody");
+            return this._getValue("mailBody");
         }
         set mailBody(value) {
-            this.setValue("mailBody", value);
-        }
-
-        get showTexts() {
-            return this.getBooleanValue("showTexts");
-        }
-        set showTexts(value) {
-            this.setBooleanValue("showTexts", value);
+            this._setValue("mailBody", value);
         }
 
         get showIcons() {
-            return this.getBooleanValue("showIcons");
+            return this._getBooleanValue("showIcons");
         }
         set showIcons(value) {
-            this.setBooleanValue("showIcons", value);
+            this._setBooleanValue("showIcons", value);
+        }
+
+        get showTexts() {
+            return this._getBooleanValue("showTexts");
+        }
+        set showTexts(value) {
+            this._setBooleanValue("showTexts", value);
         }
 
         get showComponentSelector() {
-            return this.getBooleanValue("showComponentSelector");
+            return this._getBooleanValue("showComponentSelector");
         }
         set showComponentSelector(value) {
-            this.setBooleanValue("showComponentSelector", value);
+            this._setBooleanValue("showComponentSelector", value);
         }
 
         get showViewSelector() {
-            return this.getBooleanValue("showViewSelector");
+            return this._getBooleanValue("showViewSelector");
         }
         set showViewSelector(value) {
-            this.setBooleanValue("showViewSelector", value);
+            this._setBooleanValue("showViewSelector", value);
         }
 
         get enablePpt() {
-            return this.getBooleanValue("enablePpt");
+            return this._getBooleanValue("enablePpt");
         }
         set enablePpt(value) {
-            this.setBooleanValue("enablePpt", value);
+            this._setBooleanValue("enablePpt", value);
         }
 
         get enableDoc() {
-            return this.getBooleanValue("enableDoc");
+            return this._getBooleanValue("enableDoc");
         }
         set enableDoc(value) {
-            this.setBooleanValue("enableDoc", value);
+            this._setBooleanValue("enableDoc", value);
         }
 
         get enablePdf() {
-            return this.getBooleanValue("enablePdf");
+            return this._getBooleanValue("enablePdf");
         }
         set enablePdf(value) {
-            this.setBooleanValue("enablePdf", value);
+            this._setBooleanValue("enablePdf", value);
         }
 
         get enableXls() {
-            return this.getBooleanValue("enableXls");
+            return this._getBooleanValue("enableXls");
         }
         set enableXls(value) {
-            this.setBooleanValue("enableXls", value);
+            this._setBooleanValue("enableXls", value);
         }
 
         get enableCsv() {
-            return this.getBooleanValue("enableCsv");
+            return this._getBooleanValue("enableCsv");
         }
         set enableCsv(value) {
-            this.setBooleanValue("enableCsv", value);
+            this._setBooleanValue("enableCsv", value);
         }
 
         get pdfSelectedWidgets() {
@@ -659,17 +630,46 @@
             this._metadata = value;
         }
 
-        getValue(id) {
+        get oauth() {
+            if (this._getValue("oauthClientId")) {
+                return JSON.stringify({
+                    client_id: this._getValue("oauthClientId"),
+                    client_secret: this._getValue("oauthClientSecret"),
+                    client_redirect_URL: this._getValue("oauthClientRedirectURL"),
+                    authorization_URL: this._getValue("oauthAuthorizationURL"),
+                    token_URL: this._getValue("oauthTokenURL")
+                });
+            }
+            return null;
+        }
+        set oauth(value) {
+            if (value) {
+                let oauth = JSON.parse(value);
+                this._setValue("oauthClientId", oauth.client_id);
+                this._setValue("oauthClientSecret", oauth.client_secret);
+                this._setValue("oauthClientRedirectURL", oauth.client_redirect_URL);
+                this._setValue("oauthAuthorizationURL", oauth.authorization_URL);
+                this._setValue("oauthTokenURL", oauth.token_URL);
+            } else {
+                this._setValue("oauthClientId", "");
+                this._setValue("oauthClientSecret", "");
+                this._setValue("oauthClientRedirectURL", "");
+                this._setValue("oauthAuthorizationURL", "");
+                this._setValue("oauthTokenURL", "");
+            }
+        }
+
+        _getValue(id) {
             return this._shadowRoot.getElementById(id).value;
         }
-        setValue(id, value) {
+        _setValue(id, value) {
             this._shadowRoot.getElementById(id).value = value;
         }
 
-        getBooleanValue(id) {
+        _getBooleanValue(id) {
             return this._shadowRoot.getElementById(id).checked;
         }
-        setBooleanValue(id, value) {
+        _setBooleanValue(id, value) {
             this._shadowRoot.getElementById(id).checked = value;
         }
 
@@ -677,7 +677,7 @@
             return [
                 "serverURL",
                 "licenseKey",
-                "oauth",
+                "filename",
 
                 "exportLanguage",
                 "screenWidth",
@@ -700,14 +700,13 @@
 
                 "publishMode",
                 "publishSync",
-                "filename",
                 "mailFrom",
                 "mailTo",
                 "mailSubject",
                 "mailBody",
 
-                "showTexts",
                 "showIcons",
+                "showTexts",
                 "showViewSelector",
                 "showComponentSelector",
                 "enablePpt",
@@ -716,7 +715,8 @@
                 "enableXls",
                 "enableCsv",
 
-                "metadata"
+                "metadata",
+                "oauth"
             ];
         }
 
