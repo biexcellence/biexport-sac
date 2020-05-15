@@ -1054,25 +1054,25 @@
                 this._export_settings.array_var = [];
             }
 
-            var lselected = [];
+            let selected = [];
             selectedWidgets.forEach(s => {
-                lselected.push({
+                selected.push({
                     component: s, isExclued: false
                 });
             });
 
-            var ltexts = [];
+            let texts = [];
             customTexts.forEach(s => {
-                ltexts.push(JSON.parse(s));
+                texts.push(JSON.parse(s));
             });
 
 
-            var lparameters = [];
+            let parameters = [];
             parameters.forEach(s => {
-                lparameters.push(JSON.parse(s));
+                parameters.push(JSON.parse(s));
             });
 
-            this._export_settings.array_var.push({ "index": index, "filename": filename, "template": template, "texts": ltexts, "parameters": lparameters, "selected": lselected, "applications": applicationIds.join(";") });
+            this._export_settings.array_var.push({ "index": index, "filename": filename, "template": template, "texts": texts, "parameters": parameters, "selected": selected, "applications": applicationIds.join(";") });
             this._updateSettings();
         }
         clearBriefingBookDefinitions() {

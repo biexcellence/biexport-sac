@@ -159,7 +159,7 @@
                 advanced: {
                     createLinkParameters: { type: "view", scope: "organization" } // anonymous
                 },
-                success: function (response) {
+                success: response => {
                     /* success handler */
 
                     //{
@@ -178,7 +178,7 @@
                     }));
 
                 },
-                cancel: function () {
+                cancel: () => {
                     /* cancel handler */
                     this.dispatchEvent(new CustomEvent("onSuccess", {
                         detail: {
@@ -187,7 +187,7 @@
                     }));
 
                 },
-                error: function (error) {
+                error: error => {
                     /* error handler */
                     this.dispatchEvent(new CustomEvent("onError", {
                         detail: {
