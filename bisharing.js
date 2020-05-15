@@ -153,7 +153,7 @@
             // "5711dfce-c17e-46d4-8ddb-e3d32839c7b3"
 
             var odOptions = {
-                clientId: this._connectParams[clientId],
+                clientId: this._connectParams["clientId"],
                 action: "share",
                 multiSelect: true,
                 advanced: {
@@ -251,7 +251,7 @@
             }));
 
 
-            var lupload = new sap.m.upload.UploadSet({
+            var lupload = new sap.m.UploadCollection({
                 height: "100%",
                 uploadUrl: settings.server_urls + "/upload.html",
                 name: "UploadSet", // .app
@@ -266,7 +266,7 @@
                         }
                     }));
                 },
-                uploadCompleted: () => {
+                uploadComplete: () => {
                     this._serviceMessage = oEvent.getParameter("item").getUrl();
                     this.dispatchEvent(new CustomEvent("onSuccess", {
                         detail: {

@@ -39,7 +39,7 @@
     "channel": {
       "type": "string",
       "description": "The sharing channel.",
-      "default": ""
+      "default": "SHAREPOINT"
     }
   },
   "methods": {
