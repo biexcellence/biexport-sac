@@ -1067,12 +1067,12 @@
             });
 
 
-            let parameters = [];
+            let params = [];
             parameters.forEach(s => {
-                parameters.push(JSON.parse(s));
+                params.push(JSON.parse(s));
             });
 
-            this._export_settings.array_var.push({ "index": index, "filename": filename, "template": template, "texts": texts, "parameters": parameters, "selected": selected, "applications": applicationIds.join(";") });
+            this._export_settings.array_var.push({ "index": index, "filename": filename, "template": template, "texts": texts, "parameters": params, "selected": selected, "applications": applicationIds.join(";") });
             this._updateSettings();
         }
         clearBriefingBookDefinitions() {
