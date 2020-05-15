@@ -165,20 +165,6 @@
             }));
         }
 
-        get sender() {
-            return this._getValue("sender");
-        }
-        set sender(value) {
-            this._setValue("sender", value);
-        }
-
-        get type() {
-            return this._getValue("type");
-        }
-        set type(value) {
-            this._setValue("type", value);
-        }
-
         get serverURL() {
             return this._getValue("serverURL");
         }
@@ -191,6 +177,20 @@
         }
         set licenseKey(value) {
             this._setValue("licenseKey", value);
+        }
+
+        get type() {
+            return this._getValue("type");
+        }
+        set type(value) {
+            this._setValue("type", value);
+        }
+
+        get sender() {
+            return this._getValue("sender");
+        }
+        set sender(value) {
+            this._setValue("sender", value);
         }
 
         _getValue(id) {

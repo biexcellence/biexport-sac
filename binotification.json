@@ -53,18 +53,33 @@
     }
   },
   "methods": {
-    "addCustomText": {
-      "description": "Add a Custom Text to replace a placeholder in the notification.",
+    "getServerUrl": {
+      "returnType": "string",
+      "description": "Get the Server URL",
+      "parameters": []
+    },
+    "setServerUrl": {
+      "description": "Set the Server URL",
       "parameters": [
-        {
-          "name": "name",
-          "type": "string",
-          "description": "The name of the placeholder."
-        },
         {
           "name": "value",
           "type": "string",
-          "description": "The text to be displayed for the placeholder."
+          "description": "The new Server URL"
+        }
+      ]
+    },
+    "getLicenseKey": {
+      "returnType": "string",
+      "description": "Get the License Key",
+      "parameters": []
+    },
+    "setLicenseKey": {
+      "description": "Set the License Key",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "description": "The new License Key"
         }
       ]
     },
@@ -98,44 +113,6 @@
         }
       ]
     },
-    "getServerUrl": {
-      "returnType": "string",
-      "description": "Get the Server URL",
-      "parameters": []
-    },
-    "setServerUrl": {
-      "description": "Set the Server URL",
-      "parameters": [
-        {
-          "name": "value",
-          "type": "string",
-          "description": "The new Server URL"
-        }
-      ]
-    },
-    "getServiceMessage": {
-      "returnType": "string",
-      "description": "Gets the Service Message",
-      "parameters": []
-    },
-    "getLicenseKey": {
-      "returnType": "string",
-      "description": "Get the License Key",
-      "parameters": []
-    },
-    "setLicenseKey": {
-      "description": "Set the License Key",
-      "parameters": [
-        {
-          "name": "value",
-          "type": "string",
-          "description": "The new License Key"
-        }
-      ]
-    },
-    "clearCustomTexts": {
-      "description": "Clears all Custom Texts."
-    },
     "getNotificationBody": {
       "returnType": "string",
       "description": "Get the Notification detail",
@@ -150,6 +127,29 @@
           "description": "The new notification detail"
         }
       ]
+    },
+    "addCustomText": {
+      "description": "Add a Custom Text to replace a placeholder in the notification.",
+      "parameters": [
+        {
+          "name": "name",
+          "type": "string",
+          "description": "The name of the placeholder."
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "description": "The text to be displayed for the placeholder."
+        }
+      ]
+    },
+    "clearCustomTexts": {
+      "description": "Clears all Custom Texts."
+    },
+    "getServiceMessage": {
+      "returnType": "string",
+      "description": "Gets the Service Message",
+      "parameters": []
     },
     "sendNotification": {
       "description": "Sends a notification.",
