@@ -67,7 +67,7 @@
             form.addEventListener("submit", this._submit.bind(this));
             form.addEventListener("change", this._change.bind(this));
 
-            // visible components
+            // notificationHtml
             let slotId = "notifcationHtml";
             let id = "notificationBody";
 
@@ -166,44 +166,44 @@
         }
 
         get sender() {
-            return this.getValue("sender");
+            return this._getValue("sender");
         }
         set sender(value) {
-            this.setValue("sender", value);
+            this._setValue("sender", value);
         }
 
         get type() {
-            return this.getValue("type");
+            return this._getValue("type");
         }
         set type(value) {
-            this.setValue("type", value);
+            this._setValue("type", value);
         }
 
         get serverURL() {
-            return this.getValue("serverURL");
+            return this._getValue("serverURL");
         }
         set serverURL(value) {
-            this.setValue("serverURL", value);
+            this._setValue("serverURL", value);
         }
 
         get licenseKey() {
-            return this.getValue("licenseKey");
+            return this._getValue("licenseKey");
         }
         set licenseKey(value) {
-            this.setValue("licenseKey", value);
+            this._setValue("licenseKey", value);
         }
 
-        getValue(id) {
+        _getValue(id) {
             return this._shadowRoot.getElementById(id).value;
         }
-        setValue(id, value) {
+        _setValue(id, value) {
             this._shadowRoot.getElementById(id).value = value;
         }
 
-        getBooleanValue(id) {
+        _getBooleanValue(id) {
             return this._shadowRoot.getElementById(id).checked;
         }
-        setBooleanValue(id, value) {
+        _setBooleanValue(id, value) {
             this._shadowRoot.getElementById(id).checked = value;
         }
 

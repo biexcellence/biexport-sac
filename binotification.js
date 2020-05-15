@@ -4,7 +4,6 @@
       <style>
       </style>
       <div id="notification_div" name="notification_div" class="openbihideonprint">
-         <slot name="notification_content"></slot>
          <form id="form" method="post" accept-charset="utf-8" action="">
             <input id="export_settings_json" name="bie_openbi_export_settings_json" type="hidden">
         </form>
@@ -67,18 +66,10 @@
         // SETTINGS
 
         getServerURL() {
-            return this._notification_settings.server_urls;
+            return this.serverURL;
         }
         setServerURL(value) {
-            this._notification_settings.server_urls = value;
-            this._updateSettings();
-            this.dispatchEvent(new CustomEvent("propertiesChanged", {
-                detail: {
-                    properties: {
-                        serverUrl: value
-                    }
-                }
-            }));
+            this._setValue("serverURL", value);
         }
 
         get serverURL() {
@@ -90,18 +81,10 @@
         }
 
         getLicenseKey() {
-            return this._notification_settings.license;
+            return this.licenseKey;
         }
         setLicenseKey(value) {
-            this._notification_settings.license = value;
-            this._updateSettings();
-            this.dispatchEvent(new CustomEvent("propertiesChanged", {
-                detail: {
-                    properties: {
-                        licenseKey: value
-                    }
-                }
-            }));
+            this._setValue("licenseKey", value);
         }
 
         get licenseKey() {
@@ -112,65 +95,11 @@
             this._updateSettings();
         }
 
-        getNotificationBody() {
-            return this._notification_settings.mail_body;
-        }
-        setNotificationBody(value) {
-            this._notification_settings.mail_body = value;
-            this._updateSettings();
-            this.dispatchEvent(new CustomEvent("propertiesChanged", {
-                detail: {
-                    properties: {
-                        notificationBody: value
-                    }
-                }
-            }));
-        }
-
-        get notificationBody() {
-            return this._notification_settings.mail_body;
-        }
-        set notificationBody(value) {
-            this._notification_settings.mail_body = value;
-            this._updateSettings();
-        }
-
-        getSender() {
-            return this._notification_settings.mail_from;
-        }
-        setSender(value) {
-            this._notification_settings.mail_from = value;
-            this._updateSettings();
-            this.dispatchEvent(new CustomEvent("propertiesChanged", {
-                detail: {
-                    properties: {
-                        sender: value
-                    }
-                }
-            }));
-        }
-
-        get sender() {
-            return this._notification_settings.mail_from;
-        }
-        set sender(value) {
-            this._notification_settings.mail_from = value;
-            this._updateSettings();
-        }
-
         getType() {
-            return this._notification_settings.publish_mode;
+            return this.type;
         }
         setType(value) {
-            this._notification_settings.publish_mode = value;
-            this._updateSettings();
-            this.dispatchEvent(new CustomEvent("propertiesChanged", {
-                detail: {
-                    properties: {
-                        type: value
-                    }
-                }
-            }));
+            this._setValue("type", value);
         }
 
         get type() {
@@ -181,10 +110,52 @@
             this._updateSettings();
         }
 
+        getSender() {
+            return this._notification_settings.mail_from;
+        }
+        setSender(value) {
+            this._setValue("sender", value);
+        }
+
+        get sender() {
+            return this._notification_settings.mail_from;
+        }
+        set sender(value) {
+            this._notification_settings.mail_from = value;
+            this._updateSettings();
+        }
+
+        getNotificationBody() {
+            return this.notificationBody;
+        }
+        setNotificationBody(value) {
+            this._setValue("notificationBody", value);
+        }
+
+        get notificationBody() {
+            return this._notification_settings.mail_body;
+        }
+        set notificationBody(value) {
+            this._notification_settings.mail_body = value;
+            this._updateSettings();
+        }
+
         // METHODS
 
         _updateSettings() {
             this.settings.value = JSON.stringify(this._notification_settings);
+        }
+
+        _setValue(name, value) {
+            this[name] = value;
+
+            let properties = {};
+            properties[name] = this[name];
+            this.dispatchEvent(new CustomEvent("propertiesChanged", {
+                detail: {
+                    properties: properties
+                }
+            }));
         }
 
         addCustomText(name, value) {
@@ -205,7 +176,6 @@
         }
 
         sendNotification(to, cc, subject) {
-
             let settings = JSON.parse(JSON.stringify(this._notification_settings));
 
             setTimeout(() => {
@@ -218,12 +188,10 @@
                 return false;
             }
 
-            let laddresses = [];
-            let laddress = {};
-            laddress.address = to.join(";");
-            laddress.mailcc = cc.join(";");
-            laddresses.push(laddress);
-            settings.mail_to = JSON.stringify(laddresses);
+            settings.mail_to = JSON.stringify([{
+                address: to.join(";"),
+                mailcc: cc.join(";")
+            }]);
 
             settings.mail_subject = subject;
 
