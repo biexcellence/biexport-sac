@@ -251,14 +251,9 @@
             }));
 
 
-            var lupload = new sap.m.UploadCollection({
-                height: "100%",
+            let lupload = new sap.m.UploadCollection({
                 uploadUrl: settings.server_urls + "/upload.html",
-                name: "UploadSet", // .app
                 instantUpload: true,
-                settings: {
-                    id: "UploadSet"
-                },
                 beforeUploadStarts: () => {
                     this.dispatchEvent(new CustomEvent("onSend", {
                         detail: {
@@ -284,7 +279,7 @@
                 }
             });
 
-            lupload.addHeaderField(new sap.ui.core.Item({ key: "bie_openbi_export_settings_json", value: JSON.stringify(settings) }));
+            lupload.addHeaderField(new sap.m.UploadCollectionParameter({ key: "bie_openbi_export_settings_json", value: JSON.stringify(settings) }));
 
             let ldialog = new sap.m.Dialog({
                 title: "Upload files",
