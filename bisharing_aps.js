@@ -91,38 +91,38 @@
             }));
         }
 
-        get channel() {
-            return this.getValue("channel");
-        }
-        set channel(value) {
-            this.setValue("channel", value);
-        }
-
         get serverURL() {
-            return this.getValue("serverURL");
+            return this._getValue("serverURL");
         }
         set serverURL(value) {
-            this.setValue("serverURL", value);
+            this._setValue("serverURL", value);
         }
 
         get licenseKey() {
-            return this.getValue("licenseKey");
+            return this._getValue("licenseKey");
         }
         set licenseKey(value) {
-            this.setValue("licenseKey", value);
+            this._setValue("licenseKey", value);
         }
 
-        getValue(id) {
+        get channel() {
+            return this._getValue("channel");
+        }
+        set channel(value) {
+            this._setValue("channel", value);
+        }
+
+        _getValue(id) {
             return this._shadowRoot.getElementById(id).value;
         }
-        setValue(id, value) {
+        _setValue(id, value) {
             this._shadowRoot.getElementById(id).value = value;
         }
 
-        getBooleanValue(id) {
+        _getBooleanValue(id) {
             return this._shadowRoot.getElementById(id).checked;
         }
-        setBooleanValue(id, value) {
+        _setBooleanValue(id, value) {
             this._shadowRoot.getElementById(id).checked = value;
         }
 

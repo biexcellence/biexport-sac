@@ -36,21 +36,56 @@
       "description": "The license key to be used for sending the notification (for usage tracking, usage limits, special smtp server configuration",
       "default": ""
     },
-    "type": {
+    "channel": {
       "type": "string",
-      "description": "The sharing type.",
+      "description": "The sharing channel.",
       "default": ""
     }
   },
   "methods": {
-    "selectToShare": {
-      "description": "Select a file from a channel to receive a sharing link.",
+    "getServerUrl": {
+      "returnType": "string",
+      "description": "Get the Server URL",
+      "parameters": []
+    },
+    "setServerUrl": {
+      "description": "Set the Server URL",
       "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "description": "The new Server URL"
+        }
       ]
     },
-    "uploadToShare": {
-      "description": "Upload a file to a channel to receive a sharing link.",
+    "getLicenseKey": {
+      "returnType": "string",
+      "description": "Get the License Key",
+      "parameters": []
+    },
+    "setLicenseKey": {
+      "description": "Set the License Key",
       "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "description": "The new License Key"
+        }
+      ]
+    },
+    "getChannel": {
+      "returnType": "string",
+      "description": "Get the Sharing Channel",
+      "parameters": []
+    },
+    "setChannel": {
+      "description": "Set the Sharing Channel",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "description": "The new Sharing Type"
+        }
       ]
     },
     "addConnectionParameter": {
@@ -68,64 +103,21 @@
         }
       ]
     },
-    "getType": {
-      "returnType": "string",
-      "description": "Get the Sharing Channel",
-      "parameters": [],
-      "body": "return this.channel;"
-    },
-    "setChannel": {
-      "description": "Set the Sharing Channel",
-      "parameters": [
-        {
-          "name": "value",
-          "type": "string",
-          "description": "The new Sharing Channel"
-        }
-      ],
-      "body": "this.channel = value;"
-    },
-    "getServerUrl": {
-      "returnType": "string",
-      "description": "Get the Server URL",
-      "parameters": [],
-      "body": "return this.serverURL;"
-    },
-    "setServerUrl": {
-      "description": "Set the Server URL",
-      "parameters": [
-        {
-          "name": "value",
-          "type": "string",
-          "description": "The new Server URL"
-        }
-      ],
-      "body": "this.serverURL = value;"
+    "clearConnectionParameters": {
+      "description": "Clears all Connection Parameters."
     },
     "getServiceMessage": {
       "returnType": "string",
       "description": "Gets the Service Message",
       "parameters": []
     },
-    "getLicenseKey": {
-      "returnType": "string",
-      "description": "Get the License Key",
-      "parameters": [],
-      "body": "return this.licenseKey;"
+    "selectToShare": {
+      "description": "Select a file from a channel to receive a sharing link.",
+      "parameters": []
     },
-    "setLicenseKey": {
-      "description": "Set the License Key",
-      "parameters": [
-        {
-          "name": "value",
-          "type": "string",
-          "description": "The new License Key"
-        }
-      ],
-      "body": "this.licenseKey = value;"
-    },
-    "clearConnectionParameters": {
-      "description": "Clears all Connection Parameters."
+    "uploadToShare": {
+      "description": "Upload a file to a channel to receive a sharing link.",
+      "parameters": []
     }
   },
   "events": {

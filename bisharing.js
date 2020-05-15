@@ -4,7 +4,6 @@
       <style>
       </style>
       <div id="sharing_div" name="sharing_div" class="openbihideonprint">
-         <slot name="sharing_content"></slot>
          <form id="form" method="post" accept-charset="utf-8" action="">
             <input id="export_settings_json" name="bie_openbi_export_settings_json" type="hidden">
         </form>
@@ -70,6 +69,13 @@
 
         // SETTINGS
 
+        getServerURL() {
+            return this.serverURL;
+        }
+        setServerURL(value) {
+            this._setValue("serverURL", value);
+        }
+
         get serverURL() {
             return this._sharing_settings.server_urls;
         }
@@ -78,12 +84,26 @@
             this._updateSettings();
         }
 
+        getLicenseKey() {
+            return this.licenseKey;
+        }
+        setLicenseKey(value) {
+            this._setValue("licenseKey", value);
+        }
+
         get licenseKey() {
             return this._sharing_settings.license;
         }
         set licenseKey(value) {
             this._sharing_settings.license = value;
             this._updateSettings();
+        }
+
+        getChannel() {
+            return this.channel;
+        }
+        setChannel(value) {
+            this._setValue("channel", value);
         }
 
         get channel() {
@@ -99,8 +119,20 @@
             this.settings.value = JSON.stringify(this._sharing_settings);
         }
 
+        _setValue(name, value) {
+            this[name] = value;
+
+            let properties = {};
+            properties[name] = this[name];
+            this.dispatchEvent(new CustomEvent("propertiesChanged", {
+                detail: {
+                    properties: properties
+                }
+            }));
+        }
+
         addConnectionParameter(name, value) {
-            this._connectParams[name] = value;            
+            this._connectParams[name] = value;
             this._sharing_settings.publish_mode = this._channel + "[" + JSON.stringify(this._connectParams) + "]";
             this._updateSettings();
         }
@@ -115,60 +147,60 @@
             return this._serviceMessage;
         }
 
-       selectToShare() {
+        selectToShare() {
 
-           // https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_createlink?view=odsp-graph-online
-           // "5711dfce-c17e-46d4-8ddb-e3d32839c7b3"
+            // https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_createlink?view=odsp-graph-online
+            // "5711dfce-c17e-46d4-8ddb-e3d32839c7b3"
 
-           var odOptions = {
-               clientId: this._connectParams[clientId],
-               action: "share",
-               multiSelect: true,
-               advanced: {
-                   createLinkParameters: { type: "view", scope: "organization" } // anonymous
-               },
-               success: function (response) {
-                   /* success handler */
+            var odOptions = {
+                clientId: this._connectParams[clientId],
+                action: "share",
+                multiSelect: true,
+                advanced: {
+                    createLinkParameters: { type: "view", scope: "organization" } // anonymous
+                },
+                success: function (response) {
+                    /* success handler */
 
-                   //{
-                   //  "value": [
-                   //    {
-                   //      "@microsoft.graph.downloadUrl": "https://contoso-my.sharepoint.com/download.aspx?guid=1231231231a",
-                   //      "webUrl": "https://cotoso-my.sharepoint.com/personal/user_contoso_com/documents/document1.docx",
-                   //    }
-                   //  ],
-                   //}
-                   this._serviceMessage = response.value[0].webUrl;
-                   this.dispatchEvent(new CustomEvent("onSuccess", {
-                       detail: {
-                           settings: settings
-                       }
-                   }));
+                    //{
+                    //  "value": [
+                    //    {
+                    //      "@microsoft.graph.downloadUrl": "https://contoso-my.sharepoint.com/download.aspx?guid=1231231231a",
+                    //      "webUrl": "https://cotoso-my.sharepoint.com/personal/user_contoso_com/documents/document1.docx",
+                    //    }
+                    //  ],
+                    //}
+                    this._serviceMessage = response.value[0].webUrl;
+                    this.dispatchEvent(new CustomEvent("onSuccess", {
+                        detail: {
+                            settings: settings
+                        }
+                    }));
 
-               },
-               cancel: function () {
-                   /* cancel handler */
-                   this.dispatchEvent(new CustomEvent("onSuccess", {
-                       detail: {
-                           settings: settings
-                       }
-                   }));
+                },
+                cancel: function () {
+                    /* cancel handler */
+                    this.dispatchEvent(new CustomEvent("onSuccess", {
+                        detail: {
+                            settings: settings
+                        }
+                    }));
 
-               },
-               error: function (error) {
-                   /* error handler */
-                   this.dispatchEvent(new CustomEvent("onError", {
-                       detail: {
-                           settings: settings
-                       }
-                   }));
+                },
+                error: function (error) {
+                    /* error handler */
+                    this.dispatchEvent(new CustomEvent("onError", {
+                        detail: {
+                            settings: settings
+                        }
+                    }));
 
-               }
-           };
+                }
+            };
 
-           OneDrive.open(odOptions);
+            OneDrive.open(odOptions);
 
-    }
+        }
 
 
         uploadToShare() {
