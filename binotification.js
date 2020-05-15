@@ -65,10 +65,10 @@
 
         // SETTINGS
 
-        getServerURL() {
+        getServerUrl() {
             return this.serverURL;
         }
-        setServerURL(value) {
+        setServerUrl(value) {
             this._setValue("serverURL", value);
         }
 
