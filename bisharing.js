@@ -152,14 +152,14 @@
             // https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_createlink?view=odsp-graph-online
             // "5711dfce-c17e-46d4-8ddb-e3d32839c7b3"
 
-            var odOptions = {
+            let odOptions = {
                 clientId: this._connectParams[clientId],
                 action: "share",
                 multiSelect: true,
                 advanced: {
                     createLinkParameters: { type: "view", scope: "organization" } // anonymous
                 },
-                success: function (response) {
+                success: response => {
                     /* success handler */
 
                     //{
@@ -178,7 +178,7 @@
                     }));
 
                 },
-                cancel: function () {
+                cancel: () => {
                     /* cancel handler */
                     this.dispatchEvent(new CustomEvent("onSuccess", {
                         detail: {
@@ -187,7 +187,7 @@
                     }));
 
                 },
-                error: function (error) {
+                error: error => {
                     /* error handler */
                     this.dispatchEvent(new CustomEvent("onError", {
                         detail: {
@@ -251,7 +251,7 @@
             }));
 
 
-            var lupload = new sap.m.upload.UploadSet({
+            let lupload = new sap.m.upload.UploadSet({
                 height: "100%",
                 uploadUrl: settings.server_urls + "/upload.html",
                 name: "UploadSet", // .app
