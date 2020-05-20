@@ -281,7 +281,7 @@
         //    }
         );
 
-            lupload.addHeaderField(new sap.m.UploadCollectionParameter({ name: "bie_openbi_export_settings_json", value: JSON.stringify(settings) }));
+            lupload.addHeaderParameter(new sap.m.UploadCollectionParameter({ name: "bie_openbi_export_settings_json", value: JSON.stringify(settings) }));
 
             let ldialog = new sap.m.Dialog({
                 title: "Upload files",
