@@ -251,33 +251,35 @@
             }));
 
 
-            let lupload = new sap.m.UploadCollection({
-                uploadUrl: settings.server_urls + "/upload.html",
-                instantUpload: true,
-                beforeUploadStarts: () => {
-                    this.dispatchEvent(new CustomEvent("onSend", {
-                        detail: {
-                            settings: settings
-                        }
-                    }));
-                },
-                uploadComplete: () => {
-                    this._serviceMessage = oEvent.getParameter("item").getUrl();
-                    this.dispatchEvent(new CustomEvent("onSuccess", {
-                        detail: {
-                            settings: settings
-                        }
-                    }));
+            let lupload = new sap.m.UploadCollection(
+                //{
+//                uploadUrl: settings.server_urls + "/upload.html",
+//                instantUpload: true,
+//                beforeUploadStarts: () => {
+//                    this.dispatchEvent(new CustomEvent("onSend", {
+//                        detail: {
+//                            settings: settings
+//                        }
+//                    }));
+//                },
+//                uploadComplete: () => {
+//                    this._serviceMessage = oEvent.getParameter("item").getUrl();
+//                    this.dispatchEvent(new CustomEvent("onSuccess", {
+//                        detail: {
+//                            settings: settings
+//                        }
+//                    }));
                     //this.dispatchEvent(new CustomEvent("onError", {
                     //    detail: {
                     //        settings: settings
                     //    }
                     //}));
 
-                },
-                uploadTerminated: () => {
-                }
-            });
+//                },
+ //               uploadTerminated: () => {
+//                }
+        //    }
+        );
 
             lupload.addHeaderField(new sap.m.UploadCollectionParameter({ name: "bie_openbi_export_settings_json", value: JSON.stringify(settings) }));
 
