@@ -248,7 +248,9 @@
                 {
                 uploadUrl: settings.server_urls + "/upload.html",
 //                instantUpload: true,
-                beforeUploadStarts: () => {
+                    beforeUploadStarts: event => {
+                        event.getParasmeters().addHeaderParameter(new sap.m.UploadCollectionParameter({ name: "bie_openbi_export_settings_json", value: JSON.stringify(settings) }));
+
                     this.dispatchEvent(new CustomEvent("onSend", {
                         detail: {
                             settings: settings
@@ -273,8 +275,6 @@
                 }
             }
         );
-
-            lupload.addHeaderParameter(new sap.m.UploadCollectionParameter({ name: "bie_openbi_export_settings_json", value: JSON.stringify(settings) }));
 
             let ldialog = new sap.m.Dialog({
                 title: "Upload files",
