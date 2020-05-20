@@ -249,7 +249,7 @@
                 uploadUrl: settings.server_urls + "/upload.html",
 //                instantUpload: true,
                     beforeUploadStarts: event => {
-                        event.getParasmeters().addHeaderParameter(new sap.m.UploadCollectionParameter({ name: "bie_openbi_export_settings_json", value: JSON.stringify(settings) }));
+                        event.getParameters().addHeaderParameter(new sap.m.UploadCollectionParameter({ name: "bie_openbi_export_settings_json", value: JSON.stringify(settings) }));
 
                     this.dispatchEvent(new CustomEvent("onSend", {
                         detail: {
