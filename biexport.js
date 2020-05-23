@@ -283,6 +283,15 @@
                                 this["_initialVisibleComponents" + oItem.getKey()] = this[oItem.getKey().toLowerCase() + "SelectedWidgets"] ? JSON.parse(this[oItem.getKey().toLowerCase() + "SelectedWidgets"]) : [];
                             }
 
+                            if (this["_initialVisibleComponents" + oItem.getKey()].length == 0) {
+                                for (let componentId in components) {
+                                    let component = components[componentId];
+                                    var lcomp = {};
+                                    lcomp.name = component.name;
+                                    lcomp.isExcluded = false;
+                                    this["_initialVisibleComponents" + oItem.getKey()].push(lcomp);
+                                }
+                            }
                             for (let componentId in components) {
                                 let component = components[componentId];
 
