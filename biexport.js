@@ -284,7 +284,7 @@
                             }
 
                             if (this["_initialVisibleComponents" + oItem.getKey()].length == 0) {
-                                linitial = [];
+                                let linitial = [];
                                 for (let componentId in components) {
                                     let component = components[componentId];
                                     var lcomp = {};
