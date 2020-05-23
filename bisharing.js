@@ -150,6 +150,7 @@
         selectToShare() {
 
             window.addEventListener("message", function (event) {
+                if (event.bisharing !== null) {
                 debugger;
                 console.log(event.data);
                     this._serviceMessage = response.value[0].webUrl;
@@ -158,6 +159,7 @@
                             settings: settings
                         }
                     }));
+                }
             });
 
             var liframe = document.createElement("iframe");
