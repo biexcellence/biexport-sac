@@ -58,7 +58,7 @@
 
             this._updateSettings();
 
-            $.getScript("https://js.live.net/v7.2/OneDrive.js");
+            // $.getScript("https://js.live.net/v7.2/OneDrive.js");
         }
 
         onCustomWidgetBeforeUpdate(changedProperties) {
@@ -149,53 +149,71 @@
 
         selectToShare() {
 
-            // https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_createlink?view=odsp-graph-online
-            // "5711dfce-c17e-46d4-8ddb-e3d32839c7b3"
-
-            var odOptions = {
-                clientId: this._connectParams["clientId"],
-                action: "share",
-                multiSelect: true,
-                advanced: {
-                    createLinkParameters: { type: "view", scope: "organization" } // anonymous
-                },
-                success: response => {
-                    /* success handler */
-
-                    //{
-                    //  "value": [
-                    //    {
-                    //      "@microsoft.graph.downloadUrl": "https://contoso-my.sharepoint.com/download.aspx?guid=1231231231a",
-                    //      "webUrl": "https://cotoso-my.sharepoint.com/personal/user_contoso_com/documents/document1.docx",
-                    //    }
-                    //  ],
-                    //}
+            window.addEventListener("message", function (event) {
+                debugger;
+                console.log(event.data);
                     this._serviceMessage = response.value[0].webUrl;
                     this.dispatchEvent(new CustomEvent("onSuccess", {
                         detail: {
                             settings: settings
                         }
                     }));
+            });
 
-                },
-                cancel: () => {
-                    /* cancel handler */
-                    this.dispatchEvent(new CustomEvent("onSuccess", {
-                        detail: {
-                            settings: settings
-                        }
-                    }));
+            var liframe = document.createElement("iframe");
+            liframe.setAttribute('id', this._id + "_sharing_iframe");
+            liframe.setAttribute('name', "sharing_iframe");
+            liframe.setAttribute('style', "display:none;");
+            liframe.setAttribute('src', settings.server_urls + "/export_resources/bisharing.html?clientId=" + this._connectParams["clientId"]);
+            this._shadowRoot.appendChild(liframe);
 
-                },
-                error: error => {
-                    /* error handler */
-                    this.dispatchEvent(new CustomEvent("onError", {
-                        detail: {
-                            settings: settings
-                        }
-                    }));
+            // https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_createlink?view=odsp-graph-online
+            // "5711dfce-c17e-46d4-8ddb-e3d32839c7b3"
 
-                }
+            //var odOptions = {
+            //    clientId: this._connectParams["clientId"],
+            //    action: "share",
+            //    multiSelect: true,
+            //    advanced: {
+            //        createLinkParameters: { type: "view", scope: "organization" } // anonymous
+            //    },
+            //    success: response => {
+            //        /* success handler */
+
+            //        //{
+            //        //  "value": [
+            //        //    {
+            //        //      "@microsoft.graph.downloadUrl": "https://contoso-my.sharepoint.com/download.aspx?guid=1231231231a",
+            //        //      "webUrl": "https://cotoso-my.sharepoint.com/personal/user_contoso_com/documents/document1.docx",
+            //        //    }
+            //        //  ],
+            //        //}
+            //        this._serviceMessage = response.value[0].webUrl;
+            //        this.dispatchEvent(new CustomEvent("onSuccess", {
+            //            detail: {
+            //                settings: settings
+            //            }
+            //        }));
+
+            //    },
+            //    cancel: () => {
+            //        /* cancel handler */
+            //        this.dispatchEvent(new CustomEvent("onSuccess", {
+            //            detail: {
+            //                settings: settings
+            //            }
+            //        }));
+
+            //    },
+            //    error: error => {
+            //        /* error handler */
+            //        this.dispatchEvent(new CustomEvent("onError", {
+            //            detail: {
+            //                settings: settings
+            //            }
+            //        }));
+
+            //    }
             };
 
             OneDrive.open(odOptions);
@@ -248,9 +266,8 @@
             let lupload = new sap.m.UploadCollection(
                 {
                 uploadUrl: settings.server_urls + "/upload.html",
-//                instantUpload: true,
-                    beforeUploadStarts: event => {
-                        event.getParameters().addHeaderParameter(new sap.m.UploadCollectionParameter({ name: "bie_openbi_export_settings_json", value: JSON.stringify(this._sharing_settings) }));
+                beforeUploadStarts: event => {
+                    event.getParameters().addHeaderParameter(new sap.m.UploadCollectionParameter({ name: "bie_openbi_export_settings_json", value: JSON.stringify(this._sharing_settings) }));
 
                     this.dispatchEvent(new CustomEvent("onSend", {
                         detail: {
