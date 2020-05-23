@@ -214,12 +214,11 @@
             //        }));
 
             //    }
-            };
+            //};
 
-            OneDrive.open(odOptions);
+            // OneDrive.open(odOptions);
 
         }
-
 
         uploadToShare() {
             let settings = JSON.parse(JSON.stringify(this._sharing_settings));
