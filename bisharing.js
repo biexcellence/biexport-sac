@@ -268,7 +268,7 @@
                 {
                 uploadUrl: settings.server_urls + "/upload.html",
                 beforeUploadStarts: event => {
-                    event.getParameters().addHeaderParameter(new sap.m.UploadCollectionParameter({ name: "bie_openbi_export_settings_json", value: JSON.stringify(this._sharing_settings) }));
+                    event.getParameters().addHeaderParameter(new sap.m.UploadCollectionParameter({ name: "bie_openbi_sharing_settings_json", value: "Test" }));
 
                     this.dispatchEvent(new CustomEvent("onSend", {
                         detail: {
@@ -295,7 +295,7 @@
             }
         );
 
-        lupload.addParameter(new sap.m.UploadCollectionParameter({ name: "bie_openbi_export_settings_json", value: JSON.stringify(this._sharing_settings) }));
+            lupload.addParameter(new sap.m.UploadCollectionParameter({ name: "bie_openbi_export_settings_json", value: "Test" })); //JSON.stringify(this._sharing_settings)
 
             let ldialog = new sap.m.Dialog({
                 title: "Upload files",
