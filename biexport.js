@@ -288,7 +288,7 @@
                                 for (let componentId in components) {
                                     let component = components[componentId];
                                     var lcomp = {};
-                                    lcomp.name = component.name;
+                                    lcomp.component = component.name;
                                     lcomp.isExcluded = false;
                                     linitial.push(lcomp);
                                 }
