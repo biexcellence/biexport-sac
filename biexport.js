@@ -294,8 +294,6 @@
                                 }
                                 this[oItem.getKey().toLowerCase() + "SelectedWidgets"] = JSON.stringify(linitial);
                             }
-
-
                             for (let componentId in components) {
                                 let component = components[componentId];
 
@@ -520,6 +518,13 @@
 
         // DISPLAY
 
+        getButtonIconVisible() {
+            return this.showIcons;
+        }
+        setButtonIconVisible(value) {
+            this._setValue("showIcons", value);
+        }
+
         get showIcons() {
             return this._showIcons;
         }
@@ -527,18 +532,11 @@
             this._showIcons = value;
         }
 
-        get showViewSelector() {
-            return this._showViewSelector;
+        getButtonTextVisible() {
+            return this.showTexts;
         }
-        set showViewSelector(value) {
-            this._showViewSelector = value;
-        }
-
-        get showComponentSelector() {
-            return this._showComponentSelector;
-        }
-        set showComponentSelector(value) {
-            this._showComponentSelector = value;
+        setButtonTextVisible(value) {
+            this._setValue("showTexts", value);
         }
 
         get showTexts() {
@@ -548,11 +546,67 @@
             this._showTexts = value;
         }
 
+        getViewSelectorVisible() {
+            return this.showViewSelector;
+        }
+        setViewSelectorVisible(value) {
+            this._setValue("showViewSelector", value);
+        }
+
+        get showViewSelector() {
+            return this._showViewSelector;
+        }
+        set showViewSelector(value) {
+            this._showViewSelector = value;
+        }
+
+        getWidgetSelectorVisible() {
+            return this.showComponentSelector;
+        }
+        setWidgetSelectorVisible(value) {
+            this._setValue("showComponentSelector", value);
+        }
+
+        get showComponentSelector() {
+            return this._showComponentSelector;
+        }
+        set showComponentSelector(value) {
+            this._showComponentSelector = value;
+        }
+
+        getPdfButtonVisible() {
+            return this.enablePdf;
+        }
+        setPdfButtonVisible(value) {
+            this._setValue("enablePdf", value);
+        }
+
+        get enablePdf() {
+            return this._enablePDF;
+        }
+        set enablePdf(value) {
+            this._enablePDF = value;
+        }
+
+        getPptButtonVisible() {
+            return this.enablePpt;
+        }
+        setPptButtonVisible(value) {
+            this._setValue("enablePpt", value);
+        }
+
         get enablePpt() {
             return this._enablePPT;
         }
         set enablePpt(value) {
             this._enablePPT = value;
+        }
+
+        getDocButtonVisible() {
+            return this.enableDoc;
+        }
+        setDocButtonVisible(value) {
+            this._setValue("enableDoc", value);
         }
 
         get enableDoc() {
@@ -562,6 +616,13 @@
             this._enableDOC = value;
         }
 
+        getXlsButtonVisible() {
+            return this.enableXls;
+        }
+        setXlsButtonVisible(value) {
+            this._setValue("enableXls", value);
+        }
+
         get enableXls() {
             return this._enableXLS;
         }
@@ -569,11 +630,11 @@
             this._enableXLS = value;
         }
 
-        get enablePdf() {
-            return this._enablePDF;
+        getCsvButtonVisible() {
+            return this.enableCsv;
         }
-        set enablePdf(value) {
-            this._enablePDF = value;
+        setCsvButtonVisible(value) {
+            this._setValue("enableCsv", value);
         }
 
         get enableCsv() {
@@ -586,12 +647,26 @@
 
         // SETTINGS
 
+        getServerUrl() {
+            return this.serverURL;
+        }
+        setServerUrl(value) {
+            this._setValue("serverURL", value);
+        }
+
         get serverURL() {
             return this._export_settings.server_urls;
         }
         set serverURL(value) {
             this._export_settings.server_urls = value;
             this._updateSettings();
+        }
+
+        getLicenseKey() {
+            return this.licenseKey;
+        }
+        setLicenseKey(value) {
+            this._setValue("licenseKey", value);
         }
 
         get licenseKey() {
@@ -602,12 +677,11 @@
             this._updateSettings();
         }
 
-        get oauth() {
-            return this._export_settings.oauth;
+        getFilename() {
+            return this.filename;
         }
-        set oauth(value) {
-            this._export_settings.oauth = value;
-            this._updateSettings();
+        setFilename(value) {
+            this._setValue("filename", value);
         }
 
         get filename() {
@@ -618,12 +692,26 @@
             this._updateSettings();
         }
 
+        getExportLanguage() {
+            return this.exportLanguage;
+        }
+        setExportLanguage(value) {
+            this._setValue("exportLanguage", value);
+        }
+
         get exportLanguage() {
             return this._export_settings.lng;
         }
         set exportLanguage(value) {
             this._export_settings.lng = value;
             this._updateSettings();
+        }
+
+        getStaticWidth() {
+            return this.screenWidth;
+        }
+        setStaticWidth(value) {
+            this._setValue("screenWidth", value);
         }
 
         get screenWidth() {
@@ -634,12 +722,26 @@
             this._updateSettings();
         }
 
+        getStaticHeight() {
+            return this.screenHeight;
+        }
+        setStaticHeight(value) {
+            this._setValue("screenHeight", value);
+        }
+
         get screenHeight() {
             return this._export_settings.fixed_height;
         }
         set screenHeight(value) {
             this._export_settings.fixed_height = value;
             this._updateSettings();
+        }
+
+        getParseCss() {
+            return this.parseCss;
+        }
+        setParseCss(value) {
+            this._setValue("parseCss", value);
         }
 
         get parseCss() {
@@ -650,12 +752,26 @@
             this._updateSettings();
         }
 
+        getBiAnalyticsDocument() {
+            return this.biAnalyticsDocument;
+        }
+        setBiAnalyticsDocument(value) {
+            this._setValue("biAnalyticsDocument", value);
+        }
+
         get biAnalyticsDocument() {
             return this._export_settings.bianalytics;
         }
         set biAnalyticsDocument(value) {
             this._export_settings.bianalytics = value;
             this._updateSettings();
+        }
+
+        getPptSeparateSlides() {
+            return this.pptSeparate;
+        }
+        setPptSeparateSlides(value) {
+            this._setValue("pptSeparate", value);
         }
 
         get pptSeparate() {
@@ -666,12 +782,26 @@
             this._updateSettings();
         }
 
+        getPdfTemplate() {
+            return this.pdfTemplate;
+        }
+        setPdfTemplate(value) {
+            this._setValue("pdfTemplate", value);
+        }
+
         get pdfTemplate() {
             return this._export_settings.pdf_template;
         }
         set pdfTemplate(value) {
             this._export_settings.pdf_template = value;
             this._updateSettings();
+        }
+
+        getPptTemplate() {
+            return this.pptTemplate;
+        }
+        setPptTemplate(value) {
+            this._setValue("pptTemplate", value);
         }
 
         get pptTemplate() {
@@ -682,12 +812,26 @@
             this._updateSettings();
         }
 
+        getDocTemplate() {
+            return this.docTemplate;
+        }
+        setDocTemplate(value) {
+            this._setValue("docTemplate", value);
+        }
+
         get docTemplate() {
             return this._export_settings.doc_template;
         }
         set docTemplate(value) {
             this._export_settings.doc_template = value;
             this._updateSettings();
+        }
+
+        getXlsTemplate() {
+            return this.xlsTemplate;
+        }
+        setXlsTemplate(value) {
+            this._setValue("xlsTemplate", value);
         }
 
         get xlsTemplate() {
@@ -730,12 +874,26 @@
             this._updateSettings();
         }
 
+        getPublishMode() {
+            return this.publishMode;
+        }
+        setPublishMode(value) {
+            this._setValue("publishMode", value);
+        }
+
         get publishMode() {
             return this._export_settings.publish_mode;
         }
         set publishMode(value) {
             this._export_settings.publish_mode = value;
             this._updateSettings();
+        }
+
+        getPublishSync() {
+            return this.publishSync;
+        }
+        setPublishSync(value) {
+            this._setValue("publishSync", value);
         }
 
         get publishSync() {
@@ -746,12 +904,26 @@
             this._updateSettings();
         }
 
+        getMailFrom() {
+            return this.mailFrom;
+        }
+        setMailFrom(value) {
+            this._setValue("mailFrom", value);
+        }
+
         get mailFrom() {
             return this._export_settings.mail_from;
         }
         set mailFrom(value) {
             this._export_settings.mail_from = value;
             this._updateSettings();
+        }
+
+        getMailTo() {
+            return this.mailTo;
+        }
+        setMailTo(value) {
+            this._setValue("mailTo", value);
         }
 
         get mailTo() {
@@ -762,12 +934,26 @@
             this._updateSettings();
         }
 
+        getMailSubject() {
+            return this.mailSubject;
+        }
+        setMailSubject(value) {
+            this._setValue("mailSubject", value);
+        }
+
         get mailSubject() {
             return this._export_settings.mail_subject;
         }
         set mailSubject(value) {
             this._export_settings.mail_subject = value;
             this._updateSettings();
+        }
+
+        getMailBody() {
+            return this.mailBody;
+        }
+        setMailBody(value) {
+            this._setValue("mailBody", value);
         }
 
         get mailBody() {
@@ -786,6 +972,14 @@
             this._updateSettings();
         }
 
+        get oauth() {
+            return this._export_settings.oauth;
+        }
+        set oauth(value) {
+            this._export_settings.oauth = value;
+            this._updateSettings();
+        }
+
         static get observedAttributes() {
             return [
                 "metadata"
@@ -796,6 +990,18 @@
 
         _updateSettings() {
             this.settings.value = JSON.stringify(this._export_settings);
+        }
+
+        _setValue(name, value) {
+            this[name] = value;
+
+            let properties = {};
+            properties[name] = this[name];
+            this.dispatchEvent(new CustomEvent("propertiesChanged", {
+                detail: {
+                    properties: properties
+                }
+            }));
         }
 
         addCustomText(name, value) {
@@ -818,18 +1024,16 @@
             this._export_settings[format.toLowerCase() + "_exclude"] = JSON.stringify(current);
             this._updateSettings();
         }
-
         clearSelectedWidgets(format) {
             this._export_settings[format.toLowerCase() + "_exclude"] = "";
             this._updateSettings();
         }
 
         getExportTemplate(format) {
-            return this._export_settings[format.toLowerCase() + "_template"];
+            return this["get" + format[0].toUpperCase() + format.substring(1).toLowerCase() + "Template"]();
         }
         setExportTemplate(format, value) {
-            this._export_settings[format.toLowerCase() + "_template"] = value;
-            this._updateSettings();
+            this["set" + format[0].toUpperCase() + format.substring(1).toLowerCase() + "Template"](value);
         }
 
         addExportApplication(id) {
@@ -851,39 +1055,37 @@
             this._export_settings.array_var.push({ "parameter": name, "values": values.join(";"), "iterative": iterative, "applications": applicationIds.join(";") });
             this._updateSettings();
         }
+        clearURLParameters() {
+            this._export_settings.array_var = "";
+            this._updateSettings();
+        }
 
         addBriefingBookDefinition(parameters, index, filename, template, customTexts, selectedWidgets, applicationIds) {
             if (!this._export_settings.array_var) {
                 this._export_settings.array_var = [];
             }
 
-            var lselected = [];
+            let selected = [];
             selectedWidgets.forEach(s => {
-                lselected.push({
+                selected.push({
                     component: s, isExclued: false
                 });
             });
 
-            var ltexts = [];
+            let texts = [];
             customTexts.forEach(s => {
-                ltexts.push(JSON.parse(s));
+                texts.push(JSON.parse(s));
             });
 
 
-            var lparameters = [];
+            let params = [];
             parameters.forEach(s => {
-                lparameters.push(JSON.parse(s));
+                params.push(JSON.parse(s));
             });
 
-            this._export_settings.array_var.push({ "index": index, "filename": filename, "template": template, "texts": ltexts, "parameters": lparameters, "selected": lselected, "applications": applicationIds.join(";") });
+            this._export_settings.array_var.push({ "index": index, "filename": filename, "template": template, "texts": texts, "parameters": params, "selected": selected, "applications": applicationIds.join(";") });
             this._updateSettings();
         }
-
-        clearURLParameters() {
-            this._export_settings.array_var = "";
-            this._updateSettings();
-        }
-
         clearBriefingBookDefinitions() {
             this._export_settings.array_var = "";
             this._updateSettings();
@@ -1207,7 +1409,7 @@
                         if (sheet.href) { // download external stylesheets
                             name = "style";
                             attributes = { "type": "text/css" };
-                            content = fetch(sheet.href).then(response => response.text()).then(t => {
+                            content = fetch(sheet.href).then(r => r.text()).then(t => {
                                 let style = document.createElement("style");
                                 style.type = "text/css";
                                 style.appendChild(document.createTextNode(t));
