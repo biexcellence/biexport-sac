@@ -156,7 +156,7 @@
                     this._serviceMessage = response.value[0].webUrl;
                     this.dispatchEvent(new CustomEvent("onSuccess", {
                         detail: {
-                            settings: settings
+                            settings: this._sharing_settings
                         }
                     }));
                 }
@@ -166,7 +166,7 @@
             liframe.setAttribute('id', this._id + "_sharing_iframe");
             liframe.setAttribute('name', "sharing_iframe");
             liframe.setAttribute('style', "display:none;");
-            liframe.setAttribute('src', settings.server_urls + "/export_resources/bisharing.html?clientId=" + this._connectParams["clientId"]);
+            liframe.setAttribute('src', this._sharing_settings.server_urls + "/export_resources/bisharing.html?clientId=" + this._connectParams["clientId"]);
             this._shadowRoot.appendChild(liframe);
 
             // https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_createlink?view=odsp-graph-online
@@ -263,7 +263,6 @@
                 }
             }
 
-            this._sharing_settings = settings;
             let lupload = new sap.m.UploadCollection(
                 {
                 uploadUrl: settings.server_urls + "/upload.html",
