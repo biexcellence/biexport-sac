@@ -149,16 +149,16 @@
 
         selectToShare() {
             this._serviceMessage = "";
+            this.dispatchEvent(new CustomEvent("onSend", {
+                detail: {
+                    settings: this._sharing_settings
+                }
+            }));
 
-            window.addEventListener("message", function (event) {
+            window.addEventListener("message", event => {
                 if (event.data.bisharing != null) {
 
                     if (event.data.success) {
-                        this.dispatchEvent(new CustomEvent("onSend", {
-                            detail: {
-                                settings: this._sharing_settings
-                            }
-                        }));
                         this._serviceMessage = event.data.value[0].webUrl;
                         this.dispatchEvent(new CustomEvent("onSuccess", {
                             detail: {
@@ -299,7 +299,7 @@
                                 this._serviceMessage = this._serviceMessage.split("</script>")[1]
                             }
 
-                            if (this._serviceMessage.indexOf("I:") > 0) {
+                            if (this._serviceMessage.indexOf("I:") > -1) {
                                 this._serviceMessage = this._serviceMessage.replace("I:", "");
 
                                 this.dispatchEvent(new CustomEvent("onSuccess", {
