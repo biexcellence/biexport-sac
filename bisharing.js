@@ -148,17 +148,17 @@
         }
 
         selectToShare() {
-
-            this.dispatchEvent(new CustomEvent("onSend", {
-                detail: {
-                    settings: this._sharing_settings
-                }
-            }));
+            this._serviceMessage = "";
 
             window.addEventListener("message", function (event) {
                 if (event.data.bisharing != null) {
 
                     if (event.data.success) {
+                        this.dispatchEvent(new CustomEvent("onSend", {
+                            detail: {
+                                settings: this._sharing_settings
+                            }
+                        }));
                         this._serviceMessage = event.data.value[0].webUrl;
                         this.dispatchEvent(new CustomEvent("onSuccess", {
                             detail: {
@@ -296,7 +296,7 @@
                         if (event.getParameters().mParameters.status == "200") {
                             this._serviceMessage = event.getParameters().mParameters.responseRaw;
                             if (this._serviceMessage.indexOf("</script>") > 0) {
-                                this._serviceMessage = this._serviceMessage.split("</script>")(1)
+                                this._serviceMessage = this._serviceMessage.split("</script>")[1]
                             }
 
                             if (this._serviceMessage.indexOf("I:") > 0) {
