@@ -34,7 +34,7 @@
                 window.removeEventListener("message", this.onMessage);
 
             }
-        });
+        }
 
         constructor() {
             super();
