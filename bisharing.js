@@ -268,6 +268,7 @@
                 uploadUrl: settings.server_urls + "/upload.html",
                 beforeUploadStarts: event => {
                     event.getParameters().addHeaderParameter(new sap.m.UploadCollectionParameter({ name: "bie_openbi_sharing_settings_json", value: encodeURIComponent(JSON.stringify(settings))}));
+                    event.getParameters().addHeaderParameter(new sap.m.UploadCollectionParameter({ name: "filename", value: encodeURIComponent(JSON.stringify(event.getParameter("fileName"))) }));
 
                     this.dispatchEvent(new CustomEvent("onSend", {
                         detail: {
