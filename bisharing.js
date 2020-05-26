@@ -151,7 +151,7 @@
 
             this.dispatchEvent(new CustomEvent("onSend", {
                 detail: {
-                    settings: settings
+                    settings: JSON.parse(JSON.stringify(this._sharing_settings))
                 }
             }));
 
@@ -162,7 +162,7 @@
                     this._serviceMessage = response.value[0].webUrl;
                     this.dispatchEvent(new CustomEvent("onSuccess", {
                         detail: {
-                            settings: this._sharing_settings
+                            settings: JSON.parse(JSON.stringify(this._sharing_settings))
                         }
                     }));
                 }
