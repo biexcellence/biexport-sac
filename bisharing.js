@@ -12,36 +12,6 @@
 
     class BiSharing extends HTMLElement {
 
-        onMessage(event) {
-            if (event.data.bisharing != null) {
-
-                if (event.data.success) {
-                    this._serviceMessage = event.data.value[0].webUrl;
-
-                    setTimeout(() => {
-                        this.dispatchEvent(new CustomEvent("onSuccess", {
-                            detail: {
-                                settings: this._sharing_settings
-                            }
-                        }));
-                    }, 200);
-
-                } else {
-                    this._serviceMessage = "Action aborted.";
-                    setTimeout(() => {
-                    this.dispatchEvent(new CustomEvent("onError", {
-                        detail: {
-                            settings: this._sharing_settings
-                        }
-                    }));
-                    }, 200);
-
-                }
-                window.removeEventListener("message", this.onMessage);
-
-            }
-        }
-
         constructor() {
             super();
 
@@ -185,7 +155,29 @@
                 }
             }));
 
-            window.addEventListener("message", this.onMessage);
+            const onMessage = event => {
+                if (event.data.bisharing != null) {
+                    if (event.data.success) {
+                        this._serviceMessage = event.data.value[0].webUrl;
+                        this.dispatchEvent(new CustomEvent("onSuccess", {
+                            detail: {
+                                settings: this._sharing_settings
+                            }
+                        }));
+                    } else {
+                        this._serviceMessage = "Action aborted.";
+                        this.dispatchEvent(new CustomEvent("onError", {
+                            detail: {
+                                settings: this._sharing_settings
+                            }
+                        }));
+
+                    }
+                    window.removeEventListener("message", onMessage);
+                }
+            };
+
+            window.addEventListener("message", onMessage);
 
             var liframe = document.createElement("iframe");
             liframe.setAttribute('id', this._id + "_sharing_iframe");
@@ -291,10 +283,10 @@
             let lupload = new sap.m.UploadCollection(
                 {
 
-                uploadUrl: settings.server_urls + "/upload.html",
-                beforeUploadStarts: event => {
-                    event.getParameters().addHeaderParameter(new sap.m.UploadCollectionParameter({ name: "bie_openbi_sharing_settings_json", value: encodeURIComponent(JSON.stringify(settings))}));
-                    event.getParameters().addHeaderParameter(new sap.m.UploadCollectionParameter({ name: "filename", value: encodeURIComponent(event.getParameter("fileName")) }));
+                    uploadUrl: settings.server_urls + "/upload.html",
+                    beforeUploadStarts: event => {
+                        event.getParameters().addHeaderParameter(new sap.m.UploadCollectionParameter({ name: "bie_openbi_sharing_settings_json", value: encodeURIComponent(JSON.stringify(settings)) }));
+                        event.getParameters().addHeaderParameter(new sap.m.UploadCollectionParameter({ name: "filename", value: encodeURIComponent(event.getParameter("fileName")) }));
 
                         this.dispatchEvent(new CustomEvent("onSend", {
                             detail: {
@@ -337,7 +329,7 @@
                         }
                     },
                     uploadTerminated: event => {
-                       this.dispatchEvent(new CustomEvent("onSuccess", {
+                        this.dispatchEvent(new CustomEvent("onSuccess", {
                             detail: {
                                 settings: settings
                             }
