@@ -12,7 +12,7 @@
 
     class BiSharing extends HTMLElement {
 
-        const onMessage = event => {
+        let onMessage = event => {
             if (event.data.bisharing != null) {
 
                 if (event.data.success) {
