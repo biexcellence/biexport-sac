@@ -284,15 +284,41 @@
                         }));
                     },
                     uploadComplete: event => {
-                        this._serviceMessage = event.getParameter("item").getUrl();
-                        this.dispatchEvent(new CustomEvent("onSuccess", {
-                            detail: {
-                                settings: settings
+                        if (event.getParameter("status") == "200") {
+                            this._serviceMessage = event.getParameter("responseRaw");
+                            if (this._serviceMessage.indexOf("</script>") > 0) {
+                                this._serviceMessage = this._serviceMessage.split("</script>")(1)
                             }
-                        }));
+
+                            if (this._serviceMessage.indexOf("I:") > 0) {
+                                this._serviceMessage = this._serviceMessage.replace("I:", "");
+
+                                this.dispatchEvent(new CustomEvent("onSuccess", {
+                                    detail: {
+                                        settings: settings
+                                    }
+                                }));
+                            } else {
+                                this._serviceMessage = this._serviceMessage.replace("E:", "");
+
+                                this.dispatchEvent(new CustomEvent("onError", {
+                                    detail: {
+                                        settings: settings
+                                    }
+                                }));
+                            }
+
+                        } else {
+                            this.dispatchEvent(new CustomEvent("onError", {
+                                detail: {
+                                    settings: settings
+                                }
+                            }));
+
+                        }
                     },
                     uploadTerminated: event => {
-                       this.dispatchEvent(new CustomEvent("onError", {
+                       this.dispatchEvent(new CustomEvent("onSuccess", {
                             detail: {
                                 settings: settings
                             }
