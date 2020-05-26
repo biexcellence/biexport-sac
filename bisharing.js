@@ -17,18 +17,24 @@
 
                 if (event.data.success) {
                     this._serviceMessage = event.data.value[0].webUrl;
-                    this.dispatchEvent(new CustomEvent("onSuccess", {
-                        detail: {
-                            settings: this._sharing_settings
-                        }
-                    }));
+
+                    setTimeout(() => {
+                        this.dispatchEvent(new CustomEvent("onSuccess", {
+                            detail: {
+                                settings: this._sharing_settings
+                            }
+                        }));
+                    }, 200);
+
                 } else {
                     this._serviceMessage = "Action aborted.";
+                    setTimeout(() => {
                     this.dispatchEvent(new CustomEvent("onError", {
                         detail: {
                             settings: this._sharing_settings
                         }
                     }));
+                    }, 200);
 
                 }
                 window.removeEventListener("message", this.onMessage);
