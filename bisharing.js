@@ -156,15 +156,24 @@
             }));
 
             window.addEventListener("message", function (event) {
-                if (event.bisharing != null) {
-                    debugger;
-                    console.log(event.data);
-                    this._serviceMessage = response.value[0].webUrl;
-                    this.dispatchEvent(new CustomEvent("onSuccess", {
-                        detail: {
-                            settings: JSON.parse(JSON.stringify(this._sharing_settings))
-                        }
-                    }));
+                if (event.data.bisharing != null) {
+
+                    if (event.data.success) {
+                        this._serviceMessage = event.data.value[0].webUrl;
+                        this.dispatchEvent(new CustomEvent("onSuccess", {
+                            detail: {
+                                settings: JSON.parse(JSON.stringify(this._sharing_settings))
+                            }
+                        }));
+                    } else {
+                        this._serviceMessage = "Action aborted.";
+                        this.dispatchEvent(new CustomEvent("onError", {
+                            detail: {
+                                settings: JSON.parse(JSON.stringify(this._sharing_settings))
+                            }
+                        }));
+
+                    }
                 }
             });
 
@@ -172,7 +181,7 @@
             liframe.setAttribute('id', this._id + "_sharing_iframe");
             liframe.setAttribute('name', "sharing_iframe");
             liframe.setAttribute('style', "display:none;");
-            liframe.setAttribute('src', this._sharing_settings.server_urls + "/export_resources/bisharing.html?clientId=" + this._connectParams["clientId"]);
+            liframe.setAttribute('src', this._sharing_settings.server_urls + "/export_resources/bisharing.html?clientId=" + this._connectParams["clientId"] + "&origin=" + encodeURIComponent(location.origin));
             this._shadowRoot.appendChild(liframe);
 
             // https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_createlink?view=odsp-graph-online
