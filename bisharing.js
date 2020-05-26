@@ -283,21 +283,20 @@
                             }
                         }));
                     },
-                    uploadComplete: () => {
-                        this._serviceMessage = oEvent.getParameter("item").getUrl();
+                    uploadComplete: event => {
+                        this._serviceMessage = event.getParameter("item").getUrl();
                         this.dispatchEvent(new CustomEvent("onSuccess", {
                             detail: {
                                 settings: settings
                             }
                         }));
-                        //this.dispatchEvent(new CustomEvent("onError", {
-                        //    detail: {
-                        //        settings: settings
-                        //    }
-                        //}));
-
-                        //                },
-                        //               uploadTerminated: () => {
+                    },
+                    uploadTerminated: event => {
+                       this.dispatchEvent(new CustomEvent("onError", {
+                            detail: {
+                                settings: settings
+                            }
+                        }));
                     }
                 }
             );
