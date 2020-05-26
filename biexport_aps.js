@@ -1,6 +1,6 @@
-    (function () {
-        let tmpl = document.createElement("template");
-        tmpl.innerHTML = `
+(function () {
+    let tmpl = document.createElement("template");
+    tmpl.innerHTML = `
           <style>
               fieldset {
                   margin-bottom: 10px;
@@ -222,509 +222,509 @@
           </form>
         `;
 
-        class BiExportAps extends HTMLElement {
-            constructor() {
-                super();
-                this._shadowRoot = this.attachShadow({ mode: "open" });
-                this._shadowRoot.appendChild(tmpl.content.cloneNode(true));
+    class BiExportAps extends HTMLElement {
+        constructor() {
+            super();
+            this._shadowRoot = this.attachShadow({ mode: "open" });
+            this._shadowRoot.appendChild(tmpl.content.cloneNode(true));
 
-                let form = this._shadowRoot.getElementById("form");
-                form.addEventListener("submit", this._submit.bind(this));
-                form.addEventListener("change", this._change.bind(this));
+            let form = this._shadowRoot.getElementById("form");
+            form.addEventListener("submit", this._submit.bind(this));
+            form.addEventListener("change", this._change.bind(this));
 
-                // visible components
-                ["pdf_SelectedWidgets", "ppt_SelectedWidgets", "doc_SelectedWidgets", "xls_SelectedWidgets"].forEach(slotId => {
-                    let id = slotId.replace("_", "");
+            // visible components
+            ["pdf_SelectedWidgets", "ppt_SelectedWidgets", "doc_SelectedWidgets", "xls_SelectedWidgets"].forEach(slotId => {
+                let id = slotId.replace("_", "");
 
-                    let filterList = new sap.m.FacetFilterList({
-                        title: "Widget Selection",
-                        items: {
-                            path: "/",
-                            template: new sap.m.FacetFilterItem({
-                                key: "{name}",
-                                text: "{name}"
-                            })
-                        },
-                        listOpen: oEvent => {
-                            let list = oEvent.getSource();
+                let filterList = new sap.m.FacetFilterList({
+                    title: "Widget Selection",
+                    items: {
+                        path: "/",
+                        template: new sap.m.FacetFilterItem({
+                            key: "{name}",
+                            text: "{name}"
+                        })
+                    },
+                    listOpen: oEvent => {
+                        let list = oEvent.getSource();
 
-                            let value = this[id];
-                            let metadata = this.metadata;
+                        let value = this[id];
+                        let metadata = this.metadata;
 
-                            let visibleComponents = value ? JSON.parse(value) : [];
-                            let allComponents = metadata ? JSON.parse(metadata)["components"] : {};
-                            let components = [];
-                            let selectedComponents = {};
-                            for (let componentId in allComponents) {
-                                let component = allComponents[componentId];
+                        let visibleComponents = value ? JSON.parse(value) : [];
+                        let allComponents = metadata ? JSON.parse(metadata)["components"] : {};
+                        let components = [];
+                        let selectedComponents = {};
+                        for (let componentId in allComponents) {
+                            let component = allComponents[componentId];
 
-                                if (component.type == "sdk_com_biexcellence_openbi_sap_sac_export__0") {
-                                    continue;
-                                }
-
-                                components.push(component);
-
-                                if (!visibleComponents.some(v => v.component == component.name && v.isExcluded)) {
-                                    selectedComponents[component.name] = component.name;
-                                }
+                            if (component.type == "sdk_com_biexcellence_openbi_sap_sac_export__0") {
+                                continue;
                             }
 
-                            let model = new sap.ui.model.json.JSONModel(components);
-                            model.setSizeLimit(9999);
-                            list.setModel(model);
+                            components.push(component);
 
-                            if (Object.keys(selectedComponents).length == components.length) {
-                                selectedComponents = {};
+                            if (!visibleComponents.some(v => v.component == component.name && v.isExcluded)) {
+                                selectedComponents[component.name] = component.name;
                             }
-                            list.setSelectedKeys(selectedComponents);
-                        },
-                        listClose: oEvent => {
-                            let list = oEvent.getSource();
-
-                            let selectedComponents = list.getSelectedKeys();
-                            let metadata = this.metadata;
-
-                            let allComponents = metadata ? JSON.parse(metadata)["components"] : {};
-                            let visibleComponents = [];
-                            for (let componentId in allComponents) {
-                                let component = allComponents[componentId];
-
-                                if (component.type == "sdk_com_biexcellence_openbi_sap_sac_export__0") {
-                                    continue;
-                                }
-
-                                visibleComponents.push({
-                                    component: component.name,
-                                    isExcluded: !(component.name in selectedComponents)
-                                });
-                            }
-
-                            let value = "";
-                            if (visibleComponents.some(v => v.isExcluded) && visibleComponents.some(v => !v.isExcluded)) {
-                                value = JSON.stringify(visibleComponents);
-                            }
-
-                            let properties = {};
-                            this[id] = properties[id] = value;
-                            this._firePropertiesChanged(properties);
                         }
-                    });
 
-                    let excludeSlot = document.createElement("div");
-                    excludeSlot.slot = slotId;
-                    this.appendChild(excludeSlot);
+                        let model = new sap.ui.model.json.JSONModel(components);
+                        model.setSizeLimit(9999);
+                        list.setModel(model);
 
-                    let filter = new sap.m.FacetFilter({
-                        lists: [filterList],
-                        showReset: false,
-                        showPopoverOKButton: true
-                    });
-                    filter.addStyleClass("sapUiSizeCompact");
-                    filter.placeAt(excludeSlot);
-                });
-            }
-
-            connectedCallback() {
-                // try to load oauth info
-                fetch("/oauthservice/api/v1/oauthclient?tenant=" + window.TENANT).then(response => {
-                    if (response.ok) {
-                        return response.json();
-                    }
-                    throw new Error("Failed to get oauth clients: " + response.status)
-                }).then(oauthClients => {
-                    let oauthSelect = this._shadowRoot.getElementById("oauthId");
-                    let clientId = this._getValue("oauthClientId");
-                    while (oauthSelect.options.length > 1) {
-                        oauthSelect.options.remove(1);
-                    }
-
-                    oauthClients.forEach(oauthClient => {
-                        if (oauthClient.apiAccessEnabled === false && oauthClient.redirectUris[0].endsWith("/sac/oauth.html")) {
-                            oauthSelect.options.add(new Option(oauthClient.name, oauthClient.id, false, oauthClient.clientId == clientId));
+                        if (Object.keys(selectedComponents).length == components.length) {
+                            selectedComponents = {};
                         }
-                    });
+                        list.setSelectedKeys(selectedComponents);
+                    },
+                    listClose: oEvent => {
+                        let list = oEvent.getSource();
 
-                    oauthSelect.addEventListener("change", () => {
-                        let value = oauthSelect.value;
-                        if (value) {
-                            let oauth = {};
-                            Promise.all([
-                                fetch("/oauthservice/api/v1/tenantinfo?tenant=" + window.TENANT).then(response => response.json()).then(tenantOauthInfo => {
-                                    oauth.authorization_URL = tenantOauthInfo.baseUrl + tenantOauthInfo.authEndpoint;
-                                    oauth.token_URL = tenantOauthInfo.baseUrl + tenantOauthInfo.tokenEndpoint;
-                                }),
-                                fetch("/oauthservice/api/v1/oauthclient/" + value + "?tenant=" + window.TENANT).then(response => response.json()).then(oauthClient => {
-                                    oauth.client_id = oauthClient.clientId;
-                                    oauth.client_redirect_URL = oauthClient.redirectUris[0];
-                                }),
-                                fetch("/oauthservice/api/v1/oauthclient/" + value + "/secret?tenant=" + window.TENANT).then(response => response.text()).then(clientSecret => {
-                                    oauth.client_secret = clientSecret;
-                                })
-                            ]).then(() => {
-                                this.oauth = JSON.stringify(oauth);
-                                this._changeProperty("oauth");
+                        let selectedComponents = list.getSelectedKeys();
+                        let metadata = this.metadata;
+
+                        let allComponents = metadata ? JSON.parse(metadata)["components"] : {};
+                        let visibleComponents = [];
+                        for (let componentId in allComponents) {
+                            let component = allComponents[componentId];
+
+                            if (component.type == "sdk_com_biexcellence_openbi_sap_sac_export__0") {
+                                continue;
+                            }
+
+                            visibleComponents.push({
+                                component: component.name,
+                                isExcluded: !(component.name in selectedComponents)
                             });
-                        } else {
-                            this.oauth = null;
-                            this._changeProperty("oauth");
                         }
-                    });
-                    oauthSelect.closest("tr").hidden = false;
+
+                        let value = "";
+                        if (visibleComponents.some(v => v.isExcluded) && visibleComponents.some(v => !v.isExcluded)) {
+                            value = JSON.stringify(visibleComponents);
+                        }
+
+                        let properties = {};
+                        this[id] = properties[id] = value;
+                        this._firePropertiesChanged(properties);
+                    }
+                });
+
+                let excludeSlot = document.createElement("div");
+                excludeSlot.slot = slotId;
+                this.appendChild(excludeSlot);
+
+                let filter = new sap.m.FacetFilter({
+                    lists: [filterList],
+                    showReset: false,
+                    showPopoverOKButton: true
+                });
+                filter.addStyleClass("sapUiSizeCompact");
+                filter.placeAt(excludeSlot);
+            });
+        }
+
+        connectedCallback() {
+            // try to load oauth info
+            fetch("/oauthservice/api/v1/oauthclient?tenant=" + window.TENANT).then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error("Failed to get oauth clients: " + response.status)
+            }).then(oauthClients => {
+                let oauthSelect = this._shadowRoot.getElementById("oauthId");
+                let clientId = this._getValue("oauthClientId");
+                while (oauthSelect.options.length > 1) {
+                    oauthSelect.options.remove(1);
+                }
+
+                oauthClients.forEach(oauthClient => {
+                    if (oauthClient.apiAccessEnabled === false && oauthClient.redirectUris[0].endsWith("/sac/oauth.html")) {
+                        oauthSelect.options.add(new Option(oauthClient.name, oauthClient.id, false, oauthClient.clientId == clientId));
+                    }
+                });
+
+                oauthSelect.addEventListener("change", () => {
+                    let value = oauthSelect.value;
+                    if (value) {
+                        let oauth = {};
+                        Promise.all([
+                            fetch("/oauthservice/api/v1/tenantinfo?tenant=" + window.TENANT).then(response => response.json()).then(tenantOauthInfo => {
+                                oauth.authorization_URL = tenantOauthInfo.baseUrl + tenantOauthInfo.authEndpoint;
+                                oauth.token_URL = tenantOauthInfo.baseUrl + tenantOauthInfo.tokenEndpoint;
+                            }),
+                            fetch("/oauthservice/api/v1/oauthclient/" + value + "?tenant=" + window.TENANT).then(response => response.json()).then(oauthClient => {
+                                oauth.client_id = oauthClient.clientId;
+                                oauth.client_redirect_URL = oauthClient.redirectUris[0];
+                            }),
+                            fetch("/oauthservice/api/v1/oauthclient/" + value + "/secret?tenant=" + window.TENANT).then(response => response.text()).then(clientSecret => {
+                                oauth.client_secret = clientSecret;
+                            })
+                        ]).then(() => {
+                            this.oauth = JSON.stringify(oauth);
+                            this._changeProperty("oauth");
+                        });
+                    } else {
+                        this.oauth = null;
+                        this._changeProperty("oauth");
+                    }
+                });
+                oauthSelect.closest("tr").hidden = false;
+            });
+        }
+
+        _submit(e) {
+            e.preventDefault();
+            let properties = {};
+            for (let name of BiExportAps.observedAttributes) {
+                properties[name] = this[name];
+            }
+            this._firePropertiesChanged(properties);
+            return false;
+        }
+        _change(e) {
+            this._changeProperty(e.target.name);
+        }
+        _changeProperty(name) {
+            let properties = {};
+            properties[name] = this[name];
+            this._firePropertiesChanged(properties);
+        }
+
+        _firePropertiesChanged(properties) {
+            this.dispatchEvent(new CustomEvent("propertiesChanged", {
+                detail: {
+                    properties: properties
+                }
+            }));
+        }
+
+        get serverURL() {
+            return this._getValue("serverURL");
+        }
+        set serverURL(value) {
+            this._setValue("serverURL", value);
+        }
+
+        get licenseKey() {
+            return this._getValue("licenseKey");
+        }
+        set licenseKey(value) {
+            this._setValue("licenseKey", value);
+        }
+
+        get filename() {
+            return this._getValue("filename");
+        }
+        set filename(value) {
+            this._setValue("filename", value);
+        }
+
+        get exportLanguage() {
+            return this._getValue("exportLanguage");
+        }
+        set exportLanguage(value) {
+            this._setValue("exportLanguage", value);
+        }
+
+        get screenWidth() {
+            return this._getValue("screenWidth");
+        }
+        set screenWidth(value) {
+            this._setValue("screenWidth", value);
+        }
+
+        get screenHeight() {
+            return this._getValue("screenHeight");
+        }
+        set screenHeight(value) {
+            this._setValue("screenHeight", value);
+        }
+
+        get parseCss() {
+            return this._getBooleanValue("parseCss");
+        }
+        set parseCss(value) {
+            this._setBooleanValue("parseCss", value);
+        }
+
+        get biAnalyticsDocument() {
+            return this._getBooleanValue("biAnalyticsDocument");
+        }
+        set biAnalyticsDocument(value) {
+            this._setBooleanValue("biAnalyticsDocument", value);
+        }
+
+        get pdfTemplate() {
+            return this._getValue("pdfTemplate");
+        }
+        set pdfTemplate(value) {
+            this._setValue("pdfTemplate", value);
+        }
+
+        get pptSeparate() {
+            return this._getBooleanValue("pptSeparate");
+        }
+        set pptSeparate(value) {
+            this._setBooleanValue("pptSeparate", value);
+        }
+
+        get pptTemplate() {
+            return this._getValue("pptTemplate");
+        }
+        set pptTemplate(value) {
+            this._setValue("pptTemplate", value);
+        }
+
+        get docTemplate() {
+            return this._getValue("docTemplate");
+        }
+        set docTemplate(value) {
+            this._setValue("docTemplate", value);
+        }
+
+        get xlsTemplate() {
+            return this._getValue("xlsTemplate");
+        }
+        set xlsTemplate(value) {
+            this._setValue("xlsTemplate", value);
+        }
+
+        get publishMode() {
+            return this._getValue("publishMode");
+        }
+        set publishMode(value) {
+            this._setValue("publishMode", value);
+        }
+
+        get publishSync() {
+            return this._getBooleanValue("publishSync");
+        }
+        set publishSync(value) {
+            this._setBooleanValue("publishSync", value);
+        }
+
+        get mailFrom() {
+            return this._getValue("mailFrom");
+        }
+        set mailFrom(value) {
+            this._setValue("mailFrom", value);
+        }
+
+        get mailTo() {
+            return this._getValue("mailTo");
+        }
+        set mailTo(value) {
+            this._setValue("mailTo", value);
+        }
+
+        get mailSubject() {
+            return this._getValue("mailSubject");
+        }
+        set mailSubject(value) {
+            this._setValue("mailSubject", value);
+        }
+
+        get mailBody() {
+            return this._getValue("mailBody");
+        }
+        set mailBody(value) {
+            this._setValue("mailBody", value);
+        }
+
+        get showIcons() {
+            return this._getBooleanValue("showIcons");
+        }
+        set showIcons(value) {
+            this._setBooleanValue("showIcons", value);
+        }
+
+        get showTexts() {
+            return this._getBooleanValue("showTexts");
+        }
+        set showTexts(value) {
+            this._setBooleanValue("showTexts", value);
+        }
+
+        get showComponentSelector() {
+            return this._getBooleanValue("showComponentSelector");
+        }
+        set showComponentSelector(value) {
+            this._setBooleanValue("showComponentSelector", value);
+        }
+
+        get showViewSelector() {
+            return this._getBooleanValue("showViewSelector");
+        }
+        set showViewSelector(value) {
+            this._setBooleanValue("showViewSelector", value);
+        }
+
+        get enablePpt() {
+            return this._getBooleanValue("enablePpt");
+        }
+        set enablePpt(value) {
+            this._setBooleanValue("enablePpt", value);
+        }
+
+        get enableDoc() {
+            return this._getBooleanValue("enableDoc");
+        }
+        set enableDoc(value) {
+            this._setBooleanValue("enableDoc", value);
+        }
+
+        get enablePdf() {
+            return this._getBooleanValue("enablePdf");
+        }
+        set enablePdf(value) {
+            this._setBooleanValue("enablePdf", value);
+        }
+
+        get enableXls() {
+            return this._getBooleanValue("enableXls");
+        }
+        set enableXls(value) {
+            this._setBooleanValue("enableXls", value);
+        }
+
+        get enableCsv() {
+            return this._getBooleanValue("enableCsv");
+        }
+        set enableCsv(value) {
+            this._setBooleanValue("enableCsv", value);
+        }
+
+        get pdfSelectedWidgets() {
+            return this.pdf_SelectedWidgets;
+        }
+        set pdfSelectedWidgets(value) {
+            this.pdf_SelectedWidgets = value;
+        }
+
+        get pptSelectedWidgets() {
+            return this.ppt_SelectedWidgets;
+        }
+        set pptSelectedWidgets(value) {
+            this.ppt_SelectedWidgets = value;
+        }
+
+        get docSelectedWidgets() {
+            return this.doc_SelectedWidgets;
+        }
+        set docSelectedWidgets(value) {
+            this.doc_SelectedWidgets = value;
+        }
+
+        get xlsSelectedWidgets() {
+            return this.xls_SelectedWidgets;
+        }
+        set xlsSelectedWidgets(value) {
+            this.xls_SelectedWidgets = value;
+        }
+
+        get metadata() {
+            return this._metadata;
+        }
+        set metadata(value) {
+            this._metadata = value;
+        }
+
+        get oauth() {
+            if (this._getValue("oauthClientId")) {
+                return JSON.stringify({
+                    client_id: this._getValue("oauthClientId"),
+                    client_secret: this._getValue("oauthClientSecret"),
+                    client_redirect_URL: this._getValue("oauthClientRedirectURL"),
+                    authorization_URL: this._getValue("oauthAuthorizationURL"),
+                    token_URL: this._getValue("oauthTokenURL")
                 });
             }
-
-            _submit(e) {
-                e.preventDefault();
-                let properties = {};
-                for (let name of BiExportAps.observedAttributes) {
-                    properties[name] = this[name];
-                }
-                this._firePropertiesChanged(properties);
-                return false;
-            }
-            _change(e) {
-                this._changeProperty(e.target.name);
-            }
-            _changeProperty(name) {
-                let properties = {};
-                properties[name] = this[name];
-                this._firePropertiesChanged(properties);
-            }
-
-            _firePropertiesChanged(properties) {
-                this.dispatchEvent(new CustomEvent("propertiesChanged", {
-                    detail: {
-                        properties: properties
-                    }
-                }));
-            }
-
-            get serverURL() {
-                return this._getValue("serverURL");
-            }
-            set serverURL(value) {
-                this._setValue("serverURL", value);
-            }
-
-            get licenseKey() {
-                return this._getValue("licenseKey");
-            }
-            set licenseKey(value) {
-                this._setValue("licenseKey", value);
-            }
-
-            get filename() {
-                return this._getValue("filename");
-            }
-            set filename(value) {
-                this._setValue("filename", value);
-            }
-
-            get exportLanguage() {
-                return this._getValue("exportLanguage");
-            }
-            set exportLanguage(value) {
-                this._setValue("exportLanguage", value);
-            }
-
-            get screenWidth() {
-                return this._getValue("screenWidth");
-            }
-            set screenWidth(value) {
-                this._setValue("screenWidth", value);
-            }
-
-            get screenHeight() {
-                return this._getValue("screenHeight");
-            }
-            set screenHeight(value) {
-                this._setValue("screenHeight", value);
-            }
-
-            get parseCss() {
-                return this._getBooleanValue("parseCss");
-            }
-            set parseCss(value) {
-                this._setBooleanValue("parseCss", value);
-            }
-
-            get biAnalyticsDocument() {
-                return this._getBooleanValue("biAnalyticsDocument");
-            }
-            set biAnalyticsDocument(value) {
-                this._setBooleanValue("biAnalyticsDocument", value);
-            }
-
-            get pdfTemplate() {
-                return this._getValue("pdfTemplate");
-            }
-            set pdfTemplate(value) {
-                this._setValue("pdfTemplate", value);
-            }
-
-            get pptSeparate() {
-                return this._getBooleanValue("pptSeparate");
-            }
-            set pptSeparate(value) {
-                this._setBooleanValue("pptSeparate", value);
-            }
-
-            get pptTemplate() {
-                return this._getValue("pptTemplate");
-            }
-            set pptTemplate(value) {
-                this._setValue("pptTemplate", value);
-            }
-
-            get docTemplate() {
-                return this._getValue("docTemplate");
-            }
-            set docTemplate(value) {
-                this._setValue("docTemplate", value);
-            }
-
-            get xlsTemplate() {
-                return this._getValue("xlsTemplate");
-            }
-            set xlsTemplate(value) {
-                this._setValue("xlsTemplate", value);
-            }
-
-            get publishMode() {
-                return this._getValue("publishMode");
-            }
-            set publishMode(value) {
-                this._setValue("publishMode", value);
-            }
-
-            get publishSync() {
-                return this._getBooleanValue("publishSync");
-            }
-            set publishSync(value) {
-                this._setBooleanValue("publishSync", value);
-            }
-
-            get mailFrom() {
-                return this._getValue("mailFrom");
-            }
-            set mailFrom(value) {
-                this._setValue("mailFrom", value);
-            }
-
-            get mailTo() {
-                return this._getValue("mailTo");
-            }
-            set mailTo(value) {
-                this._setValue("mailTo", value);
-            }
-
-            get mailSubject() {
-                return this._getValue("mailSubject");
-            }
-            set mailSubject(value) {
-                this._setValue("mailSubject", value);
-            }
-
-            get mailBody() {
-                return this._getValue("mailBody");
-            }
-            set mailBody(value) {
-                this._setValue("mailBody", value);
-            }
-
-            get showIcons() {
-                return this._getBooleanValue("showIcons");
-            }
-            set showIcons(value) {
-                this._setBooleanValue("showIcons", value);
-            }
-
-            get showTexts() {
-                return this._getBooleanValue("showTexts");
-            }
-            set showTexts(value) {
-                this._setBooleanValue("showTexts", value);
-            }
-
-            get showComponentSelector() {
-                return this._getBooleanValue("showComponentSelector");
-            }
-            set showComponentSelector(value) {
-                this._setBooleanValue("showComponentSelector", value);
-            }
-
-            get showViewSelector() {
-                return this._getBooleanValue("showViewSelector");
-            }
-            set showViewSelector(value) {
-                this._setBooleanValue("showViewSelector", value);
-            }
-
-            get enablePpt() {
-                return this._getBooleanValue("enablePpt");
-            }
-            set enablePpt(value) {
-                this._setBooleanValue("enablePpt", value);
-            }
-
-            get enableDoc() {
-                return this._getBooleanValue("enableDoc");
-            }
-            set enableDoc(value) {
-                this._setBooleanValue("enableDoc", value);
-            }
-
-            get enablePdf() {
-                return this._getBooleanValue("enablePdf");
-            }
-            set enablePdf(value) {
-                this._setBooleanValue("enablePdf", value);
-            }
-
-            get enableXls() {
-                return this._getBooleanValue("enableXls");
-            }
-            set enableXls(value) {
-                this._setBooleanValue("enableXls", value);
-            }
-
-            get enableCsv() {
-                return this._getBooleanValue("enableCsv");
-            }
-            set enableCsv(value) {
-                this._setBooleanValue("enableCsv", value);
-            }
-
-            get pdfSelectedWidgets() {
-                return this.pdf_SelectedWidgets;
-            }
-            set pdfSelectedWidgets(value) {
-                this.pdf_SelectedWidgets = value;
-            }
-
-            get pptSelectedWidgets() {
-                return this.ppt_SelectedWidgets;
-            }
-            set pptSelectedWidgets(value) {
-                this.ppt_SelectedWidgets = value;
-            }
-
-            get docSelectedWidgets() {
-                return this.doc_SelectedWidgets;
-            }
-            set docSelectedWidgets(value) {
-                this.doc_SelectedWidgets = value;
-            }
-
-            get xlsSelectedWidgets() {
-                return this.xls_SelectedWidgets;
-            }
-            set xlsSelectedWidgets(value) {
-                this.xls_SelectedWidgets = value;
-            }
-
-            get metadata() {
-                return this._metadata;
-            }
-            set metadata(value) {
-                this._metadata = value;
-            }
-
-            get oauth() {
-                if (this._getValue("oauthClientId")) {
-                    return JSON.stringify({
-                        client_id: this._getValue("oauthClientId"),
-                        client_secret: this._getValue("oauthClientSecret"),
-                        client_redirect_URL: this._getValue("oauthClientRedirectURL"),
-                        authorization_URL: this._getValue("oauthAuthorizationURL"),
-                        token_URL: this._getValue("oauthTokenURL")
-                    });
-                }
-                return null;
-            }
-            set oauth(value) {
-                if (value) {
-                    let oauth = JSON.parse(value);
-                    this._setValue("oauthClientId", oauth.client_id);
-                    this._setValue("oauthClientSecret", oauth.client_secret);
-                    this._setValue("oauthClientRedirectURL", oauth.client_redirect_URL);
-                    this._setValue("oauthAuthorizationURL", oauth.authorization_URL);
-                    this._setValue("oauthTokenURL", oauth.token_URL);
-                } else {
-                    this._setValue("oauthClientId", "");
-                    this._setValue("oauthClientSecret", "");
-                    this._setValue("oauthClientRedirectURL", "");
-                    this._setValue("oauthAuthorizationURL", "");
-                    this._setValue("oauthTokenURL", "");
-                }
-            }
-
-            _getValue(id) {
-                return this._shadowRoot.getElementById(id).value;
-            }
-            _setValue(id, value) {
-                this._shadowRoot.getElementById(id).value = value;
-            }
-
-            _getBooleanValue(id) {
-                return this._shadowRoot.getElementById(id).checked;
-            }
-            _setBooleanValue(id, value) {
-                this._shadowRoot.getElementById(id).checked = value;
-            }
-
-            static get observedAttributes() {
-                return [
-                    "serverURL",
-                    "licenseKey",
-                    "filename",
-
-                    "exportLanguage",
-                    "screenWidth",
-                    "screenHeight",
-                    "parseCss",
-                    "biAnalyticsDocument",
-
-                    "pdfTemplate",
-                    "pdfSelectedWidgets",
-
-                    "pptSeparate",
-                    "pptTemplate",
-                    "pptSelectedWidgets",
-
-                    "docTemplate",
-                    "docSelectedWidgets",
-
-                    "xlsTemplate",
-                    "xlsSelectedWidgets",
-
-                    "publishMode",
-                    "publishSync",
-                    "mailFrom",
-                    "mailTo",
-                    "mailSubject",
-                    "mailBody",
-
-                    "showIcons",
-                    "showTexts",
-                    "showViewSelector",
-                    "showComponentSelector",
-                    "enablePpt",
-                    "enableDoc",
-                    "enablePdf",
-                    "enableXls",
-                    "enableCsv",
-
-                    "metadata",
-                    "oauth"
-                ];
-            }
-
-            attributeChangedCallback(name, oldValue, newValue) {
-                if (oldValue != newValue) {
-                    this[name] = newValue;
-                }
+            return null;
+        }
+        set oauth(value) {
+            if (value) {
+                let oauth = JSON.parse(value);
+                this._setValue("oauthClientId", oauth.client_id);
+                this._setValue("oauthClientSecret", oauth.client_secret);
+                this._setValue("oauthClientRedirectURL", oauth.client_redirect_URL);
+                this._setValue("oauthAuthorizationURL", oauth.authorization_URL);
+                this._setValue("oauthTokenURL", oauth.token_URL);
+            } else {
+                this._setValue("oauthClientId", "");
+                this._setValue("oauthClientSecret", "");
+                this._setValue("oauthClientRedirectURL", "");
+                this._setValue("oauthAuthorizationURL", "");
+                this._setValue("oauthTokenURL", "");
             }
         }
-        customElements.define("com-biexcellence-openbi-sap-sac-export-aps", BiExportAps);
-    })();
+
+        _getValue(id) {
+            return this._shadowRoot.getElementById(id).value;
+        }
+        _setValue(id, value) {
+            this._shadowRoot.getElementById(id).value = value;
+        }
+
+        _getBooleanValue(id) {
+            return this._shadowRoot.getElementById(id).checked;
+        }
+        _setBooleanValue(id, value) {
+            this._shadowRoot.getElementById(id).checked = value;
+        }
+
+        static get observedAttributes() {
+            return [
+                "serverURL",
+                "licenseKey",
+                "filename",
+
+                "exportLanguage",
+                "screenWidth",
+                "screenHeight",
+                "parseCss",
+                "biAnalyticsDocument",
+
+                "pdfTemplate",
+                "pdfSelectedWidgets",
+
+                "pptSeparate",
+                "pptTemplate",
+                "pptSelectedWidgets",
+
+                "docTemplate",
+                "docSelectedWidgets",
+
+                "xlsTemplate",
+                "xlsSelectedWidgets",
+
+                "publishMode",
+                "publishSync",
+                "mailFrom",
+                "mailTo",
+                "mailSubject",
+                "mailBody",
+
+                "showIcons",
+                "showTexts",
+                "showViewSelector",
+                "showComponentSelector",
+                "enablePpt",
+                "enableDoc",
+                "enablePdf",
+                "enableXls",
+                "enableCsv",
+
+                "metadata",
+                "oauth"
+            ];
+        }
+
+        attributeChangedCallback(name, oldValue, newValue) {
+            if (oldValue != newValue) {
+                this[name] = newValue;
+            }
+        }
+    }
+    customElements.define("com-biexcellence-openbi-sap-sac-export-aps", BiExportAps);
+})();

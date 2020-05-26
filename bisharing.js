@@ -151,8 +151,8 @@
 
             window.addEventListener("message", function (event) {
                 if (event.bisharing != null) {
-                debugger;
-                console.log(event.data);
+                    debugger;
+                    console.log(event.data);
                     this._serviceMessage = response.value[0].webUrl;
                     this.dispatchEvent(new CustomEvent("onSuccess", {
                         detail: {
@@ -270,30 +270,30 @@
                     event.getParameters().addHeaderParameter(new sap.m.UploadCollectionParameter({ name: "bie_openbi_sharing_settings_json", value: encodeURIComponent(JSON.stringify(settings))}));
                     event.getParameters().addHeaderParameter(new sap.m.UploadCollectionParameter({ name: "filename", value: encodeURIComponent(JSON.stringify(event.getParameter("fileName"))) }));
 
-                    this.dispatchEvent(new CustomEvent("onSend", {
-                        detail: {
-                            settings: settings
-                        }
-                    }));
-                },
-                uploadComplete: () => {
-                    this._serviceMessage = oEvent.getParameter("item").getUrl();
-                    this.dispatchEvent(new CustomEvent("onSuccess", {
-                        detail: {
-                            settings: settings
-                        }
-                    }));
-                    //this.dispatchEvent(new CustomEvent("onError", {
-                    //    detail: {
-                    //        settings: settings
-                    //    }
-                    //}));
+                        this.dispatchEvent(new CustomEvent("onSend", {
+                            detail: {
+                                settings: settings
+                            }
+                        }));
+                    },
+                    uploadComplete: () => {
+                        this._serviceMessage = oEvent.getParameter("item").getUrl();
+                        this.dispatchEvent(new CustomEvent("onSuccess", {
+                            detail: {
+                                settings: settings
+                            }
+                        }));
+                        //this.dispatchEvent(new CustomEvent("onError", {
+                        //    detail: {
+                        //        settings: settings
+                        //    }
+                        //}));
 
-//                },
- //               uploadTerminated: () => {
+                        //                },
+                        //               uploadTerminated: () => {
+                    }
                 }
-            }
-        );
+            );
 
             let ldialog = new sap.m.Dialog({
                 title: "Upload files",
