@@ -12,7 +12,7 @@
 
     class BiSharing extends HTMLElement {
 
-        let onMessage = event => {
+        onMessage(event) {
             if (event.data.bisharing != null) {
 
                 if (event.data.success) {
@@ -31,7 +31,7 @@
                     }));
 
                 }
-                window.removeEventListener("message", onMessage);
+                window.removeEventListener("message", this.onMessage);
 
             }
         });
@@ -179,7 +179,7 @@
                 }
             }));
 
-            window.addEventListener("message", onMessage);
+            window.addEventListener("message", this.onMessage);
 
             var liframe = document.createElement("iframe");
             liframe.setAttribute('id', this._id + "_sharing_iframe");
@@ -194,7 +194,7 @@
             //var odOptions = {
             //    clientId: this._connectParams["clientId"],
             //    action: "share",
-            //    multiSelect: true,
+            //    multiSelect: true,e
             //    advanced: {
             //        createLinkParameters: { type: "view", scope: "organization" } // anonymous
             //    },
