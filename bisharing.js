@@ -148,6 +148,10 @@
         }
 
         selectToShare() {
+            // references: 
+            // https://docs.microsoft.com/en-us/onedrive/developer/controls/file-pickers/js-v72/save-file?view=odsp-graph-online
+            // https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_createlink?view=odsp-graph-online
+
             this._serviceMessage = "";
             this.dispatchEvent(new CustomEvent("onSend", {
                 detail: {
@@ -185,9 +189,6 @@
             liframe.setAttribute('style', "display:none;");
             liframe.setAttribute('src', this._sharing_settings.server_urls + "/export_resources/bisharing.html?clientId=" + this._connectParams["clientId"] + "&origin=" + encodeURIComponent(location.origin));
             this._shadowRoot.appendChild(liframe);
-
-            // https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_createlink?view=odsp-graph-online
-            // "5711dfce-c17e-46d4-8ddb-e3d32839c7b3"
 
             //var odOptions = {
             //    clientId: this._connectParams["clientId"],
@@ -327,6 +328,7 @@
                             }));
 
                         }
+                        ldialog.close();
                     },
                     uploadTerminated: event => {
                         this.dispatchEvent(new CustomEvent("onSuccess", {
