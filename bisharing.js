@@ -151,7 +151,7 @@
 
             this.dispatchEvent(new CustomEvent("onSend", {
                 detail: {
-                    settings: JSON.parse(JSON.stringify(this._sharing_settings))
+                    settings: this._sharing_settings
                 }
             }));
 
@@ -162,14 +162,14 @@
                         this._serviceMessage = event.data.value[0].webUrl;
                         this.dispatchEvent(new CustomEvent("onSuccess", {
                             detail: {
-                                settings: JSON.parse(JSON.stringify(this._sharing_settings))
+                                settings: this._sharing_settings
                             }
                         }));
                     } else {
                         this._serviceMessage = "Action aborted.";
                         this.dispatchEvent(new CustomEvent("onError", {
                             detail: {
-                                settings: JSON.parse(JSON.stringify(this._sharing_settings))
+                                settings: this._sharing_settings
                             }
                         }));
 
@@ -293,8 +293,8 @@
                         }));
                     },
                     uploadComplete: event => {
-                        if (event.getParameter("status") == "200") {
-                            this._serviceMessage = event.getParameter("responseRaw");
+                        if (event.getParameters().mParameters.status == "200") {
+                            this._serviceMessage = event.getParameters().mParameters.responseRaw;
                             if (this._serviceMessage.indexOf("</script>") > 0) {
                                 this._serviceMessage = this._serviceMessage.split("</script>")(1)
                             }
