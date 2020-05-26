@@ -12,6 +12,30 @@
 
     class BiSharing extends HTMLElement {
 
+        const onMessage = event => {
+            if (event.data.bisharing != null) {
+
+                if (event.data.success) {
+                    this._serviceMessage = event.data.value[0].webUrl;
+                    this.dispatchEvent(new CustomEvent("onSuccess", {
+                        detail: {
+                            settings: this._sharing_settings
+                        }
+                    }));
+                } else {
+                    this._serviceMessage = "Action aborted.";
+                    this.dispatchEvent(new CustomEvent("onError", {
+                        detail: {
+                            settings: this._sharing_settings
+                        }
+                    }));
+
+                }
+                window.removeEventListener("message", onMessage);
+
+            }
+        });
+
         constructor() {
             super();
 
@@ -155,27 +179,7 @@
                 }
             }));
 
-            window.addEventListener("message", event => {
-                if (event.data.bisharing != null) {
-
-                    if (event.data.success) {
-                        this._serviceMessage = event.data.value[0].webUrl;
-                        this.dispatchEvent(new CustomEvent("onSuccess", {
-                            detail: {
-                                settings: this._sharing_settings
-                            }
-                        }));
-                    } else {
-                        this._serviceMessage = "Action aborted.";
-                        this.dispatchEvent(new CustomEvent("onError", {
-                            detail: {
-                                settings: this._sharing_settings
-                            }
-                        }));
-
-                    }
-                }
-            });
+            window.addEventListener("message", onMessage);
 
             var liframe = document.createElement("iframe");
             liframe.setAttribute('id', this._id + "_sharing_iframe");
