@@ -188,9 +188,9 @@
             liframe.setAttribute('name', "sharing_iframe");
             liframe.setAttribute('style', "display:none;");
             liframe.setAttribute('src', this._sharing_settings.server_urls + "/export_resources/bisharing.html" + 
-                "?clientId=" + this._connectParams["clientId"] +
-                "&link=" + this._connectParams["entryLink"] +
-                "&navigate=" + this._connectParams["showNavigation"] +
+                "?clientId=" + encodeURIComponent(this._connectParams["clientId"]) +
+                "&link=" + encodeURIComponent(this._connectParams["entryLink"]) +
+                "&navigate=" + encodeURIComponent(this._connectParams["showNavigation"]) +
                 "&origin=" + encodeURIComponent(location.origin));
             this._shadowRoot.appendChild(liframe);
 
