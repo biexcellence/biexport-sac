@@ -33,7 +33,7 @@
     },
     "licenseKey": {
       "type": "string",
-      "description": "The license key to be used for sending the notification (for usage tracking, usage limits, special smtp server configuration",
+      "description": "The license key to be used for sending the notification (for usage tracking, usage limits, special smtp server configuration)",
       "default": ""
     },
     "filename": {
