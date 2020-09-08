@@ -143,85 +143,6 @@
             this._renderExportButton();
         }
 
-        connectedCallback() {
-            // try detect components in edit mode
-            try {
-                if (window.commonApp) {
-                    let outlineContainer = commonApp.getShell().findElements(true, ele => ele.hasStyleClass && ele.hasStyleClass("sapAppBuildingOutline"))[0]; // sId: "__container0"
-                    if (outlineContainer && outlineContainer.getReactProps) {
-                        let parseReactState = state => {
-                            let components = {};
-
-                            let globalState = state.globalState;
-                            let instances = globalState.instances;
-                            let app = instances.app["[{\"app\":\"MAIN_APPLICATION\"}]"];
-                            let names = app.names;
-
-                            for (let key in names) {
-                                let name = names[key];
-
-                                let obj = JSON.parse(key).pop();
-                                let type = Object.keys(obj)[0];
-                                let id = obj[type];
-
-                                components[id] = {
-                                    type: type,
-                                    name: name
-                                };
-                            }
-
-                            let metadata = JSON.stringify({
-                                components: components,
-                                vars: app.globalVars
-                            });
-
-                            if (metadata != this.metadata) {
-                                this.metadata = metadata;
-
-                                this.dispatchEvent(new CustomEvent("propertiesChanged", {
-                                    detail: {
-                                        properties: {
-                                            metadata: metadata
-                                        }
-                                    }
-                                }));
-                            }
-                        };
-
-                        let subscribeReactStore = store => {
-                            this._subscription = store.subscribe({
-                                effect: state => {
-                                    parseReactState(state);
-                                    return { result: 1 };
-                                }
-                            });
-                        };
-
-                        let props = outlineContainer.getReactProps();
-                        if (props) {
-                            subscribeReactStore(props.store);
-                        } else {
-                            let oldRenderReactComponent = outlineContainer.renderReactComponent;
-                            outlineContainer.renderReactComponent = e => {
-                                let props = outlineContainer.getReactProps();
-                                subscribeReactStore(props.store);
-
-                                oldRenderReactComponent.call(outlineContainer, e);
-                            }
-                        }
-                    }
-                }
-            } catch (e) {
-            }
-        }
-
-        disconnectedCallback() {
-            if (this._subscription) { // react store subscription
-                this._subscription();
-                this._subscription = null;
-            }
-        }
-
         onCustomWidgetBeforeUpdate(changedProperties) {
             if ("designMode" in changedProperties) {
                 this._designMode = changedProperties["designMode"];
@@ -265,6 +186,7 @@
                     if (!this.showComponentSelector && !this.showViewSelector) {
                         this.doExport(oItem.getKey());
                     } else {
+                        let metadata = getMetadata();
 
                         let ltab = new sap.m.IconTabBar({
                             expandable: false
@@ -278,7 +200,7 @@
                                 columnsL: 4
                             });
 
-                            let components = this.metadata ? JSON.parse(this.metadata)["components"] : {};
+                            let components = metadata.components;
                             if (this["_initialVisibleComponents" + oItem.getKey()] == null) {
                                 this["_initialVisibleComponents" + oItem.getKey()] = this[oItem.getKey().toLowerCase() + "SelectedWidgets"] ? JSON.parse(this[oItem.getKey().toLowerCase() + "SelectedWidgets"]) : [];
                             }
@@ -357,7 +279,7 @@
                                 ]
                             }));
 
-                            let vars = this.metadata ? JSON.parse(this.metadata)["vars"] : {};
+                            let vars = metadata.vars;
                             for (let varId in vars) {
                                 let varObj = vars[varId];
                                 if (varObj.isExposed) {
@@ -964,26 +886,12 @@
             this._updateSettings();
         }
 
-        get metadata() {
-            return this._export_settings.metadata;
-        }
-        set metadata(value) {
-            this._export_settings.metadata = value;
-            this._updateSettings();
-        }
-
         get oauth() {
             return this._export_settings.oauth;
         }
         set oauth(value) {
             this._export_settings.oauth = value;
             this._updateSettings();
-        }
-
-        static get observedAttributes() {
-            return [
-                "metadata"
-            ];
         }
 
         // METHODS
@@ -1142,6 +1050,8 @@
                     settings.tenant_URL = sap.fpa.ui.infra.service.AjaxHelper.getTenantUrl(false); // true for PUBLIC_FQDN
                 }
             }
+
+            settings.metadata = JSON.stringify(getMetadata());
 
             if (settings.publish_mode === "" || settings.publish_mode === "ONLINE" || settings.publish_mode === "VIEWER" || settings.publish_mode === "PRINT") {
                 settings.publish_sync = true;
@@ -1315,7 +1225,8 @@
 
     // PUBLIC API
 
-    window.getHtml = getHtml;
+    window.biExportGetHtml = window.getHtml = getHtml;
+    window.biExportGetMetadata = getMetadata;
 
     // UTILS
 
@@ -1328,6 +1239,72 @@
             let r = Math.random() * 16 | 0, v = c === "x" ? r : (r & 0x3 | 0x8);
             return v.toString(16);
         });
+    }
+
+    function getMetadata() {
+        let documentContext = commonApp.getShell().findElements(true, e => e.getMetadata().hasProperty("resourceType") && e.getProperty("resourceType") == "STORY")[0].getDocumentContext();
+        let storyModel = documentContext.get("sap.fpa.story.getstorymodel");
+        let entityService = documentContext.get("sap.fpa.bi.entityService");
+        let widgetControls = documentContext.get("sap.fpa.story.document.widgetControls");
+
+        let components = {};
+        storyModel.getAllWidgets().forEach((widget) => {
+            let component = {
+                type: widget.class
+            }
+
+            let widgetControl = widgetControls.filter((control) => control.getWidgetId() == widget.id)[0];
+            if (widgetControl) { // control specific stuff
+                if (typeof widgetControl.getTableController == "function") { // table
+                    let tableControler = widgetControl.getTableController();
+                    let regions = tableControler.getDataRegions();
+                    let cells = regions[0].getCells();
+
+                    component.data = cells.map((row) => row.map((cell) => cell.getJSON()));
+                }
+            }
+
+            components[widget.id] = component;
+        });
+        let datasources = {};
+        entityService.getDatasets().forEach((datasetId) => {
+            let dataset = entityService.getDatasetById(datasetId);
+            datasources[datasetId] = {
+                name: dataset.name,
+                description: dataset.description,
+                model: dataset.model
+            };
+
+            storyModel.getWidgetsByDatasetId(datasetId).forEach((widget) => {
+                components[widget.id].datasource = datasetId;
+            });
+        });
+
+        let result = {
+            components: components,
+            datasources: datasources
+        }
+
+        let applicationEntity = storyModel.getApplicationEntity();
+        if (applicationEntity) { // only for applications (not stories)
+            var app = applicationEntity.app;
+            var names = app.names;
+            
+            for (let key in names) {
+                let name = names[key];
+
+                let obj = JSON.parse(key).pop();
+                let type = Object.keys(obj)[0];
+                let id = obj[type];
+
+                components[id].type = type;
+                components[id].name = name;
+            }
+
+            result.vars = app.globalVars;
+        }
+
+        return result;
     }
 
     function getHtml(settings) {

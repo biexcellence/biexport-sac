@@ -249,10 +249,9 @@
                         let list = oEvent.getSource();
 
                         let value = this[id];
-                        let metadata = this.metadata;
 
                         let visibleComponents = value ? JSON.parse(value) : [];
-                        let allComponents = metadata ? JSON.parse(metadata)["components"] : {};
+                        let allComponents = biExportGetMetadata().components;
                         let components = [];
                         let selectedComponents = {};
                         for (let componentId in allComponents) {
@@ -282,9 +281,8 @@
                         let list = oEvent.getSource();
 
                         let selectedComponents = list.getSelectedKeys();
-                        let metadata = this.metadata;
 
-                        let allComponents = metadata ? JSON.parse(metadata)["components"] : {};
+                        let allComponents = biExportGetMetadata().components;
                         let visibleComponents = [];
                         for (let componentId in allComponents) {
                             let component = allComponents[componentId];
@@ -623,13 +621,6 @@
             this.xls_SelectedWidgets = value;
         }
 
-        get metadata() {
-            return this._metadata;
-        }
-        set metadata(value) {
-            this._metadata = value;
-        }
-
         get oauth() {
             if (this._getValue("oauthClientId")) {
                 return JSON.stringify({
@@ -715,7 +706,6 @@
                 "enableXls",
                 "enableCsv",
 
-                "metadata",
                 "oauth"
             ];
         }
