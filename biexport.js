@@ -209,7 +209,7 @@
                                 let linitial = [];
                                 for (let componentId in components) {
                                     let component = components[componentId];
-                                    var lcomp = {};
+                                    let lcomp = {};
                                     lcomp.component = component.name;
                                     lcomp.isExcluded = false;
                                     linitial.push(lcomp);
@@ -1287,8 +1287,8 @@
 
         let applicationEntity = storyModel.getApplicationEntity();
         if (applicationEntity) { // only for applications (not stories)
-            var app = applicationEntity.app;
-            var names = app.names;
+            let app = applicationEntity.app;
+            let names = app.names;
             
             for (let key in names) {
                 let name = names[key];

@@ -183,7 +183,7 @@
 
             window.addEventListener("message", onMessage);
 
-            var liframe = document.createElement("iframe");
+            let liframe = document.createElement("iframe");
             liframe.setAttribute('id', this._id + "_sharing_iframe");
             liframe.setAttribute('name', "sharing_iframe");
             liframe.setAttribute('style', "display:none;");
