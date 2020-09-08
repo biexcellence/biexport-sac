@@ -1242,7 +1242,8 @@
     }
 
     function getMetadata() {
-        let documentContext = commonApp.getShell().findElements(true, e => e.getMetadata().hasProperty("resourceType") && e.getProperty("resourceType") == "STORY")[0].getDocumentContext();
+        let shell = commonApp.getShell();
+        let documentContext = shell.findElements(true, e => e.getMetadata().hasProperty("resourceType") && e.getProperty("resourceType") == "STORY")[0].getDocumentContext();
         let storyModel = documentContext.get("sap.fpa.story.getstorymodel");
         let entityService = documentContext.get("sap.fpa.bi.entityService");
         let widgetControls = documentContext.get("sap.fpa.story.document.widgetControls");
@@ -1287,9 +1288,22 @@
             datasources: datasources
         }
 
+        // only for applications (not stories)
+        let app;
+
         let applicationEntity = storyModel.getApplicationEntity();
-        if (applicationEntity) { // only for applications (not stories)
-            let app = applicationEntity.app;
+        if (applicationEntity) {
+            app = applicationEntity.app;
+        }
+
+        let outlineContainer = shell.findElements(true, e => e.hasStyleClass && e.hasStyleClass("sapAppBuildingOutline"))[0]; // sId: "__container0"
+        if (outlineContainer) { // outlineContainer has more recent data than applicationEntity during edit
+            try {
+                app = outlineContainer.getReactProps().store.getState().globalState.instances.app["[{\"app\":\"MAIN_APPLICATION\"}]"];
+            } catch (e) { /* ignore */ }
+        }
+
+        if (app) {
             let names = app.names;
 
             for (let key in names) {
