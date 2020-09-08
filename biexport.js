@@ -1249,22 +1249,24 @@
 
         let components = {};
         storyModel.getAllWidgets().forEach((widget) => {
-            let component = {
-                type: widget.class
-            }
-
-            let widgetControl = widgetControls.filter((control) => control.getWidgetId() == widget.id)[0];
-            if (widgetControl) { // control specific stuff
-                if (typeof widgetControl.getTableController == "function") { // table
-                    let tableControler = widgetControl.getTableController();
-                    let regions = tableControler.getDataRegions();
-                    let cells = regions[0].getCells();
-
-                    component.data = cells.map((row) => row.map((cell) => cell.getJSON()));
+            if (widget) { // might be undefined during edit
+                let component = {
+                    type: widget.class
                 }
-            }
 
-            components[widget.id] = component;
+                let widgetControl = widgetControls.filter((control) => control.getWidgetId() == widget.id)[0];
+                if (widgetControl) { // control specific stuff
+                    if (typeof widgetControl.getTableController == "function") { // table
+                        let tableControler = widgetControl.getTableController();
+                        let regions = tableControler.getDataRegions();
+                        let cells = regions[0].getCells();
+
+                        component.data = cells.map((row) => row.map((cell) => cell.getJSON()));
+                    }
+                }
+
+                components[widget.id] = component;
+            }
         });
         let datasources = {};
         entityService.getDatasets().forEach((datasetId) => {
@@ -1289,7 +1291,7 @@
         if (applicationEntity) { // only for applications (not stories)
             let app = applicationEntity.app;
             let names = app.names;
-            
+
             for (let key in names) {
                 let name = names[key];
 
@@ -1297,8 +1299,11 @@
                 let type = Object.keys(obj)[0];
                 let id = obj[type];
 
-                components[id].type = type;
-                components[id].name = name;
+                let component = components[id];
+                if (component) { // might be undefined during edit
+                    component.type = type;
+                    component.name = name;
+                }
             }
 
             result.vars = app.globalVars;
