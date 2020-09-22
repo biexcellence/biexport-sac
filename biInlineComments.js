@@ -93,7 +93,7 @@
             let tablecell;
             tablecell = document.querySelector("#" + this.widgetId + ">div").querySelector('[data-col="' + columnId + '"][data-row="' + rowId + '"]');
             if (tablecell != null) {
-                ltablecell.textContent = index;
+                tablecell.textContent = index;
             }
 
             let tr = document.createElement("tr");
