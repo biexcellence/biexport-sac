@@ -33,19 +33,19 @@
             }
         }
 
-        onCustomWidgetAfterUpdate(changedProperties) {
-            debugger;
+        _updateComments() {
             let table = this._shadowRoot.querySelector("#inlinecomment_div >table");
             let thead = table.children[0];
             let tbody = table.children[1];
 
+            while (thead.hasChildNodes) {
+            thead.removeChild()
+            }
+            while (tbody.hasChildNodes) {
+                tbody.removeChild()
+            }
+
             if (this._data.length > 0) {
-
-                //let header1 = document.createElement("th");
-                //header1.TextContent = "Note"
-
-                //let header2 = document.createElement("th");
-                //header2.TextContent = "Comment"
 
                 for (i = 0; i < this._data.length; i++) {
 
@@ -119,6 +119,8 @@
             lrow.rowNumber = row;
             lrow.columnNumber = column;           
             this._data.push(lrow);
+
+            this._updateComments();
         }
 
         addCommentById(comment, index, rowId, columnId) {
@@ -128,12 +130,16 @@
             lrow.rowId = rowId;
             lrow.columnId = columnId;
             this._data.push(lrow);
-            this._setValue("data", JSON.stringify(this._data));
+
+            this._updateComments();
+
         }
 
         clearComments() {
             this._data = [];
-            this._updateSettings();
+
+            this._updateComments();
+
         }
 
     }
