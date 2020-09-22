@@ -50,7 +50,7 @@
                 //let header2 = document.createElement("th");
                 //header2.TextContent = "Comment"
 
-                for (i = 0; i < this._data.length) {
+                for (i = 0; i < this._data.length; i++) {
 
                     let tablecell;
                     if (this._data[i].columnNumber != null) {
