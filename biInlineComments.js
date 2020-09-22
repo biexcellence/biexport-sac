@@ -37,8 +37,8 @@
         onCustomWidgetAfterUpdate(changedProperties) {
             debugger;
 
-            let thead = this._shadowRoot.querySelector("#inlinecomment_div").firstChild.childNodes(0);
-            let tbody = this._shadowRoot.querySelector("#inlinecomment_div").firstChild.childNodes(1);
+            //let thead = this._shadowRoot.querySelector("#inlinecomment_div").firstChild.childNodes(0);
+            //let tbody = this._shadowRoot.querySelector("#inlinecomment_div").firstChild.childNodes(1);
 
             if (this._data.length > 0) {
 
