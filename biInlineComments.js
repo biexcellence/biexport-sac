@@ -39,10 +39,10 @@
             let tbody = table.children[1];
 
             while (thead.hasChildNodes) {
-            thead.removeChild()
+            thead.removeChild(thead.firstChild)
             }
             while (tbody.hasChildNodes) {
-                tbody.removeChild()
+                tbody.removeChild(thead.firstChild)
             }
 
             if (this._data.length > 0) {
