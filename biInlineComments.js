@@ -100,12 +100,12 @@
 
             let td1 = document.createElement("td");
             td1.setAttribute("class", "default defaultTableCell generalCell hideBorder generalCell dimMember rowDimMemberCell generalCell sapDimMemberCellHeading")
-            td1.TextContent = index;
+            td1.textContent = index;
             tr.appendChild(td1);
 
             let td2 = document.createElement("td");
             td2.setAttribute("class", "default defaultTableCell generalCell hideBorder generalCell dimMember rowDimMemberCell generalCell sapDimMemberCellHeading")
-            td2.TextContent = comment;
+            td2.textContent = comment;
             tr.appendChild(td2);
 
             tbody.appendChild(tr);
