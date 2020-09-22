@@ -16,6 +16,8 @@
         constructor() {
             super();
 
+            debugger;
+
             this._shadowRoot = this.attachShadow({ mode: "open" });
             this._shadowRoot.appendChild(tmpl.content.cloneNode(true));
 
@@ -33,10 +35,10 @@
         }
 
         onCustomWidgetAfterUpdate(changedProperties) {
+            debugger;
+
             let thead = this._shadowRoot.querySelector("#inlinecomment_div").firstChild.childNodes(0);
             let tbody = this._shadowRoot.querySelector("#inlinecomment_div").firstChild.childNodes(1);
-
-            debugger;
 
             if (this._data.length > 0) {
 
