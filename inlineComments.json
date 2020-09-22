@@ -12,7 +12,7 @@
   "webcomponents": [
     {
       "kind": "main",
-      "tag": "com-biexcellence-openbi-sap-sac-inlineComments",
+      "tag": "com-biexcellence-openbi-sap-sac-inlinecomments",
       "url": "https://biexcellence.github.io/biexport-sac/inlineComments.js",
       "integrity": "",
       "ignoreIntegrity": true
