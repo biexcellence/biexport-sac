@@ -11,17 +11,13 @@
       </div>
     `;
 
-    class inlineComments extends HTMLElement {
+    class biInlineComments extends HTMLElement {
 
         constructor() {
             super();
 
             this._shadowRoot = this.attachShadow({ mode: "open" });
             this._shadowRoot.appendChild(tmpl.content.cloneNode(true));
-
-            this._id = createGuid();
-
-            this._shadowRoot.querySelector("#inlinecomment_div").id = this._id + "inlinecomment_div";
 
             this._widgetId = "";
             this._inlineStyle = "";
@@ -139,7 +135,7 @@
         }
 
     }
-    customElements.define("com-biexcellence-openbi-sap-sac-inlinecomments", inlineComments);
+    customElements.define("com-biexcellence-openbi-sap-sac-biinlinecomments", inlineComments);
 
     // UTILS
 
