@@ -52,7 +52,10 @@
 
                 for (i = 0; i < this._data.length) {
 
-                    let tablecell = document.querySelector("#__widget0>div").querySelector('[data-col="' & this._data[i].column & '"][data-row="' & this._data[i].row & '"]');
+                    let tablecell;
+                    if (this._data[i].columnNumber != null) {
+                        tablecell = document.querySelector("#__widget0>div").querySelector('[data-col="' & this._data[i].columnNumber & '"][data-row="' & this._data[i].rowNumber & '"]');
+                    }
                     if (tablecell != null) {
                         ltablecell.textContent = this._data[i].index;
                     }
@@ -114,8 +117,8 @@
             var lrow = {};
             lrow.comment = comment;
             lrow.index = index;
-            lrow.row = row;
-            lrow.column = column;           
+            lrow.rowNumber = row;
+            lrow.columnNumber = column;           
             this._data.push(lrow);
         }
 
@@ -123,8 +126,8 @@
             var lrow = {};
             lrow.comment = comment;
             lrow.index = index;
-            lrow.row = rowId;
-            lrow.column = columnId;
+            lrow.rowId = rowId;
+            lrow.columnId = columnId;
             this._data.push(lrow);
         }
 

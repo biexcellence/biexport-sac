@@ -121,12 +121,12 @@
         },
         {
           "name": "rowId",
-          "type": "String",
+          "type": "string",
           "description": "The row ID for which the footnote shall be displayed"
         },
         {
           "name": "columnId",
-          "type": "String",
+          "type": "string",
           "description": "The column ID in which the footnote shall be displayed"
         }
       ]
