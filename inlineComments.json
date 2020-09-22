@@ -1,0 +1,140 @@
+{
+  "id": "com.biexcellence.openbi.sap.sac.inlineComments",
+  "version": "0.0.1",
+  "name": "Inline Comments",
+  "description": "Display comments as footnote in table widget",
+  "newInstancePrefix": "inlineComments",
+  "icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAABegAAAXoBMrnI/AAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAJGSURBVDiNlZNPSNNxGMY/399+++OWuKaJQ0MtBItBhYwEEexQhNglECLq0EU9mZ06Ti8dIujQITqEBy+B1wjrkFEQBWqUaC3NBUtLs7ma+/v783YQl3MW9MD38uV5PvA+Ly8iwt/e8Jvj/uHJLv1fHiUi7NTIfMhF1hoUuA7UAIgtQ1o4eieC2OxSCWBkPrSPnDUjQstuI6hH6uH7c5FIKUQrhsdDLnLmp73DANItPa1ju3+LADlk3xZRtXuHi7o4Mn3kTNkIg4st7sBPPVdmt7Wn8c/dE3a+qlfTkh8DwVdL3sofffXKd7CvbcoA0AGqk84WUaVlGob7QezDpbDfp92s8gsOpcKpRJjkerzf0Tx7ARj7M4JXW98ZLuR9d+fnLp91u7TDfp/QUKM4VOek2qfjMCvvff1S4yjt4OjcmhJiAAoVn5o534mFXwMcCjy64HFChbsCpYR0siFy690xXxEQQey8wzyJKHPmbdt9KIQsFAVT2MzCSkIRWy0Q9DZxwBdkv9ffNPHC4ynZwo0TC98XYgPtqZRnwJY0hpkiYxgkMibLGxmWN35RsDUEjcbqZnTcjcUSt7Xy7fQVHF2WLY/HDSvemc276iwLMpoBKs3i2hIBXxXR1XnyhmOpDCDQhjjrhZ5eCzNhW6+fmXY0q6uNAKRbp+MrVbZkcpYEr04OTSbLAEAMaN8qUw/YdHQVpIPC1oY3ESMqyjma9mRGtwMlADOr9esemQU5hVK1ILYgawrmNOF5zgo8eXmtIbszU3aN/6vfbVAouCAyeN4AAAAASUVORK5CYII=",
+  "vendor": "bi excellence software GmbH",
+  "eula": "",
+  "license": "",
+  "imports": [ "input-controls" ],
+  "webcomponents": [
+    {
+      "kind": "main",
+      "tag": "com-biexcellence-openbi-sap-sac-inlineComments",
+      "url": "https://biexcellence.github.io/biexport-sac/inlineComments.js",
+      "integrity": "",
+      "ignoreIntegrity": true
+    }
+  ],
+  "properties": {
+    "tableWidgetID": {
+      "type": "string",
+      "description": "The ID of the table widget that shall display the footnote",
+      "default": ""
+    },
+    "styleInline": {
+      "type": "string",
+      "description": "The CSS style for the inline footnote",
+      "default": ""
+    },
+    "styleLegend": {
+      "type": "string",
+      "description": "The CSS style for the footnote legend ",
+      "default": ""
+    }
+  },
+  "methods": {
+    "getWidgetID": {
+      "returnType": "string",
+      "description": "Get the Widget ID",
+      "parameters": []
+    },
+    "setWidgetID": {
+      "description": "Set the Widget ID",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "description": "The new Widget ID"
+        }
+      ]
+    },
+    "getInlineStlye": {
+      "returnType": "string",
+      "description": "Get the Footnote Inline Style",
+      "parameters": []
+    },
+    "setInlineStyle": {
+      "description": "Set the Footnote Inline Style",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "description": "The new Footnote Inline Style"
+        }
+      ]
+    },
+    "getLegendStlye": {
+      "returnType": "string",
+      "description": "Get the Footnote Legend Style",
+      "parameters": []
+    },
+    "setLegendStyle": {
+      "description": "Set the FootnoteLegend Style",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "description": "The new Footnote Legend Style"
+        }
+      ]
+    },
+    "addCommentByNumber": {
+      "description": "Add a comment to be displayed.",
+      "parameters": [
+        {
+          "name": "comment",
+          "type": "string",
+          "description": "The comment to be displayed"
+        },
+        {
+          "name": "index",
+          "type": "integer",
+          "description": "The footnote index to be displayed"
+        },
+        {
+          "name": "row",
+          "type": "integer",
+          "description": "The row number for which the footnote shall be displayed"
+        },
+        {
+          "name": "column",
+          "type": "integer",
+          "description": "The column number in which the footnote shall be displayed"
+        }
+      ]
+    },
+    "addCommentById": {
+      "description": "Add a comment to be displayed.",
+      "parameters": [
+        {
+          "name": "comment",
+          "type": "string",
+          "description": "The comment to be displayed"
+        },
+        {
+          "name": "index",
+          "type": "integer",
+          "description": "The footnote index to be displayed"
+        },
+        {
+          "name": "rowId",
+          "type": "String",
+          "description": "The row ID for which the footnote shall be displayed"
+        },
+        {
+          "name": "columnId",
+          "type": "String",
+          "description": "The column ID in which the footnote shall be displayed"
+        }
+      ]
+    },
+    "clearComments": {
+      "description": "Clears all Comments"
+    }
+  },
+  "events": {
+  }
+}
