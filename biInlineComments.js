@@ -91,23 +91,21 @@
             let tbody = table.children[1];
 
             let tablecell;
-            if (this._data[i].columnNumber != null) {
-                tablecell = document.querySelector("#__widget0>div").querySelector('[data-col="' & this._data[i].columnNumber & '"][data-row="' & this._data[i].rowNumber & '"]');
-            }
+                tablecell = document.querySelector("#__widget0>div").querySelector('[data-col="' & columnId & '"][data-row="' & rowId & '"]');
             if (tablecell != null) {
-                ltablecell.textContent = this._data[i].index;
+                ltablecell.textContent = index;
             }
 
             let tr = document.createElement("tr");
 
             let td1 = document.createElement("td");
             td1.setAttribute("class", "default defaultTableCell generalCell hideBorder generalCell dimMember rowDimMemberCell generalCell sapDimMemberCellHeading")
-            td1.TextContent = this._data[i].index;
+            td1.TextContent = index;
             tr.appendChild(td1);
 
             let td2 = document.createElement("td");
             td2.setAttribute("class", "default defaultTableCell generalCell hideBorder generalCell dimMember rowDimMemberCell generalCell sapDimMemberCellHeading")
-            td2.TextContent = this._data[i].comment;
+            td2.TextContent = comment;
             tr.appendChild(td2);
 
             tbody.appendChild(tr);
