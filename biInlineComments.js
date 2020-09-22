@@ -38,11 +38,11 @@
             let thead = table.children[0];
             let tbody = table.children[1];
 
-            while (thead.hasChildNodes) {
-            thead.removeChild(thead.firstChild)
+            while (thead.firstChild) {
+            thead.removeChild(thead.lastChild)
             }
-            while (tbody.hasChildNodes) {
-                tbody.removeChild(thead.firstChild)
+            while (tbody.firstChild) {
+                tbody.removeChild(thead.lastChild )
             }
 
             if (this._data.length > 0) {
