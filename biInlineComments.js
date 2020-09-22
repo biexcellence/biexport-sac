@@ -33,49 +33,6 @@
             }
         }
 
-        _updateComments() {
-            let table = this._shadowRoot.querySelector("#inlinecomment_div >table");
-            let thead = table.children[0];
-            let tbody = table.children[1];
-
-            while (thead.firstChild) {
-            thead.removeChild(thead.lastChild)
-            }
-            while (tbody.firstChild) {
-                tbody.removeChild(thead.lastChild )
-            }
-
-            if (this._data.length > 0) {
-
-                for (var i = 0; i < this._data.length; i++) {
-
-                    let tablecell;
-                    if (this._data[i].columnNumber != null) {
-                        tablecell = document.querySelector("#__widget0>div").querySelector('[data-col="' & this._data[i].columnNumber & '"][data-row="' & this._data[i].rowNumber & '"]');
-                    }
-                    if (tablecell != null) {
-                        ltablecell.textContent = this._data[i].index;
-                    }
-                    
-                    let tr = document.createElement("tr");
-
-                    let td1 = document.createElement("td");
-                    td1.setAttribute("class", "default defaultTableCell generalCell hideBorder generalCell dimMember rowDimMemberCell generalCell sapDimMemberCellHeading")
-                    td1.TextContent = this._data[i].index;
-                    tr.appendChild(td1);
-
-                    let td2 = document.createElement("td");
-                    td2.setAttribute("class", "default defaultTableCell generalCell hideBorder generalCell dimMember rowDimMemberCell generalCell sapDimMemberCellHeading")
-                    td2.TextContent = this._data[i].comment;
-                    tr.appendChild(td2);
-
-                    tbody.appendChild(tr);
-
-                }
-            }
-
-        }
-
         // SETTINGS
 
         getWidgetID() {
@@ -120,7 +77,6 @@
             lrow.columnNumber = column;           
             this._data.push(lrow);
 
-            this._updateComments();
         }
 
         addCommentById(comment, index, rowId, columnId) {
@@ -131,14 +87,46 @@
             lrow.columnId = columnId;
             this._data.push(lrow);
 
-            this._updateComments();
+            let table = this._shadowRoot.querySelector("#inlinecomment_div >table");
+            let tbody = table.children[1];
+
+            let tablecell;
+            if (this._data[i].columnNumber != null) {
+                tablecell = document.querySelector("#__widget0>div").querySelector('[data-col="' & this._data[i].columnNumber & '"][data-row="' & this._data[i].rowNumber & '"]');
+            }
+            if (tablecell != null) {
+                ltablecell.textContent = this._data[i].index;
+            }
+
+            let tr = document.createElement("tr");
+
+            let td1 = document.createElement("td");
+            td1.setAttribute("class", "default defaultTableCell generalCell hideBorder generalCell dimMember rowDimMemberCell generalCell sapDimMemberCellHeading")
+            td1.TextContent = this._data[i].index;
+            tr.appendChild(td1);
+
+            let td2 = document.createElement("td");
+            td2.setAttribute("class", "default defaultTableCell generalCell hideBorder generalCell dimMember rowDimMemberCell generalCell sapDimMemberCellHeading")
+            td2.TextContent = this._data[i].comment;
+            tr.appendChild(td2);
+
+            tbody.appendChild(tr);
 
         }
 
         clearComments() {
             this._data = [];
 
-            this._updateComments();
+            let table = this._shadowRoot.querySelector("#inlinecomment_div >table");
+            let thead = table.children[0];
+            let tbody = table.children[1];
+
+            while (thead.firstChild) {
+                thead.removeChild(thead.lastChild)
+            }
+            while (tbody.firstChild) {
+                tbody.removeChild(thead.lastChild)
+            }
 
         }
 
