@@ -36,9 +36,9 @@
 
         onCustomWidgetAfterUpdate(changedProperties) {
             debugger;
-            let table = this._shadowRoot.querySelector("#inlinecomment_div").firstChild;
-            let thead = table.childNodes[0];
-            let tbody = table.childNodes[1];
+            let table = this._shadowRoot.querySelector("#inlinecomment_div >table");
+            let thead = table.children[0];
+            let tbody = table.children[1];
 
             if (this._data.length > 0) {
 
