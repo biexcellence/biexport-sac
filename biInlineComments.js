@@ -77,21 +77,11 @@
             lrow.columnNumber = column;           
             this._data.push(lrow);
 
-        }
-
-        addCommentById(comment, index, rowId, columnId) {
-            var lrow = {};
-            lrow.comment = comment;
-            lrow.index = index;
-            lrow.rowId = rowId;
-            lrow.columnId = columnId;
-            this._data.push(lrow);
-
             let table = this._shadowRoot.querySelector("#inlinecomment_div >table");
             let tbody = table.children[1];
 
             let tablecell;
-            tablecell = document.querySelector("#" + this.widgetId + ">div").querySelector('[data-col="' + columnId + '"][data-row="' + rowId + '"]');
+            tablecell = document.querySelector("#" + this.widgetId + ">div").querySelector('[data-col="' + column + '"][data-row="' + row + '"]');
             if (tablecell != null) {
                 tablecell.textContent = index;
             }
@@ -109,6 +99,15 @@
             tr.appendChild(td2);
 
             tbody.appendChild(tr);
+        }
+
+        addCommentById(comment, index, rowId, columnId) {
+            var lrow = {};
+            lrow.comment = comment;
+            lrow.index = index;
+            lrow.rowId = rowId;
+            lrow.columnId = columnId;
+            this._data.push(lrow);
 
         }
 
