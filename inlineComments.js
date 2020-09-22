@@ -4,7 +4,7 @@
       <style>
       </style>
       <div id="inlinecomment_div" name="inlinecomment_div">
-      <table>
+      <table class="sapEpmUiControlCrosstab">
         <thead></thead>
         <tbody></tbody>
       </table>
@@ -44,11 +44,11 @@
 
             if (this._data.length > 0) {
 
-                'let header1 = document.createElement("th");
-                'header1.TextContent = "Note"
+                //let header1 = document.createElement("th");
+                //header1.TextContent = "Note"
 
-                'let header2 = document.createElement("th");
-                'header2.TextContent = "Comment"
+                //let header2 = document.createElement("th");
+                //header2.TextContent = "Comment"
 
                 for (i = 0; i < this._data.length) {
 
@@ -63,10 +63,12 @@
                     let tr = document.createElement("tr");
 
                     let td1 = document.createElement("td");
+                    td1.setAttribute("class", "default defaultTableCell generalCell hideBorder generalCell dimMember rowDimMemberCell generalCell sapDimMemberCellHeading")
                     td1.TextContent = this._data[i].index;
                     tr.appendChild(td1);
 
                     let td2 = document.createElement("td");
+                    td2.setAttribute("class", "default defaultTableCell generalCell hideBorder generalCell dimMember rowDimMemberCell generalCell sapDimMemberCellHeading")
                     td2.TextContent = this._data[i].comment;
                     tr.appendChild(td2);
 
