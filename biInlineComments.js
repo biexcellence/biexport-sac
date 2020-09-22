@@ -91,7 +91,7 @@
             let tbody = table.children[1];
 
             let tablecell;
-                tablecell = document.querySelector("#__widget0>div").querySelector('[data-col="' & columnId & '"][data-row="' & rowId & '"]');
+            tablecell = document.querySelector("#" & this.widgetId & ">div").querySelector('[data-col="' & columnId & '"][data-row="' & rowId & '"]');
             if (tablecell != null) {
                 ltablecell.textContent = index;
             }
