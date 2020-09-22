@@ -47,7 +47,7 @@
 
             if (this._data.length > 0) {
 
-                for (i = 0; i < this._data.length; i++) {
+                for (var i = 0; i < this._data.length; i++) {
 
                     let tablecell;
                     if (this._data[i].columnNumber != null) {
