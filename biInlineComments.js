@@ -21,9 +21,10 @@
             this._shadowRoot = this.attachShadow({ mode: "open" });
             this._shadowRoot.appendChild(tmpl.content.cloneNode(true));
 
-            this._widgetId = "";
-            this._inlineStyle = "";
-            this._legendStyle = "";
+            this.widgetId = "";
+            this.inlineStyle = "";
+            this.legendStyle = "";
+            this.data = "";
             this._data = [];
 
         }
@@ -129,6 +130,7 @@
             lrow.rowId = rowId;
             lrow.columnId = columnId;
             this._data.push(lrow);
+            this._setValue("data", JSON.stringify(this._data));
         }
 
         clearComments() {
