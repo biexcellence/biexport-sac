@@ -135,7 +135,7 @@
         }
 
     }
-    customElements.define("com-biexcellence-openbi-sap-sac-biinlinecomments", inlineComments);
+    customElements.define("com-biexcellence-openbi-sap-sac-biinlinecomments", biInlineComments);
 
     // UTILS
 
