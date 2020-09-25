@@ -968,6 +968,23 @@
             this._updateSettings();
         }
 
+        addPdfSection(name, header, footer, content, orientation, iterative) {
+            if (!this._export_settings.pdf_page_sections) {
+                this._export_settings.pdf_page_sections = [];
+            }
+            this._export_settings.pdf_page_sections.push({
+                "name": name, "header": header, "footer": footer, "template": content, "optimizeheight": false, "iterative": iterative, "orientation": orientation
+            });
+
+            // workaround as page section does not support orientation currently
+            this._export_settings.pdf_orient = orientation;
+            this._updateSettings();
+        }
+        clearPdfSections() {
+            this._export_settings.pdf_page_sections = "";
+            this._updateSettings();
+        }
+
         addBriefingBookDefinition(parameters, index, filename, template, customTexts, selectedWidgets, applicationIds) {
             if (!this._export_settings.array_var) {
                 this._export_settings.array_var = [];

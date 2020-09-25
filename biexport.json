@@ -730,6 +730,44 @@
     "clearURLParameters": {
       "description": "Clears all URLs parameters which are used during background execution."
     },
+    "addPdfSection": {
+      "description": "Add a PDF Section as an Export Template.",
+      "parameters": [
+        {
+          "name": "name",
+          "type": "string",
+          "description": "The name of the PDF Section. May be empty."
+        },
+        {
+          "name": "header",
+          "type": "string",
+          "description": "The page header for the PDF Section."
+        },
+        {
+          "name": "footer",
+          "type": "string",
+          "description": "The page footer for the PDF Section."
+        },
+        {
+          "name": "content",
+          "type": "string",
+          "description": "The page content for the PDF Section."
+        },
+        {
+          "name": "orientation",
+          "type": "string",
+          "description": "(P)ortrait or (L)andscape."
+        },
+        {
+          "name": "iterative",
+          "type": "boolean",
+          "description": "Whether the URL parameter values should be iterated over."
+        }
+      ]
+    },
+    "clearPdfSections": {
+      "description": "Clears all PDF Sections."
+    },
     "addBriefingBookDefinition": {
       "description": "Add a Briefing Book Definition which is used during background execution.",
       "parameters": [
