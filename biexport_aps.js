@@ -710,7 +710,7 @@
         }
 
         get pdfFooter() {
-            return this.pdf_header;
+            return this.pdf_footer;
         }
         set pdfFooter(value) {
             this.pdf_footer = value;
