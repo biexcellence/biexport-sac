@@ -70,6 +70,9 @@
                   <td><input id="pdfTemplate" name="pdfTemplate" type="text"></td>
                 </tr>
                 <tr>
+                  <td colspan="2"><slot name="pdf_PageSections"></slot></td>
+                </tr>
+                <tr>
                   <td colspan="2"><slot name="pdf_SelectedWidgets"></slot></td>
                 </tr>
               </table>
@@ -320,6 +323,105 @@
                 filter.addStyleClass("sapUiSizeCompact");
                 filter.placeAt(excludeSlot);
             });
+
+            // notificationHtml
+            let slotId = "pdf_PageSections";
+            let idHeader = "pdfHeader";
+            let idFooter = "pdfFooter";
+            let idOrientation = "pdfOrient";
+
+            let link = new sap.m.Link({
+                text: "Edit PDF Sections...",
+                press: oEvent => {
+
+                    let orientDropdown = new sap.m.sample.ComboBox.controller.ComboBox({
+                        items: [new sap.ui.core.ListItem("P", {
+                            text: "Portrait"
+                        }), new sap.ui.core.ListItem("L", {
+                            text: "Landscape"
+                        })]
+                    });
+
+                    let textEditorHeader = new sap.ui.richtexteditor.RichTextEditor({
+                        editorType: sap.ui.richtexteditor.EditorType.TinyMCE4,
+                        width: "100%",
+                        height: "100%",
+                        customToolbar: true,
+                        showGroupFont: true,
+                        showGroupLink: true,
+                        showGroupInsert: true,
+                        value: this[idHeader],
+                        ready: oEvent => {
+                        },
+                        change: oEvent => {
+                        }
+                    });
+
+                    let textEditorFooter = new sap.ui.richtexteditor.RichTextEditor({
+                        editorType: sap.ui.richtexteditor.EditorType.TinyMCE4,
+                        width: "100%",
+                        height: "100%",
+                        customToolbar: true,
+                        showGroupFont: true,
+                        showGroupLink: true,
+                        showGroupInsert: true,
+                        value: this[idFooter],
+                        ready: oEvent => {
+                        },
+                        change: oEvent => {
+                        }
+                    });
+
+                    let dialog = new sap.m.Dialog({
+                        title: "Edit Pdf Section",
+                        contentWidth: "800px",
+                        contentHeight: "500px",
+                        draggable: true,
+                        resizable: true,
+                        content: [
+                            orientDropdown, textEditorHeader, textEditorFooter
+                        ],
+                        beginButton: new sap.m.Button({
+                            text: "Submit",
+                            press: () => {
+                                debugger;
+                                let properties = {};
+                                let value = textEditorHeader.getValue();
+                                this[idHeader] = properties[idHeader] = value;
+                                value = textEditorFooter.getValue();
+                                this[idFooter] = properties[idFooter] = value;
+                                value = orientDropdown.getSelectedKey();
+                                this[idOrientation] = properties[idOrientation] = value;
+                                this._firePropertiesChanged(properties);
+                                dialog.close();
+                            }
+                        }),
+                        endButton: new sap.m.Button({
+                            text: "Cancel",
+                            press: () => {
+                                dialog.close();
+                            }
+                        }),
+                        beforeOpen: () => {
+                        },
+                        afterClose: () => {
+                            // textEditor.destroy();
+                            dialog.destroy();
+                        }
+                    });
+
+                    dialog.open();
+
+                }
+            });
+
+            let excludeSlot = document.createElement("div");
+            excludeSlot.slot = slotId;
+            this.appendChild(excludeSlot);
+
+            link.addStyleClass("sapUiSizeCompact");
+            link.placeAt(excludeSlot);
+
         }
 
         connectedCallback() {
@@ -678,6 +780,10 @@
 
                 "pdfTemplate",
                 "pdfSelectedWidgets",
+
+                "pdfHeader",
+                "pdfFooter",
+                "pdfOrient",
 
                 "pptSeparate",
                 "pptTemplate",

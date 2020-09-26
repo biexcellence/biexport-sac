@@ -168,6 +168,22 @@
       "default": false
     },
 
+    "pdfHeader": {
+      "type": "string",
+      "description": "The PDF Header",
+      "default": ""
+    },
+    "pdfFooter": {
+      "type": "string",
+      "description": "The PDF Footer",
+      "default": ""
+    },
+    "pdfOrient": {
+      "type": "string",
+      "description": "The PDF Orientation",
+      "default": "L"
+    },
+
     "pdfSelectedWidgets": {
       "type": "string",
       "description": "Selected Widgets for PDF export",

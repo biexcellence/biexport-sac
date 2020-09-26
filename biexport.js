@@ -72,9 +72,9 @@
             this._export_settings.format = "";
             this._export_settings.URL = "";
 
-            this._export_settings.pdf_orient = "";
-            this._export_settings.pdf_header = "";
-            this._export_settings.pdf_footer = "";
+            this._export_settings.pdf_orient = "L";
+            this._export_settings.pdf_header = '<table width=1000px style="font - family: Arial; "><tr><td width=850px>SAC Export</td><td width=150px><img src="" width=150px></table>';
+            this._export_settings.pdf_footer = '<table width=1000px style="font - family: Arial;"><tr><td>%PAGE% of %PAGES%</td></tr></table>';
             this._export_settings.pdf_size = "";
             this._export_settings.pdf_width = "";
             this._export_settings.pdf_height = "";
@@ -761,6 +761,30 @@
         }
         set xlsTemplate(value) {
             this._export_settings.xls_template = value;
+            this._updateSettings();
+        }
+
+        get pdfHeader() {
+            return this._export_settings.pdf_header;
+        }
+        set pdfHeader(value) {
+            this._export_settings.pdf_header = value;
+            this._updateSettings();
+        }
+
+        get pdfFooter() {
+            return this._export_settings.pdf_footer;
+        }
+        set pdfFooter(value) {
+            this._export_settings.pdf_footer = value;
+            this._updateSettings();
+        }
+
+        get pdfOrient() {
+            return this._export_settings.pdf_orient;
+        }
+        set pdfOrient(value) {
+            this._export_settings.pdf_orient = value;
             this._updateSettings();
         }
 
