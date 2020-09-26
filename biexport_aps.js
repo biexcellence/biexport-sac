@@ -339,7 +339,8 @@
                             text: "Portrait"
                         }), new sap.ui.core.ListItem("L", {
                             text: "Landscape"
-                        })]
+                        })],
+                        selectedItemId: this[idOrientation]
                     });
 
                     let textEditorHeader = new sap.ui.richtexteditor.RichTextEditor({
@@ -384,13 +385,12 @@
                         beginButton: new sap.m.Button({
                             text: "Submit",
                             press: () => {
-                                debugger;
                                 let properties = {};
                                 let value = textEditorHeader.getValue();
                                 this[idHeader] = properties[idHeader] = value;
                                 value = textEditorFooter.getValue();
                                 this[idFooter] = properties[idFooter] = value;
-                                value = orientDropdown.getSelectedKey();
+                                value = orientDropdown.getSelectedItemId();
                                 this[idOrientation] = properties[idOrientation] = value;
                                 this._firePropertiesChanged(properties);
                                 dialog.close();
