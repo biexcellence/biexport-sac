@@ -171,12 +171,12 @@
     "pdfHeader": {
       "type": "string",
       "description": "The PDF Header",
-      "default": ""
+      "default": "<table width=1000px style=\"font - family: Arial; \"><tr><td width=850px>SAC Export</td><td width=150px><img src=\"\" width=150px></table>"
     },
     "pdfFooter": {
       "type": "string",
       "description": "The PDF Footer",
-      "default": ""
+      "default": "<table width=1000px style=\"font - family: Arial;\"><tr><td>%PAGE% of %PAGES%</td></tr></table>"
     },
     "pdfOrient": {
       "type": "string",

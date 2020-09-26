@@ -695,6 +695,28 @@
             this._setBooleanValue("enableCsv", value);
         }
 
+        get pdfOrient() {
+            return this.pdf_orient;
+        }
+        set pdfOrient(value) {
+            this.pdf_orient = value;
+        }
+
+        get pdfHeader() {
+            return this.pdf_header;
+        }
+        set pdfHeader(value) {
+            this.pdf_header = value;
+        }
+
+        get pdfFooter() {
+            return this.pdf_header;
+        }
+        set pdfFooter(value) {
+            this.pdf_footer = value;
+        }
+
+
         get pdfSelectedWidgets() {
             return this.pdf_SelectedWidgets;
         }
