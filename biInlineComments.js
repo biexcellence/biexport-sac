@@ -93,9 +93,9 @@
                     }
                 }
                 if (tablecell.nextSibling != null) {
-                    tablecell.style.color = "rgb(51, 51, 51)";
-                } else {
                     tablecell.style.color = tablecell.nextSibling.style.color
+                } else {
+                    tablecell.style.color = "rgb(51, 51, 51)";
                 }
             }
 
@@ -103,7 +103,7 @@
 
             let td1 = document.createElement("td");
             td1.setAttribute("class", "default defaultTableCell generalCell hideBorder generalCell dimMember rowDimMemberCell generalCell sapDimMemberCellHeading")
-            td1.textContent = index;
+            td1.textContent = commentindex;
             tr.appendChild(td1);
 
             let td2 = document.createElement("td");
