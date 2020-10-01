@@ -87,7 +87,12 @@
                 tablecell = document.querySelector("#" + this.widgetId + ">div").querySelector('[data-tablecol="' + column + '"][data-tablerow="' + row + '"]');
             }
             if (tablecell != null) {
-                tablecell.textContent = index;
+                tablecell.ChildNodes[0] = index;
+                if (ltablecell.nextSibling != null) {
+                    ltablecell.style.color = "rgb(51, 51, 51)";
+                } else {
+                    ltablecell.style.color = ltablecell.nextSibling.style.color
+                }
             }
 
             let tr = document.createElement("tr");
