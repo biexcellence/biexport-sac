@@ -82,6 +82,10 @@
 
             let tablecell;
             tablecell = document.querySelector("#" + this.widgetId + ">div").querySelector('[data-col="' + column + '"][data-row="' + row + '"]');
+            // fallback for other table rendering
+            if (tablecell == null) {
+                tablecell = document.querySelector("#" + this.widgetId + ">div").querySelector('[data-tablecol="' + column + '"][data-tablerow="' + row + '"]');
+            }
             if (tablecell != null) {
                 tablecell.textContent = index;
             }
