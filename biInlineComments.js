@@ -69,10 +69,10 @@
             }));
         }
 
-        addCommentByNumber(comment, index, row, column) {
+        addCommentByNumber(comment, commentindex, row, column) {
             var lrow = {};
             lrow.comment = comment;
-            lrow.index = index;
+            lrow.index = commentindex;
             lrow.rowNumber = row;
             lrow.columnNumber = column;           
             this._data.push(lrow);
@@ -87,7 +87,7 @@
                 tablecell = document.querySelector("#" + this.widgetId + ">div").querySelector('[data-tablecol="' + column + '"][data-tablerow="' + row + '"]');
             }
             if (tablecell != null) {
-                tablecell.childNodes[0] = index;
+                tablecell.childNodes[0] = commentindex.toString();
                 if (ltablecell.nextSibling != null) {
                     ltablecell.style.color = "rgb(51, 51, 51)";
                 } else {
