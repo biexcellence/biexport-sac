@@ -87,7 +87,7 @@
                 tablecell = document.querySelector("#" + this.widgetId + ">div").querySelector('[data-tablecol="' + column + '"][data-tablerow="' + row + '"]');
             }
             if (tablecell != null) {
-                tablecell.ChildNodes[0] = index;
+                tablecell.childNodes[0] = index;
                 if (ltablecell.nextSibling != null) {
                     ltablecell.style.color = "rgb(51, 51, 51)";
                 } else {
