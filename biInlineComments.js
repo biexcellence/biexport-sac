@@ -87,7 +87,11 @@
                 tablecell = document.querySelector("#" + this.widgetId + ">div").querySelector('[data-tablecol="' + column + '"][data-tablerow="' + row + '"]');
             }
             if (tablecell != null) {
-                tablecell.childNodes[0] = commentindex.toString();
+                for (var i = 1; i < tablecell.childNodes.length; i++) {
+                    if (tablecell.childNodes[i].nodeType == 3) {
+                        tablecell.childNodes[i].nodeValue = commentindex.toString();
+                    }
+                }
                 if (ltablecell.nextSibling != null) {
                     ltablecell.style.color = "rgb(51, 51, 51)";
                 } else {
