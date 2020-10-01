@@ -122,7 +122,7 @@
                 thead.removeChild(thead.lastChild)
             }
             while (tbody.firstChild) {
-                tbody.removeChild(thead.lastChild)
+                tbody.removeChild(tbody.lastChild)
             }
 
         }
