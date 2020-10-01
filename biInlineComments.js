@@ -87,15 +87,15 @@
                 tablecell = document.querySelector("#" + this.widgetId + ">div").querySelector('[data-tablecol="' + column + '"][data-tablerow="' + row + '"]');
             }
             if (tablecell != null) {
-                for (var i = 1; i < tablecell.childNodes.length; i++) {
+                for (var i = 0; i < tablecell.childNodes.length; i++) {
                     if (tablecell.childNodes[i].nodeType == 3) {
                         tablecell.childNodes[i].nodeValue = commentindex.toString();
                     }
                 }
-                if (ltablecell.nextSibling != null) {
-                    ltablecell.style.color = "rgb(51, 51, 51)";
+                if (tablecell.nextSibling != null) {
+                    tablecell.style.color = "rgb(51, 51, 51)";
                 } else {
-                    ltablecell.style.color = ltablecell.nextSibling.style.color
+                    tablecell.style.color = tablecell.nextSibling.style.color
                 }
             }
 
