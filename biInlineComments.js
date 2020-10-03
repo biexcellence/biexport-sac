@@ -39,6 +39,10 @@
             return this.widgetId;
         }
         setWidgetID(value) {
+            var lmetadata = getMetadata();
+            for (var i = 0; i < lmetadata.components.length; i++) {
+                // if (lmetadata.components[i] = 
+            }
             this._setValue("widgetId", value);
         }
 
@@ -89,7 +93,13 @@
             if (tablecell != null) {
                 for (var i = 0; i < tablecell.childNodes.length; i++) {
                     if (tablecell.childNodes[i].nodeType == 3) {
-                        tablecell.childNodes[i].nodeValue = commentindex.toString();
+                        var larray = [];
+                        for (var j = 0; j < this._data.length; j++) {
+                            if (this._data[j].rowNumber == lrow.rowNumber && this._data[j].columnNumber == lrow.columnNumber) {
+                                larray.push(this._data[j].commentindex);
+                            }
+                        }
+                        tablecell.childNodes[i].nodeValue = larray.join(", "); // commentindex.toString();
                     }
                 }
                 if (tablecell.nextSibling != null) {
@@ -146,6 +156,91 @@
     // UTILS
 
     const contentDispositionFilenameRegExp = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/i;
+
+    function getMetadata() {
+        let shell = commonApp.getShell();
+        let documentContext = shell.findElements(true, e => e.getMetadata().hasProperty("resourceType") && e.getProperty("resourceType") == "STORY")[0].getDocumentContext();
+        let storyModel = documentContext.get("sap.fpa.story.getstorymodel");
+        let entityService = documentContext.get("sap.fpa.bi.entityService");
+        let widgetControls = documentContext.get("sap.fpa.story.document.widgetControls");
+
+        let components = {};
+        storyModel.getAllWidgets().forEach((widget) => {
+            if (widget) { // might be undefined during edit
+                let component = {
+                    type: widget.class
+                }
+
+                let widgetControl = widgetControls.filter((control) => control.getWidgetId() == widget.id)[0];
+                if (widgetControl) { // control specific stuff
+                    if (typeof widgetControl.getTableController == "function") { // table
+                        let tableControler = widgetControl.getTableController();
+                        let regions = tableControler.getDataRegions();
+                        let cells = regions[0].getCells();
+
+                        component.data = cells.map((row) => row.map((cell) => cell.getJSON()));
+                    }
+                }
+
+                components[widget.id] = component;
+            }
+        });
+        let datasources = {};
+        entityService.getDatasets().forEach((datasetId) => {
+            let dataset = entityService.getDatasetById(datasetId);
+            datasources[datasetId] = {
+                name: dataset.name,
+                description: dataset.description,
+                model: dataset.model
+            };
+
+            storyModel.getWidgetsByDatasetId(datasetId).forEach((widget) => {
+                components[widget.id].datasource = datasetId;
+            });
+        });
+
+        let result = {
+            components: components,
+            datasources: datasources
+        }
+
+        // only for applications (not stories)
+        let app;
+
+        let applicationEntity = storyModel.getApplicationEntity();
+        if (applicationEntity) {
+            app = applicationEntity.app;
+        }
+
+        let outlineContainer = shell.findElements(true, e => e.hasStyleClass && e.hasStyleClass("sapAppBuildingOutline"))[0]; // sId: "__container0"
+        if (outlineContainer) { // outlineContainer has more recent data than applicationEntity during edit
+            try {
+                app = outlineContainer.getReactProps().store.getState().globalState.instances.app["[{\"app\":\"MAIN_APPLICATION\"}]"];
+            } catch (e) { /* ignore */ }
+        }
+
+        if (app) {
+            let names = app.names;
+
+            for (let key in names) {
+                let name = names[key];
+
+                let obj = JSON.parse(key).pop();
+                let type = Object.keys(obj)[0];
+                let id = obj[type];
+
+                let component = components[id];
+                if (component) { // might be undefined during edit
+                    component.type = type;
+                    component.name = name;
+                }
+            }
+
+            result.vars = app.globalVars;
+        }
+
+        return result;
+    }
 
     function createGuid() {
         return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
