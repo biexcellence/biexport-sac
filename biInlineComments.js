@@ -41,7 +41,7 @@
         setWidgetID(value) {
             var lmetadata = getMetadata();
             var lkey = "";
-            for (key in lmetadata.components) {
+            for (var key in lmetadata.components) {
                 if (lmetadata.components[key].name == value) {
                     this._setValue("widgetId", key);
                     lkey = key;
@@ -92,10 +92,18 @@
             let tbody = table.children[1];
 
             let tablecell;
-            tablecell = document.querySelector("#" + this.widgetId + ">div").querySelector('[data-col="' + column + '"][data-row="' + row + '"]');
+            let ltable;
+            if (this.widgetId.indexOf("__widget" == -1) {
+                ltable = document.querySelector('[data-sap-widget-id="' + this.widgetId + '"]>div>div>div");
+            } else {
+                ltable = document.querySelector("#" + this.widgetId + ">div");
+            }
+            
+            data - sap - widget - id
+            tablecell = ltable.querySelector('[data-col="' + column + '"][data-row="' + row + '"]');
             // fallback for other table rendering
             if (tablecell == null) {
-                tablecell = document.querySelector("#" + this.widgetId + ">div").querySelector('[data-tablecol="' + column + '"][data-tablerow="' + row + '"]');
+                tablecell = ltable.querySelector('[data-tablecol="' + column + '"][data-tablerow="' + row + '"]');
             }
             if (tablecell != null) {
                 for (var i = 0; i < tablecell.childNodes.length; i++) {
