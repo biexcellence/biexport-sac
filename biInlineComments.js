@@ -40,10 +40,17 @@
         }
         setWidgetID(value) {
             var lmetadata = getMetadata();
-            for (var i = 0; i < lmetadata.components.length; i++) {
-                // if (lmetadata.components[i] = 
+            var lkey = "";
+            for (key in lmetadata.components) {
+                if (lmetadata.components[key] == value) {
+                    this._setValue("widgetId", key);
+                    lkey = key;
+                    break;
+                }
             }
+            if (lkey == "") {
             this._setValue("widgetId", value);
+            }
         }
 
         getInlineStlye() {
