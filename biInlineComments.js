@@ -42,7 +42,7 @@
             var lmetadata = getMetadata();
             var lkey = "";
             for (key in lmetadata.components) {
-                if (lmetadata.components[key] == value) {
+                if (lmetadata.components[key].name == value) {
                     this._setValue("widgetId", key);
                     lkey = key;
                     break;
