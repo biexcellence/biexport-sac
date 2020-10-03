@@ -49,7 +49,7 @@
                 }
             }
             if (lkey == "") {
-            this._setValue("widgetId", value);
+                this._setValue("widgetId", value);
             }
         }
 
@@ -85,22 +85,21 @@
             lrow.comment = comment;
             lrow.index = commentindex;
             lrow.rowNumber = row;
-            lrow.columnNumber = column;           
+            lrow.columnNumber = column;
             this._data.push(lrow);
 
             let table = this._shadowRoot.querySelector("#inlinecomment_div >table");
             let tbody = table.children[1];
 
-            let tablecell;
             let ltable;
-            if (this.widgetId.indexOf("__widget" == -1)) {
+            if (this.widgetId.indexOf("__widget") == -1) {
                 ltable = document.querySelector('[data-sap-widget-id="' + this.widgetId + '"]>div>div>div');
             } else {
                 ltable = document.querySelector("#" + this.widgetId + ">div");
             }
-            
-            data - sap - widget - id
-            tablecell = ltable.querySelector('[data-col="' + column + '"][data-row="' + row + '"]');
+
+            // data - sap - widget - id
+            let tablecell = ltable.querySelector('[data-col="' + column + '"][data-row="' + row + '"]');
             // fallback for other table rendering
             if (tablecell == null) {
                 tablecell = ltable.querySelector('[data-tablecol="' + column + '"][data-tablerow="' + row + '"]');
