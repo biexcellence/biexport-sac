@@ -80,15 +80,9 @@
             }));
         }
 
-        addCommentById(comment, index, rowId, columnId) {
-            // update data
-            var lrow = {};
-            lrow.comment = comment;
-            lrow.index = index;
-            lrow.rowId = rowId;
-            lrow.columnId = columnId;
-
-            // get rowNumber and columnNumber
+        getSelectedRow(selection) {
+            var lrow = 0;
+            var lcol = 0;
             var lmetadata = getMetadata();
             for (var key in lmetadata.components) {
                 if (lmetadata.components[key].name == value) {
@@ -96,50 +90,45 @@
 
                     for (var y = 0; y < ldata.length; y++) {
                         for (var x = 0; y < ldata[y].length; y++) {
-                            let lcell = ldata[y][x];
+                            let lcell = ldata[y][x].cellMemberContext;
 
-                            if (lrow.rowNumber == 0) {
-                                for (var key in lrow.columnId) {
-                                    if (lcell.dimensionId == key) {
-                                        if (lcell.name = lrow.columnId[key]) {
-                                            lrow.rowNumber = y + 1;
+                            if (lcell != null) {
+                                var lmatch = 0;
+                                for (var key in lcell) {
+                                    if (selection[key] != null) {
+                                    // first try - full match
+                                        if (selection[key] == lcell[key].id) {
+                                            lmatch = lmatch + 1;
+                                        } else {
+                                            break;
+                                        }
+                                    } else {
+                                    // second try - @MeasureDimension
+                                        if (selection["@MeasureDimension"] == lcell[key].id) {
+                                            lmatch = lmatch + 1;
+                                        } else {
+                                            break;
                                         }
                                     }
                                 }
+
+                                if (lmatch == lcell.length()) {
+                                    lrow = x;
+                                    lcol = y;
+                                    break;
+                                }
                             }
 
-                            if (lrow.columnNumber == 0) {
-                                    for (var key in lrow.columnId) {
-                                        if (lcell.dimensionId == key) {
-                                            if (lcell.name = lrow.columnId[key]) {
-                                                lrow.columnNumber = x + 1;
-                                            }
-                                        }
-                                    }
-                            }
-
-                            if (lrow.rowNumber > 0 && lrow.columnNumber > 0) { break; }
                         }
 
-                        if (lrow.rowNumber > 0 && lrow.columnNumber > 0) { break; }
+                        if (lrow > 0 && lcol > 0) { break; }
                     }
-
-                    lmetadata.components[key].data 
 
                     break;
                 }
             }
 
-            this._data.push(lrow);
-
-            // get Table Widget CELL
-            let ltablecell = this._getTableCell(lrow);
-
-            // update Table Widget CELL
-            this._updateTableCell(tablecell, lrow);
-
-            // update Comment BODY
-            this._updateCommentBody(lrow);
+            return lrow;
 
         }
 
