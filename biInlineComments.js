@@ -84,9 +84,7 @@
             var lrow = 0;
             var lcol = 0;
             var lmetadata = getMetadata();
-            for (var key in lmetadata.components) {
-                if (lmetadata.components[key].name == value) {
-                    let ldata = lmetadata.components[key].data;
+                    let ldata = lmetadata.components[this.widgetId].data;
 
                     for (var y = 0; y < ldata.length; y++) {
                         for (var x = 0; y < ldata[y].length; y++) {
@@ -123,10 +121,6 @@
 
                         if (lrow > 0 && lcol > 0) { break; }
                     }
-
-                    break;
-                }
-            }
 
             return lrow;
 
