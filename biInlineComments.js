@@ -83,34 +83,36 @@
         getSelectedRow(selection) {
             var lrow = 0;
             var lcol = 0;
-            var lmetadata = getMetadata();
-                    let ldata = lmetadata.components[this.widgetId].data;
+
+            if (selection == null) {
+                return 0;
+            }
+
+            let ldata = getMetadata().components[this.widgetId].data;
 
                     for (var y = 0; y < ldata.length; y++) {
                         for (var x = 0; y < ldata[y].length; y++) {
                             let lcell = ldata[y][x].cellMemberContext;
 
                             if (lcell != null) {
-                                var lmatch = 0;
+                                var lmatch = true;
                                 for (var key in lcell) {
                                     if (selection[key] != null) {
                                     // first try - full match
-                                        if (selection[key] == lcell[key].id) {
-                                            lmatch = lmatch + 1;
-                                        } else {
+                                        if (selection[key] != lcell[key].id) {
+                                            lmatch = false;
                                             break;
                                         }
                                     } else {
                                     // second try - @MeasureDimension
-                                        if (selection["@MeasureDimension"] == lcell[key].id) {
-                                            lmatch = lmatch + 1;
-                                        } else {
+                                        if (selection["@MeasureDimension"] != lcell[key].id) {
+                                            lmatch = false;
                                             break;
                                         }
                                     }
                                 }
 
-                                if (lmatch == lcell.length()) {
+                                if (lmatch) {
                                     lrow = x;
                                     lcol = y;
                                     break;
