@@ -80,7 +80,71 @@
             }));
         }
 
+        addCommentById(comment, index, rowId, columnId) {
+            // update data
+            var lrow = {};
+            lrow.comment = comment;
+            lrow.index = index;
+            lrow.rowId = rowId;
+            lrow.columnId = columnId;
+
+            // get rowNumber and columnNumber
+            var lmetadata = getMetadata();
+            for (var key in lmetadata.components) {
+                if (lmetadata.components[key].name == value) {
+                    let ldata = lmetadata.components[key].data;
+
+                    for (var y = 0; y < ldata.length; y++) {
+                        for (var x = 0; y < ldata[y].length; y++) {
+                            let lcell = ldata[y][x];
+
+                            if (lrow.rowNumber == 0) {
+                                for (var key in lrow.columnId) {
+                                    if (lcell.dimensionId == key) {
+                                        if (lcell.name = lrow.columnId[key]) {
+                                            lrow.rowNumber = y + 1;
+                                        }
+                                    }
+                                }
+                            }
+
+                            if (lrow.columnNumber == 0) {
+                                    for (var key in lrow.columnId) {
+                                        if (lcell.dimensionId == key) {
+                                            if (lcell.name = lrow.columnId[key]) {
+                                                lrow.columnNumber = x + 1;
+                                            }
+                                        }
+                                    }
+                            }
+
+                            if (lrow.rowNumber > 0 && lrow.columnNumber > 0) { break; }
+                        }
+
+                        if (lrow.rowNumber > 0 && lrow.columnNumber > 0) { break; }
+                    }
+
+                    lmetadata.components[key].data 
+
+                    break;
+                }
+            }
+
+            this._data.push(lrow);
+
+            // get Table Widget CELL
+            let ltablecell = this._getTableCell(lrow);
+
+            // update Table Widget CELL
+            this._updateTableCell(tablecell, lrow);
+
+            // update Comment BODY
+            this._updateCommentBody(lrow);
+
+        }
+
         addCommentByNumber(comment, commentindex, row, column) {
+            // update data
             var lrow = {};
             lrow.comment = comment;
             lrow.index = commentindex;
@@ -88,65 +152,71 @@
             lrow.columnNumber = column;           
             this._data.push(lrow);
 
-            let table = this._shadowRoot.querySelector("#inlinecomment_div >table");
-            let tbody = table.children[1];
+            // get Table Widget CELL
+            let ltablecell = this._getTableCell(lrow);
+            
+            // update Table Widget CELL
+            this._updateTableCell(ltablecell, lrow);
 
-            let tablecell;
+            // update Comment BODY
+            this._updateCommentBody(lrow);
+
+        }
+
+        _getTablecell(irow) {
             let ltable;
             if (this.widgetId.indexOf("__widget" == -1)) {
                 ltable = document.querySelector('[data-sap-widget-id="' + this.widgetId + '"]>div>div>div');
             } else {
                 ltable = document.querySelector("#" + this.widgetId + ">div");
             }
-            
-            data - sap - widget - id
-            tablecell = ltable.querySelector('[data-col="' + column + '"][data-row="' + row + '"]');
-            // fallback for other table rendering
+
+            // get tablecell
+            let tablecell = ltable.querySelector('[data-col="' + irow.columnNumber + '"][data-row="' + irow.rowNumber + '"]');
             if (tablecell == null) {
-                tablecell = ltable.querySelector('[data-tablecol="' + column + '"][data-tablerow="' + row + '"]');
+                tablecell = ltable.querySelector('[data-tablecol="' + irow.columnNumber + '"][data-tablerow="' + irow.rowNumber + '"]');
             }
-            if (tablecell != null) {
-                for (var i = 0; i < tablecell.childNodes.length; i++) {
-                    if (tablecell.childNodes[i].nodeType == 3) {
+
+        }
+
+        _updateTableCell(itablecell, irow) {
+            if (itablecell != null) {
+                for (var i = 0; i < itablecell.childNodes.length; i++) {
+                    if (itablecell.childNodes[i].nodeType == 3) {
                         var larray = [];
                         for (var j = 0; j < this._data.length; j++) {
-                            if (this._data[j].rowNumber == lrow.rowNumber && this._data[j].columnNumber == lrow.columnNumber) {
-                                larray.push(this._data[j].commentindex);
+                            if (this._data[j].rowNumber == irow.rowNumber && this._data[j].columnNumber == irow.columnNumber) {
+                                larray.push(this._data[j].index);
                             }
                         }
-                        tablecell.childNodes[i].nodeValue = larray.join(", "); // commentindex.toString();
+                        itablecell.childNodes[i].nodeValue = larray.join(", "); 
                     }
                 }
-                if (tablecell.nextSibling != null) {
-                    tablecell.style.color = tablecell.nextSibling.style.color
+                if (itablecell.nextSibling != null) {
+                    itablecell.style.color = itablecell.nextSibling.style.color
                 } else {
-                    tablecell.style.color = "rgb(51, 51, 51)";
+                    itablecell.style.color = "rgb(51, 51, 51)";
                 }
             }
+        }
+
+        _updateCommentBody(irow) {
+            let table = this._shadowRoot.querySelector("#inlinecomment_div >table");
+            let tbody = table.children[1];
 
             let tr = document.createElement("tr");
 
             let td1 = document.createElement("td");
             td1.setAttribute("class", "default defaultTableCell generalCell hideBorder generalCell dimMember rowDimMemberCell generalCell sapDimMemberCellHeading")
-            td1.textContent = commentindex;
+            td1.textContent = irow.index;
             tr.appendChild(td1);
 
             let td2 = document.createElement("td");
             td2.setAttribute("class", "default defaultTableCell generalCell hideBorder generalCell dimMember rowDimMemberCell generalCell sapDimMemberCellHeading")
-            td2.textContent = comment;
+            td2.textContent = irow.comment;
             tr.appendChild(td2);
 
             tbody.appendChild(tr);
-        }
-
-        addCommentById(comment, index, rowId, columnId) {
-            // check val????
-            var lrow = {};
-            lrow.comment = comment;
-            lrow.index = index;
-            lrow.rowId = rowId;
-            lrow.columnId = columnId;
-            this._data.push(lrow);
 
         }
 
