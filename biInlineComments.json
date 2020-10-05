@@ -81,28 +81,14 @@
         }
       ]
     },
-    "addCommentByNumber": {
-      "description": "Add a comment to be displayed.",
+    "getSelectedRow": {
+      "returnType": "integer",
+      "description": "Gets the selected row.",
       "parameters": [
         {
-          "name": "comment",
+          "name": "selection",
           "type": "string",
-          "description": "The comment to be displayed"
-        },
-        {
-          "name": "index",
-          "type": "integer",
-          "description": "The footnote index to be displayed"
-        },
-        {
-          "name": "row",
-          "type": "integer",
-          "description": "The row number for which the footnote shall be displayed"
-        },
-        {
-          "name": "column",
-          "type": "integer",
-          "description": "The column number in which the footnote shall be displayed"
+          "description": "The selection"
         }
       ]
     },
