@@ -87,12 +87,12 @@
       "parameters": [
         {
           "name": "selection",
-          "type": "string",
+          "type": "Selection",
           "description": "The selection"
         }
       ]
     },
-    "addCommentById": {
+    "addComment": {
       "description": "Add a comment to be displayed.",
       "parameters": [
         {
@@ -106,14 +106,14 @@
           "description": "The footnote index to be displayed"
         },
         {
-          "name": "rowId",
-          "type": "string",
-          "description": "The row ID for which the footnote shall be displayed"
+          "name": "row",
+          "type": "integer",
+          "description": "The row for which the footnote shall be displayed"
         },
         {
-          "name": "columnId",
-          "type": "string",
-          "description": "The column ID in which the footnote shall be displayed"
+          "name": "column",
+          "type": "integer",
+          "description": "The column in which the footnote shall be displayed"
         }
       ]
     },

@@ -143,7 +143,7 @@
 
         }
 
-        addCommentByNumber(comment, commentindex, row, column) {
+        addComment(comment, commentindex, row, column) {
             // update data
             var lrow = {};
             lrow.comment = comment;
