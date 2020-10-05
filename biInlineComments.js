@@ -113,8 +113,8 @@
                                 }
 
                                 if (lmatch) {
-                                    lrow = x;
-                                    lcol = y;
+                                    lrow = y;
+                                    lcol = x;
                                     break;
                                 }
                             }
