@@ -162,6 +162,7 @@
                 tablecell = ltable.querySelector('[data-tablecol="' + irow.columnNumber + '"][data-tablerow="' + irow.rowNumber + '"]');
             }
 
+            return tablecell;
         }
 
         _updateTableCell(itablecell, irow) {
