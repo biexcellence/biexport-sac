@@ -152,7 +152,7 @@
 
         }
 
-        _getTablecell(irow) {
+        _getTableCell(irow) {
             let ltable;
             if (this.widgetId.indexOf("__widget" == -1)) {
                 ltable = document.querySelector('[data-sap-widget-id="' + this.widgetId + '"]>div>div>div');
