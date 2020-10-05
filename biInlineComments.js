@@ -91,7 +91,7 @@
             let ldata = getMetadata().components[this.widgetId].data;
 
                     for (var y = 0; y < ldata.length; y++) {
-                        for (var x = 0; y < ldata[y].length; x++) {
+                        for (var x = 0; x < ldata[y].length; x++) {
                             let lcell = ldata[y][x].cellMemberContext;
 
                             if (lcell != null) {
