@@ -129,6 +129,11 @@
         }
 
         addComment(comment, commentindex, row, column) {
+            // determine commentindex if needed
+            if (commentindex == 0) {
+                commentindex = this._data.length + 1;
+            }
+
             // update data
             var lrow = {};
             lrow.comment = comment;
