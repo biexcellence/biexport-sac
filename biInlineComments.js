@@ -199,11 +199,13 @@
 
             let td1 = document.createElement("td");
             td1.setAttribute("class", "default defaultTableCell generalCell hideBorder generalCell dimMember rowDimMemberCell generalCell sapDimMemberCellHeading")
+            td1.setAttribute("style", "font - size: 11px; line - height: 12px; color: rgb(0, 0, 0); fill: rgb(0, 0, 0); font - family: arial; background - color: transparent; vertical - align: middle; text - align: right;");
             td1.textContent = irow.index;
             tr.appendChild(td1);
 
             let td2 = document.createElement("td");
             td2.setAttribute("class", "default defaultTableCell generalCell hideBorder generalCell dimMember rowDimMemberCell generalCell sapDimMemberCellHeading")
+            td2.setAttribute("style", "font - size: 11px; line - height: 12px; color: rgb(0, 0, 0); fill: rgb(0, 0, 0); font - family: arial; background - color: transparent; vertical - align: middle; text - align: right;");
             td2.textContent = irow.comment;
             tr.appendChild(td2);
 
@@ -253,9 +255,14 @@
                     if (typeof widgetControl.getTableController == "function") { // table
                         let tableControler = widgetControl.getTableController();
                         let regions = tableControler.getDataRegions();
-                        let cells = regions[0].getCells();
 
-                        component.data = cells.map((row) => row.map((cell) => cell.getJSON()));
+                        try {
+                            let cells = regions[0].getCells();
+                            component.data = cells.map((row) => row.map((cell) => cell.getJSON()));
+                        }
+                        catch (e) {
+                        }
+
                     }
                 }
 
