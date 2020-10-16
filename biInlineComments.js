@@ -49,7 +49,7 @@
                 }
             }
             if (lkey == "") {
-            this._setValue("widgetId", value);
+                this._setValue("widgetId", value);
             }
         }
 
@@ -90,39 +90,39 @@
 
             let ldata = getMetadata().components[this.widgetId].data;
 
-                    for (var y = 0; y < ldata.length; y++) {
-                        for (var x = 0; x < ldata[y].length; x++) {
-                            let lcell = ldata[y][x].cellMemberContext;
+            for (var y = 0; y < ldata.length; y++) {
+                for (var x = 0; x < ldata[y].length; x++) {
+                    let lcell = ldata[y][x].cellMemberContext;
 
-                            if (lcell != null) {
-                                var lmatch = true;
-                                for (var key in lcell) {
-                                    if (selection[key] != null) {
-                                    // first try - full match
-                                        if (selection[key] != lcell[key].id) {
-                                            lmatch = false;
-                                            break;
-                                        }
-                                    } else {
-                                    // second try - @MeasureDimension
-                                        if (selection["@MeasureDimension"] != lcell[key].id) {
-                                            lmatch = false;
-                                            break;
-                                        }
-                                    }
+                    if (lcell != null) {
+                        var lmatch = true;
+                        for (var key in lcell) {
+                            if (selection[key] != null) {
+                                // first try - full match
+                                if (selection[key] != lcell[key].id) {
+                                    lmatch = false;
+                                    break;
                                 }
-
-                                if (lmatch) {
-                                    lrow = y;
-                                    lcol = x;
+                            } else {
+                                // second try - @MeasureDimension
+                                if (selection["@MeasureDimension"] != lcell[key].id) {
+                                    lmatch = false;
                                     break;
                                 }
                             }
-
                         }
 
-                        if (lrow > 0 && lcol > 0) { break; }
+                        if (lmatch) {
+                            lrow = y;
+                            lcol = x;
+                            break;
+                        }
                     }
+
+                }
+
+                if (lrow > 0 && lcol > 0) { break; }
+            }
 
             return lrow;
 
@@ -139,12 +139,12 @@
             lrow.comment = comment;
             lrow.index = commentindex;
             lrow.rowNumber = row;
-            lrow.columnNumber = column;           
+            lrow.columnNumber = column;
             this._data.push(lrow);
 
             // get Table Widget CELL
             let ltablecell = this._getTableCell(lrow);
-            
+
             // update Table Widget CELL
             this._updateTableCell(ltablecell, lrow);
 
@@ -172,6 +172,7 @@
 
         _updateTableCell(itablecell, irow) {
             if (itablecell != null) {
+                itablecell.setAttribute("data-disable-number-formatting", "X");
                 for (var i = 0; i < itablecell.childNodes.length; i++) {
                     if (itablecell.childNodes[i].nodeType == 3) {
                         var larray = [];
@@ -180,7 +181,8 @@
                                 larray.push(this._data[j].index);
                             }
                         }
-                        itablecell.childNodes[i].nodeValue = larray.join(", "); 
+                        itablecell.childNodes[i].nodeValue = larray.join(", ");
+                        itablecell.childNodes[i].setAttribute("title", larray.join(", "));
                     }
                 }
                 if (itablecell.nextSibling != null) {
@@ -201,12 +203,14 @@
             td1.setAttribute("class", "default defaultTableCell generalCell hideBorder generalCell dimMember rowDimMemberCell generalCell sapDimMemberCellHeading")
             td1.setAttribute("style", "font-size: 11px; line-height: 12px; color: rgb(0, 0, 0); fill: rgb(0, 0, 0); font-family: arial; background-color: transparent; vertical-align: middle;font-weight:bold;");
             td1.textContent = irow.index;
+            td1.setAttribute("title", irow.index);
             tr.appendChild(td1);
 
             let td2 = document.createElement("td");
             td2.setAttribute("class", "default defaultTableCell generalCell hideBorder generalCell dimMember rowDimMemberCell generalCell sapDimMemberCellHeading")
             td2.setAttribute("style", "font-size: 11px; line-height: 12px; color: rgb(0, 0, 0); fill: rgb(0, 0, 0); font-family: arial; background-color: transparent; vertical-align: middle;");
             td2.textContent = irow.comment;
+            td2.setAttribute("title", irow.comment);
             tr.appendChild(td2);
 
             tbody.appendChild(tr);
