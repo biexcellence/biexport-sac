@@ -182,7 +182,7 @@
                             }
                         }
                         itablecell.childNodes[i].nodeValue = larray.join(", ");
-                        itablecell.childNodes[i].setAttribute("title", larray.join(", "));
+                        itablecell.setAttribute("title", larray.join(", "));
                     }
                 }
                 if (itablecell.nextSibling != null) {
