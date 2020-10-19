@@ -167,10 +167,10 @@
             let lunbooked = ltable.querySelectorAll('.unbooked');
             for (var i = 0; i < lunbooked.length; i++ ) {
 
-                let lsvg = lunbooked[0].querySelector("svg");
+                let lsvg = lunbooked[i].querySelector("svg");
                 if (lsvg != null) {
-                    lunbooked[0].removeChild(lsvg);
-                    lunbooked[0].textContent = 'n.a.'
+                    lunbooked[i].removeChild(lsvg);
+                    lunbooked[i].textContent = 'n.a.'
                 }
             }
  
