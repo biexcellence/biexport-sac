@@ -151,12 +151,10 @@
             // update Comment BODY
             this._updateCommentBody(lrow);
 
-            // correct unbooked cells SVG with n.a.
-            this._overwriteUnbookedCells();
 
         }
 
-        _overwriteUnbookedCells() {
+        overwriteUnbookedCells() {
             let ltable;
             if (this.widgetId.indexOf("__widget" == -1)) {
                 ltable = document.querySelector('[data-sap-widget-id="' + this.widgetId + '"]>div>div>div');
