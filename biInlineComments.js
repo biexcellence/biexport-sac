@@ -170,7 +170,7 @@
                 let lsvg = lunbooked[i].querySelector("svg");
                 if (lsvg != null) {
                     lunbooked[i].removeChild(lsvg);
-                    lunbooked[i].textContent = 'n.a.'
+                    lunbooked[i].appendChild(document.createTextNode("n.a."));
                 }
             }
  
