@@ -165,7 +165,7 @@
             }
 
             let lunbooked = ltable.querySelectorAll('.unbooked');
-            for (var i = 0; i < lunbooked.length(); i++ ) {
+            for (var i = 0; i < lunbooked.length; i++ ) {
 
                 let lsvg = lunbooked[0].querySelector("svg");
                 if (lsvg != null) {
