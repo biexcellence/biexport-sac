@@ -151,6 +151,29 @@
             // update Comment BODY
             this._updateCommentBody(lrow);
 
+            // correct unbooked cells SVG with n.a.
+            this._overwriteUnbookedCells();
+
+        }
+
+        _overwriteUnbookedCells() {
+            let ltable;
+            if (this.widgetId.indexOf("__widget" == -1)) {
+                ltable = document.querySelector('[data-sap-widget-id="' + this.widgetId + '"]>div>div>div');
+            } else {
+                ltable = document.querySelector("#" + this.widgetId + ">div");
+            }
+
+            let lunbooked = ltable.querySelectorAll('.unbooked');
+            for (var i = 0; i < lunbooked.length(), i++ ) {
+
+                let lsvg = lunbooked[0].querySelector("svg");
+                if (lsvg != null) {
+                    lunbooked[0].removeChild(lsvg);
+                    lunbooked[0].textContent = 'n.a.'
+                }
+            }
+ 
         }
 
         _getTableCell(irow) {
