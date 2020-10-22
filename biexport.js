@@ -1299,11 +1299,20 @@
                 let widgetControl = widgetControls.filter((control) => control.getWidgetId() == widget.id)[0];
                 if (widgetControl) { // control specific stuff
                     if (typeof widgetControl.getTableController == "function") { // table
-                        let tableControler = widgetControl.getTableController();
-                        let regions = tableControler.getDataRegions();
-                        let cells = regions[0].getCells();
+                        let tableController = widgetControl.getTableController();
+                        let regions = tableController.getDataRegions();
+                        let region = regions[0];
 
+                        let cells = region.getCells();
                         component.data = cells.map((row) => row.map((cell) => cell.getJSON()));
+
+                        let dimensionDisplayInfo = region.getDimensionDisplayInfo();
+                        component.dimensions = {};
+                        dimensionDisplayInfo.forEach((displayInfo) => {
+                            component.dimensions[displayInfo.getKey()] = {
+                                displayMode: displayInfo.getDisplayMode()
+                            }
+                        });
                     }
                 }
 
