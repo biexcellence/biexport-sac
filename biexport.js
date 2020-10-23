@@ -1304,15 +1304,112 @@
                         let region = regions[0];
 
                         let cells = region.getCells();
-                        component.data = cells.map((row) => row.map((cell) => cell.getJSON()));
+                        component.data = cells.map((row) => row.map((cell) => {
+                            return {
+                                type: cell.getType(),
+                                rawVal: cell.getRawVal(),
+                                formattedValue: cell.getFormattedValue(),
+                                scale: cell.getScale(),
+                                refIndex: cell.getRefIndex(),
+                                totalCell: cell.getTotalCell(),
+                                level: cell.getLevel(),
+                                hasNOPNullValue: cell.getHasNOPNullValue(),
+                                style: tableController.getEffectiveCellStyle(cell)
+                            };
+                        }));
 
-                        let dimensionDisplayInfo = region.getDimensionDisplayInfo();
-                        component.dimensions = {};
-                        dimensionDisplayInfo.forEach((displayInfo) => {
-                            component.dimensions[displayInfo.getKey()] = {
-                                displayMode: displayInfo.getDisplayMode()
-                            }
-                        });
+                        try {
+                            let view = tableController.getView();
+                            let tableCellFactory = view.getTableCellFactory();
+
+                            let grid = region.getGrid();
+                            let rows = grid.getRows();
+                            let cols = grid.getColumns();
+
+                            let gridContent = new sap.fpa.ui.control.scrollabletable.GridData(rows.length, cols.length);
+                            gridContent.forEachCell(function (y, x) {
+                                gridContent.set(y, x, {
+                                    tableRow: y,
+                                    tableCol: x,
+                                    globalRow: y,
+                                    globalCol: x,
+                                    colspan: 1,
+                                    rowspan: 1,
+                                    // referencedRow: null,
+                                    // referencedCol: null,
+                                    hidden: false,
+                                    height: rows[y].data.size,
+                                    width: cols[x].data.size
+                                });
+                            });
+
+                            let html = [];
+                            gridContent.forEachRow(function (y, c) {
+                                html.push('<tr data-row="', y, '">');
+                                for (var length = c.length, x = 0; x < length; ++x) {
+                                    var m = c[x];
+                                    var str = tableCellFactory.generateDivStringFromCellContent(m);
+                                    html.push(str);
+                                }
+                                html.push("</tr>");
+                            });
+
+                            component.html = html.join("");
+                        } catch (e) { }
+
+                        // try {
+                        //     let view = tableController.getView();
+                        //     let tableCellBuilder = view.getTableCellBuilder();
+                        //     let gridContent = view._oScrollableTable._model.getGridContent();
+
+                        //     let grid = region.getGrid();
+                        //     let rows = grid.getRows();
+                        //     let cols = grid.getColumns();
+
+                        //     gridContent._numRows = rows.length + 1;
+                        //     gridContent._numCols = cols.length + 1;
+
+                        //     gridContent.forEachCell(function (y, x) {
+                        //         gridContent.set(y, x, {
+                        //             tableRow: y,
+                        //             tableCol: x,
+                        //             globalRow: y == 0 ? null : y - 1,
+                        //             globalCol: x == 0 ? null : x - 1,
+                        //             colspan: 1,
+                        //             rowspan: 1,
+                        //             // referencedRow: null,
+                        //             // referencedCol: null,
+                        //             hidden: false,
+                        //             type: y == 0 || x == 0 ? "HeaderCell" : "TableCell",
+                        //             height: y == 0 ? 30 : rows[y - 1].data.size,
+                        //             width: x == 0 ? 30 : cols[x - 1].data.size
+                        //         });
+                        //     });
+
+                        //     let tds = tableCellBuilder.getCells(gridContent, false);
+
+                        //     let html = [];
+                        //     gridContent.forEachCell(function (y, x) {
+                        //         if (x == 0) {
+                        //             if (y > 0) {
+                        //                 html.push("</tr>");
+                        //             }
+                        //             html.push('<tr data-row="', y, '">');
+                        //         }
+
+                        //         let td = tds["global" + y + "-" + x] || tds["global" + y + "-" + x + "ref"];
+                        //         if (td) {
+                        //             let cell = cells[y][x];
+                        //             if (cell.getType() == 8) { // data cell
+                        //                 td.setAttribute("data-value", +cell.getScale().multiplier * cell.getRawVal());
+                        //             }
+                        //             html.push(td.outerHTML);
+                        //         }
+                        //     });
+                        //     html.push("</tr>");
+
+                        //     component.html = html.join("");
+                        // } catch (e) { }
                     }
                 }
 
