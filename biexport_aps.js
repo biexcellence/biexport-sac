@@ -254,7 +254,7 @@
                         let value = this[id];
 
                         let visibleComponents = value ? JSON.parse(value) : [];
-                        let allComponents = biExportGetMetadata().components;
+                        let allComponents = biExportGetMetadata(/*withoutData*/true).components;
                         let components = [];
                         let selectedComponents = {};
                         for (let componentId in allComponents) {
@@ -285,7 +285,7 @@
 
                         let selectedComponents = list.getSelectedKeys();
 
-                        let allComponents = biExportGetMetadata().components;
+                        let allComponents = biExportGetMetadata(/*withoutData*/true).components;
                         let visibleComponents = [];
                         for (let componentId in allComponents) {
                             let component = allComponents[componentId];
