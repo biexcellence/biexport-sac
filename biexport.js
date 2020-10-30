@@ -1332,7 +1332,7 @@
                                     rowspan: 1,
                                     // referencedRow: null,
                                     // referencedCol: null,
-                                    hidden: cell.getHidden(),
+                                    hidden: false,
                                     height: rows[y].data.size,
                                     width: cols[x].data.size
                                 })
