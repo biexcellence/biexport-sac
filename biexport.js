@@ -1338,6 +1338,10 @@
                                 })
                             };
                         }));
+
+                        if (region.getShowTitle()) {
+                            component.data.shift(); // remove title (removing regionHeaderDummyCell cells)
+                        }
                     }
                 }
 
