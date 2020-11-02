@@ -1323,7 +1323,7 @@
                                 level: cell.getLevel(),
                                 hasNOPNullValue: cell.getHasNOPNullValue(),
                                 style: tableController.getEffectiveCellStyle(cell),
-                                html: tableCellFactory.generateDivStringFromCellContent({
+                                html: tableCellFactory && tableCellFactory.generateDivStringFromCellContent({
                                     tableRow: y,
                                     tableCol: x,
                                     globalRow: y,
