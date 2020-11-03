@@ -1040,6 +1040,17 @@
             this._updateSettings();
         }
 
+        addExportTemplateSections(format, template, pageBreakAfter, placeholderRedefinitions, placeholderValues) {
+
+            this._export_settings[format.toLowerCase + "_template_def"].sections.push(
+                { "template": template, "containsPageBreak": pageBreakAfter, "placeholderValues": JSON.stringify(placeholderValues), "placeholderRedefinitions": JSON.stringify(placeholderRedefinitions), "content": "[]", "iterative": false });
+            this._updateSettings();
+        }
+        clearExportTemplateSections(format) {
+            this._export_settings[format.toLowerCase + "_template_def"] = "";
+            this._updateSettings();
+        }
+
         getServiceMessage() {
             return this._serviceMessage;
         }
