@@ -8,7 +8,7 @@
   "vendor": "bi excellence software GmbH",
   "eula": "",
   "license": "",
-  "imports": [ "input-controls" ],
+  "imports": ["input-controls"],
   "webcomponents": [
     {
       "kind": "main",
@@ -831,35 +831,34 @@
       "description": "Add an Export Template Section dynamically for the given format.",
       "parameters": [
         {
-          "*" {
-            "name": "format",
-            "type": "string",
-            "description": "The export format: \"PDF\", \"PPT\", \"DOC\", \"XLS\""
-          },
-          {
-            "name": "template",
-            "type": "string",
-            "description": "Name of the Export Template that shall be used for this section"
-          },
-          {
-            "name": "pageBreakAfter",
-            "type": "boolean",
-            "description": "If set to false, the Word document section will not be ended with a page break."
-          },
-          {
-            "name": "placeholderRedefinitions",
-            "type": "string[]",
-            "description": "List of specific placeholders that replace the generic placholders of the Export Template {\"name\": \"genericPlaceholderName\", \"value\": \"specificPlaceholderName\"}"
-          },
-          {
-            "name": "placeholderValues",
-            "type": "string[]",
-            "description": "List of values that replace the placholders of the Export Template {\"name\": \"placeholderName\", \"value\": \"myText\"}"
-          }
+          "name": "format",
+          "type": "string",
+          "description": "The export format: \"PDF\", \"PPT\", \"DOC\", \"XLS\""
+        },
+        {
+          "name": "template",
+          "type": "string",
+          "description": "Name of the Export Template that shall be used for this section"
+        },
+        {
+          "name": "pageBreakAfter",
+          "type": "boolean",
+          "description": "If set to false, the Word document section will not be ended with a page break."
+        },
+        {
+          "name": "placeholderRedefinitions",
+          "type": "string[]",
+          "description": "List of specific placeholders that replace the generic placholders of the Export Template {\"name\": \"genericPlaceholderName\", \"value\": \"specificPlaceholderName\"}"
+        },
+        {
+          "name": "placeholderValues",
+          "type": "string[]",
+          "description": "List of values that replace the placholders of the Export Template {\"name\": \"placeholderName\", \"value\": \"myText\"}"
+        }
       ]
     },
     "clearExportTemplateSections": {
-      "description": "Initialize the Export Template Sections for the given format.",
+      "description": "Clears the Export Template Sections for the given format.",
       "parameters": [
         {
           "name": "format",
