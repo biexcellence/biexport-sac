@@ -1045,8 +1045,19 @@
             if (this._export_settings[format.toLowerCase() + "_template_def"].sections == null) {
                 this._export_settings[format.toLowerCase() + "_template_def"].sections = [];
             }
+
+            let redefinitions = [];
+            placeholderRedefinitions.forEach(s => {
+                redefinishons.push(JSON.parse(s));
+            });
+
+            let values = [];
+            placeholderValues.forEach(s => {
+                values.push(JSON.parse(s));
+            });
+
             this._export_settings[format.toLowerCase() + "_template_def"].sections.push({
-                "template": template, "containsPageBreak": pageBreakAfter, "placeholderValues": placeholderValues, "placeholderRedefinitions": placeholderRedefinitions, "content": "[]", "iterative": false
+                "template": template, "containsPageBreak": pageBreakAfter, "placeholderValues": values, "placeholderRedefinitions": redefinitions, "content": "[]", "iterative": false
             });
             this._updateSettings();
         }
