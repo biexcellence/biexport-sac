@@ -88,20 +88,21 @@
             this._export_settings.pdf_bookmark_template = "";
             this._export_settings.pdf_include_plain = "";
             this._export_settings.pdf_page_sections = "";
-            this._export_settings.pdf_template_def = "";
+            this._export_settings.pdf_template_def = {};
             this._export_settings.header_footer_width = 0;
             this._export_settings.header_footer_css = true;
             this._export_settings.ppt_exclude = "";
             this._export_settings.ppt_template = "";
             this._export_settings.ppt_seperate = "";
-            this._export_settings.ppt_template_def = "";
+            this._export_settings.ppt_template_def = {};
 
             this._export_settings.doc_exclude = "";
             this._export_settings.doc_template = "";
-            this._export_settings.doc_template_def = "";
+            this._export_settings.doc_template_def = {};
 
             this._export_settings.xls_exclude = "";
             this._export_settings.xls_template = "";
+            this._export_settings.xls_template_def = {};
 
             this._export_settings.filename = "";
             this._export_settings.seperate_files = "";
