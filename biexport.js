@@ -1062,7 +1062,7 @@
             this._updateSettings();
         }
         clearExportTemplateSections(format) {
-            this._export_settings[format.toLowerCase() + "_template_def"] = "";
+            this._export_settings[format.toLowerCase() + "_template_def"] = {};
             this._updateSettings();
         }
 
