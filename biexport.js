@@ -1048,7 +1048,7 @@
 
             let redefinitions = [];
             placeholderRedefinitions.forEach(s => {
-                redefinishons.push(JSON.parse(s));
+                redefinitions.push(JSON.parse(s));
             });
 
             let values = [];
