@@ -157,7 +157,7 @@
         overwriteUnbookedCells() {
             let ltable;
             if (this.widgetId.indexOf("__widget" == -1)) {
-                ltable = document.querySelector('[data-sap-widget-id="' + this.widgetId + '"]>div>div>div');
+                ltable = document.querySelector('[data-sap-widget-id="' + this.widgetId + '"]>div');
             } else {
                 ltable = document.querySelector("#" + this.widgetId + ">div");
             }
@@ -177,7 +177,7 @@
         _getTableCell(irow) {
             let ltable;
             if (this.widgetId.indexOf("__widget" == -1)) {
-                ltable = document.querySelector('[data-sap-widget-id="' + this.widgetId + '"]>div>div>div');
+                ltable = document.querySelector('[data-sap-widget-id="' + this.widgetId + '"]>div');
             } else {
                 ltable = document.querySelector("#" + this.widgetId + ">div");
             }
