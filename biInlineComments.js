@@ -90,7 +90,7 @@
                 return 0;
             }
 
-            let ldata = This._metadata.components[this.widgetId].data;
+            let ldata = this._metadata.components[this.widgetId].data;
 
             for (var y = 0; y < ldata.length; y++) {
                 for (var x = 0; x < ldata[y].length; x++) {
