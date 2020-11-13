@@ -162,7 +162,7 @@
         }
       ]
     },
-    "highligtCell": {
+    "highligtCell": { 
       "description": "Highlight the cell",
       "parameters": [
         {
