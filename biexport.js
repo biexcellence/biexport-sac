@@ -1368,6 +1368,15 @@
                         if (region.getShowTitle()) {
                             component.data.shift(); // remove title (removing regionHeaderDummyCell cells)
                         }
+
+                        // make sure react tables are rendered
+                        if (view.getReactTableWrapper) {
+                            let reactTableWrapper = view.getReactTableWrapper();
+                            let tableData = reactTableWrapper.tableData;
+                            tableData.widgetHeight = 10000;
+                            tableData.widgetWidth = 10000;
+                            reactTableWrapper.updateTableData(tableData);
+                        }
                     }
                 }
 
