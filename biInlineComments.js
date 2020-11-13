@@ -263,14 +263,14 @@
                 for (var i = 0; i < itablecell.childNodes.length; i++) {
                     if (itablecell.childNodes[i].nodeType == 3) {
                         // overwrite values
-                        if (irow.newValue !== null) {
+                        if (irow.newValue != null) {
                             irow.originalValue = itablecell.childNodes[i].nodeValue;
                             itablecell.childNodes[i].nodeValue = irow.newValue;
                             itablecell.setAttribute("title", irow.newValue);
                         }
 
                         // comments
-                        if (irow.index !== null) {
+                        if (irow.index != null) {
                             var larray = [];
                             for (var j = 0; j < this._comments.length; j++) {
                                 if (this._comments[j].rowNumber == irow.rowNumber && this._comments[j].columnNumber == irow.columnNumber) {
@@ -293,7 +293,7 @@
                 }
 
                 // highlights
-                if (irow.style !== null) {
+                if (irow.style != null) {
                     itablecell.childNodes[i].style.backgroundcolor = irow.style;
                 }
 
@@ -312,7 +312,7 @@
 
             if (lwidget != null) {
                         // comments
-                        if (irow.index !== null) {
+                        if (irow.index != null) {
                             var larray = [];
                             for (var j = 0; j < this._comments.length; j++) {
                                 if (this._comments[j].widget == irow.widget) {
@@ -409,7 +409,7 @@
                 if (widgetControl) { // control specific stuff
                     if (typeof widgetControl.getTableController == "function") { // table
                         let tableController = widgetControl.getTableController();
-                        if (tableController !== null) {
+                        if (tableController != null) {
                         let regions = tableController.getDataRegions();
 
                         try {
