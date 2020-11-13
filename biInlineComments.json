@@ -92,8 +92,8 @@
         }
       ]
     },
-    "addComment": {
-      "description": "Add a comment to be displayed.",
+    "commentCell": {
+      "description": "Add a comment to be displayed in the cell of the widget.",
       "parameters": [
         {
           "name": "comment",
@@ -114,6 +114,71 @@
           "name": "column",
           "type": "integer",
           "description": "The column in which the footnote shall be displayed"
+        },
+        {
+          "name": "overwrite",
+          "type": "boolean",
+          "description": "Whether the text shall be overwritten"
+        }
+      ]
+    },
+    "overwriteCell": {
+      "description": "Overwrite the value that is displayed in the cell of the widget.",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "description": "The value to be displayed"
+        },
+        {
+          "name": "row",
+          "type": "integer",
+          "description": "The row of the cell"
+        },
+        {
+          "name": "column",
+          "type": "integer",
+          "description": "The column of the cell"
+        }
+      ]
+    },
+    "commentWidget": {
+      "description": "Add a comment to be displayed to a widget.",
+      "parameters": [
+        {
+          "name": "comment",
+          "type": "string",
+          "description": "The comment to be displayed"
+        },
+        {
+          "name": "index",
+          "type": "integer",
+          "description": "The footnote index to be displayed"
+        },
+        {
+          "name": "widget",
+          "type": "string",
+          "description": "The widget ID"
+        }
+      ]
+    },
+    "highligtCell": {
+      "description": "Highlight the cell",
+      "parameters": [
+        {
+          "name": "style",
+          "type": "string",
+          "description": "The style for the highlighting"
+        },
+        {
+          "name": "row",
+          "type": "integer",
+          "description": "The row for which the footnote shall be displayed"
+        },
+        {
+          "name": "column",
+          "type": "integer",
+          "description": "The column in which the footnote shall be displayed"
         }
       ]
     },
@@ -122,8 +187,24 @@
       "parameters": [
       ]
     },
-    "clearComments": {
-      "description": "Clears all Comments"
+    "clearCellComments": {
+      "description": "Clears all cell comments"
+    },
+    "clearCellValues": {
+      "description": "Clears the overwritten values for the widget"
+    },
+    "clearWidgetComments": {
+      "description": "Clears the comments for the widget",
+      "parameters": [
+        {
+          "name": "widget",
+          "type": "string",
+          "description": "The widget ID"
+        }
+      ]
+    },
+    "clearCellHighlights": {
+      "description": "Clears all Highlights"
     }
   },
   "events": {

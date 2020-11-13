@@ -23,7 +23,10 @@
             this.inlineStyle = "";
             this.legendStyle = "";
             this.data = "";
-            this._data = [];
+            this._comments = [];
+            this._values = [];
+
+            this._metadata = getMetadata();
 
         }
 
@@ -39,10 +42,9 @@
             return this.widgetId;
         }
         setWidgetID(value) {
-            var lmetadata = getMetadata();
             var lkey = "";
-            for (var key in lmetadata.components) {
-                if (lmetadata.components[key].name == value) {
+            for (var key in this._metadata.components) {
+                if (this._metadata.components[key].name == value) {
                     this._setValue("widgetId", key);
                     lkey = key;
                     break;
@@ -88,7 +90,7 @@
                 return 0;
             }
 
-            let ldata = getMetadata().components[this.widgetId].data;
+            let ldata = This._metadata.components[this.widgetId].data;
 
             for (var y = 0; y < ldata.length; y++) {
                 for (var x = 0; x < ldata[y].length; x++) {
@@ -128,19 +130,71 @@
 
         }
 
-        addComment(comment, commentindex, row, column) {
+        commentCell(comment, commentindex, row, column, overwrite) {
             // determine commentindex if needed
             if (commentindex == 0) {
-                commentindex = this._data.length + 1;
+                commentindex = this._comments.length + 1;
             }
 
             // update data
             var lrow = {};
+            lrow.widget = "";
             lrow.comment = comment;
             lrow.index = commentindex;
             lrow.rowNumber = row;
             lrow.columnNumber = column;
-            this._data.push(lrow);
+            this._comments.push(lrow);
+
+            // get Table Widget CELL
+            let ltablecell = this._getTableCell(lrow);
+
+            // update Table Widget CELL
+            this._updateTableCell(ltablecell, lrow, overwrite);
+
+            // update Comment BODY
+            this._updateCommentBody(lrow);
+
+        }
+
+        commentWidget(comment, commentindex, widget) {
+            var lwidget = widget;
+            var ltype = "";
+
+            for (var key in this._metadata.components) {
+                if (this._metadata.components[key].name == widget) {
+                    lwidget = key;
+                    ltype = this._metadata.components[key].type;
+                }
+            }
+
+            // determine commentindex if needed
+            if (commentindex == 0) {
+                commentindex = this._comments.length + 1;
+            }
+
+            // update data
+            var lrow = {};
+            lrow.widget = lwidget;
+            lrow.comment = comment;
+            lrow.index = commentindex;
+            this._comments.push(lrow);
+
+            // update Table Widget
+            this._updateWidget(ltype, lrow);
+
+            // update Comment BODY
+            this._updateCommentBody(lrow);
+
+        }
+
+        overwriteCell(value, row, column) {
+            // update data
+            var lrow = {};
+            lrow.newvalue = value;
+            lrow.originalValue = "";
+            lrow.rowNumber = row;
+            lrow.columnNumber = column;
+            this._values.push(lrow);
 
             // get Table Widget CELL
             let ltablecell = this._getTableCell(lrow);
@@ -148,9 +202,21 @@
             // update Table Widget CELL
             this._updateTableCell(ltablecell, lrow);
 
-            // update Comment BODY
-            this._updateCommentBody(lrow);
+        }
 
+        highlightCell(style, row, column) {
+            // update data
+            var lrow = {};
+            lrow.style = value;
+            lrow.rowNumber = row;
+            lrow.columnNumber = column;
+            this._highlights.push(lrow);
+
+            // get Table Widget CELL
+            let ltablecell = this._getTableCell(lrow);
+
+            // update Table Widget CELL
+            this._updateTableCell(ltablecell, lrow);
 
         }
 
@@ -191,26 +257,81 @@
             return tablecell;
         }
 
-        _updateTableCell(itablecell, irow) {
+        _updateTableCell(itablecell, irow, overwrite) {
             if (itablecell != null) {
                 itablecell.setAttribute("data-disable-number-formatting", "X");
                 for (var i = 0; i < itablecell.childNodes.length; i++) {
                     if (itablecell.childNodes[i].nodeType == 3) {
-                        var larray = [];
-                        for (var j = 0; j < this._data.length; j++) {
-                            if (this._data[j].rowNumber == irow.rowNumber && this._data[j].columnNumber == irow.columnNumber) {
-                                larray.push(this._data[j].index);
-                            }
+                        // overwrite values
+                        if (irow.newValue !== null) {
+                            irow.originalValue = itablecell.childNodes[i].nodeValue;
+                            itablecell.childNodes[i].nodeValue = irow.newValue;
+                            itablecell.setAttribute("title", irow.newValue);
                         }
-                        itablecell.childNodes[i].nodeValue = larray.join(", ");
-                        itablecell.setAttribute("title", larray.join(", "));
+
+                        // comments
+                        if (irow.index !== null) {
+                            var larray = [];
+                            for (var j = 0; j < this._comments.length; j++) {
+                                if (this._comments[j].rowNumber == irow.rowNumber && this._comments[j].columnNumber == irow.columnNumber) {
+                                    larray.push(this._comments[j].index);
+                                }
+                            }
+
+                            var ltext = "";
+                            if (!overwrite) {
+                                ltext = itablecell.childNodes[i].nodeValue & " " & larray.join(", ");
+                            } else {
+                                ltext = larray.join(", ");                            
+                            }
+                            
+                            itablecell.childNodes[i].nodeValue = ltext;
+                            itablecell.setAttribute("title", ltext);
+                        }
+
                     }
                 }
-                if (itablecell.nextSibling != null) {
-                    itablecell.style.color = itablecell.nextSibling.style.color
-                } else {
-                    itablecell.style.color = "rgb(51, 51, 51)";
+
+                // highlights
+                if (irow.style !== null) {
+                    itablecell.childNodes[i].style.backgroundcolor = irow.style;
                 }
+
+                if (ioverwrite) {
+                    if (itablecell.nextSibling != null) {
+                        itablecell.style.color = itablecell.nextSibling.style.color
+                    } else {
+                       itablecell.style.color = "rgb(51, 51, 51)";
+                    }
+                }
+            }
+        }
+
+        _updateWidget(itype, irow) {
+            let lwidget = document.querySelector('[data-sap-widget-id="' + this.widgetId + '"]>div');
+
+            if (lwidget != null) {
+                        // comments
+                        if (irow.index !== null) {
+                            var larray = [];
+                            for (var j = 0; j < this._comments.length; j++) {
+                                if (this._comments[j].widget == irow.widget) {
+                                    larray.push(this._comments[j].index);
+                                }
+                            }
+
+                            switch (itype) {
+                                case "text":
+                                lwidget.textContent = lwidget.textContent & " " & larray.join(", ");
+                                lwidget.setAttribute("title", lwidget.textContent);
+                                break;
+                            }
+
+                        }
+
+                    }
+                }
+
             }
         }
 
@@ -238,8 +359,20 @@
 
         }
 
-        clearComments() {
-            this._data = [];
+        clearCellValues() {
+            this._values = [];
+        }
+
+        clearCellHighlights() {
+            this._highlights = [];
+        }
+
+        clearWidgetComments(widget) {
+            this._comments = [];
+        }
+
+        clearCellComments() {
+            this._comments = [];
 
             let table = this._shadowRoot.querySelector("#inlinecomment_div >table");
             let thead = table.children[0];
