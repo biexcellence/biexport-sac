@@ -408,8 +408,9 @@
                 let widgetControl = widgetControls.filter((control) => control.getWidgetId() == widget.id)[0];
                 if (widgetControl) { // control specific stuff
                     if (typeof widgetControl.getTableController == "function") { // table
-                        let tableControler = widgetControl.getTableController();
-                        let regions = tableControler.getDataRegions();
+                        let tableController = widgetControl.getTableController();
+                        if (tableController !== null) {
+                        let regions = tableController.getDataRegions();
 
                         try {
                             let cells = regions[0].getCells();
@@ -417,7 +418,7 @@
                         }
                         catch (e) {
                         }
-
+                        }
                     }
                 }
 
