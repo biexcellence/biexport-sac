@@ -297,7 +297,7 @@
                     itablecell.childNodes[i].style.backgroundcolor = irow.style;
                 }
 
-                if (ioverwrite) {
+                if (overwrite) {
                     if (itablecell.nextSibling != null) {
                         itablecell.style.color = itablecell.nextSibling.style.color
                     } else {
