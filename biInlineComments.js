@@ -316,7 +316,7 @@
         }
 
         _updateWidget(itype, irow) {
-            let lwidget = document.querySelector('[data-sap-widget-id="' + irow.widgetId + '"]>div');
+            let lwidget = document.querySelector('[data-sap-widget-id="' + irow.widget + '"]>div');
 
             if (lwidget != null) {
                         // comments
