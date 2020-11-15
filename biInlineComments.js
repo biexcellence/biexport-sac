@@ -316,7 +316,7 @@
         }
 
         _updateWidget(itype, irow) {
-            let lwidget = document.querySelector('[data-sap-widget-id="' + this.widgetId + '"]>div');
+            let lwidget = document.querySelector('[data-sap-widget-id="' + irow.widgetId + '"]>div');
 
             if (lwidget != null) {
                         // comments
@@ -329,9 +329,10 @@
                             }
 
                             switch (itype) {
-                                case "text":
-                                lwidget.textContent = lwidget.textContent & " " & larray.join(", ");
-                                lwidget.setAttribute("title", lwidget.textContent);
+                                case "textWidget":
+                                    let lspan = lwidget.querySelector("span")
+                                    lspan.textContent = lwidget.textContent & " " & larray.join(", ");
+                                    lspan.setAttribute("title", lwidget.textContent);
                                 break;
                             }
 
