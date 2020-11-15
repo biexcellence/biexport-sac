@@ -25,9 +25,6 @@
             this.data = "";
             this._comments = [];
             this._values = [];
-
-            this._metadata = getMetadata();
-
         }
 
         onCustomWidgetBeforeUpdate(changedProperties) {
@@ -43,6 +40,11 @@
         }
         setWidgetID(value) {
             var lkey = "";
+
+            if (this._metadata == null) {
+                this._metadata = getMetadata();
+            }
+
             for (var key in this._metadata.components) {
                 if (this._metadata.components[key].name == value) {
                     this._setValue("widgetId", key);
@@ -96,6 +98,10 @@
 
             if (selection == null) {
                 return 0;
+            }
+
+            if (this._metadata == null) {
+                this._metadata = getMetadata();
             }
 
             let ldata = this._metadata.components[this.widgetId].data;
@@ -167,6 +173,10 @@
         commentWidget(comment, commentindex, widget) {
             var lwidget = widget;
             var ltype = "";
+
+            if (this._metadata == null) {
+                this._metadata = getMetadata();
+            }
 
             for (var key in this._metadata.components) {
                 if (this._metadata.components[key].name == widget) {
