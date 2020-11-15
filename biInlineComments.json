@@ -92,6 +92,17 @@
         }
       ]
     },
+    "getSelectedCol": {
+      "returnType": "integer",
+      "description": "Gets the selected column.",
+      "parameters": [
+        {
+          "name": "selection",
+          "type": "Selection",
+          "description": "The selection"
+        }
+      ]
+    },
     "commentCell": {
       "description": "Add a comment to be displayed in the cell of the widget.",
       "parameters": [
@@ -162,7 +173,7 @@
         }
       ]
     },
-    "highligtCell": { 
+    "highligtCell": {
       "description": "Highlight the cell",
       "parameters": [
         {

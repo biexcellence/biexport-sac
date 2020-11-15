@@ -83,6 +83,14 @@
         }
 
         getSelectedRow(selection) {
+            return _getSelectedCell(selection).row;
+        }
+
+        getSelectedCol(selection) {
+            return _getSelectedCell(selection).column;
+        }
+
+        _getSelectedCell(selection) {
             var lrow = 0;
             var lcol = 0;
 
@@ -126,7 +134,7 @@
                 if (lrow > 0 && lcol > 0) { break; }
             }
 
-            return lrow;
+            return { "row": lrow, "column": lcol };
 
         }
 
