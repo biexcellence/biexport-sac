@@ -83,11 +83,11 @@
         }
 
         getSelectedRow(selection) {
-            return _getSelectedCell(selection).row;
+            return this._getSelectedCell(selection).row;
         }
 
         getSelectedCol(selection) {
-            return _getSelectedCell(selection).column;
+            return this._getSelectedCell(selection).column;
         }
 
         _getSelectedCell(selection) {
