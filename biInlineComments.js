@@ -321,15 +321,15 @@
                             
                         }
 
-                    }
-                }
+                        // highlights
+                        if (irow.style != null) {
+                            irow.originalStyle = itablecell.childNodes[i].style.backgroundcolor;
+                            itablecell.childNodes[i].style.backgroundcolor = irow.style;
+                        } else {
+                            itablecell.childNodes[i].style.backgroundcolor = irow.originalStyle;
+                        }
 
-                // highlights
-                if (irow.style != null) {
-                    irow.originalStyle = itablecell.childNodes[i].style.backgroundcolor;
-                    itablecell.childNodes[i].style.backgroundcolor = irow.style;
-                } else {
-                    itablecell.childNodes[i].style.backgroundcolor = irow.originalStyle;
+                    }
                 }
 
                 if (overwrite) {
