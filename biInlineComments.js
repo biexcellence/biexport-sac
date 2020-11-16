@@ -225,7 +225,7 @@
         highlightCell(style, row, column) {
             // update data
             var lrow = {};
-            lrow.style = value;
+            lrow.style = style;
             lrow.originalStyle = "";
             lrow.rowNumber = row;
             lrow.columnNumber = column;
