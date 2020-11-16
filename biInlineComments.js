@@ -439,8 +439,8 @@
 
             // update data
             for (var i = 0; i < this._values.length; i++ ) {
-                lcomment = this._values[i];
-                if (lcomment.rowNumber == row && lcomment.columnNumber == column) {
+                if (this._values[i].rowNumber == row && this._values[i].columnNumber == column) {
+                    lcomment = this._values[i];
                     lcomment.newValue = "";
                 }
             }
@@ -460,8 +460,8 @@
 
             // update data
             for (var i = 0; i < this._highlights.length; i++ ) {
-                lcomment = this._highlights[i];
-                if (lcomment.rowNumber == row && lcomment.columnNumber == column) {
+                if (this._highlights[i].rowNumber == row && this._highlights[i].columnNumber == column) {
+                    lcomment = this._highlights[i];
                     lcomment.style = "";
                 }
             }
@@ -483,9 +483,9 @@
 
             // update data
             for (var i = 0; i < this._comments.length; i++ ) {
-                lcomment = this._comments[i];
 
-                if (lcomment.rowNumber == row && lcomment.columnNumber == column) {
+                if (this._comments[i].rowNumber == row && this._comments[i].columnNumber == column) {
+                    lcomment = this._comments[i];
                     lcomment.comment = "";
 
                     if (tbody.children[lcomment.index - 1 - lpos] != null) {
