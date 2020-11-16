@@ -298,7 +298,7 @@
 
                             var ltext = "";
                             if (!overwrite) {
-                                ltext = itablecell.childNodes[i].nodeValue & " " & larray.join(", ");
+                                ltext = itablecell.childNodes[i].nodeValue + " " + larray.join(", ");
                             } else {
                                 ltext = larray.join(", ");                            
                             }
