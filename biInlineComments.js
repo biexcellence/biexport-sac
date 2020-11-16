@@ -299,7 +299,7 @@
                         if (irow.index != null) {
                             var larray = [];
                             for (var j = 0; j < this._comments.length; j++) {
-                                if (this._comments[j].rowNumber == irow.rowNumber && this._comments[j].columnNumber == irow.columnNumber) {
+                                if (this._comments[j].rowNumber == irow.rowNumber && this._comments[j].columnNumber == irow.columnNumber && this._comments[j].comment != "") {
                                     larray.push(this._comments[j].index);
                                 }
                             }
@@ -488,7 +488,7 @@
                 if (lcomment.rowNumber == row && lcomment.columnNumber == column) {
                     lcomment.comment = "";
 
-                    if (tbody.children[lcomment.index] != null) {
+                    if (tbody.children[lcomment.index - 1 - lpos] != null) {
                         tbody.removeChild(tbody.children[lcomment.index - 1 - lpos] );
                        lpos = lpos + 1;
                     }
