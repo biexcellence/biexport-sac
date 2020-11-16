@@ -302,7 +302,7 @@
                                 let lsup = document.createElement("sup");
                                 lsup.textContent = larray.join(", ");
                                 itablecell.appendChild(lsup);
-                                //lspan.setAttribute("title", lspan.textContent & " " & larray.join(", "));
+                                //itablecell.setAttribute("title", lspan.textContent + " " + larray.join(", "));
 
                             } else {
                                 ltext = larray.join(", ");                            
@@ -349,7 +349,7 @@
                                     let lsup = document.createElement("sup");
                                     lsup.textContent = larray.join(", ");
                                     lspan.appendChild(lsup);
-                                    lspan.setAttribute("title", lspan.textContent & " " & larray.join(", "));
+                                    // lspan.setAttribute("title", lspan.textContent + " " + larray.join(", "));
                                 break;
                             }
 
