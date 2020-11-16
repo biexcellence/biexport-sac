@@ -436,7 +436,7 @@
             var lcomment;
 
             // update data
-            for (var i = 0; i < this._comments.length, i++ ) {
+            for (var i = 0; i < this._comments.length; i++ ) {
                 lcomment = this._comments[i];
                 if (lcomment.rowNumber == row && lcomment.columnNumber == col) {
                     lcomment.newValue = "";
@@ -457,7 +457,7 @@
             var lcomment;
 
             // update data
-            for (var i = 0; i < this._comments.length, i++ ) {
+            for (var i = 0; i < this._comments.length; i++ ) {
                 lcomment = this._comments[i];
                 if (lcomment.rowNumber == row && lcomment.columnNumber == col) {
                     lcomment.style = "";
@@ -480,7 +480,7 @@
             let tbody = table.children[1];
 
             // update data
-            for (var i = 0; i < this._comments.length, i++ ) {
+            for (var i = 0; i < this._comments.length; i++ ) {
                 lcomment = this._comments[i];
 
                 if (lcomment.rowNumber == row && lcomment.columnNumber == col) {
