@@ -308,7 +308,7 @@
                             if (!overwrite) {
                                 let lsup = itablecell.querySelector("sup");
                                 if (lsup == null) {
-                                    document.createElement("sup");
+                                    lsup = document.createElement("sup");
                                     itablecell.appendChild(lsup);
                                 }
                                 lsup.textContent = larray.join(", ");
@@ -363,7 +363,7 @@
                                     let lsup = lspan.querySelector("sup");
 
                                     if (lsup == null) {
-                                        document.createElement("sup");
+                                        lsup = document.createElement("sup");
                                         lspan.appendChild(lsup);
                                     }
 
