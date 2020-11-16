@@ -413,7 +413,7 @@
             let tbody = table.children[1];
 
             // update data
-            for (var i = 0; i < this._comments.length, i++ ) {
+            for (var i = 0; i < this._comments.length; i++ ) {
                 lcomment = this._comments[i];
 
                 if (lcomment.widget == widget) {
