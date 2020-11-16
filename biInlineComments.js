@@ -327,10 +327,10 @@
                 // highlights
                 if (irow.style != null) {
                     if (irow.style != "") {
-                        irow.originalStyle = itablecell.style.backgroundcolor;
-                        itablecell.style.backgroundcolor = irow.style;
+                        irow.originalStyle = itablecell.style.backgroundColor;
+                        itablecell.style.backgroundColor = irow.style;
                     } else {
-                        itablecell.style.backgroundcolor = irow.originalStyle;
+                        itablecell.style.backgroundColor = irow.originalStyle;
                     }
                 }
 
