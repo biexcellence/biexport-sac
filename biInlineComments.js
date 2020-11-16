@@ -208,7 +208,7 @@
         overwriteCell(value, row, column) {
             // update data
             var lrow = {};
-            lrow.newvalue = value;
+            lrow.newValue = value;
             lrow.originalValue = "";
             lrow.rowNumber = row;
             lrow.columnNumber = column;
