@@ -226,6 +226,7 @@
             // update data
             var lrow = {};
             lrow.style = value;
+            lrow.originalStyle = "";
             lrow.rowNumber = row;
             lrow.columnNumber = column;
             this._highlights.push(lrow);
@@ -282,9 +283,16 @@
                     if (itablecell.childNodes[i].nodeType == 3) {
                         // overwrite values
                         if (irow.newValue != null) {
-                            irow.originalValue = itablecell.childNodes[i].nodeValue;
-                            itablecell.childNodes[i].nodeValue = irow.newValue;
-                            itablecell.setAttribute("title", irow.newValue);
+                            if (irow.newValue != "") {
+                                if (irow.originalValue == "") {
+                                    irow.originalValue = itablecell.childNodes[i].nodeValue;
+                                }
+                                itablecell.childNodes[i].nodeValue = irow.newValue;
+                                itablecell.setAttribute("title", irow.newValue);
+                            } else {
+                                itablecell.childNodes[i].nodeValue = irow.originalValue;
+                                itablecell.setAttribute("title", irow.originalValue);
+                            }
                         }
 
                         // comments
@@ -298,11 +306,12 @@
 
                             var ltext = "";
                             if (!overwrite) {
-                                // ltext = itablecell.childNodes[i].nodeValue + " " + larray.join(", ");
-                                let lsup = document.createElement("sup");
+                                let lsup = itablecell.querySelector("sup");
+                                if (lsup == null) {
+                                    document.createElement("sup");
+                                    itablecell.appendChild(lsup);
+                                }
                                 lsup.textContent = larray.join(", ");
-                                itablecell.appendChild(lsup);
-                                //itablecell.setAttribute("title", lspan.textContent + " " + larray.join(", "));
 
                             } else {
                                 ltext = larray.join(", ");                            
@@ -317,7 +326,10 @@
 
                 // highlights
                 if (irow.style != null) {
+                    irow.originalStyle = itablecell.childNodes[i].style.backgroundcolor;
                     itablecell.childNodes[i].style.backgroundcolor = irow.style;
+                } else {
+                    itablecell.childNodes[i].style.backgroundcolor = irow.originalStyle;
                 }
 
                 if (overwrite) {
@@ -346,11 +358,15 @@
                             switch (itype) {
                                 case "textWidget":
                                     let lspan = lwidget.querySelector("span")
-                                    let lsup = document.createElement("sup");
+                                    let lsup = lspan.querySelector("sup");
+
+                                    if (lsup == null) {
+                                        document.createElement("sup");
+                                        lspan.appendChild(lsup);
+                                    }
+
                                     lsup.textContent = larray.join(", ");
-                                    lspan.appendChild(lsup);
-                                    // lspan.setAttribute("title", lspan.textContent + " " + larray.join(", "));
-                                break;
+                                    break;
                             }
 
                         }
@@ -390,13 +406,107 @@
             this._highlights = [];
         }
 
-        clearWidgetComments(widget) {
-            this._comments = [];
+        clearWidgetComment(widget) {
+            var lcomment;
+            let lpos = 0;
+            let table = this._shadowRoot.querySelector("#inlinecomment_div >table");
+            let tbody = table.children[1];
+
+            // update data
+            for (var i = 0; i < this._comments.length, i++ ) {
+                lcomment = this._comments[i];
+
+                if (lcomment.widget == widget) {
+                    lcomment.comment = "";
+
+                    if (tbody.children[lcomment.index] != null) {
+                        tbody.removeChild(tbody.children[lcomment.index] - lpos);
+                        lpos = lpos - 1;
+                    }
+                }
+            }
+
+            if (lcomment != null) {
+                // update Table Widget
+                this._updateWidget(ltype, lrow);
+            }
+        }
+
+        clearCellValue(row, column) {
+            var lcomment;
+
+            // update data
+            for (var i = 0; i < this._comments.length, i++ ) {
+                lcomment = this._comments[i];
+                if (lcomment.rowNumber == row && lcomment.columnNumber == col) {
+                    lcomment.newValue = "";
+                }
+            }
+
+            if (lcomment != null) {
+                // get Table Widget CELL
+                let ltablecell = this._getTableCell(lcomment);
+
+                // update Table Widget CELL
+                this._updateTableCell(ltablecell, lcomment);
+            }
+
+        }
+
+        clearCellHighlight(row, column) {
+            var lcomment;
+
+            // update data
+            for (var i = 0; i < this._comments.length, i++ ) {
+                lcomment = this._comments[i];
+                if (lcomment.rowNumber == row && lcomment.columnNumber == col) {
+                    lcomment.style = "";
+                }
+            }
+
+            if (lcomment != null) {
+                // get Table Widget CELL
+                let ltablecell = this._getTableCell(lcomment);
+
+                // update Table Widget CELL
+                this._updateTableCell(ltablecell, lcomment);
+            }
+        }
+
+        clearCellComment(row, column) {
+            var lcomment;
+            let lpos = 0;
+            let table = this._shadowRoot.querySelector("#inlinecomment_div >table");
+            let tbody = table.children[1];
+
+            // update data
+            for (var i = 0; i < this._comments.length, i++ ) {
+                lcomment = this._comments[i];
+
+                if (lcomment.rowNumber == row && lcomment.columnNumber == col) {
+                    lcomment.comment = "";
+
+                    if (tbody.children[lcomment.index] != null) {
+                        tbody.removeChild(tbody.children[lcomment.index] - lpos);
+                       lpos = lpos - 1;
+                    }
+                }
+            }
+
+            if (lcomment != null) {
+            // get Table Widget CELL
+                let ltablecell = this._getTableCell(lcomment);
+
+            // update Table Widget CELL
+                this._updateTableCell(ltablecell, lcomment);
+            }
         }
 
         clearCellComments() {
-            this._comments = [];
+            this._clearComments();
+        }
 
+        _clearComments() {
             let table = this._shadowRoot.querySelector("#inlinecomment_div >table");
             let thead = table.children[0];
             let tbody = table.children[1];
@@ -407,8 +517,8 @@
             while (tbody.firstChild) {
                 tbody.removeChild(tbody.lastChild)
             }
-
         }
+
 
     }
     customElements.define("com-biexcellence-openbi-sap-sac-biinlinecomments", biInlineComments);

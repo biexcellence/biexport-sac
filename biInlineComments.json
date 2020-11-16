@@ -173,7 +173,7 @@
         }
       ]
     },
-    "highligtCell": {
+    "highlightCell": {
       "description": "Highlight the cell",
       "parameters": [
         {
@@ -204,7 +204,55 @@
     "clearCellValues": {
       "description": "Clears the overwritten values for the widget"
     },
-    "clearWidgetComments": {
+    "clearCellHighlights": {
+      "description": "Clears all Highlights"
+    },
+    "clearCellComment": {
+      "description": "Clears all cell comments",
+      "parameters": [
+        {
+          "name": "row",
+          "type": "integer",
+          "description": "The row for which the footnote shall be displayed"
+        },
+        {
+          "name": "column",
+          "type": "integer",
+          "description": "The column in which the footnote shall be displayed"
+        }
+      ]
+    },
+    "clearCellValue": {
+      "description": "Clears the overwritten values for the widget",
+      "parameters": [
+        {
+          "name": "row",
+          "type": "integer",
+          "description": "The row for which the footnote shall be displayed"
+        },
+        {
+          "name": "column",
+          "type": "integer",
+          "description": "The column in which the footnote shall be displayed"
+        }
+      ]
+    },
+    "clearCellHighlight": {
+      "description": "Clears all Highlights",
+      "parameters": [
+        {
+          "name": "row",
+          "type": "integer",
+          "description": "The row for which the footnote shall be displayed"
+        },
+        {
+          "name": "column",
+          "type": "integer",
+          "description": "The column in which the footnote shall be displayed"
+        }
+      ]
+    },
+    "clearWidgetComment": {
       "description": "Clears the comments for the widget",
       "parameters": [
         {
@@ -213,9 +261,6 @@
           "description": "The widget ID"
         }
       ]
-    },
-    "clearCellHighlights": {
-      "description": "Clears all Highlights"
     }
   },
   "events": {
