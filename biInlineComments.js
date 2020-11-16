@@ -440,7 +440,7 @@
             // update data
             for (var i = 0; i < this._comments.length; i++ ) {
                 lcomment = this._comments[i];
-                if (lcomment.rowNumber == row && lcomment.columnNumber == col) {
+                if (lcomment.rowNumber == row && lcomment.columnNumber == column) {
                     lcomment.newValue = "";
                 }
             }
@@ -461,7 +461,7 @@
             // update data
             for (var i = 0; i < this._comments.length; i++ ) {
                 lcomment = this._comments[i];
-                if (lcomment.rowNumber == row && lcomment.columnNumber == col) {
+                if (lcomment.rowNumber == row && lcomment.columnNumber == column) {
                     lcomment.style = "";
                 }
             }
@@ -485,7 +485,7 @@
             for (var i = 0; i < this._comments.length; i++ ) {
                 lcomment = this._comments[i];
 
-                if (lcomment.rowNumber == row && lcomment.columnNumber == col) {
+                if (lcomment.rowNumber == row && lcomment.columnNumber == column) {
                     lcomment.comment = "";
 
                     if (tbody.children[lcomment.index] != null) {
