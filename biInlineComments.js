@@ -489,8 +489,8 @@
                     lcomment.comment = "";
 
                     if (tbody.children[lcomment.index] != null) {
-                        tbody.removeChild(tbody.children[lcomment.index] - lpos);
-                       lpos = lpos - 1;
+                        tbody.removeChild(tbody.children[lcomment.index - 1 - lpos] );
+                       lpos = lpos + 1;
                     }
                 }
             }
