@@ -305,7 +305,11 @@
                             }
 
                             var ltext = "";
-                            if (!overwrite) {
+                            if ((larray.length == 0 && itablecell.querySelector("sup") == null) || overwrite ) {
+                                ltext = larray.join(", ");
+                                itablecell.childNodes[i].nodeValue = ltext;
+                                itablecell.setAttribute("title", ltext);
+                            } else {
                                 let lsup = itablecell.querySelector("sup");
                                 if (lsup == null) {
                                     lsup = document.createElement("sup");
@@ -313,10 +317,6 @@
                                 }
                                 lsup.textContent = larray.join(", ");
 
-                            } else {
-                                ltext = larray.join(", ");                            
-                                itablecell.childNodes[i].nodeValue = ltext;
-                                itablecell.setAttribute("title", ltext);
                             }
                             
                         }
