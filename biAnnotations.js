@@ -3,7 +3,7 @@
     tmpl.innerHTML = `
       <style>
       </style>
-      <div id="inlinecomment_div" name="inlinecomment_div">
+      <div id="biannotation_div" name="biannotation_div">
       <table class="sapEpmUiControlCrosstab">
         <thead></thead>
         <tbody></tbody>
@@ -248,7 +248,7 @@
             }
 
             let lunbooked = ltable.querySelectorAll('.unbooked');
-            for (var i = 0; i < lunbooked.length; i++ ) {
+            for (var i = 0; i < lunbooked.length; i++) {
 
                 let lsvg = lunbooked[i].querySelector("svg");
                 if (lsvg != null) {
@@ -256,7 +256,7 @@
                     lunbooked[i].appendChild(document.createTextNode("n.a."));
                 }
             }
- 
+
         }
 
         _getTableCell(irow) {
@@ -305,7 +305,7 @@
                             }
 
                             var ltext = "";
-                            if ((larray.length == 0 && itablecell.querySelector("sup") == null) || overwrite ) {
+                            if ((larray.length == 0 && itablecell.querySelector("sup") == null) || overwrite) {
                                 ltext = larray.join(", ");
                                 itablecell.childNodes[i].nodeValue = ltext;
                                 itablecell.setAttribute("title", ltext);
@@ -318,7 +318,7 @@
                                 lsup.textContent = larray.join(", ");
 
                             }
-                            
+
                         }
 
                     }
@@ -338,7 +338,7 @@
                     if (itablecell.nextSibling != null) {
                         itablecell.style.color = itablecell.nextSibling.style.color
                     } else {
-                       itablecell.style.color = "rgb(51, 51, 51)";
+                        itablecell.style.color = "rgb(51, 51, 51)";
                     }
                 }
             }
@@ -348,36 +348,36 @@
             let lwidget = document.querySelector('[data-sap-widget-id="' + irow.widget + '"]>div');
 
             if (lwidget != null) {
-                        // comments
-                        if (irow.index != null) {
-                            var larray = [];
-                            for (var j = 0; j < this._comments.length; j++) {
-                                if (this._comments[j].widget == irow.widget) {
-                                    larray.push(this._comments[j].index);
-                                }
-                            }
-
-                            switch (itype) {
-                                case "textWidget":
-                                    let lspan = lwidget.querySelector("span")
-                                    let lsup = lspan.querySelector("sup");
-
-                                    if (lsup == null) {
-                                        lsup = document.createElement("sup");
-                                        lspan.appendChild(lsup);
-                                    }
-
-                                    lsup.textContent = larray.join(", ");
-                                    break;
-                            }
-
+                // comments
+                if (irow.index != null) {
+                    var larray = [];
+                    for (var j = 0; j < this._comments.length; j++) {
+                        if (this._comments[j].widget == irow.widget) {
+                            larray.push(this._comments[j].index);
                         }
+                    }
+
+                    switch (itype) {
+                        case "textWidget":
+                            let lspan = lwidget.querySelector("span")
+                            let lsup = lspan.querySelector("sup");
+
+                            if (lsup == null) {
+                                lsup = document.createElement("sup");
+                                lspan.appendChild(lsup);
+                            }
+
+                            lsup.textContent = larray.join(", ");
+                            break;
+                    }
+
+                }
 
             }
         }
 
         _updateCommentBody(irow) {
-            let table = this._shadowRoot.querySelector("#inlinecomment_div >table");
+            let table = this._shadowRoot.querySelector("#biannotation_div >table");
             let tbody = table.children[1];
 
             let tr = document.createElement("tr");
@@ -411,11 +411,11 @@
         clearWidgetComment(widget) {
             var lcomment;
             let lpos = 0;
-            let table = this._shadowRoot.querySelector("#inlinecomment_div >table");
+            let table = this._shadowRoot.querySelector("#biannotation_div >table");
             let tbody = table.children[1];
 
             // update data
-            for (var i = 0; i < this._comments.length; i++ ) {
+            for (var i = 0; i < this._comments.length; i++) {
                 lcomment = this._comments[i];
 
                 if (lcomment.widget == widget) {
@@ -438,7 +438,7 @@
             var lcomment;
 
             // update data
-            for (var i = 0; i < this._values.length; i++ ) {
+            for (var i = 0; i < this._values.length; i++) {
                 if (this._values[i].rowNumber == row && this._values[i].columnNumber == column) {
                     lcomment = this._values[i];
                     lcomment.newValue = "";
@@ -459,7 +459,7 @@
             var lcomment;
 
             // update data
-            for (var i = 0; i < this._highlights.length; i++ ) {
+            for (var i = 0; i < this._highlights.length; i++) {
                 if (this._highlights[i].rowNumber == row && this._highlights[i].columnNumber == column) {
                     lcomment = this._highlights[i];
                     lcomment.style = "";
@@ -478,28 +478,28 @@
         clearCellComment(row, column) {
             var lcomment;
             let lpos = 0;
-            let table = this._shadowRoot.querySelector("#inlinecomment_div >table");
+            let table = this._shadowRoot.querySelector("#biannotation_div >table");
             let tbody = table.children[1];
 
             // update data
-            for (var i = 0; i < this._comments.length; i++ ) {
+            for (var i = 0; i < this._comments.length; i++) {
 
                 if (this._comments[i].rowNumber == row && this._comments[i].columnNumber == column) {
                     lcomment = this._comments[i];
                     lcomment.comment = "";
 
                     if (tbody.children[lcomment.index - 1 - lpos] != null) {
-                        tbody.removeChild(tbody.children[lcomment.index - 1 - lpos] );
-                       lpos = lpos + 1;
+                        tbody.removeChild(tbody.children[lcomment.index - 1 - lpos]);
+                        lpos = lpos + 1;
                     }
                 }
             }
 
             if (lcomment != null) {
-            // get Table Widget CELL
+                // get Table Widget CELL
                 let ltablecell = this._getTableCell(lcomment);
 
-            // update Table Widget CELL
+                // update Table Widget CELL
                 this._updateTableCell(ltablecell, lcomment);
             }
         }
@@ -509,7 +509,7 @@
         }
 
         _clearComments() {
-            let table = this._shadowRoot.querySelector("#inlinecomment_div >table");
+            let table = this._shadowRoot.querySelector("#biannotation_div >table");
             let thead = table.children[0];
             let tbody = table.children[1];
 
@@ -548,14 +548,14 @@
                     if (typeof widgetControl.getTableController == "function") { // table
                         let tableController = widgetControl.getTableController();
                         if (tableController != null) {
-                        let regions = tableController.getDataRegions();
+                            let regions = tableController.getDataRegions();
 
-                        try {
-                            let cells = regions[0].getCells();
-                            component.data = cells.map((row) => row.map((cell) => cell.getJSON()));
-                        }
-                        catch (e) {
-                        }
+                            try {
+                                let cells = regions[0].getCells();
+                                component.data = cells.map((row) => row.map((cell) => cell.getJSON()));
+                            }
+                            catch (e) {
+                            }
                         }
                     }
                 }
