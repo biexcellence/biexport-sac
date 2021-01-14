@@ -1372,10 +1372,12 @@
                         // make sure react tables are rendered
                         if (view.getReactTableWrapper) {
                             let reactTableWrapper = view.getReactTableWrapper();
-                            let tableData = reactTableWrapper.tableData;
-                            tableData.widgetHeight = 10000;
-                            tableData.widgetWidth = 10000;
-                            reactTableWrapper.updateTableData(tableData);
+                            if (reactTableWrapper) {
+                                let tableData = reactTableWrapper.tableData;
+                                tableData.widgetHeight = 10000;
+                                tableData.widgetWidth = 10000;
+                                reactTableWrapper.updateTableData(tableData);
+                            }
                         }
                     }
                 }
