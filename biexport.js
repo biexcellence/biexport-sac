@@ -1300,6 +1300,7 @@
     const cssUrlRegExp = /url\(["']?(.*?)["']?\)/i;
     const contentDispositionFilenameRegExp = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/i;
     const startsWithHttpRegExp = /^http/i;
+    const htmlEntitiesRegExp = /[<>&]/;
 
     function createGuid() {
         return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
@@ -1460,7 +1461,13 @@
         if (node.tagName == "SCRIPT") return; // SCRIPT
 
         if (node.nodeType == 3) { // TEXT
-            html.push(escapeText(node.nodeValue));
+            var value = node.nodeValue;
+            if (htmlEntitiesRegExp.test(value)) {
+                var el = document.createElement(node.parentNode.tagName);
+                el.appendChild(document.createTextNode(value));
+                value = el.innerHTML;
+            }
+            html.push(value);
             return;
         }
 
@@ -1488,7 +1495,7 @@
                 }
                 break;
             case "TEXTAREA":
-                content = node.value;
+                content = node.innerHTML; // already escaped!
                 break;
             case "CANVAS":
                 name = "img";
@@ -1578,9 +1585,9 @@
             if (content.then) {
                 let index = html.length;
                 html.push(""); // placeholder
-                promises.push(content.then(c => html[index] = escapeText(c)));
+                promises.push(content.then(c => html[index] = c));
             } else {
-                html.push(escapeText(content));
+                html.push(content);
             }
             isEmpty = false;
         } else {
@@ -1711,10 +1718,6 @@
                 fileReader.readAsDataURL(b);
             });
         });
-    }
-
-    function escapeText(text) {
-        return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     }
 
     function escapeAttributeValue(value) {
