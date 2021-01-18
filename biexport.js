@@ -1350,7 +1350,7 @@
                                 level: cell.getLevel(),
                                 hasNOPNullValue: cell.getHasNOPNullValue(),
                                 style: tableController.getEffectiveCellStyle(cell),
-                                html: tableCellFactory && tableCellFactory.generateDivStringFromCellContent({
+                                html: tableCellFactory && tableCellFactory._oGlobalTableViewMode && tableCellFactory.generateDivStringFromCellContent({
                                     tableRow: y,
                                     tableCol: x,
                                     globalRow: y,
