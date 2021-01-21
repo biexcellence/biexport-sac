@@ -25,6 +25,7 @@
             this.data = "";
             this._comments = [];
             this._values = [];
+            this._highlights = [];
         }
 
         onCustomWidgetBeforeUpdate(changedProperties) {
