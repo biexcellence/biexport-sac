@@ -1162,14 +1162,14 @@
 
             let settingsEl = form.appendChild(document.createElement("input"));
             settingsEl.name = "bie_openbi_export_settings_json";
-            settingsEl.type = "hidden";
-            settingsEl.value = JSON.stringify(settings);
+            settingsEl.type = "file";
+            settingsEl.files = createFileList(JSON.stringify(settings), "export_settings.json", "application/json");
 
             if (content) {
                 let contentEl = form.appendChild(document.createElement("input"));
                 contentEl.name = "bie_openbi_export_content";
-                contentEl.type = "hidden";
-                contentEl.value = content;
+                contentEl.type = "file";
+                contentEl.files = createFileList(content, "export_content.html", "text/html");
             }
 
             let host = settings.server_urls;
@@ -1277,6 +1277,7 @@
                 form.target = "_blank";
                 form.method = "POST";
                 form.acceptCharset = "utf-8";
+                form.enctype = "multipart/form-data";
                 this._shadowRoot.appendChild(form);
 
                 form.submit();
@@ -1718,6 +1719,13 @@
                 fileReader.readAsDataURL(b);
             });
         });
+    }
+
+    function createFileList(content, name, type) {
+        let file = new File([content], name, { type: type, lastModified: Date.now() });
+        let dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        return dataTransfer.files;
     }
 
     function escapeAttributeValue(value) {
