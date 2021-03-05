@@ -1361,8 +1361,8 @@
                                     // referencedRow: null,
                                     // referencedCol: null,
                                     hidden: false,
-                                    height: rows[y].data.size,
-                                    width: cols[x].data.size
+                                    height: rows[y] && rows[y].data.size,
+                                    width: cols[x] && cols[x].data.size
                                 })
                             };
                         }));
