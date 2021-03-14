@@ -241,6 +241,13 @@
 
                 let filterList = new sap.m.FacetFilterList({
                     title: "Widget Selection",
+                    headerToolbar: new sap.m.Toolbar({
+                        content: [
+                            new sap.m.Button({
+                                text: "Next status"
+                            })
+                        ]
+                    }),
                     items: {
                         path: "/",
                         template: new sap.m.FacetFilterItem({
