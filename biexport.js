@@ -1162,14 +1162,14 @@
 
             let settingsEl = form.appendChild(document.createElement("input"));
             settingsEl.name = "bie_openbi_export_settings_json";
-            settingsEl.type = "hidden";
-            settingsEl.value = JSON.stringify(settings);
+            settingsEl.type = "file";
+            settingsEl.files = createFileList(JSON.stringify(settings), "export_settings.json", "application/json");
 
             if (content) {
                 let contentEl = form.appendChild(document.createElement("input"));
                 contentEl.name = "bie_openbi_export_content";
-                contentEl.type = "hidden";
-                contentEl.value = content;
+                contentEl.type = "file";
+                contentEl.files = createFileList(content, "export_content.html", "text/html");
             }
 
             let host = settings.server_urls;
@@ -1277,6 +1277,7 @@
                 form.target = "_blank";
                 form.method = "POST";
                 form.acceptCharset = "utf-8";
+                form.enctype = "multipart/form-data";
                 this._shadowRoot.appendChild(form);
 
                 form.submit();
@@ -1331,53 +1332,55 @@
                         let tableCellFactory = view.getTableCellFactory();
                         let regions = tableController.getDataRegions();
                         let region = regions[0];
-                        let grid = region.getGrid();
-                        let rows = grid.getRows();
-                        let cols = grid.getColumns();
-                        let cells = region.getCells();
+                        if (region) {
+                            let grid = region.getGrid();
+                            let rows = grid.getRows();
+                            let cols = grid.getColumns();
+                            let cells = region.getCells();
 
-                        component.data = cells.map((row) => row.map((cell) => {
-                            let coordinate = cell.getCoordinate();
-                            let x = coordinate.getX();
-                            let y = coordinate.getY();
-                            return {
-                                type: cell.getType(),
-                                rawVal: cell.getRawVal(),
-                                formattedValue: cell.getFormattedValue(),
-                                scale: cell.getScale(),
-                                refIndex: cell.getRefIndex() || undefined,
-                                totalCell: cell.getTotalCell(),
-                                level: cell.getLevel(),
-                                hasNOPNullValue: cell.getHasNOPNullValue(),
-                                style: tableController.getEffectiveCellStyle(cell),
-                                html: tableCellFactory && tableCellFactory._oGlobalTableViewMode && tableCellFactory.generateDivStringFromCellContent({
-                                    tableRow: y,
-                                    tableCol: x,
-                                    globalRow: y,
-                                    globalCol: x,
-                                    colspan: 1,
-                                    rowspan: 1,
-                                    // referencedRow: null,
-                                    // referencedCol: null,
-                                    hidden: false,
-                                    height: rows[y].data.size,
-                                    width: cols[x].data.size
-                                })
-                            };
-                        }));
+                            component.data = cells.map((row) => row.map((cell) => {
+                                let coordinate = cell.getCoordinate();
+                                let x = coordinate.getX();
+                                let y = coordinate.getY();
+                                return {
+                                    type: cell.getType(),
+                                    rawVal: cell.getRawVal(),
+                                    formattedValue: cell.getFormattedValue(),
+                                    scale: cell.getScale(),
+                                    refIndex: cell.getRefIndex() || undefined,
+                                    totalCell: cell.getTotalCell(),
+                                    level: cell.getLevel(),
+                                    hasNOPNullValue: cell.getHasNOPNullValue(),
+                                    style: tableController.getEffectiveCellStyle(cell),
+                                    html: tableCellFactory && tableCellFactory._oGlobalTableViewMode && tableCellFactory.generateDivStringFromCellContent({
+                                        tableRow: y,
+                                        tableCol: x,
+                                        globalRow: y,
+                                        globalCol: x,
+                                        colspan: 1,
+                                        rowspan: 1,
+                                        // referencedRow: null,
+                                        // referencedCol: null,
+                                        hidden: false,
+                                        height: rows[y] && rows[y].data.size,
+                                        width: cols[x] && cols[x].data.size
+                                    })
+                                };
+                            }));
 
-                        if (region.getShowTitle()) {
-                            component.data.shift(); // remove title (removing regionHeaderDummyCell cells)
-                        }
+                            if (region.getShowTitle()) {
+                                component.data.shift(); // remove title (removing regionHeaderDummyCell cells)
+                            }
 
-                        // make sure react tables are rendered
-                        if (view.getReactTableWrapper) {
-                            let reactTableWrapper = view.getReactTableWrapper();
-                            if (reactTableWrapper) {
-                                let tableData = reactTableWrapper.tableData;
-                                tableData.widgetHeight = 10000;
-                                tableData.widgetWidth = 10000;
-                                reactTableWrapper.updateTableData(tableData);
+                            // make sure react tables are rendered
+                            if (view.getReactTableWrapper) {
+                                let reactTableWrapper = view.getReactTableWrapper();
+                                if (reactTableWrapper && reactTableWrapper.getTableData) {
+                                    let tableData = reactTableWrapper.getTableData();
+                                    tableData.widgetHeight = 10000;
+                                    tableData.widgetWidth = 10000;
+                                    reactTableWrapper.updateTableData(tableData);
+                                }
                             }
                         }
                     }
@@ -1718,6 +1721,13 @@
                 fileReader.readAsDataURL(b);
             });
         });
+    }
+
+    function createFileList(content, name, type) {
+        let file = new File([content], name, { type: type, lastModified: Date.now() });
+        let dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        return dataTransfer.files;
     }
 
     function escapeAttributeValue(value) {
