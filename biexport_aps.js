@@ -61,7 +61,7 @@
                   <td><input id="biAnalyticsDocument" name="biAnalyticsDocument" type="checkbox"></td>
                 </tr>
                 <tr>
-                  <td colspan="2"><slot name="tablesSelectedWidgets"></slot></td>
+                  <td colspan="2"><slot name="tables_SelectedWidgets"></slot></td>
                 </tr>
               </table>
             </fieldset>
