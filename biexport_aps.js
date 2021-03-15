@@ -239,94 +239,96 @@
             ["pdf_SelectedWidgets", "ppt_SelectedWidgets", "doc_SelectedWidgets", "xls_SelectedWidgets"].forEach(slotId => {
                 let id = slotId.replace("_", "");
 
-                let filterList = new sap.m.FacetFilterList({
-                    title: "Widget Selection",
-                    headerToolbar: new sap.m.Toolbar({
-                        content: [
-                            new sap.m.Button({
-                                text: "Next status"
+                let filter = new sap.m.FacetFilter({
+                    showSummaryBar: true,
+                    showReset: false,
+                    showPersonalization: true,
+                    type: sap.m.FacetFilterType.Light,
+                    showPopoverOKButton: true
+                });
+
+                // split components by filter
+                ["Tables", "Charts", "Layout Components", "Texts", "Filters", "Others"].forEach(typeGroup => {
+                    let filterList = new sap.m.FacetFilterList({
+                        title: "Widget Selection",
+                        items: {
+                            path: "/",
+                            template: new sap.m.FacetFilterItem({
+                                key: "{name}",
+                                text: "{name}"
                             })
-                        ]
-                    }),
-                    items: {
-                        path: "/",
-                        template: new sap.m.FacetFilterItem({
-                            key: "{name}",
-                            text: "{name}"
-                        })
-                    },
-                    listOpen: oEvent => {
-                        let list = oEvent.getSource();
+                        },
+                        listOpen: oEvent => {
+                            let list = oEvent.getSource();
 
-                        let value = this[id];
+                            let value = this[id];
 
-                        let visibleComponents = value ? JSON.parse(value) : [];
-                        let allComponents = biExportGetMetadata(/*withoutData*/true).components;
-                        let components = [];
-                        let selectedComponents = {};
-                        for (let componentId in allComponents) {
-                            let component = allComponents[componentId];
+                            let visibleComponents = value ? JSON.parse(value) : [];
+                            let allComponents = biExportGetMetadata(/*withoutData*/true).components;
+                            let components = [];
+                            let selectedComponents = {};
+                            for (let componentId in allComponents) {
+                                let component = allComponents[componentId];
 
-                            if (component.type == "sdk_com_biexcellence_openbi_sap_sac_export__0") {
-                                continue;
+                                if (component.type == "sdk_com_biexcellence_openbi_sap_sac_export__0") {
+                                    continue;
+                                }
+
+                                components.push(component);
+
+                                if (!visibleComponents.some(v => v.component == component.name && v.isExcluded)) {
+                                    selectedComponents[component.name] = component.name;
+                                }
                             }
 
-                            components.push(component);
+                            let model = new sap.ui.model.json.JSONModel(components);
+                            model.setSizeLimit(9999);
+                            list.setModel(model);
 
-                            if (!visibleComponents.some(v => v.component == component.name && v.isExcluded)) {
-                                selectedComponents[component.name] = component.name;
+                            if (Object.keys(selectedComponents).length == components.length) {
+                                selectedComponents = {};
                             }
-                        }
+                            list.setSelectedKeys(selectedComponents);
+                        },
+                        listClose: oEvent => {
+                            let list = oEvent.getSource();
 
-                        let model = new sap.ui.model.json.JSONModel(components);
-                        model.setSizeLimit(9999);
-                        list.setModel(model);
+                            let selectedComponents = list.getSelectedKeys();
 
-                        if (Object.keys(selectedComponents).length == components.length) {
-                            selectedComponents = {};
-                        }
-                        list.setSelectedKeys(selectedComponents);
-                    },
-                    listClose: oEvent => {
-                        let list = oEvent.getSource();
+                            let allComponents = biExportGetMetadata(/*withoutData*/true).components;
+                            let visibleComponents = [];
+                            for (let componentId in allComponents) {
+                                let component = allComponents[componentId];
 
-                        let selectedComponents = list.getSelectedKeys();
+                                if (component.type == "sdk_com_biexcellence_openbi_sap_sac_export__0") {
+                                    continue;
+                                }
 
-                        let allComponents = biExportGetMetadata(/*withoutData*/true).components;
-                        let visibleComponents = [];
-                        for (let componentId in allComponents) {
-                            let component = allComponents[componentId];
-
-                            if (component.type == "sdk_com_biexcellence_openbi_sap_sac_export__0") {
-                                continue;
+                                visibleComponents.push({
+                                    component: component.name,
+                                    isExcluded: !(component.name in selectedComponents)
+                                });
                             }
 
-                            visibleComponents.push({
-                                component: component.name,
-                                isExcluded: !(component.name in selectedComponents)
-                            });
+                            let value = "";
+                            if (visibleComponents.some(v => v.isExcluded) && visibleComponents.some(v => !v.isExcluded)) {
+                                value = JSON.stringify(visibleComponents);
+                            }
+
+                            let properties = {};
+                            this[id] = properties[id] = value;
+                            this._firePropertiesChanged(properties);
                         }
 
-                        let value = "";
-                        if (visibleComponents.some(v => v.isExcluded) && visibleComponents.some(v => !v.isExcluded)) {
-                            value = JSON.stringify(visibleComponents);
-                        }
+                        filter.addList(filterList);
+                    });
 
-                        let properties = {};
-                        this[id] = properties[id] = value;
-                        this._firePropertiesChanged(properties);
-                    }
                 });
 
                 let excludeSlot = document.createElement("div");
                 excludeSlot.slot = slotId;
                 this.appendChild(excludeSlot);
 
-                let filter = new sap.m.FacetFilter({
-                    lists: [filterList],
-                    showReset: false,
-                    showPopoverOKButton: true
-                });
                 filter.addStyleClass("sapUiSizeCompact");
                 filter.placeAt(excludeSlot);
             });
