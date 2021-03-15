@@ -247,13 +247,13 @@
                     showPopoverOKButton: true
                 });
 
-                // split components by filter , "Charts", "Layout Components", "Texts", "Filters", "Others"
+                // split components by filter , "Charts", "Layouts", "Texts", "Filters", "Others"
                 ["Tables"].forEach(typeGroup => {
                     let filterList = new sap.m.FacetFilterList({
                         title: typeGroup,
                         items: {
                             path: "/",
-                            sorter: new sap.ui.model.Sorter("text"),
+                            sorter: new sap.ui.model.Sorter("name"), // add selection here!
                             template: new sap.m.FacetFilterItem({
                                 key: "{name}",
                                 text: "{name}"
@@ -261,35 +261,7 @@
                         },
                         listOpen: oEvent => {
                             let list = oEvent.getSource();
-
-                            let value = this[id];
-
-                            let visibleComponents = value ? JSON.parse(value) : [];
-                            let allComponents = biExportGetMetadata(/*withoutData*/true).components;
-                            let components = [];
-                            let selectedComponents = {};
-                            for (let componentId in allComponents) {
-                                let component = allComponents[componentId];
-
-                                if (component.type == "sdk_com_biexcellence_openbi_sap_sac_export__0") {
-                                    continue;
-                                }
-
-                                components.push(component);
-
-                                if (!visibleComponents.some(v => v.component == component.name && v.isExcluded)) {
-                                    selectedComponents[component.name] = component.name;
-                                }
-                            }
-
-                            let model = new sap.ui.model.json.JSONModel(components);
-                            model.setSizeLimit(9999);
-                            list.setModel(model);
-
-                            if (Object.keys(selectedComponents).length == components.length) {
-                                selectedComponents = {};
-                            }
-                            list.setSelectedKeys(selectedComponents);
+                            // list.setModel(_initializeModel(id, typeGroup, model));
                         },
                         listClose: oEvent => {
                             let list = oEvent.getSource();
@@ -322,6 +294,83 @@
                         }
 
                     });
+
+
+                    // move to separate method returning selectedComponents and model
+                    let value = this[id];
+                    let visibleComponents = value ? JSON.parse(value) : [];
+                    let allComponents = biExportGetMetadata(/*withoutData*/true).components;
+                    let components = [];
+                    let selectedComponents = {};
+                    for (let componentId in allComponents) {
+                        let component = allComponents[componentId];
+
+                        // filter lists
+                        switch (typeGroup) {
+                            case "Tables":
+                                if (component.type != "sap.fpa.ui.story.entity.dynamictable.DynamicTableWidget") {
+                                    continue;
+                                }
+                                break;
+                            case "Charts":
+                                if (component.type != "sap.fpa.ui.story.entity.infochartviz.InfochartVizWidget") {
+                                    continue;
+                                }
+                                break;
+                            case "Layouts":
+                                if ((component.type != "sap.fpa.ui.appBuilding.entity.pagebook.PageBookWidget") && (component.type != "sap.fpa.ui.appBuilding.entity.panel.PanelWidget") && (component.type != "sap.fpa.ui.appBuilding.entity.flowpanel.FlowPanelWidget") && (component.type != "sap.fpa.ui.appBuilding.entity.tabstrip.TabstripWidget")) {
+                                    continue;
+                                }
+                                break;
+                            case "Texts":
+                                if ((component.type != "sap.fpa.ui.story.entity.text.TextWidget") && (component.type != "sap.fpa.ui.appBuilding.entity.inputfield.InputFieldWidget") && (component.type != "sap.fpa.ui.appBuilding.entity.textarea.TextAreaWidget")) {                                 
+                                    continue;
+                                }
+                               
+                                break;
+                            case "Filters":
+                                if ((component.type != "sap.fpa.ui.appBuilding.entity.filterline.FilterLineWidget") && (component.type != "sap.fpa.ui.appBuilding.entity.dropdownbox.DropdownBoxWidget")) {
+                                    continue;
+                                }                               
+                                break;
+                            default:
+                                if (component.type == "sdk_com_biexcellence_openbi_sap_sac_export__0") {
+                                    continue;
+                                }
+                                if ((component.type == "sap.fpa.ui.appBuilding.entity.filterline.FilterLineWidget") || (component.type == "sap.fpa.ui.appBuilding.entity.dropdownbox.DropdownBoxWidget")) {
+                                    continue;
+                                }
+                                if ((component.type == "sap.fpa.ui.story.entity.text.TextWidget") || (component.type == "sap.fpa.ui.appBuilding.entity.inputfield.InputFieldWidget") || (component.type == "sap.fpa.ui.appBuilding.entity.textarea.TextAreaWidget")) {
+                                    continue;
+                                }
+                                if ((component.type == "sap.fpa.ui.appBuilding.entity.pagebook.PageBookWidget") || (component.type == "sap.fpa.ui.appBuilding.entity.panel.PanelWidget") || (component.type == "sap.fpa.ui.appBuilding.entity.flowpanel.FlowPanelWidget") || (component.type == "sap.fpa.ui.appBuilding.entity.tabstrip.TabstripWidget")) {
+                                    continue;
+                                }
+                                if (component.type == "sap.fpa.ui.story.entity.dynamictable.DynamicTableWidget") {
+                                    continue;
+                                }
+                                if (component.type == "sap.fpa.ui.story.entity.infochartviz.InfochartVizWidget") {
+                                    continue;
+                                }
+
+                        }
+
+                        components.push(component);
+
+                        if (!visibleComponents.some(v => v.component == component.name && v.isExcluded)) {
+                            selectedComponents[component.name] = component.name;
+                        }
+                    }
+
+                    let model = new sap.ui.model.json.JSONModel(components);
+                    model.setSizeLimit(9999);
+
+                    if (Object.keys(selectedComponents).length == components.length) {
+                        selectedComponents = {};
+                    }
+                    //
+                    lfilterist.setModel(model);
+                    lfilterist.setSelectedKeys(selectedComponents);
 
                     filter.addList(filterList);
 
