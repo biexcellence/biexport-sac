@@ -239,7 +239,7 @@
             form.addEventListener("change", this._change.bind(this));
 
             // visible components
-            ["pdf_SelectedWidgets", "ppt_SelectedWidgets", "doc_SelectedWidgets", "xls_SelectedWidgets"].forEach(slotId => {
+            ["tables_SelectedWidgets", "pdf_SelectedWidgets", "ppt_SelectedWidgets", "doc_SelectedWidgets", "xls_SelectedWidgets"].forEach(slotId => {
                 let id = slotId.replace("_", "");
 
                 let filter = new sap.m.FacetFilter({
@@ -254,7 +254,7 @@
                 ["Tables", "Charts", "Layouts", "Texts", "Filters", "Others"].forEach(typeGroup => {
                     
                     if ((slotId == "tables_SelectedWidgets") && (typeGroup != "Tables")){
-                        continue;
+                        return;
                     }
                     
                     let filterList = new sap.m.FacetFilterList({
