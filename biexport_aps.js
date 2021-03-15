@@ -240,17 +240,19 @@
                 let id = slotId.replace("_", "");
 
                 let filter = new sap.m.FacetFilter({
+                    width: "100%",
                     showSummaryBar: true,
                     showReset: false,
                     showPersonalization: true,
-                    type: sap.m.FacetFilterType.Light,
+                    type: sap.m.FacetFilterType.Simple, //Light
                     showPopoverOKButton: true
                 });
 
-                // split components by filter , "Charts", "Layout Components", "Texts", "Filters", "Others"
-                ["Tables"].forEach(typeGroup => {
+                // split components by filter 
+                ["Tables", "Charts", "Layout Components", "Texts", "Filters", "Others"].forEach(typeGroup => {
                     let filterList = new sap.m.FacetFilterList({
                         title: typeGroup,
+                        sorter: new sap.ui.model.Sorter("text"), 
                         items: {
                             path: "/",
                             template: new sap.m.FacetFilterItem({
