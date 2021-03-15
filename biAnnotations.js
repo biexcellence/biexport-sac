@@ -594,8 +594,12 @@
         let outlineContainer = shell.findElements(true, e => e.hasStyleClass && e.hasStyleClass("sapAppBuildingOutline"))[0]; // sId: "__container0"
         if (outlineContainer) { // outlineContainer has more recent data than applicationEntity during edit
             try {
-                app = outlineContainer.getReactProps().store.getState().globalState.instances.app["[{\"app\":\"MAIN_APPLICATION\"}]"];
-            } catch (e) { /* ignore */ }
+                app = outlineContainer.getReactProps().store.getState().globalState.instances.app["[{\"app\":\"MAIN_APPLICATION\"}]"]._usis; /* SAC 2021.5.1 */
+            } catch (e) {
+                try {
+                    app = outlineContainer.getReactProps().store.getState().globalState.instances.app["[{\"app\":\"MAIN_APPLICATION\"}]"]; /* old SAC */
+                } catch (e) { /* ignore */ }
+            }
         }
 
         if (app) {
