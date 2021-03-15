@@ -240,7 +240,6 @@
                 let id = slotId.replace("_", "");
 
                 let filter = new sap.m.FacetFilter({
-                    width: "100%",
                     showSummaryBar: true,
                     showReset: false,
                     showPersonalization: true,
@@ -252,9 +251,9 @@
                 ["Tables", "Charts", "Layout Components", "Texts", "Filters", "Others"].forEach(typeGroup => {
                     let filterList = new sap.m.FacetFilterList({
                         title: typeGroup,
-                        sorter: new sap.ui.model.Sorter("text"), 
                         items: {
                             path: "/",
+                            sorter: new sap.ui.model.Sorter("text"),
                             template: new sap.m.FacetFilterItem({
                                 key: "{name}",
                                 text: "{name}"
