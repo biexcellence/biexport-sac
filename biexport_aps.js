@@ -308,28 +308,28 @@
                         // filter lists
                         switch (typeGroup) {
                             case "Tables":
-                                if (component.type != "sap.fpa.ui.story.entity.dynamictable.DynamicTableWidget") {
+                                if (component.type != "table") {
                                     continue;
                                 }
                                 break;
                             case "Charts":
-                                if (component.type != "sap.fpa.ui.story.entity.infochartviz.InfochartVizWidget") {
+                                if (component.type != "viz") {
                                     continue;
                                 }
                                 break;
                             case "Layouts":
-                                if ((component.type != "sap.fpa.ui.appBuilding.entity.pagebook.PageBookWidget") && (component.type != "sap.fpa.ui.appBuilding.entity.panel.PanelWidget") && (component.type != "sap.fpa.ui.appBuilding.entity.flowpanel.FlowPanelWidget") && (component.type != "sap.fpa.ui.appBuilding.entity.tabstrip.TabstripWidget")) {
+                                if ((component.type != "pagebook") && (component.type != "panel") && (component.type != "flowpanel") && (component.type != "tabstrip")) {
                                     continue;
                                 }
                                 break;
                             case "Texts":
-                                if ((component.type != "sap.fpa.ui.story.entity.text.TextWidget") && (component.type != "sap.fpa.ui.appBuilding.entity.inputfield.InputFieldWidget") && (component.type != "sap.fpa.ui.appBuilding.entity.textarea.TextAreaWidget")) {                                 
+                                if ((component.type != "textWidget") && (component.type != "inputField") && (component.type != "textArea")) {                                 
                                     continue;
                                 }
                                
                                 break;
                             case "Filters":
-                                if ((component.type != "sap.fpa.ui.appBuilding.entity.filterline.FilterLineWidget") && (component.type != "sap.fpa.ui.appBuilding.entity.dropdownbox.DropdownBoxWidget")) {
+                                if ((component.type != "filterLine") && (component.type != "dropdownBox")) {
                                     continue;
                                 }                               
                                 break;
@@ -337,19 +337,19 @@
                                 if (component.type == "sdk_com_biexcellence_openbi_sap_sac_export__0") {
                                     continue;
                                 }
-                                if ((component.type == "sap.fpa.ui.appBuilding.entity.filterline.FilterLineWidget") || (component.type == "sap.fpa.ui.appBuilding.entity.dropdownbox.DropdownBoxWidget")) {
+                                if ((component.type == "filterLine") || (component.type == "dropdownBox")) {
                                     continue;
                                 }
-                                if ((component.type == "sap.fpa.ui.story.entity.text.TextWidget") || (component.type == "sap.fpa.ui.appBuilding.entity.inputfield.InputFieldWidget") || (component.type == "sap.fpa.ui.appBuilding.entity.textarea.TextAreaWidget")) {
+                                if ((component.type == "textWidget") || (component.type == "inputField") || (component.type == "textArea")) {
                                     continue;
                                 }
-                                if ((component.type == "sap.fpa.ui.appBuilding.entity.pagebook.PageBookWidget") || (component.type == "sap.fpa.ui.appBuilding.entity.panel.PanelWidget") || (component.type == "sap.fpa.ui.appBuilding.entity.flowpanel.FlowPanelWidget") || (component.type == "sap.fpa.ui.appBuilding.entity.tabstrip.TabstripWidget")) {
+                                if ((component.type == "pagebook") || (component.type == "panel") || (component.type == "flowpanel") || (component.type == "tabstrip")) {
                                     continue;
                                 }
-                                if (component.type == "sap.fpa.ui.story.entity.dynamictable.DynamicTableWidget") {
+                                if (component.type == "table") {
                                     continue;
                                 }
-                                if (component.type == "sap.fpa.ui.story.entity.infochartviz.InfochartVizWidget") {
+                                if (component.type == "viz") {
                                     continue;
                                 }
 
