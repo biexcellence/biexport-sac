@@ -247,10 +247,10 @@
                     showPopoverOKButton: true
                 });
 
-                // split components by filter
-                ["Tables", "Charts", "Layout Components", "Texts", "Filters", "Others"].forEach(typeGroup => {
+                // split components by filter , "Charts", "Layout Components", "Texts", "Filters", "Others"
+                ["Tables"].forEach(typeGroup => {
                     let filterList = new sap.m.FacetFilterList({
-                        title: "Widget Selection",
+                        title: typeGroup,
                         items: {
                             path: "/",
                             template: new sap.m.FacetFilterItem({
@@ -320,10 +320,11 @@
                             this._firePropertiesChanged(properties);
                         }
 
-                        filter.addList(filterList);
                     });
 
-                });
+                    filter.addList(filterList);
+
+               });
 
                 let excludeSlot = document.createElement("div");
                 excludeSlot.slot = slotId;
