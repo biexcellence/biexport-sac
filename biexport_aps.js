@@ -247,8 +247,8 @@
                     showPopoverOKButton: true
                 });
 
-                // split components by filter 
-                ["Tables", "Charts", "Layout Components", "Texts", "Filters", "Others"].forEach(typeGroup => {
+                // split components by filter , "Charts", "Layout Components", "Texts", "Filters", "Others"
+                ["Tables"].forEach(typeGroup => {
                     let filterList = new sap.m.FacetFilterList({
                         title: typeGroup,
                         items: {
