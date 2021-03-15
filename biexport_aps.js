@@ -247,8 +247,8 @@
                     showPopoverOKButton: true
                 });
 
-                // split components by filter , "Layouts", "Texts", "Filters", "Others"
-                ["Tables", "Charts"].forEach(typeGroup => {
+                // split components by filter 
+                ["Tables", "Charts", "Layouts", "Texts", "Filters", "Others"].forEach(typeGroup => {
                     let filterList = new sap.m.FacetFilterList({
                         title: typeGroup,
                         items: {
@@ -384,7 +384,7 @@
                 filter.placeAt(excludeSlot);
             });
 
-            // notificationHtml
+            // page section HTML
             let slotId = "pdf_PageSections";
             let idHeader = "pdfHeader";
             let idFooter = "pdfFooter";
