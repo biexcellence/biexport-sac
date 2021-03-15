@@ -60,6 +60,9 @@
                   <td><label for="biAnalyticsDocument">biAnalytics Document</label></td>
                   <td><input id="biAnalyticsDocument" name="biAnalyticsDocument" type="checkbox"></td>
                 </tr>
+                <tr>
+                  <td colspan="2"><slot name="tables_SelectedWidgets"></slot></td>
+                </tr>
               </table>
             </fieldset>
             <fieldset>
@@ -236,7 +239,7 @@
             form.addEventListener("change", this._change.bind(this));
 
             // visible components
-            ["pdf_SelectedWidgets", "ppt_SelectedWidgets", "doc_SelectedWidgets", "xls_SelectedWidgets"].forEach(slotId => {
+            ["tables_SelectedWidgets", "pdf_SelectedWidgets", "ppt_SelectedWidgets", "doc_SelectedWidgets", "xls_SelectedWidgets"].forEach(slotId => {
                 let id = slotId.replace("_", "");
 
                 let filter = new sap.m.FacetFilter({
@@ -249,6 +252,11 @@
 
                 // split components by filter 
                 ["Tables", "Charts", "Layouts", "Texts", "Filters", "Others"].forEach(typeGroup => {
+                    
+                    if ((slotId == "tables_SelectedWidgets") && (typeGroup != "Tables")){
+                        continue;
+                    }
+                    
                     let filterList = new sap.m.FacetFilterList({
                         title: typeGroup,
                         items: {
