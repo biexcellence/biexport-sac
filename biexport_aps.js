@@ -369,8 +369,8 @@
                         selectedComponents = {};
                     }
                     //
-                    lfilterist.setModel(model);
-                    lfilterist.setSelectedKeys(selectedComponents);
+                    filterist.setModel(model);
+                    filterist.setSelectedKeys(selectedComponents);
 
                     filter.addList(filterList);
 
