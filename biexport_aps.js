@@ -238,7 +238,37 @@
             form.addEventListener("submit", this._submit.bind(this));
             form.addEventListener("change", this._change.bind(this));
 
-            // visible components
+            // visible components - model
+             let value = this[id];
+ // initialize model
+ let pdfVisibleComponents = value ? JSON.parse(this["pdf_SelectedWidgets"]) : [];
+ let pptVisibleComponents = value ? JSON.parse(this["ppt_SelectedWidgets"]) : [];
+ let xlsVisibleComponents = value ? JSON.parse(this[„xls_SelectedWidgets"]) : [];
+ let docVisibleComponents = value ? JSON.parse(this[„doc_SelectedWidgets"]) : [];
+ let value = this[id];
+ let allComponents = biExportGetMetadata(/*withoutData*/true).components;
+ let components = [];
+ for (let componentId in allComponents) {
+ let component = allComponents[componentId];
+ if (!pdfVisibleComponents.some(v => v.component == component.name && v.isExcluded)) {
+ component.selectedPdf = true;
+ }
+ if (!pptVisibleComponents.some(v => v.component == component.name && v.isExcluded)) {
+ component.selectedPpt = true;
+ }
+ if (!docVisibleComponents.some(v => v.component == component.name && v.isExcluded)) {
+ component.selectedDoc = true;
+ }
+ if (!xlsVisibleComponents.some(v => v.component == component.name && v.isExcluded)) {
+ component.selectedXls = true;
+ }
+ components.push(component);
+ }
+ 
+ let model = new sap.ui.model.json.JSONModel(components);
+ model.setSizeLimit(9999);
+            
+            // visible components - UI elements
             ["tables_SelectedWidgets", "pdf_SelectedWidgets", "ppt_SelectedWidgets", "doc_SelectedWidgets", "xls_SelectedWidgets"].forEach(slotId => {
                 let id = slotId.replace("_", "");
 
@@ -303,82 +333,13 @@
 
                     });
 
-
-                    // move to separate method returning selectedComponents and model
-                    let value = this[id];
-                    let visibleComponents = value ? JSON.parse(value) : [];
-                    let allComponents = biExportGetMetadata(/*withoutData*/true).components;
-                    let components = [];
-                    let selectedComponents = {};
-                    for (let componentId in allComponents) {
-                        let component = allComponents[componentId];
-
-                        // filter lists
-                        switch (typeGroup) {
-                            case "Tables":
-                                if (component.type != "table") {
-                                    continue;
-                                }
-                                break;
-                            case "Charts":
-                                if (component.type != "viz") {
-                                    continue;
-                                }
-                                break;
-                            case "Layouts":
-                                if ((component.type != "pagebook") && (component.type != "panel") && (component.type != "flowpanel") && (component.type != "tabstrip")) {
-                                    continue;
-                                }
-                                break;
-                            case "Texts":
-                                if ((component.type != "textWidget") && (component.type != "inputField") && (component.type != "textArea")) {                                 
-                                    continue;
-                                }
-                               
-                                break;
-                            case "Filters":
-                                if ((component.type != "filterLine") && (component.type != "dropdownBox")) {
-                                    continue;
-                                }                               
-                                break;
-                            default:
-                                if (component.type == "sdk_com_biexcellence_openbi_sap_sac_export__0") {
-                                    continue;
-                                }
-                                if ((component.type == "filterLine") || (component.type == "dropdownBox")) {
-                                    continue;
-                                }
-                                if ((component.type == "textWidget") || (component.type == "inputField") || (component.type == "textArea")) {
-                                    continue;
-                                }
-                                if ((component.type == "pagebook") || (component.type == "panel") || (component.type == "flowpanel") || (component.type == "tabstrip")) {
-                                    continue;
-                                }
-                                if (component.type == "table") {
-                                    continue;
-                                }
-                                if (component.type == "viz") {
-                                    continue;
-                                }
-
-                        }
-
-                        components.push(component);
-
-                        if (!visibleComponents.some(v => v.component == component.name && v.isExcluded)) {
-                            selectedComponents[component.name] = component.name;
-                        }
-                    }
-
-                    let model = new sap.ui.model.json.JSONModel(components);
-                    model.setSizeLimit(9999);
-
-                    if (Object.keys(selectedComponents).length == components.length) {
-                        selectedComponents = {};
-                    }
-                    //
                     filterList.setModel(model);
-                    filterList.setSelectedKeys(selectedComponents);
+
+                    //if (Object.keys(selectedComponents).length == components.length) {
+                    //    selectedComponents = {};
+                    //}
+                    //
+                    //filterList.setSelectedKeys(selectedComponents);
 
                     filter.addList(filterList);
 
