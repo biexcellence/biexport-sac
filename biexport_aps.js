@@ -239,35 +239,35 @@
             form.addEventListener("change", this._change.bind(this));
 
             // visible components - model
- let tableComponents = this["table_SelectedWidgets"] ? JSON.parse(this["table_SelectedWidgets"]) : [];
- let pdfVisibleComponents = this["pdf_SelectedWidgets"] ? JSON.parse(this["pdf_SelectedWidgets"]) : [];
- let pptVisibleComponents = this["ppt_SelectedWidgets"] ? JSON.parse(this["ppt_SelectedWidgets"]) : [];
- let xlsVisibleComponents = this["xls_SelectedWidgets"] ? JSON.parse(this["xls_SelectedWidgets"]) : [];
- let docVisibleComponents = this["doc_SelectedWidgets"] ? JSON.parse(this["doc_SelectedWidgets"]) : [];
- let allComponents = biExportGetMetadata(/*withoutData*/true).components;
- let components = [];
- for (let componentId in allComponents) {
- let component = allComponents[componentId];
- if (!tableComponents.some(v => v.component == component.name && v.isExcluded)) {
- component.tablesSelectedWidgets = true;
- }
- if (!pdfVisibleComponents.some(v => v.component == component.name && v.isExcluded)) {
- component.pdfSelectedWidgets = true;
- }
- if (!pptVisibleComponents.some(v => v.component == component.name && v.isExcluded)) {
- component.pptSelectedWidgets = true;
- }
- if (!docVisibleComponents.some(v => v.component == component.name && v.isExcluded)) {
- component.docSelectedWidgets = true;
- }
- if (!xlsVisibleComponents.some(v => v.component == component.name && v.isExcluded)) {
- component.xlsSelectedWidgets = true;
- }
- components.push(component);
- }
+            let tableComponents = this["table_SelectedWidgets"] ? JSON.parse(this["table_SelectedWidgets"]) : [];
+            let pdfVisibleComponents = this["pdf_SelectedWidgets"] ? JSON.parse(this["pdf_SelectedWidgets"]) : [];
+            let pptVisibleComponents = this["ppt_SelectedWidgets"] ? JSON.parse(this["ppt_SelectedWidgets"]) : [];
+            let xlsVisibleComponents = this["xls_SelectedWidgets"] ? JSON.parse(this["xls_SelectedWidgets"]) : [];
+            let docVisibleComponents = this["doc_SelectedWidgets"] ? JSON.parse(this["doc_SelectedWidgets"]) : [];
+            let allComponents = biExportGetMetadata(/*withoutData*/true).components;
+            let components = [];
+            for (let componentId in allComponents) {
+                let component = allComponents[componentId];
+                if (!tableComponents.some(v => v.component == component.name && v.isExcluded)) {
+                    component.tablesSelectedWidgets = true;
+                }
+                if (!pdfVisibleComponents.some(v => v.component == component.name && v.isExcluded)) {
+                    component.pdfSelectedWidgets = true;
+                }
+                if (!pptVisibleComponents.some(v => v.component == component.name && v.isExcluded)) {
+                    component.pptSelectedWidgets = true;
+                }
+                if (!docVisibleComponents.some(v => v.component == component.name && v.isExcluded)) {
+                    component.docSelectedWidgets = true;
+                }
+                if (!xlsVisibleComponents.some(v => v.component == component.name && v.isExcluded)) {
+                    component.xlsSelectedWidgets = true;
+                }
+                components.push(component);
+            }
  
- let model = new sap.ui.model.json.JSONModel(components);
- model.setSizeLimit(9999);
+            let model = new sap.ui.model.json.JSONModel(components);
+            model.setSizeLimit(9999);
             
             // visible components - model filters
             let modelFilters = [];
@@ -321,7 +321,13 @@
                         },
                         listOpen: oEvent => {
                             let list = oEvent.getSource();
-                            // list.setModel(_initializeModel(id, typeGroup, model));
+                            // check model changes
+                            // set selected
+                            //if (Object.keys(selectedComponents).length == components.length) {
+                    //    selectedComponents = {};
+                                                //filterList.setSelectedKeys(selectedComponents);
+                    //}
+
                         },
                         listClose: oEvent => {
                             let list = oEvent.getSource();
@@ -356,13 +362,6 @@
                     });
 
                     filterList.setModel(model);
-
-                    //if (Object.keys(selectedComponents).length == components.length) {
-                    //    selectedComponents = {};
-                    //}
-                    //
-                    //filterList.setSelectedKeys(selectedComponents);
-
                     filter.addList(filterList);
 
                });
