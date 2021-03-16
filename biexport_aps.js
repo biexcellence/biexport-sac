@@ -293,6 +293,7 @@
                         items: {
                             path: "/",
                             sorter: new sap.ui.model.Sorter("name"), // add selection here!
+                            filters: [new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "table")],
                             template: new sap.m.FacetFilterItem({
                                 key: "{name}",
                                 text: "{name}"
