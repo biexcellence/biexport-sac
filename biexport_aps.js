@@ -239,17 +239,18 @@
             form.addEventListener("change", this._change.bind(this));
 
             // visible components - model
-             let value = this[id];
- // initialize model
- let pdfVisibleComponents = value ? JSON.parse(this["pdf_SelectedWidgets"]) : [];
- let pptVisibleComponents = value ? JSON.parse(this["ppt_SelectedWidgets"]) : [];
- let xlsVisibleComponents = value ? JSON.parse(this["xls_SelectedWidgets"]) : [];
- let docVisibleComponents = value ? JSON.parse(this["doc_SelectedWidgets"]) : [];
- let value = this[id];
+ let tableComponents = this["table_SelectedWidgets"] ? JSON.parse(this["table_SelectedWidgets"]) : [];
+ let pdfVisibleComponents = this["pdf_SelectedWidgets"] ? JSON.parse(this["pdf_SelectedWidgets"]) : [];
+ let pptVisibleComponents = this["ppt_SelectedWidgets"] ? JSON.parse(this["ppt_SelectedWidgets"]) : [];
+ let xlsVisibleComponents = this["xls_SelectedWidgets"] ? JSON.parse(this["xls_SelectedWidgets"]) : [];
+ let docVisibleComponents = this["doc_SelectedWidgets"] ? JSON.parse(this["doc_SelectedWidgets"]) : [];
  let allComponents = biExportGetMetadata(/*withoutData*/true).components;
  let components = [];
  for (let componentId in allComponents) {
  let component = allComponents[componentId];
+ if (!tableVisibleComponents.some(v => v.component == component.name && v.isExcluded)) {
+ component.selectedTable = true;
+ }
  if (!pdfVisibleComponents.some(v => v.component == component.name && v.isExcluded)) {
  component.selectedPdf = true;
  }
