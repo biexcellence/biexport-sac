@@ -243,8 +243,8 @@
  // initialize model
  let pdfVisibleComponents = value ? JSON.parse(this["pdf_SelectedWidgets"]) : [];
  let pptVisibleComponents = value ? JSON.parse(this["ppt_SelectedWidgets"]) : [];
- let xlsVisibleComponents = value ? JSON.parse(this[„xls_SelectedWidgets"]) : [];
- let docVisibleComponents = value ? JSON.parse(this[„doc_SelectedWidgets"]) : [];
+ let xlsVisibleComponents = value ? JSON.parse(this["xls_SelectedWidgets"]) : [];
+ let docVisibleComponents = value ? JSON.parse(this["doc_SelectedWidgets"]) : [];
  let value = this[id];
  let allComponents = biExportGetMetadata(/*withoutData*/true).components;
  let components = [];
