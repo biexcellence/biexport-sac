@@ -249,25 +249,35 @@
  for (let componentId in allComponents) {
  let component = allComponents[componentId];
  if (!tableComponents.some(v => v.component == component.name && v.isExcluded)) {
- component.selectedTable = true;
+ component.tablesSelectedWidgets = true;
  }
  if (!pdfVisibleComponents.some(v => v.component == component.name && v.isExcluded)) {
- component.selectedPdf = true;
+ component.pdfSelectedWidgets = true;
  }
  if (!pptVisibleComponents.some(v => v.component == component.name && v.isExcluded)) {
- component.selectedPpt = true;
+ component.pptSelectedWidgets = true;
  }
  if (!docVisibleComponents.some(v => v.component == component.name && v.isExcluded)) {
- component.selectedDoc = true;
+ component.docSelectedWidgets = true;
  }
  if (!xlsVisibleComponents.some(v => v.component == component.name && v.isExcluded)) {
- component.selectedXls = true;
+ component.xlsSelectedWidgets = true;
  }
  components.push(component);
  }
  
  let model = new sap.ui.model.json.JSONModel(components);
  model.setSizeLimit(9999);
+            
+            // visible components - model filters
+            let modelFilters = [];
+            modelFilters["Tables"] = [new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "table")];
+            modelFilters["Charts"] = [new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "viz")];
+            modelFilters["Layouts"] = [new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "pagebook"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "panel"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "flowpanel"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "tabstrip")];
+            modelFilters["Texts"] = [new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "textWidget"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "inputField"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "textArea"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "tabstrip")];
+            modelFilters["Filters"] = [new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "filterLine"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "dropdownBox")];
+            modelFilters["Others"] = [new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "sdk_com_biexcellence_openbi_sap_sac_export__0"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "panel"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "flowpanel"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "tabstrip")];
+  
             
             // visible components - UI elements
             ["tables_SelectedWidgets", "pdf_SelectedWidgets", "ppt_SelectedWidgets", "doc_SelectedWidgets", "xls_SelectedWidgets"].forEach(slotId => {
@@ -284,7 +294,7 @@
                 // split components by filter 
                 ["Tables", "Charts", "Layouts", "Texts", "Filters", "Others"].forEach(typeGroup => {
                     
-                    if ((slotId == "tables_SelectedWidgets") && (typeGroup != "Tables")){
+                    if ((id == "tablesSelectedWidgets") && (typeGroup != "Tables")){
                         return;
                     }
                     
@@ -292,8 +302,14 @@
                         title: typeGroup,
                         items: {
                             path: "/",
-                            sorter: new sap.ui.model.Sorter("name"), // add selection here!
-                            filters: [new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "table")],
+                            sorter: [{
+                                path: id, 
+                                descending: true
+                            }, {
+                                path: "name", 
+                                descending: false
+                            }], 
+                            filters: modelFilters[typeGroup],
                             template: new sap.m.FacetFilterItem({
                                 key: "{name}",
                                 text: "{name}"
