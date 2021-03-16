@@ -248,7 +248,7 @@
  let components = [];
  for (let componentId in allComponents) {
  let component = allComponents[componentId];
- if (!tableVisibleComponents.some(v => v.component == component.name && v.isExcluded)) {
+ if (!tableComponents.some(v => v.component == component.name && v.isExcluded)) {
  component.selectedTable = true;
  }
  if (!pdfVisibleComponents.some(v => v.component == component.name && v.isExcluded)) {
