@@ -104,6 +104,8 @@
             this._export_settings.xls_template = "";
             this._export_settings.xls_template_def = {};
 
+            this._export_settings.tables_exclude = "";
+
             this._export_settings.filename = "";
             this._export_settings.seperate_files = "";
             this._export_settings.publish_mode = "";
@@ -821,6 +823,14 @@
             this._updateSettings();
         }
 
+        get tablesSelectedWidgets() {
+            return this._export_settings.tables_exclude;
+        }
+        set tablesSelectedWidgets(value) {
+            this._export_settings.tables_exclude = value;
+            this._updateSettings();
+        }
+        
         getPublishMode() {
             return this.publishMode;
         }
