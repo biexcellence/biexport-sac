@@ -38,7 +38,7 @@
               </table>
             </fieldset>
             <fieldset>
-              <legend>Tables with invisible cells</legend>
+              <legend>Tables to be enhnced for export</legend>
               <table>
                 <tr>
                   <td colspan="2"><slot name="tables_SelectedWidgets"></slot></td>
@@ -61,22 +61,6 @@
               </table>
             </fieldset>
             <fieldset>
-              <legend>PowerPoint</legend>
-              <table>
-                <tr>
-                  <td><label for="pptSeparate">One component per Slide</label></td>
-                  <td><input id="pptSeparate" name="pptSeparate" type="checkbox"></td>
-                </tr>
-                <tr>
-                  <td><label for="pptTemplate">Template</label></td>
-                  <td><input id="pptTemplate" name="pptTemplate" type="text"></td>
-                </tr>
-                <tr>
-                  <td colspan="2"><slot name="ppt_SelectedWidgets"></slot></td>
-                </tr>
-              </table>
-            </fieldset>
-            <fieldset>
               <legend>Word</legend>
               <table>
                 <tr>
@@ -85,6 +69,28 @@
                 </tr>
                 <tr>
                   <td colspan="2"><slot name="doc_SelectedWidgets"></slot></td>
+                </tr>
+              </table>
+            </fieldset>
+            <fieldset>
+              <legend>PowerPoint</legend>
+              <table>
+                <tr>
+                  <td><label for="pptTemplate">Template</label></td>
+                  <td><input id="pptTemplate" name="pptTemplate" type="text"></td>
+                </tr>
+              </table>
+            </fieldset>
+            <fieldset>
+              <legend>PowerPoint CONTENT placeholder</legend>
+              <table>
+                <tr>
+                  <td><label for="pptSeparate">One Widget by slide</label></td>
+                  <td><input id="pptSeparate" name="pptSeparate" type="checkbox"></td>
+                </tr>
+                <tr>
+                  <td><label for="ppt_SelectedWidgets">Selected Widgets</label></td>
+                  <td colspan="2"><slot name="ppt_SelectedWidgets"></slot></td>
                 </tr>
               </table>
             </fieldset>
@@ -98,7 +104,7 @@
               </table>
             </fieldset>
             <fieldset>
-              <legend>Excel CONTENT placeholder widgets</legend>
+              <legend>Excel CONTENT placeholder</legend>
               <table>
                 <tr>
                   <td colspan="2"><slot name="xls_SelectedWidgets"></slot></td>
