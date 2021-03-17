@@ -265,7 +265,7 @@
                 }
                 components.push(component);
             }
- 
+            console.log(components);
             let model = new sap.ui.model.json.JSONModel(components);
             model.setSizeLimit(9999);
             
@@ -326,11 +326,20 @@
                         listOpen: oEvent => {
                             let list = oEvent.getSource();
                             // check model changes
+                            
                             // set selected
-                            //if (Object.keys(selectedComponents).length == components.length) {
-                    //    selectedComponents = {};
-                                                //filterList.setSelectedKeys(selectedComponents);
-                    //}
+                            let selectedComponents = {};
+                                debugger;
+                            for (let i = 0; i < components.length; i++) {
+                                if (components[i][slotId]) {
+                                    selectedComponents[component.name] = component.name;
+                                }
+                            }
+                            if (Object.keys(selectedComponents).length == components.length) {
+                                selectedComponents = {};
+                            }
+                            filterList.setSelectedKeys(selectedComponents);
+
 
                         },
                         listClose: oEvent => {
