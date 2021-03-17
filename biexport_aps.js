@@ -331,13 +331,17 @@
                         },
                         listOpen: oEvent => {
                             let list = oEvent.getSource();
+
                             // check model changes - this could be performance optimized by just checking the elements that have been changed in the dashboards
                             list.setModel(this._getWidgetModel());
 
-                            debugger;
-                            // set selected
+                            // set selected                            
+                            let components = list.getModel().getData();
                             let selectedComponents = {};
-                            for (let i = 0; i < components.length; i++) {
+
+                            debugger;
+
+                            for (let i = 0; i < model.getData().length; i++) {
                                 if (components[i][slotId]) {
                                     selectedComponents[component.name] = component.name;
                                 }
@@ -351,19 +355,13 @@
                         },
                         listClose: oEvent => {
                             let list = oEvent.getSource();
-
                             let selectedComponents = list.getSelectedKeys();
-                            
-                            
+                            let components = list.getModel().getData();
+                                         
 debugger;
-                            let allComponents = biExportGetMetadata(/*withoutData*/true).components;
                             let visibleComponents = [];
-                            for (let componentId in allComponents) {
-                                let component = allComponents[componentId];
-
-                                if (component.type == "sdk_com_biexcellence_openbi_sap_sac_export__0") {
-                                    continue;
-                                }
+                            for (let componentId in components) {
+                                let component = components[componentId];
 
                                 visibleComponents.push({
                                     component: component.name,
