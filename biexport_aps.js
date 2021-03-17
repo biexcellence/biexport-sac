@@ -245,6 +245,11 @@
             let components = [];
             for (let componentId in allComponents) {
                 let component = allComponents[componentId];
+                    component.tablesSelectedWidgets = false;
+                    component.pdfSelectedWidgets = false;
+                    component.xlsSelectedWidgets = false;
+                    component.docSelectedWidgets = false;
+                    component.pptSelectedWidgets = false;
                 if (tableComponents.length > 0 && !tableComponents.some(v => v.component == component.name && v.isExcluded)) {
                     component.tablesSelectedWidgets = true;
                 }
