@@ -89,7 +89,7 @@
               <legend>PowerPoint CONTENT placeholder</legend>
               <table>
                 <tr>
-                  <td><label for="pptSeparate">One Widget by slide</label></td>
+                  <td><label for="pptSeparate">Clone Slide</label></td>
                   <td><input id="pptSeparate" name="pptSeparate" type="checkbox"></td>
                 </tr>
                 <tr>
@@ -111,6 +111,7 @@
               <legend>Excel CONTENT placeholder</legend>
               <table>
                 <tr>
+                  <td><label for="xls_SelectedWidgets">Selected Widgets</label></td>
                   <td colspan="2"><slot name="xls_SelectedWidgets"></slot></td>
                 </tr>
               </table>
@@ -139,7 +140,7 @@
                   <td><input id="biAnalyticsDocument" name="biAnalyticsDocument" type="checkbox"></td>
                 </tr>
                 <tr>
-                  <td><label for="tables_SelectedWidgets">Active Export Tables</label></td>
+                  <td><label for="tables_SelectedWidgets">Activate Export Tables</label></td>
                   <td colspan="2"><slot name="tables_SelectedWidgets"></slot></td>
                 </tr>
               </table>
@@ -424,7 +425,7 @@ debugger;
             let idOrientation = "pdfOrient";
 
             let link = new sap.m.Link({
-                text: "Edit PDF Sections...",
+                text: "PDF Sections...",
                 press: oEvent => {
 
                     let orientDropdown = new sap.m.ComboBox({
