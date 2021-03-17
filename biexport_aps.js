@@ -390,8 +390,8 @@
                             let visibleComponents = [];
                             for (let componentId in components) {
                                 visibleComponents.push({
-                                    component: component[componentId].name,
-                                    isExcluded: !component[componentId][id]
+                                    component: components[componentId].name,
+                                    isExcluded: !components[componentId][id]
                                 });
                             }
     
