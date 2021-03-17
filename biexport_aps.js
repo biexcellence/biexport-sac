@@ -245,19 +245,19 @@
             let components = [];
             for (let componentId in allComponents) {
                 let component = allComponents[componentId];
-                if (!tableComponents.some(v => v.component == component.name && v.isExcluded)) {
+                if (tableComponents.length > 0 && !tableComponents.some(v => v.component == component.name && v.isExcluded)) {
                     component.tablesSelectedWidgets = true;
                 }
-                if (!pdfVisibleComponents.some(v => v.component == component.name && v.isExcluded)) {
+                if (pdfVisibleComponents.length > 0 && !pdfVisibleComponents.some(v => v.component == component.name && v.isExcluded)) {
                     component.pdfSelectedWidgets = true;
                 }
-                if (!pptVisibleComponents.some(v => v.component == component.name && v.isExcluded)) {
+                if (pptVisibleComponents.length > 0 && !pptVisibleComponents.some(v => v.component == component.name && v.isExcluded)) {
                     component.pptSelectedWidgets = true;
                 }
-                if (!docVisibleComponents.some(v => v.component == component.name && v.isExcluded)) {
+                if (docVisibleComponents.length > 0 && !docVisibleComponents.some(v => v.component == component.name && v.isExcluded)) {
                     component.docSelectedWidgets = true;
                 }
-                if (!xlsVisibleComponents.some(v => v.component == component.name && v.isExcluded)) {
+                if (xlsVisibleComponents.length > 0 && !xlsVisibleComponents.some(v => v.component == component.name && v.isExcluded)) {
                     component.xlsSelectedWidgets = true;
                 }
                 components.push(component);
@@ -307,9 +307,47 @@
                     showSummaryBar: true,
                     showReset: false,
                     showPersonalization: true,
-                    type: sap.m.FacetFilterType.Light, //Light
+                    type: sap.m.FacetFilterType.Simple, //Light
                     showPopoverOKButton: true
                 });
+
+               let filterTemplate;                 
+               case id {
+                        when "tablesSelectedWidgets":
+                    filterTemplate = new sap.m.FacetFilterItem({
+                                key: "{name}",
+                                text: "{name}",
+                                selected: "{tableSelectedWidgets}"
+                            });
+                            break;
+                        when "pdfSelectedWidgets":
+                    filterTemplate = new sap.m.FacetFilterItem({
+                                key: "{name}",
+                                text: "{name}",
+                                selected: "{pdfSelectedWidgets}"
+                            });
+                            break;
+                        when "pptSelectedWidgets":
+                    filterTemplate = new sap.m.FacetFilterItem({
+                                key: "{name}",
+                                text: "{name}",
+                                selected: "{pptSelectedWidgets}"
+                            });
+                            break;
+                        when "docSelectedWidgets":
+                    filterTemplate = new sap.m.FacetFilterItem({
+                                key: "{name}",
+                                text: "{name}",
+                                selected: "{docSelectedWidgets}"
+                            });
+                            break;
+                       when "xlsSelectedWidgets":
+                    filterTemplate = new sap.m.FacetFilterItem({
+                                key: "{name}",
+                                text: "{name}",
+                                selected: "{xlsSelectedWidgets}"
+                            });
+                    }
 
                 // split components by filter 
                 ["Tables", "Charts", "Layouts", "Texts", "Filters", "Others"].forEach(typeGroup => {
@@ -317,13 +355,7 @@
                     if ((id == "tablesSelectedWidgets") && (typeGroup != "Tables")){
                         return;
                     }
-                    
-                    let filterTemplate = new sap.m.FacetFilterItem({
-                                key: "{name}",
-                                text: "{name}",
-                                selected: "{pdfSelectedWidgets}"
-                            })
-                    
+                                        
                     let filterList = new sap.m.FacetFilterList({
                         title: typeGroup,
                         items: {
