@@ -38,14 +38,6 @@
               </table>
             </fieldset>
             <fieldset>
-              <legend>Tables to be enhnced for export</legend>
-              <table>
-                <tr>
-                  <td colspan="2"><slot name="tables_SelectedWidgets"></slot></td>
-                </tr>
-              </table>
-            </fieldset>
-            <fieldset>
               <legend>PDF</legend>
               <table>
                 <tr>
@@ -55,7 +47,13 @@
                 <tr>
                   <td colspan="2"><slot name="pdf_PageSections"></slot></td>
                 </tr>
+              </table>
+            </fieldset>
+            <fieldset>
+              <legend>PDF CONTENT placeholder</legend>
+              <table>
                 <tr>
+                  <td><label for="pdf_SelectedWidgets">Selected Widgets</label></td>
                   <td colspan="2"><slot name="pdf_SelectedWidgets"></slot></td>
                 </tr>
               </table>
@@ -67,7 +65,13 @@
                   <td><label for="docTemplate">Template</label></td>
                   <td><input id="docTemplate" name="docTemplate" type="text"></td>
                 </tr>
+              </table>
+            </fieldset>
+            <fieldset>
+              <legend>Word CONTENT placeholder</legend>
+              <table>
                 <tr>
+                  <td><label for="doc_SelectedWidgets">Selected Widgets</label></td>
                   <td colspan="2"><slot name="doc_SelectedWidgets"></slot></td>
                 </tr>
               </table>
@@ -133,6 +137,10 @@
                 <tr>
                   <td><label for="biAnalyticsDocument">biAnalytics Document</label></td>
                   <td><input id="biAnalyticsDocument" name="biAnalyticsDocument" type="checkbox"></td>
+                </tr>
+                <tr>
+                  <td><label for="tables_SelectedWidgets">Active Export Tables</label></td>
+                  <td colspan="2"><slot name="tables_SelectedWidgets"></slot></td>
                 </tr>
               </table>
             </fieldset>
