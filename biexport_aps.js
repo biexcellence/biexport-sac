@@ -276,7 +276,7 @@
             modelFilters["Layouts"] = [new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "pagebook"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "panel"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "flowpanel"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "tabstrip")];
             modelFilters["Texts"] = [new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "textWidget"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "inputField"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "textArea")];
             modelFilters["Filters"] = [new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "filterLine"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "dropdownBox")];
-            modelFilters["Others"] = new Filter({
+            modelFilters["Others"] = new sap.ui.model.Filter({
                                        filters:[
                                             new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "sdk_com_biexcellence_openbi_sap_sac_export__0"), 
                                             new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "pagebook"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "panel"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "flowpanel"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "tabstrip"),
