@@ -49,7 +49,7 @@
                 </tr>
                 <tr>
                   <td><label for="pdf_SelectedWidgets">CONTENT Widgets</label></td>
-                  <td colspan="2"><slot name="pdf_SelectedWidgets"></slot></td>
+                  <td width="100px"><slot width="100px" name="pdf_SelectedWidgets"></slot></td>
                 </tr>
               </table>
             </fieldset>
@@ -62,7 +62,7 @@
                 </tr>
                 <tr>
                   <td><label for="doc_SelectedWidgets">CONTENT Widgets</label></td>
-                  <td colspan="2"><slot name="doc_SelectedWidgets"></slot></td>
+                  <td><slot name="doc_SelectedWidgets"></slot></td>
                 </tr>
               </table>
             </fieldset>
@@ -79,7 +79,7 @@
                 </tr>
                 <tr>
                   <td><label for="ppt_SelectedWidgets">CONTENT Widgets</label></td>
-                  <td colspan="2"><slot name="ppt_SelectedWidgets"></slot></td>
+                  <td><slot name="ppt_SelectedWidgets"></slot></td>
                 </tr>
               </table>
             </fieldset>
@@ -92,7 +92,7 @@
                 </tr>
                 <tr>
                   <td><label for="xls_SelectedWidgets">CONTENT Widgets</label></td>
-                  <td colspan="2"><slot name="xls_SelectedWidgets"></slot></td>
+                  <td><slot name="xls_SelectedWidgets"></slot></td>
                 </tr>
               </table>
             </fieldset>
@@ -121,7 +121,7 @@
                 </tr>
                 <tr>
                   <td><label for="tables_SelectedWidgets">Activate Export Tables</label></td>
-                  <td colspan="2"><slot name="tables_SelectedWidgets"></slot></td>
+                  <td><slot name="tables_SelectedWidgets"></slot></td>
                 </tr>
               </table>
             </fieldset>
@@ -813,7 +813,13 @@
             this.pdf_footer = value;
         }
 
-
+        get tablesSelectedWidgets() {
+            return this.tables_SelectedWidgets;
+        }
+        set tablesSelectedWidgets(value) {
+            this.tables_SelectedWidgets = value;
+        }
+        
         get pdfSelectedWidgets() {
             return this.pdf_SelectedWidgets;
         }
@@ -896,6 +902,7 @@
                 "screenHeight",
                 "parseCss",
                 "biAnalyticsDocument",
+                "tablesSelectedWidgets",
 
                 "pdfTemplate",
                 "pdfSelectedWidgets",
