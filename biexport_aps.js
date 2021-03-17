@@ -25,7 +25,7 @@
           </style>
           <form id="form" autocomplete="off">
             <fieldset>
-              <legend>General</legend>
+              <legend>biExport Service</legend>
               <table>
                 <tr>
                   <td><label for="serverURL">Server URL</label></td>
@@ -38,28 +38,8 @@
               </table>
             </fieldset>
             <fieldset>
-              <legend>Export</legend>
+              <legend>Tables with invisible cells</legend>
               <table>
-                <tr>
-                  <td><label for="parseCss">Parse CSS</label></td>
-                  <td><input id="parseCss" name="parseCss" type="checkbox"></td>
-                </tr>
-                <tr>
-                  <td><label for="screenWidth">Static Width</label></td>
-                  <td><input id="screenWidth" name="screenWidth" type="number" step="1"></td>
-                </tr>
-                <tr>
-                  <td><label for="screenHeight">Static Height</label></td>
-                  <td><input id="screenHeight" name="screenHeight" type="number" step="1"></td>
-                </tr>
-                <tr>
-                  <td><label for="exportLanguage">Language</label></td>
-                  <td><input id="exportLanguage" name="exportLanguage" type="text" placeholder="Using client language if emtpy"></td>
-                </tr>
-                <tr>
-                  <td><label for="biAnalyticsDocument">biAnalytics Document</label></td>
-                  <td><input id="biAnalyticsDocument" name="biAnalyticsDocument" type="checkbox"></td>
-                </tr>
                 <tr>
                   <td colspan="2"><slot name="tables_SelectedWidgets"></slot></td>
                 </tr>
@@ -115,11 +95,42 @@
                   <td><label for="xlsTemplate">Template</label></td>
                   <td><input id="xlsTemplate" name="xlsTemplate" type="text"></td>
                 </tr>
+              </table>
+            </fieldset>
+            <fieldset>
+              <legend>Excel CONTENT placeholder widgets</legend>
+              <table>
                 <tr>
                   <td colspan="2"><slot name="xls_SelectedWidgets"></slot></td>
                 </tr>
               </table>
             </fieldset>
+            <fieldset>
+              <legend>General</legend>
+              <table>
+                <tr>
+                  <td><label for="parseCss">Parse CSS</label></td>
+                  <td><input id="parseCss" name="parseCss" type="checkbox"></td>
+                </tr>
+                <tr>
+                  <td><label for="screenWidth">Static Width</label></td>
+                  <td><input id="screenWidth" name="screenWidth" type="number" step="1"></td>
+                </tr>
+                <tr>
+                  <td><label for="screenHeight">Static Height</label></td>
+                  <td><input id="screenHeight" name="screenHeight" type="number" step="1"></td>
+                </tr>
+                <tr>
+                  <td><label for="exportLanguage">Language</label></td>
+                  <td><input id="exportLanguage" name="exportLanguage" type="text" placeholder="Using client language if emtpy"></td>
+                </tr>
+                <tr>
+                  <td><label for="biAnalyticsDocument">biAnalytics Document</label></td>
+                  <td><input id="biAnalyticsDocument" name="biAnalyticsDocument" type="checkbox"></td>
+                </tr>
+              </table>
+            </fieldset>
+
             <fieldset>
               <legend>Publishing</legend>
               <table>
@@ -341,8 +352,8 @@
 
                             debugger;
 
-                            for (let i = 0; i < model.getData().length; i++) {
-                                if (components[i][slotId]) {
+                            for (let i = 0; i < components.length; i++) {
+                                if (components[i][id]) {
                                     selectedComponents[component.name] = component.name;
                                 }
                             }
