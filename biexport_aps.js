@@ -414,7 +414,7 @@
                });
 
                 let excludeSlot = document.createElement("div");
-                excludeSlot.width = "100px";
+                excludeSlot.style.width = "100px";
                 excludeSlot.slot = slotId;
                 this.appendChild(excludeSlot);
 
