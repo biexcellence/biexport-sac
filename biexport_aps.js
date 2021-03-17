@@ -312,36 +312,36 @@
                 });
 
                let filterTemplate;                 
-               case id {
-                        when "tablesSelectedWidgets":
+               switch (id) {
+                        case "tablesSelectedWidgets":
                     filterTemplate = new sap.m.FacetFilterItem({
                                 key: "{name}",
                                 text: "{name}",
                                 selected: "{tableSelectedWidgets}"
                             });
                             break;
-                        when "pdfSelectedWidgets":
+                        case "pdfSelectedWidgets":
                     filterTemplate = new sap.m.FacetFilterItem({
                                 key: "{name}",
                                 text: "{name}",
                                 selected: "{pdfSelectedWidgets}"
                             });
                             break;
-                        when "pptSelectedWidgets":
+                        case "pptSelectedWidgets":
                     filterTemplate = new sap.m.FacetFilterItem({
                                 key: "{name}",
                                 text: "{name}",
                                 selected: "{pptSelectedWidgets}"
                             });
                             break;
-                        when "docSelectedWidgets":
+                        case "docSelectedWidgets":
                     filterTemplate = new sap.m.FacetFilterItem({
                                 key: "{name}",
                                 text: "{name}",
                                 selected: "{docSelectedWidgets}"
                             });
                             break;
-                       when "xlsSelectedWidgets":
+                       case "xlsSelectedWidgets":
                     filterTemplate = new sap.m.FacetFilterItem({
                                 key: "{name}",
                                 text: "{name}",
