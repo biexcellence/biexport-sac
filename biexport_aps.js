@@ -383,7 +383,7 @@ debugger;
 
                     });
 
-                    filterList.                         list.setModel(model);
+                    filterList.setModel(model);
                     filter.addList(filterList);
 
                });
