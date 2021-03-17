@@ -47,13 +47,8 @@
                 <tr>
                   <td colspan="2"><slot name="pdf_PageSections"></slot></td>
                 </tr>
-              </table>
-            </fieldset>
-            <fieldset>
-              <legend>PDF CONTENT placeholder</legend>
-              <table>
                 <tr>
-                  <td><label for="pdf_SelectedWidgets">Selected Widgets</label></td>
+                  <td><label for="pdf_SelectedWidgets">CONTENT Widgets</label></td>
                   <td colspan="2"><slot name="pdf_SelectedWidgets"></slot></td>
                 </tr>
               </table>
@@ -65,13 +60,8 @@
                   <td><label for="docTemplate">Template</label></td>
                   <td><input id="docTemplate" name="docTemplate" type="text"></td>
                 </tr>
-              </table>
-            </fieldset>
-            <fieldset>
-              <legend>Word CONTENT placeholder</legend>
-              <table>
                 <tr>
-                  <td><label for="doc_SelectedWidgets">Selected Widgets</label></td>
+                  <td><label for="doc_SelectedWidgets">CONTENT Widgets</label></td>
                   <td colspan="2"><slot name="doc_SelectedWidgets"></slot></td>
                 </tr>
               </table>
@@ -83,17 +73,12 @@
                   <td><label for="pptTemplate">Template</label></td>
                   <td><input id="pptTemplate" name="pptTemplate" type="text"></td>
                 </tr>
-              </table>
-            </fieldset>
-            <fieldset>
-              <legend>PowerPoint CONTENT placeholder</legend>
-              <table>
                 <tr>
-                  <td><label for="pptSeparate">Clone Slide</label></td>
+                  <td><label for="pptSeparate">Clone CONTENT Slide</label></td>
                   <td><input id="pptSeparate" name="pptSeparate" type="checkbox"></td>
                 </tr>
                 <tr>
-                  <td><label for="ppt_SelectedWidgets">Selected Widgets</label></td>
+                  <td><label for="ppt_SelectedWidgets">CONTENT Widgets</label></td>
                   <td colspan="2"><slot name="ppt_SelectedWidgets"></slot></td>
                 </tr>
               </table>
@@ -105,13 +90,8 @@
                   <td><label for="xlsTemplate">Template</label></td>
                   <td><input id="xlsTemplate" name="xlsTemplate" type="text"></td>
                 </tr>
-              </table>
-            </fieldset>
-            <fieldset>
-              <legend>Excel CONTENT placeholder</legend>
-              <table>
                 <tr>
-                  <td><label for="xls_SelectedWidgets">Selected Widgets</label></td>
+                  <td><label for="xls_SelectedWidgets">CONTENT Widgets</label></td>
                   <td colspan="2"><slot name="xls_SelectedWidgets"></slot></td>
                 </tr>
               </table>
@@ -338,6 +318,12 @@
                         return;
                     }
                     
+                    let filterTemplate = new sap.m.FacetFilterItem({
+                                key: "{name}",
+                                text: "{name}",
+                                selected: "{pdfSelectedWidgets}"
+                            })
+                    
                     let filterList = new sap.m.FacetFilterList({
                         title: typeGroup,
                         items: {
@@ -350,10 +336,7 @@
                                 descending: false
                             }], 
                             filters: modelFilters[typeGroup],
-                            template: new sap.m.FacetFilterItem({
-                                key: "{name}",
-                                text: "{name}"
-                            })
+                            template: filterTemplate
                         },
                         listOpen: oEvent => {
                             let list = oEvent.getSource();
@@ -374,7 +357,8 @@
                                 selectedComponents = {};
                             }
                             
-                            filterList.setSelectedKeys(selectedComponents);
+                            // change selections - is this bound via item? test with PDF only for now!!
+                            //filterList.setSelectedKeys(selectedComponents);
 
                         },
                         listClose: oEvent => {
@@ -382,17 +366,26 @@
                             let selectedComponents = list.getSelectedKeys();
                             let components = list.getModel().getData();
                                          
-debugger;
-                            let visibleComponents = [];
+                            // change selections - is this bound via item? test with PDF only for now!!
                             for (let componentId in components) {
                                 let component = components[componentId];
-
+                                if (component.name in selectedComponents) {
+                                    component[id] = true;
+                                } else {
+                                    component[id] = false;
+                                }
+                            }
+                            
+                            // set visible components 
+                            let visibleComponents = [];
+                            for (let componentId in components) {
                                 visibleComponents.push({
                                     component: component.name,
-                                    isExcluded: !(component.name in selectedComponents)
+                                    isExcluded: !component[id]
                                 });
                             }
-
+    
+                            // set parameter
                             let value = "";
                             if (visibleComponents.some(v => v.isExcluded) && visibleComponents.some(v => !v.isExcluded)) {
                                 value = JSON.stringify(visibleComponents);
