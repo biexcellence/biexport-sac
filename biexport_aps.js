@@ -229,21 +229,12 @@
         `;
 
     class BiExportAps extends HTMLElement {
-        constructor() {
-            super();
-            this._shadowRoot = this.attachShadow({ mode: "open" });
-            this._shadowRoot.appendChild(tmpl.content.cloneNode(true));
-
-            let form = this._shadowRoot.getElementById("form");
-            form.addEventListener("submit", this._submit.bind(this));
-            form.addEventListener("change", this._change.bind(this));
-
-            // visible components - model
-            let tableComponents = this["table_SelectedWidgets"] ? JSON.parse(this["table_SelectedWidgets"]) : [];
-            let pdfVisibleComponents = this["pdf_SelectedWidgets"] ? JSON.parse(this["pdf_SelectedWidgets"]) : [];
-            let pptVisibleComponents = this["ppt_SelectedWidgets"] ? JSON.parse(this["ppt_SelectedWidgets"]) : [];
-            let xlsVisibleComponents = this["xls_SelectedWidgets"] ? JSON.parse(this["xls_SelectedWidgets"]) : [];
-            let docVisibleComponents = this["doc_SelectedWidgets"] ? JSON.parse(this["doc_SelectedWidgets"]) : [];
+        _getWidgetModel() {
+            let tableComponents = this["tableSelectedWidgets"] ? JSON.parse(this["tableSelectedWidgets"]) : [];
+            let pdfVisibleComponents = this["pdfSelectedWidgets"] ? JSON.parse(this["pdfSelectedWidgets"]) : [];
+            let pptVisibleComponents = this["pptSelectedWidgets"] ? JSON.parse(this["pptSelectedWidgets"]) : [];
+            let xlsVisibleComponents = this["xlsSelectedWidgets"] ? JSON.parse(this["xlsSelectedWidgets"]) : [];
+            let docVisibleComponents = this["docSelectedWidgets"] ? JSON.parse(this["docSelectedWidgets"]) : [];
             let allComponents = biExportGetMetadata(/*withoutData*/true).components;
             let components = [];
             for (let componentId in allComponents) {
@@ -268,6 +259,21 @@
             console.log(components);
             let model = new sap.ui.model.json.JSONModel(components);
             model.setSizeLimit(9999);
+
+            return model;
+        }
+        
+        constructor() {
+            super();
+            this._shadowRoot = this.attachShadow({ mode: "open" });
+            this._shadowRoot.appendChild(tmpl.content.cloneNode(true));
+
+            let form = this._shadowRoot.getElementById("form");
+            form.addEventListener("submit", this._submit.bind(this));
+            form.addEventListener("change", this._change.bind(this));
+
+            // visible components - model
+            let model = this._getWidgetModel();
             
             // visible components - model filters
             let modelFilters = [];
@@ -325,11 +331,12 @@
                         },
                         listOpen: oEvent => {
                             let list = oEvent.getSource();
-                            // check model changes
-                            
+                            // check model changes - this could be performance optimized by just checking the elements that have been changed in the dashboards
+                            list.setModel(this._getWidgetModel());
+
+                            debugger;
                             // set selected
                             let selectedComponents = {};
-                                debugger;
                             for (let i = 0; i < components.length; i++) {
                                 if (components[i][slotId]) {
                                     selectedComponents[component.name] = component.name;
@@ -346,7 +353,9 @@
                             let list = oEvent.getSource();
 
                             let selectedComponents = list.getSelectedKeys();
-
+                            
+                            
+debugger;
                             let allComponents = biExportGetMetadata(/*withoutData*/true).components;
                             let visibleComponents = [];
                             for (let componentId in allComponents) {
@@ -374,7 +383,7 @@
 
                     });
 
-                    filterList.setModel(model);
+                    filterList.                         list.setModel(model);
                     filter.addList(filterList);
 
                });
