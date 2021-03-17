@@ -322,7 +322,7 @@
                     filterTemplate = new sap.m.FacetFilterItem({
                                 key: "{name}",
                                 text: "{name}",
-                                selected: "{tableSelectedWidgets}"
+                                selected: "{tablesSelectedWidgets}"
                             });
                             break;
                         case "pdfSelectedWidgets":
