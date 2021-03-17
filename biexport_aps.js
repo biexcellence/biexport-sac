@@ -364,18 +364,16 @@
                             let components = list.getModel().getData();
                             let selectedComponents = {};
 
-                            debugger;
-
                             for (let i = 0; i < components.length; i++) {
                                 if (components[i][id]) {
-                                    selectedComponents[component.name] = component.name;
+                                    selectedComponents[components[i].name] = components[i].name;
                                 }
                             }
                             if (Object.keys(selectedComponents).length == components.length) {
                                 selectedComponents = {};
                             }
+                            
                             filterList.setSelectedKeys(selectedComponents);
-
 
                         },
                         listClose: oEvent => {
