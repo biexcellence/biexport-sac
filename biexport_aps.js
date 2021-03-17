@@ -49,7 +49,7 @@
                 </tr>
                 <tr>
                   <td><label for="pdf_SelectedWidgets">CONTENT Widgets</label></td>
-                  <td width="100px"><slot width="100px" name="pdf_SelectedWidgets"></slot></td>
+                  <td><slot width="100px" name="pdf_SelectedWidgets"></slot></td>
                 </tr>
               </table>
             </fieldset>
@@ -414,6 +414,7 @@
                });
 
                 let excludeSlot = document.createElement("div");
+                excludeSlot.width = "100px";
                 excludeSlot.slot = slotId;
                 this.appendChild(excludeSlot);
 
