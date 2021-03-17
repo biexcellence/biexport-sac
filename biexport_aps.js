@@ -380,39 +380,12 @@
 
                             // check model changes - this could be performance optimized by just checking the elements that have been changed in the dashboards
                             list.setModel(this._getWidgetModel());
-
-                            // set selected                            
-                            let components = list.getModel().getData();
-                            let selectedComponents = {};
-
-                            for (let i = 0; i < components.length; i++) {
-                                if (components[i][id]) {
-                                    selectedComponents[components[i].name] = components[i].name;
-                                }
-                            }
-                            if (Object.keys(selectedComponents).length == components.length) {
-                                selectedComponents = {};
-                            }
-                            
-                            // change selections - is this bound via item? test with PDF only for now!!
-                            //filterList.setSelectedKeys(selectedComponents);
-
                         },
                         listClose: oEvent => {
                             let list = oEvent.getSource();
                             let selectedComponents = list.getSelectedKeys();
                             let components = list.getModel().getData();
-                                         
-                            // change selections - is this bound via item? test with PDF only for now!!
-                            for (let componentId in components) {
-                                let component = components[componentId];
-                                if (component.name in selectedComponents) {
-                                    component[id] = true;
-                                } else {
-                                    component[id] = false;
-                                }
-                            }
-                            
+                                                                     
                             // set visible components 
                             let visibleComponents = [];
                             for (let componentId in components) {
