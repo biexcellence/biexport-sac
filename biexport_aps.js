@@ -307,7 +307,7 @@
                     showSummaryBar: true,
                     showReset: false,
                     showPersonalization: true,
-                    type: sap.m.FacetFilterType.Simple, //Light
+                    type: sap.m.FacetFilterType.Light,
                     showPopoverOKButton: true
                 });
 
