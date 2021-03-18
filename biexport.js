@@ -830,7 +830,7 @@
             this._export_settings.tables_exclude = value;
             this._updateSettings();
         }
-        
+
         getPublishMode() {
             return this.publishMode;
         }

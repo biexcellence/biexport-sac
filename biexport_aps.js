@@ -245,11 +245,11 @@
             let components = [];
             for (let componentId in allComponents) {
                 let component = allComponents[componentId];
-                    component.tablesSelectedWidgets = false;
-                    component.pdfSelectedWidgets = false;
-                    component.xlsSelectedWidgets = false;
-                    component.docSelectedWidgets = false;
-                    component.pptSelectedWidgets = false;
+                component.tablesSelectedWidgets = false;
+                component.pdfSelectedWidgets = false;
+                component.xlsSelectedWidgets = false;
+                component.docSelectedWidgets = false;
+                component.pptSelectedWidgets = false;
                 if (tableComponents.length > 0 && !tableComponents.some(v => v.component == component.name && v.isExcluded)) {
                     component.tablesSelectedWidgets = true;
                 }
@@ -273,7 +273,7 @@
 
             return model;
         }
-        
+
         constructor() {
             super();
             this._shadowRoot = this.attachShadow({ mode: "open" });
@@ -283,27 +283,24 @@
             form.addEventListener("submit", this._submit.bind(this));
             form.addEventListener("change", this._change.bind(this));
 
-            // visible components - model
-            let model = this._getWidgetModel();
-            
             // visible components - model filters
-            let modelFilters = [];
+            let modelFilters = {};
             modelFilters["Tables"] = [new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "table")];
             modelFilters["Charts"] = [new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "viz")];
             modelFilters["Layouts"] = [new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "pagebook"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "panel"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "flowpanel"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "tabstrip")];
             modelFilters["Texts"] = [new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "textWidget"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "inputField"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "textArea")];
             modelFilters["Filters"] = [new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "filterLine"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "dropdownBox")];
             modelFilters["Others"] = new sap.ui.model.Filter({
-                                       filters:[
-                                            new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "sdk_com_biexcellence_openbi_sap_sac_export__0"), 
-                                            new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "pagebook"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "panel"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "flowpanel"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "tabstrip"),
-                                            new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "textWidget"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "inputField"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "textArea"),
-                                            new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "filterLine"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "dropdownBox"),
-                                            new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "table"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "viz")
-                                       ],
-                                       and: true
-                                    });
-            
+                filters: [
+                    new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "sdk_com_biexcellence_openbi_sap_sac_export__0"),
+                    new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "pagebook"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "panel"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "flowpanel"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "tabstrip"),
+                    new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "textWidget"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "inputField"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "textArea"),
+                    new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "filterLine"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "dropdownBox"),
+                    new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "table"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "viz")
+                ],
+                and: true
+            });
+
             // visible components - UI elements
             ["tables_SelectedWidgets", "pdf_SelectedWidgets", "ppt_SelectedWidgets", "doc_SelectedWidgets", "xls_SelectedWidgets"].forEach(slotId => {
                 let id = slotId.replace("_", "");
@@ -316,62 +313,62 @@
                     showPopoverOKButton: true
                 });
 
-               let filterTemplate;                 
-               switch (id) {
-                        case "tablesSelectedWidgets":
-                    filterTemplate = new sap.m.FacetFilterItem({
-                                key: "{name}",
-                                text: "{name}",
-                                selected: "{tablesSelectedWidgets}"
-                            });
-                            break;
-                        case "pdfSelectedWidgets":
-                    filterTemplate = new sap.m.FacetFilterItem({
-                                key: "{name}",
-                                text: "{name}",
-                                selected: "{pdfSelectedWidgets}"
-                            });
-                            break;
-                        case "pptSelectedWidgets":
-                    filterTemplate = new sap.m.FacetFilterItem({
-                                key: "{name}",
-                                text: "{name}",
-                                selected: "{pptSelectedWidgets}"
-                            });
-                            break;
-                        case "docSelectedWidgets":
-                    filterTemplate = new sap.m.FacetFilterItem({
-                                key: "{name}",
-                                text: "{name}",
-                                selected: "{docSelectedWidgets}"
-                            });
-                            break;
-                       case "xlsSelectedWidgets":
-                    filterTemplate = new sap.m.FacetFilterItem({
-                                key: "{name}",
-                                text: "{name}",
-                                selected: "{xlsSelectedWidgets}"
-                            });
-                    }
+                let filterTemplate;
+                switch (id) {
+                    case "tablesSelectedWidgets":
+                        filterTemplate = new sap.m.FacetFilterItem({
+                            key: "{name}",
+                            text: "{name}",
+                            selected: "{tablesSelectedWidgets}"
+                        });
+                        break;
+                    case "pdfSelectedWidgets":
+                        filterTemplate = new sap.m.FacetFilterItem({
+                            key: "{name}",
+                            text: "{name}",
+                            selected: "{pdfSelectedWidgets}"
+                        });
+                        break;
+                    case "pptSelectedWidgets":
+                        filterTemplate = new sap.m.FacetFilterItem({
+                            key: "{name}",
+                            text: "{name}",
+                            selected: "{pptSelectedWidgets}"
+                        });
+                        break;
+                    case "docSelectedWidgets":
+                        filterTemplate = new sap.m.FacetFilterItem({
+                            key: "{name}",
+                            text: "{name}",
+                            selected: "{docSelectedWidgets}"
+                        });
+                        break;
+                    case "xlsSelectedWidgets":
+                        filterTemplate = new sap.m.FacetFilterItem({
+                            key: "{name}",
+                            text: "{name}",
+                            selected: "{xlsSelectedWidgets}"
+                        });
+                }
 
                 // split components by filter 
                 ["Tables", "Charts", "Layouts", "Texts", "Filters", "Others"].forEach(typeGroup => {
-                    
-                    if ((id == "tablesSelectedWidgets") && (typeGroup != "Tables")){
+
+                    if ((id == "tablesSelectedWidgets") && (typeGroup != "Tables")) {
                         return;
                     }
-                                        
+
                     let filterList = new sap.m.FacetFilterList({
                         title: typeGroup,
                         items: {
                             path: "/",
                             sorter: [{
-                                path: id, 
+                                path: id,
                                 descending: true
                             }, {
-                                path: "name", 
+                                path: "name",
                                 descending: false
-                            }], 
+                            }],
                             filters: modelFilters[typeGroup],
                             template: filterTemplate
                         },
@@ -383,9 +380,8 @@
                         },
                         listClose: oEvent => {
                             let list = oEvent.getSource();
-                            let selectedComponents = list.getSelectedKeys();
                             let components = list.getModel().getData();
-                                                                     
+
                             // set visible components 
                             let visibleComponents = [];
                             for (let componentId in components) {
@@ -394,7 +390,7 @@
                                     isExcluded: !components[componentId][id]
                                 });
                             }
-    
+
                             // set parameter
                             let value = "";
                             if (visibleComponents.some(v => v.isExcluded) && visibleComponents.some(v => !v.isExcluded)) {
@@ -408,10 +404,8 @@
 
                     });
 
-                    filterList.setModel(model);
                     filter.addList(filterList);
-
-               });
+                });
 
                 let excludeSlot = document.createElement("div");
                 excludeSlot.style.width = "220px";
@@ -820,7 +814,7 @@
         set tablesSelectedWidgets(value) {
             this.tables_SelectedWidgets = value;
         }
-        
+
         get pdfSelectedWidgets() {
             return this.pdf_SelectedWidgets;
         }
