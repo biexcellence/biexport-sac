@@ -526,7 +526,7 @@
             let model = _getWidgetModel();
             this.filters.getLists().forEach(filterList => {
                 filterList.setModel(model);
-            }
+            });
             
             // try to load oauth info
             fetch("/oauthservice/api/v1/oauthclient?tenant=" + window.TENANT).then(response => {
