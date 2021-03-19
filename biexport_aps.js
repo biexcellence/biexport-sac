@@ -236,8 +236,6 @@
 
     class BiExportAps extends HTMLElement {
         
-        let gfilter;
-        
         _getWidgetModel() {
             let tableComponents = this["tableSelectedWidgets"] ? JSON.parse(this["tableSelectedWidgets"]) : [];
             let pdfVisibleComponents = this["pdfSelectedWidgets"] ? JSON.parse(this["pdfSelectedWidgets"]) : [];
@@ -308,7 +306,7 @@
             ["tables_SelectedWidgets", "pdf_SelectedWidgets", "ppt_SelectedWidgets", "doc_SelectedWidgets", "xls_SelectedWidgets"].forEach(slotId => {
                 let id = slotId.replace("_", "");
 
-                gfilter = new sap.m.FacetFilter({
+                this.filter = new sap.m.FacetFilter({
                     showSummaryBar: true,
                     showReset: false,
                     showPersonalization: true,
@@ -388,9 +386,11 @@
                             // set visible components 
                             let visibleComponents = [];
                             for (let componentId in components) {
+                                debugger;
                                 visibleComponents.push({
                                     component: components[componentId].name,
                                     isExcluded: !components[componentId][id]
+                                    id: components[componentId].id
                                 });
                             }
 
@@ -407,7 +407,7 @@
 
                     });
 
-                    gfilter.addList(filterList);
+                    this.filter.addList(filterList);
                     
                 });
 
@@ -416,8 +416,8 @@
                 excludeSlot.slot = slotId;
                 this.appendChild(excludeSlot);
 
-                gfilter.addStyleClass("sapUiSizeCompact");
-                gfilter.placeAt(excludeSlot);
+                this.filter.addStyleClass("sapUiSizeCompact");
+                this.filter.placeAt(excludeSlot);
             });
 
             // page section HTML
