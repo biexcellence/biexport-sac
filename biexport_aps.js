@@ -526,7 +526,7 @@
         
         connectedCallback() {
             let model = this._getWidgetModel();
-            this.filters.forEach(filter ==> {
+            this.filters.forEach(filter => {
                 filter.getLists().forEach(filterList => {
                     filterList.setModel(model);
                 });
