@@ -386,7 +386,7 @@
                             // set visible components 
                             let visibleComponents = [];
                             for (let componentId in components) {
-                                debugger;
+                                
                                 visibleComponents.push({
                                     component: components[componentId].name,
                                     isExcluded: !components[componentId][id],
@@ -487,7 +487,6 @@
                                 value = textEditorFooter.getValue();
                                 this[idFooter] = properties[idFooter] = value;
                                 value = orientDropdown.getSelectedItemId();
-                                this[idOrientation] = properties[idOrientation] = value;
                                 this._firePropertiesChanged(properties);
                                 dialog.close();
                             }
@@ -521,11 +520,13 @@
         }
 
         onCustomWidgetAfterUpdate() {
-            debugger;        
         }
         
         connectedCallback() {
-            debugger;
+            let model = _getWidgetModel();
+            this.filters.getLists().forEach(filterList => {
+                filterList.setModel(model);
+            }
             
             // try to load oauth info
             fetch("/oauthservice/api/v1/oauthclient?tenant=" + window.TENANT).then(response => {
