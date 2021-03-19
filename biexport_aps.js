@@ -246,6 +246,7 @@
             let components = [];
             for (let componentId in allComponents) {
                 let component = allComponents[componentId];
+                component.id = componentId;
                 component.tablesSelectedWidgets = false;
                 component.pdfSelectedWidgets = false;
                 component.xlsSelectedWidgets = false;
