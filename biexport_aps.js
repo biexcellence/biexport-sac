@@ -235,6 +235,9 @@
         `;
 
     class BiExportAps extends HTMLElement {
+        
+        let gfilter;
+        
         _getWidgetModel() {
             let tableComponents = this["tableSelectedWidgets"] ? JSON.parse(this["tableSelectedWidgets"]) : [];
             let pdfVisibleComponents = this["pdfSelectedWidgets"] ? JSON.parse(this["pdfSelectedWidgets"]) : [];
@@ -305,7 +308,7 @@
             ["tables_SelectedWidgets", "pdf_SelectedWidgets", "ppt_SelectedWidgets", "doc_SelectedWidgets", "xls_SelectedWidgets"].forEach(slotId => {
                 let id = slotId.replace("_", "");
 
-                let filter = new sap.m.FacetFilter({
+                gfilter = new sap.m.FacetFilter({
                     showSummaryBar: true,
                     showReset: false,
                     showPersonalization: true,
@@ -404,7 +407,8 @@
 
                     });
 
-                    filter.addList(filterList);
+                    gfilter.addList(filterList);
+                    
                 });
 
                 let excludeSlot = document.createElement("div");
@@ -412,8 +416,8 @@
                 excludeSlot.slot = slotId;
                 this.appendChild(excludeSlot);
 
-                filter.addStyleClass("sapUiSizeCompact");
-                filter.placeAt(excludeSlot);
+                gfilter.addStyleClass("sapUiSizeCompact");
+                gfilter.placeAt(excludeSlot);
             });
 
             // page section HTML
@@ -516,7 +520,13 @@
 
         }
 
+        onCustomWidgetAfterUpdate() {
+            debugger;        
+        }
+        
         connectedCallback() {
+            debugger;
+            
             // try to load oauth info
             fetch("/oauthservice/api/v1/oauthclient?tenant=" + window.TENANT).then(response => {
                 if (response.ok) {
