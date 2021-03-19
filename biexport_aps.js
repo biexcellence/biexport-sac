@@ -389,7 +389,7 @@
                                 debugger;
                                 visibleComponents.push({
                                     component: components[componentId].name,
-                                    isExcluded: !components[componentId][id]
+                                    isExcluded: !components[componentId][id],
                                     id: components[componentId].id
                                 });
                             }
