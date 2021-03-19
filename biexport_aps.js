@@ -120,7 +120,7 @@
                   <td><input id="biAnalyticsDocument" name="biAnalyticsDocument" type="checkbox"></td>
                 </tr>
                 <tr>
-                  <td><label for="tables_SelectedWidgets">Activate Export Tables</label></td>
+                  <td><label for="tables_SelectedWidgets">Load hidden content</label></td>
                   <td><slot name="tables_SelectedWidgets"></slot></td>
                 </tr>
               </table>
@@ -303,10 +303,11 @@
             });
 
             // visible components - UI elements
+            this.filters = [];
             ["tables_SelectedWidgets", "pdf_SelectedWidgets", "ppt_SelectedWidgets", "doc_SelectedWidgets", "xls_SelectedWidgets"].forEach(slotId => {
                 let id = slotId.replace("_", "");
 
-                this.filter = new sap.m.FacetFilter({
+                let filter = new sap.m.FacetFilter({
                     showSummaryBar: true,
                     showReset: false,
                     showPersonalization: true,
@@ -407,17 +408,18 @@
 
                     });
 
-                    this.filter.addList(filterList);
+                    filter.addList(filterList);
                     
                 });
 
                 let excludeSlot = document.createElement("div");
-                excludeSlot.style.width = "220px";
+                excludeSlot.style.width = "210px";
                 excludeSlot.slot = slotId;
                 this.appendChild(excludeSlot);
 
-                this.filter.addStyleClass("sapUiSizeCompact");
-                this.filter.placeAt(excludeSlot);
+                filter.addStyleClass("sapUiSizeCompact");
+                filter.placeAt(excludeSlot);
+                this.filters.push(filter);
             });
 
             // page section HTML
@@ -524,8 +526,10 @@
         
         connectedCallback() {
             let model = this._getWidgetModel();
-            this.filter.getLists().forEach(filterList => {
-                filterList.setModel(model);
+            this.filters.forEach(filter ==> {
+                filter.getLists().forEach(filterList => {
+                    filterList.setModel(model);
+                });
             });
             
             // try to load oauth info
