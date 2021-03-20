@@ -945,6 +945,8 @@
                     properties: properties
                 }
             }));
+            this.onCustomWidgetBeforeUpdate(properties);
+            this.onCustomWidgetAfterUpdate(properties);
         }
 
         addCustomText(name, value) {
