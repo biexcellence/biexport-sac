@@ -269,7 +269,7 @@
                 }
                 components.push(component);
             }
-            console.log(components);
+
             let model = new sap.ui.model.json.JSONModel(components);
             model.setSizeLimit(9999);
 
