@@ -1339,13 +1339,13 @@
                 let withoutDataElement = withoutData;
                 if (!withoutData && parameterObject){
                     // if widget is not chosen, do not include additional lines
-                    if (parameterObject.tablesSelectedWidget){
+                    if (parameterObject.tablesSelectedWidget !== undefined){
                        if (parameterObject.tablesSelectedWidget.length == 0 || parameterObject.tablesSelectedWidget.some(v => v.id == widget.id && v.isExcluded)) {
-                          component.docSelectedWidgets = true;
+                          withoutDataElement = true;
                        }
                     }
                     // if widget is excluded, do not include information
-                    if (parameterObject.formatSelectedWidget){
+                    if (parameterObject.formatSelectedWidget !== undefined){
                        if (parameterObject.formatSelectedWidget.length > 0 && parameterObject.formatSelectedWidget.some(v => v.id == widget.id && v.isExcluded)) {
                           return;
                        }
