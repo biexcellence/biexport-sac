@@ -1130,7 +1130,7 @@
                 }
             }
 
-            settings.metadata = JSON.stringify(getMetadata());
+            settings.metadata = JSON.stringify(getMetadata(false, {tablesSelectedWidget: settings.tables_exclude} ));
 
             if (settings.publish_mode === "" || settings.publish_mode === "ONLINE" || settings.publish_mode === "VIEWER" || settings.publish_mode === "PRINT") {
                 settings.publish_sync = true;
@@ -1322,7 +1322,7 @@
         });
     }
 
-    function getMetadata(withoutData) {
+    function getMetadata(withoutData, parameterObject) {
         let shell = commonApp.getShell();
         let documentContext = shell.findElements(true, e => e.getMetadata().hasProperty("resourceType") && e.getProperty("resourceType") == "STORY")[0].getDocumentContext();
         let storyModel = documentContext.get("sap.fpa.story.getstorymodel");
@@ -1336,8 +1336,25 @@
                     type: widget.class
                 }
 
+                let withoutDataElement = withoutData;
+                if (!withoutData && parameterObject){
+                    // if widget is not chosen, do not include additional lines
+                    if (parameterObject.tablesSelectedWidget){
+                       if (parameterObject.tablesSelectedWidget.length == 0 || parameterObject.tablesSelectedWidget.some(v => v.id == widget.id && v.isExcluded)) {
+                          component.docSelectedWidgets = true;
+                       }
+                    }
+                    // if widget is excluded, do not include information
+                    if (parameterObject.formatSelectedWidget){
+                       if (parameterObject.formatSelectedWidget.length > 0 && parameterObject.formatSelectedWidget.some(v => v.id == widget.id && v.isExcluded)) {
+                          return;
+                       }
+                    }
+
+                }
+                
                 let widgetControl = widgetControls.filter((control) => control.getWidgetId() == widget.id)[0];
-                if (withoutData !== true && widgetControl) { // control specific stuff
+                if (withoutDataElement !== true && widgetControl) { // control specific stuff
                     if (typeof widgetControl.getTableController == "function") { // table
                         let tableController = widgetControl.getTableController();
                         let view = tableController.getView();
