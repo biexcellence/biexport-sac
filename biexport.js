@@ -1130,7 +1130,7 @@
                 }
             }
 
-            settings.metadata = JSON.stringify(getMetadata(false, {tablesSelectedWidget: JSON.parse(settings.tables_exclude) } ));
+            settings.metadata = JSON.stringify(getMetadata(false, {tablesSelectedWidget: settings.tables_exclude ? JSON.parse(settings.tables_exclude) : [] } ));
 
             if (settings.publish_mode === "" || settings.publish_mode === "ONLINE" || settings.publish_mode === "VIEWER" || settings.publish_mode === "PRINT") {
                 settings.publish_sync = true;
