@@ -189,7 +189,7 @@
                     if (!this.showComponentSelector && !this.showViewSelector) {
                         this.doExport(oItem.getKey());
                     } else {
-                        let metadata = getMetadata(/*withoutData*/true);
+                        let metadata = getMetadata({});
 
                         let ltab = new sap.m.IconTabBar({
                             expandable: false
@@ -1130,7 +1130,7 @@
                 }
             }
 
-            settings.metadata = JSON.stringify(getMetadata(false, {tablesSelectedWidget: settings.tables_exclude ? JSON.parse(settings.tables_exclude) : [] } ));
+            settings.metadata = JSON.stringify(getMetadata({ tablesSelectedWidget: settings.tables_exclude ? JSON.parse(settings.tables_exclude) : [] }));
 
             if (settings.publish_mode === "" || settings.publish_mode === "ONLINE" || settings.publish_mode === "VIEWER" || settings.publish_mode === "PRINT") {
                 settings.publish_sync = true;
@@ -1322,7 +1322,7 @@
         });
     }
 
-    function getMetadata(withoutData, parameterObject) {
+    function getMetadata(settings) {
         let shell = commonApp.getShell();
         let documentContext = shell.findElements(true, e => e.getMetadata().hasProperty("resourceType") && e.getProperty("resourceType") == "STORY")[0].getDocumentContext();
         let storyModel = documentContext.get("sap.fpa.story.getstorymodel");
@@ -1332,29 +1332,27 @@
         let components = {};
         storyModel.getAllWidgets().forEach((widget) => {
             if (widget) { // might be undefined during edit
+
+                let includeData = !settings; // no settings => include everything
+                if (settings) {
+                    // if widget is excluded, do not include information
+                    if (settings.formatSelectedWidget !== undefined) {
+                        if (settings.formatSelectedWidget.length > 0 && !settings.formatSelectedWidget.some(v => v.id == widget.id && v.isExcluded)) {
+                            return;
+                        }
+                    }
+                    // if widget is not chosen, do not include additional lines
+                    if (settings.tablesSelectedWidget !== undefined && settings.tablesSelectedWidget.some(v => v.id == widget.id && !v.isExcluded)) {
+                        includeData = true;
+                    }
+                }
+
                 let component = {
                     type: widget.class
                 }
 
-                let withoutDataElement = withoutData;
-                if (!withoutData && parameterObject){
-                    // if widget is not chosen, do not include additional lines
-                    if (parameterObject.tablesSelectedWidget !== undefined){
-                       if (parameterObject.tablesSelectedWidget.length == 0 || parameterObject.tablesSelectedWidget.some(v => v.id == widget.id && !v.isExcluded)) {
-                          withoutDataElement = true;
-                       }
-                    }
-                    // if widget is excluded, do not include information
-                    if (parameterObject.formatSelectedWidget !== undefined){
-                       if (parameterObject.formatSelectedWidget.length > 0 && !parameterObject.formatSelectedWidget.some(v => v.id == widget.id && v.isExcluded)) {
-                          return;
-                       }
-                    }
-
-                }
-                
                 let widgetControl = widgetControls.filter((control) => control.getWidgetId() == widget.id)[0];
-                if (withoutDataElement !== true && widgetControl) { // control specific stuff
+                if (widgetControl && includeData) { // control specific stuff
                     if (typeof widgetControl.getTableController == "function") { // table
                         let tableController = widgetControl.getTableController();
                         let view = tableController.getView();

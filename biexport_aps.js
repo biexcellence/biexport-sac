@@ -242,7 +242,7 @@
             let pptVisibleComponents = this["pptSelectedWidgets"] ? JSON.parse(this["pptSelectedWidgets"]) : [];
             let xlsVisibleComponents = this["xlsSelectedWidgets"] ? JSON.parse(this["xlsSelectedWidgets"]) : [];
             let docVisibleComponents = this["docSelectedWidgets"] ? JSON.parse(this["docSelectedWidgets"]) : [];
-            let allComponents = biExportGetMetadata(/*withoutData*/true).components;
+            let allComponents = biExportGetMetadata({}).components;
             let components = [];
             for (let componentId in allComponents) {
                 let component = allComponents[componentId];
