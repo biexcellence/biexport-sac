@@ -237,7 +237,7 @@
     class BiExportAps extends HTMLElement {
         
         _getWidgetModel() {
-            let tableComponents = this["tableSelectedWidgets"] ? JSON.parse(this["tableSelectedWidgets"]) : [];
+            let tableComponents = this["tablesSelectedWidgets"] ? JSON.parse(this["tablesSelectedWidgets"]) : [];
             let pdfVisibleComponents = this["pdfSelectedWidgets"] ? JSON.parse(this["pdfSelectedWidgets"]) : [];
             let pptVisibleComponents = this["pptSelectedWidgets"] ? JSON.parse(this["pptSelectedWidgets"]) : [];
             let xlsVisibleComponents = this["xlsSelectedWidgets"] ? JSON.parse(this["xlsSelectedWidgets"]) : [];
