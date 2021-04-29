@@ -1565,8 +1565,10 @@
 
                     // always download relative stylesheets
                     let relative = sheet.href && attributes["href"] && sheet.href != attributes["href"];
+                    // parse dynamic stylesheets (no conent but rules)
+                    let dynamic = !sheet.href && !node.textContent.trim() && sheet.rules && sheet.rules.length > 0;
 
-                    if (shadowHost || relative || settings.parse_css) {
+                    if (shadowHost || dynamic || relative || settings.parse_css) {
                         if (sheet.href) { // download external stylesheets
                             name = "style";
                             attributes = { "type": "text/css" };
