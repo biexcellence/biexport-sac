@@ -1323,8 +1323,17 @@
     }
 
     function getMetadata(settings) {
+        let findAggregatedObjects;
+
         let shell = commonApp.getShell();
-        let documentContext = shell.findElements(true, e => e.getMetadata().hasProperty("resourceType") && e.getProperty("resourceType") == "STORY")[0].getDocumentContext();
+        if (shell) { // old SAC
+            findAggregatedObjects = fn => shell.findElements(true, fn); // could this also be findAggregatedObjects ?
+        }
+        if (!findAggregatedObjects) { // new SAC
+            findAggregatedObjects = fn => sap.fpa.ui.story.Utils.getShellContainer().getCurrentPage().getComponentInstance().findAggregatedObjects(true, fn);
+        }
+
+        let documentContext = findAggregatedObjects(e => e.getMetadata().hasProperty("resourceType") && e.getProperty("resourceType") == "STORY")[0].getDocumentContext();
         let storyModel = documentContext.get("sap.fpa.story.getstorymodel");
         let entityService = documentContext.get("sap.fpa.bi.entityService");
         let widgetControls = documentContext.get("sap.fpa.story.document.widgetControls");
@@ -1438,7 +1447,7 @@
         // only for applications (not stories)
         let app;
 
-        let outlineContainer = shell.findElements(true, e => e.hasStyleClass && e.hasStyleClass("sapAppBuildingOutline"))[0]; // sId: "__container0"
+        let outlineContainer = findAggregatedObjects(e => e.hasStyleClass && e.hasStyleClass("sapAppBuildingOutline"))[0]; // sId: "__container0"
         if (outlineContainer) { // outlineContainer has more recent data than applicationEntity during edit
             if (!app) {
                 try {
