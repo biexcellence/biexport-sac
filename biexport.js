@@ -292,10 +292,8 @@
                                     lview_box.addContent(new sap.m.Input({
                                         id: varObj.name + "_value",
                                         change: oEvent => {
-                                            let context = sap.fpa.ui.infra.common.getContext();
-
                                             this._export_settings.application_array = [];
-                                            this._export_settings.application_array.push({ "application": context.getAppArgument().appId });
+                                            this._export_settings.application_array.push({ "application": getAppId() });
 
                                             if (!this._export_settings.array_var) {
                                                 this._export_settings.array_var = [];
@@ -315,10 +313,8 @@
                                         id: varObj.name + "_iterative",
                                         text: "Iterative",
                                         select: oEvent => {
-                                            let context = sap.fpa.ui.infra.common.getContext();
-
                                             this._export_settings.application_array = [];
-                                            this._export_settings.application_array.push({ "application": context.getAppArgument().appId });
+                                            this._export_settings.application_array.push({ "application": getAppId() });
 
                                             if (!this._export_settings.array_var) {
                                                 this._export_settings.array_var = [];
@@ -1115,8 +1111,7 @@
                 if (sap.fpa.ui.infra.common) {
                     let context = sap.fpa.ui.infra.common.getContext();
 
-                    let app = context.getAppArgument();
-                    settings.appid = app.appId;
+                    settings.appid = getAppId(context);
 
                     let user = context.getUser();
                     settings.sac_user = user.getUsername();
@@ -1320,6 +1315,11 @@
             let r = Math.random() * 16 | 0, v = c === "x" ? r : (r & 0x3 | 0x8);
             return v.toString(16);
         });
+    }
+
+    function getAppId(context) {
+        let app = (context || sap.fpa.ui.infra.common.getContext()).getInternalAppArguments();
+        return app && (app.appId /* application */ || app.resource_id /* story */);
     }
 
     function getMetadata(settings) {
