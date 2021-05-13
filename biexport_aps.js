@@ -163,6 +163,10 @@
               <legend>Background Execution</legend>
               <table>
                 <tr hidden>
+                  <td><label for="tenantUrl">Tenant URL</label></td>
+                  <td><input id="tenantUrl" name="tenantUrl" type="text" readonly></td>
+                </tr>
+                <tr hidden>
                   <td><label for="oauthId">OAuth Client</label></td>
                   <td><select id="oauthId" name="oauthId"><option value=""> - </option></select></td>
                 </tr>
@@ -532,7 +536,14 @@
                     filterList.setModel(model);
                 });
             });
-            
+
+            // try to display tenant URL
+            if (window.sap && sap.fpa && sap.fpa.ui && sap.fpa.ui.infra && sap.fpa.ui.infra.service && sap.fpa.ui.infra.service.AjaxHelper) {
+                var tenantUrl = this._shadowRoot.getElementById("tenantUrl")
+                tenantUrl.value = sap.fpa.ui.infra.service.AjaxHelper.getTenantUrl(false); // true for PUBLIC_FQDN
+                tenantUrl.closest("tr").hidden = false;
+            }
+
             // try to load oauth info
             fetch("/oauthservice/api/v1/oauthclient?tenant=" + window.TENANT).then(response => {
                 if (response.ok) {
