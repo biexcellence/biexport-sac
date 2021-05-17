@@ -1697,8 +1697,9 @@
                 }
                 css.push(" {");
                 for (let j = 0; j < rule.style.length; j++) {
-                    let name = rule.style[j]
-                    let value = rule.style[name];
+                    let name = rule.style[j];
+                    let value = rule.style.getPropertyValue(name);
+                    let priority = rule.style.getPropertyPriority(name);
                     css.push(name);
                     css.push(":");
                     if (name.startsWith("background") && value && value.includes("url") && !value.includes("data:")) {
@@ -1710,6 +1711,9 @@
                         }
                     }
                     css.push(value);
+                    if (priority == "important") {
+                        css.push("!important");
+                    }
                     css.push(";");
                 }
                 css.push("}");
