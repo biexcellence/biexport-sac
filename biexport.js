@@ -1574,8 +1574,8 @@
 
                     // always download relative stylesheets
                     let relative = sheet.href && attributes["href"] && sheet.href != attributes["href"];
-                    // parse dynamic stylesheets (no conent but rules)
-                    let dynamic = !sheet.href && !node.textContent.trim() && sheet.rules && sheet.rules.length > 0;
+                    // always parse local stylesheets as they might be dynamic
+                    let dynamic = !sheet.href && sheet.rules && sheet.rules.length > 0;
 
                     if (shadowHost || dynamic || relative || settings.parse_css) {
                         if (sheet.href) { // download external stylesheets
@@ -1664,7 +1664,7 @@
     }
 
     function getCssText(sheet, baseUrl, shadowHost) {
-        return parseCssRules(sheet.rules, baseUrl, shadowHost);
+        return parseCssRules(sheet.cssRules, baseUrl, shadowHost);
     }
     function parseCssRules(rules, baseUrl, shadowHost) {
         let promises = [];
