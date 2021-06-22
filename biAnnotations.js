@@ -26,6 +26,7 @@
             this._comments = [];
             this._values = [];
             this._highlights = [];
+            this.tableType = 0;
         }
 
         onCustomWidgetBeforeUpdate(changedProperties) {
@@ -271,9 +272,11 @@
             // get tablecell 
             // data - col is based on 1
             let tablecell = ltable.querySelector('[data-col="' + (irow.columnNumber + 1) + '"][data-row="' + (irow.rowNumber + 1) + '"]');
+            this.tableType = 0;
             if (tablecell == null) {
                 // tablecol is based on 0
                 tablecell = ltable.querySelector('[data-tablecol="' + irow.columnNumber + '"][data-tablerow="' + irow.rowNumber + '"]');
+                this.tableType = 1;
             }
 
             return tablecell;
@@ -281,20 +284,27 @@
 
         _updateTableCell(itablecell, irow, overwrite) {
             if (itablecell != null) {
-                itablecell.setAttribute("data-disable-number-formatting", "X");
-                for (var i = 0; i < itablecell.childNodes.length; i++) {
-                    if (itablecell.childNodes[i].nodeType == 3) {
+                let ltablecell = itablecell;
+
+                // tableType 0 renders a DIV instead of a SPAN with the number
+                if (this.tableType == 0) {
+                    ltablecell = ltablecell.firstChild;
+                }
+                ltablecell.setAttribute("data-disable-number-formatting", "X");
+
+                for (var i = 0; i < ltablecell.childNodes.length; i++) {
+                    if (ltablecell.childNodes[i].nodeType == 3) {
                         // overwrite values
                         if (irow.newValue != null) {
                             if (irow.newValue != "") {
                                 if (irow.originalValue == "") {
-                                    irow.originalValue = itablecell.childNodes[i].nodeValue;
+                                    irow.originalValue = ltablecell.childNodes[i].nodeValue;
                                 }
-                                itablecell.childNodes[i].nodeValue = irow.newValue;
-                                itablecell.setAttribute("title", irow.newValue);
+                                ltablecell.childNodes[i].nodeValue = irow.newValue;
+                                ltablecell.setAttribute("title", irow.newValue);
                             } else {
-                                itablecell.childNodes[i].nodeValue = irow.originalValue;
-                                itablecell.setAttribute("title", irow.originalValue);
+                                ltablecell.childNodes[i].nodeValue = irow.originalValue;
+                                ltablecell.setAttribute("title", irow.originalValue);
                             }
                         }
 
@@ -308,15 +318,15 @@
                             }
 
                             var ltext = "";
-                            if ((larray.length == 0 && itablecell.querySelector("sup") == null) || overwrite) {
+                            if ((larray.length == 0 && ltablecell.querySelector("sup") == null) || overwrite) {
                                 ltext = larray.join(", ");
-                                itablecell.childNodes[i].nodeValue = ltext;
-                                itablecell.setAttribute("title", ltext);
+                                ltablecell.childNodes[i].nodeValue = ltext;
+                                ltablecell.setAttribute("title", ltext);
                             } else {
-                                let lsup = itablecell.querySelector("sup");
+                                let lsup = ltablecell.querySelector("sup");
                                 if (lsup == null) {
                                     lsup = document.createElement("sup");
-                                    itablecell.appendChild(lsup);
+                                    ltablecell.appendChild(lsup);
                                 }
                                 lsup.textContent = larray.join(", ");
 
@@ -330,18 +340,18 @@
                 // highlights
                 if (irow.style != null) {
                     if (irow.style != "") {
-                        irow.originalStyle = itablecell.style.backgroundColor;
-                        itablecell.style.backgroundColor = irow.style;
+                        irow.originalStyle = ltablecell.style.backgroundColor;
+                        ltablecell.style.backgroundColor = irow.style;
                     } else {
-                        itablecell.style.backgroundColor = irow.originalStyle;
+                        ltablecell.style.backgroundColor = irow.originalStyle;
                     }
                 }
 
                 if (overwrite) {
-                    if (itablecell.nextSibling != null) {
-                        itablecell.style.color = itablecell.nextSibling.style.color
+                    if (ltablecell.nextSibling != null) {
+                        ltablecell.style.color = ltablecell.nextSibling.style.color
                     } else {
-                        itablecell.style.color = "rgb(51, 51, 51)";
+                        ltablecell.style.color = "rgb(51, 51, 51)";
                     }
                 }
             }
