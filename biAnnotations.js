@@ -272,11 +272,11 @@
             // get tablecell 
             // data - col is based on 1
             let tablecell = ltable.querySelector('[data-col="' + (irow.columnNumber + 1) + '"][data-row="' + (irow.rowNumber + 1) + '"]');
-            this.tableType = 0;
+            this.tableType = 1;
             if (tablecell == null) {
                 // tablecol is based on 0
                 tablecell = ltable.querySelector('[data-tablecol="' + irow.columnNumber + '"][data-tablerow="' + irow.rowNumber + '"]');
-                this.tableType = 1;
+                this.tableType = 0;
             }
 
             return tablecell;
