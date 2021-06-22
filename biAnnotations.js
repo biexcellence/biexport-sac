@@ -287,7 +287,7 @@
                 let ltablecell = itablecell;
 
                 // tableType 0 renders a DIV instead of a SPAN with the number
-                if (this.tableType == 0) {
+                if (this.tableType == 1) {
                     ltablecell = ltablecell.firstChild;
                 }
                 ltablecell.setAttribute("data-disable-number-formatting", "X");
