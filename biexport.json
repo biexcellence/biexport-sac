@@ -184,6 +184,11 @@
       "default": "L"
     },
 
+    "tablesSelectedWidgets": {
+      "type": "string",
+      "description": "Selected Widgets for Table Parser",
+      "default": ""
+    },
     "pdfSelectedWidgets": {
       "type": "string",
       "description": "Selected Widgets for PDF export",

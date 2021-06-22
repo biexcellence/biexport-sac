@@ -104,6 +104,8 @@
             this._export_settings.xls_template = "";
             this._export_settings.xls_template_def = {};
 
+            this._export_settings.tables_exclude = "";
+
             this._export_settings.filename = "";
             this._export_settings.seperate_files = "";
             this._export_settings.publish_mode = "";
@@ -187,7 +189,7 @@
                     if (!this.showComponentSelector && !this.showViewSelector) {
                         this.doExport(oItem.getKey());
                     } else {
-                        let metadata = getMetadata(/*withoutData*/true);
+                        let metadata = getMetadata({});
 
                         let ltab = new sap.m.IconTabBar({
                             expandable: false
@@ -290,10 +292,8 @@
                                     lview_box.addContent(new sap.m.Input({
                                         id: varObj.name + "_value",
                                         change: oEvent => {
-                                            let context = sap.fpa.ui.infra.common.getContext();
-
                                             this._export_settings.application_array = [];
-                                            this._export_settings.application_array.push({ "application": context.getAppArgument().appId });
+                                            this._export_settings.application_array.push({ "application": getAppId() });
 
                                             if (!this._export_settings.array_var) {
                                                 this._export_settings.array_var = [];
@@ -313,10 +313,8 @@
                                         id: varObj.name + "_iterative",
                                         text: "Iterative",
                                         select: oEvent => {
-                                            let context = sap.fpa.ui.infra.common.getContext();
-
                                             this._export_settings.application_array = [];
-                                            this._export_settings.application_array.push({ "application": context.getAppArgument().appId });
+                                            this._export_settings.application_array.push({ "application": getAppId() });
 
                                             if (!this._export_settings.array_var) {
                                                 this._export_settings.array_var = [];
@@ -821,6 +819,14 @@
             this._updateSettings();
         }
 
+        get tablesSelectedWidgets() {
+            return this._export_settings.tables_exclude;
+        }
+        set tablesSelectedWidgets(value) {
+            this._export_settings.tables_exclude = value;
+            this._updateSettings();
+        }
+
         getPublishMode() {
             return this.publishMode;
         }
@@ -935,6 +941,8 @@
                     properties: properties
                 }
             }));
+            this.onCustomWidgetBeforeUpdate(properties);
+            this.onCustomWidgetAfterUpdate(properties);
         }
 
         addCustomText(name, value) {
@@ -1103,8 +1111,7 @@
                 if (sap.fpa.ui.infra.common) {
                     let context = sap.fpa.ui.infra.common.getContext();
 
-                    let app = context.getAppArgument();
-                    settings.appid = app.appId;
+                    settings.appid = getAppId(context);
 
                     let user = context.getUser();
                     settings.sac_user = user.getUsername();
@@ -1118,7 +1125,7 @@
                 }
             }
 
-            settings.metadata = JSON.stringify(getMetadata());
+            settings.metadata = JSON.stringify(getMetadata({ tablesSelectedWidget: settings.tables_exclude ? JSON.parse(settings.tables_exclude) : [] }));
 
             if (settings.publish_mode === "" || settings.publish_mode === "ONLINE" || settings.publish_mode === "VIEWER" || settings.publish_mode === "PRINT") {
                 settings.publish_sync = true;
@@ -1310,9 +1317,23 @@
         });
     }
 
-    function getMetadata(withoutData) {
+    function getAppId(context) {
+        let app = (context || sap.fpa.ui.infra.common.getContext()).getInternalAppArguments();
+        return app && (app.appId /* application */ || app.resource_id /* story */);
+    }
+
+    function getMetadata(settings) {
+        let findAggregatedObjects;
+
         let shell = commonApp.getShell();
-        let documentContext = shell.findElements(true, e => e.getMetadata().hasProperty("resourceType") && e.getProperty("resourceType") == "STORY")[0].getDocumentContext();
+        if (shell) { // old SAC
+            findAggregatedObjects = fn => shell.findElements(true, fn); // could this also be findAggregatedObjects ?
+        }
+        if (!findAggregatedObjects) { // new SAC
+            findAggregatedObjects = fn => sap.fpa.ui.story.Utils.getShellContainer().getCurrentPage().getComponentInstance().findAggregatedObjects(true, fn);
+        }
+
+        let documentContext = findAggregatedObjects(e => e.getMetadata().hasProperty("resourceType") && e.getProperty("resourceType") == "STORY")[0].getDocumentContext();
         let storyModel = documentContext.get("sap.fpa.story.getstorymodel");
         let entityService = documentContext.get("sap.fpa.bi.entityService");
         let widgetControls = documentContext.get("sap.fpa.story.document.widgetControls");
@@ -1320,12 +1341,27 @@
         let components = {};
         storyModel.getAllWidgets().forEach((widget) => {
             if (widget) { // might be undefined during edit
+
+                let includeData = !settings; // no settings => include everything
+                if (settings) {
+                    // if widget is excluded, do not include information
+                    if (settings.formatSelectedWidget !== undefined) {
+                        if (settings.formatSelectedWidget.length > 0 && !settings.formatSelectedWidget.some(v => v.id == widget.id && v.isExcluded)) {
+                            return;
+                        }
+                    }
+                    // if widget is not chosen, do not include additional lines
+                    if (settings.tablesSelectedWidget !== undefined && settings.tablesSelectedWidget.some(v => v.id == widget.id && !v.isExcluded)) {
+                        includeData = true;
+                    }
+                }
+
                 let component = {
                     type: widget.class
                 }
 
                 let widgetControl = widgetControls.filter((control) => control.getWidgetId() == widget.id)[0];
-                if (withoutData !== true && widgetControl) { // control specific stuff
+                if (widgetControl && includeData) { // control specific stuff
                     if (typeof widgetControl.getTableController == "function") { // table
                         let tableController = widgetControl.getTableController();
                         let view = tableController.getView();
@@ -1411,19 +1447,24 @@
         // only for applications (not stories)
         let app;
 
-        let applicationEntity = storyModel.getApplicationEntity();
-        if (applicationEntity) {
-            app = applicationEntity.app;
-        }
-
-        let outlineContainer = shell.findElements(true, e => e.hasStyleClass && e.hasStyleClass("sapAppBuildingOutline"))[0]; // sId: "__container0"
+        let outlineContainer = findAggregatedObjects(e => e.hasStyleClass && e.hasStyleClass("sapAppBuildingOutline"))[0]; // sId: "__container0"
         if (outlineContainer) { // outlineContainer has more recent data than applicationEntity during edit
-            try {
-                app = outlineContainer.getReactProps().store.getState().globalState.instances.app["[{\"app\":\"MAIN_APPLICATION\"}]"]._usis; /* SAC 2021.5.1 */
-            } catch (e) {
+            if (!app) {
+                try {
+                    app = outlineContainer.getReactProps().store.getState().globalState.instances.app["[{\"app\":\"MAIN_APPLICATION\"}]"]._usis; /* SAC 2021.5.1 */
+                } catch (e) { /* ignore */ }
+            }
+            if (!app) {
                 try {
                     app = outlineContainer.getReactProps().store.getState().globalState.instances.app["[{\"app\":\"MAIN_APPLICATION\"}]"]; /* old SAC */
                 } catch (e) { /* ignore */ }
+            }
+        }
+
+        if (!app) {
+            let applicationEntity = storyModel.getApplicationEntity();
+            if (applicationEntity) {
+                app = applicationEntity.app;
             }
         }
 
@@ -1515,7 +1556,7 @@
                 break;
             case "LINK":
                 if (node.rel == "preload") {
-                    return "";
+                    return ""; // ignore
                 }
             // fallthrough
             case "STYLE":
@@ -1531,7 +1572,12 @@
                         parent = parent.parentNode;
                     }
 
-                    if (shadowHost || settings.parse_css) {
+                    // always download relative stylesheets
+                    let relative = sheet.href && attributes["href"] && sheet.href != attributes["href"];
+                    // always parse local stylesheets as they might be dynamic
+                    let dynamic = !sheet.href && sheet.rules && sheet.rules.length > 0;
+
+                    if (shadowHost || dynamic || relative || settings.parse_css) {
                         if (sheet.href) { // download external stylesheets
                             name = "style";
                             attributes = { "type": "text/css" };
@@ -1618,7 +1664,7 @@
     }
 
     function getCssText(sheet, baseUrl, shadowHost) {
-        return parseCssRules(sheet.rules, baseUrl, shadowHost);
+        return parseCssRules(sheet.cssRules, baseUrl, shadowHost);
     }
     function parseCssRules(rules, baseUrl, shadowHost) {
         let promises = [];
@@ -1651,8 +1697,9 @@
                 }
                 css.push(" {");
                 for (let j = 0; j < rule.style.length; j++) {
-                    let name = rule.style[j]
-                    let value = rule.style[name];
+                    let name = rule.style[j];
+                    let value = rule.style.getPropertyValue(name);
+                    let priority = rule.style.getPropertyPriority(name);
                     css.push(name);
                     css.push(":");
                     if (name.startsWith("background") && value && value.includes("url") && !value.includes("data:")) {
@@ -1664,6 +1711,9 @@
                         }
                     }
                     css.push(value);
+                    if (priority == "important") {
+                        css.push("!important");
+                    }
                     css.push(";");
                 }
                 css.push("}");

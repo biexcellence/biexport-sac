@@ -530,8 +530,17 @@
     const contentDispositionFilenameRegExp = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/i;
 
     function getMetadata() {
+        let findAggregatedObjects;
+
         let shell = commonApp.getShell();
-        let documentContext = shell.findElements(true, e => e.getMetadata().hasProperty("resourceType") && e.getProperty("resourceType") == "STORY")[0].getDocumentContext();
+        if (shell) { // old SAC
+            findAggregatedObjects = fn => shell.findElements(true, fn);
+        }
+        if (!findAggregatedObjects) { // new SAC
+            findAggregatedObjects = fn => sap.fpa.ui.story.Utils.getShellContainer().getCurrentPage().getComponentInstance().findAggregatedObjects(true, fn);
+        }
+
+        let documentContext = findAggregatedObjects(e => e.getMetadata().hasProperty("resourceType") && e.getProperty("resourceType") == "STORY")[0].getDocumentContext();
         let storyModel = documentContext.get("sap.fpa.story.getstorymodel");
         let entityService = documentContext.get("sap.fpa.bi.entityService");
         let widgetControls = documentContext.get("sap.fpa.story.document.widgetControls");
@@ -585,19 +594,24 @@
         // only for applications (not stories)
         let app;
 
-        let applicationEntity = storyModel.getApplicationEntity();
-        if (applicationEntity) {
-            app = applicationEntity.app;
-        }
-
-        let outlineContainer = shell.findElements(true, e => e.hasStyleClass && e.hasStyleClass("sapAppBuildingOutline"))[0]; // sId: "__container0"
+        let outlineContainer = findAggregatedObjects(e => e.hasStyleClass && e.hasStyleClass("sapAppBuildingOutline"))[0]; // sId: "__container0"
         if (outlineContainer) { // outlineContainer has more recent data than applicationEntity during edit
-            try {
-                app = outlineContainer.getReactProps().store.getState().globalState.instances.app["[{\"app\":\"MAIN_APPLICATION\"}]"]._usis; /* SAC 2021.5.1 */
-            } catch (e) {
+            if (!app) {
+                try {
+                    app = outlineContainer.getReactProps().store.getState().globalState.instances.app["[{\"app\":\"MAIN_APPLICATION\"}]"]._usis; /* SAC 2021.5.1 */
+                } catch (e) { /* ignore */ }
+            }
+            if (!app) {
                 try {
                     app = outlineContainer.getReactProps().store.getState().globalState.instances.app["[{\"app\":\"MAIN_APPLICATION\"}]"]; /* old SAC */
                 } catch (e) { /* ignore */ }
+            }
+        }
+
+        if (!app) {
+            let applicationEntity = storyModel.getApplicationEntity();
+            if (applicationEntity) {
+                app = applicationEntity.app;
             }
         }
 

@@ -205,8 +205,7 @@
                 if (sap.fpa.ui.infra.common) {
                     let context = sap.fpa.ui.infra.common.getContext();
 
-                    let app = context.getAppArgument();
-                    settings.appid = app.appId;
+                    settings.appid = getAppId(context);
 
                     let user = context.getUser();
                     settings.sac_user = user.getUsername();
@@ -328,6 +327,11 @@
             let r = Math.random() * 16 | 0, v = c === "x" ? r : (r & 0x3 | 0x8);
             return v.toString(16);
         });
+    }
+
+    function getAppId(context) {
+        let app = (context || sap.fpa.ui.infra.common.getContext()).getInternalAppArguments();
+        return app && (app.appId /* application */ || app.resource_id /* story */);
     }
 
 })();

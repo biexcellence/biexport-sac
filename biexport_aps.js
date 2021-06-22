@@ -25,7 +25,7 @@
           </style>
           <form id="form" autocomplete="off">
             <fieldset>
-              <legend>General</legend>
+              <legend>biExport Service</legend>
               <table>
                 <tr>
                   <td><label for="serverURL">Server URL</label></td>
@@ -38,7 +38,66 @@
               </table>
             </fieldset>
             <fieldset>
-              <legend>Export</legend>
+              <legend>PDF</legend>
+              <table>
+                <tr>
+                  <td><label for="pdfTemplate">Template</label></td>
+                  <td><input id="pdfTemplate" name="pdfTemplate" type="text"></td>
+                </tr>
+                <tr>
+                  <td colspan="2"><slot name="pdf_PageSections"></slot></td>
+                </tr>
+                <tr>
+                  <td><label for="pdf_SelectedWidgets">CONTENT Widgets</label></td>
+                  <td><slot width="100px" name="pdf_SelectedWidgets"></slot></td>
+                </tr>
+              </table>
+            </fieldset>
+            <fieldset>
+              <legend>Word</legend>
+              <table>
+                <tr>
+                  <td><label for="docTemplate">Template</label></td>
+                  <td><input id="docTemplate" name="docTemplate" type="text"></td>
+                </tr>
+                <tr>
+                  <td><label for="doc_SelectedWidgets">CONTENT Widgets</label></td>
+                  <td><slot name="doc_SelectedWidgets"></slot></td>
+                </tr>
+              </table>
+            </fieldset>
+            <fieldset>
+              <legend>PowerPoint</legend>
+              <table>
+                <tr>
+                  <td><label for="pptTemplate">Template</label></td>
+                  <td><input id="pptTemplate" name="pptTemplate" type="text"></td>
+                </tr>
+                <tr>
+                  <td><label for="pptSeparate">Clone CONTENT Slide</label></td>
+                  <td><input id="pptSeparate" name="pptSeparate" type="checkbox"></td>
+                </tr>
+                <tr>
+                  <td><label for="ppt_SelectedWidgets">CONTENT Widgets</label></td>
+                  <td><slot name="ppt_SelectedWidgets"></slot></td>
+                </tr>
+              </table>
+            </fieldset>
+            <fieldset>
+              <legend>Excel</legend>
+              <table>
+                <tr>
+                  <td><label for="xlsTemplate">Template</label></td>
+                  <td><input id="xlsTemplate" name="xlsTemplate" type="text"></td>
+                </tr>
+                <tr>
+                  <td><label for="xls_SelectedWidgets">CONTENT Widgets</label></td>
+                  <td><slot name="xls_SelectedWidgets"></slot></td>
+                </tr>
+              </table>
+            </fieldset>
+            <fieldset>
+              <legend>General</legend>
               <table>
                 <tr>
                   <td><label for="parseCss">Parse CSS</label></td>
@@ -60,63 +119,13 @@
                   <td><label for="biAnalyticsDocument">biAnalytics Document</label></td>
                   <td><input id="biAnalyticsDocument" name="biAnalyticsDocument" type="checkbox"></td>
                 </tr>
-              </table>
-            </fieldset>
-            <fieldset>
-              <legend>PDF</legend>
-              <table>
                 <tr>
-                  <td><label for="pdfTemplate">Template</label></td>
-                  <td><input id="pdfTemplate" name="pdfTemplate" type="text"></td>
-                </tr>
-                <tr>
-                  <td colspan="2"><slot name="pdf_PageSections"></slot></td>
-                </tr>
-                <tr>
-                  <td colspan="2"><slot name="pdf_SelectedWidgets"></slot></td>
+                  <td><label for="tables_SelectedWidgets">Load hidden content</label></td>
+                  <td><slot name="tables_SelectedWidgets"></slot></td>
                 </tr>
               </table>
             </fieldset>
-            <fieldset>
-              <legend>PowerPoint</legend>
-              <table>
-                <tr>
-                  <td><label for="pptSeparate">One component per Slide</label></td>
-                  <td><input id="pptSeparate" name="pptSeparate" type="checkbox"></td>
-                </tr>
-                <tr>
-                  <td><label for="pptTemplate">Template</label></td>
-                  <td><input id="pptTemplate" name="pptTemplate" type="text"></td>
-                </tr>
-                <tr>
-                  <td colspan="2"><slot name="ppt_SelectedWidgets"></slot></td>
-                </tr>
-              </table>
-            </fieldset>
-            <fieldset>
-              <legend>Word</legend>
-              <table>
-                <tr>
-                  <td><label for="docTemplate">Template</label></td>
-                  <td><input id="docTemplate" name="docTemplate" type="text"></td>
-                </tr>
-                <tr>
-                  <td colspan="2"><slot name="doc_SelectedWidgets"></slot></td>
-                </tr>
-              </table>
-            </fieldset>
-            <fieldset>
-              <legend>Excel</legend>
-              <table>
-                <tr>
-                  <td><label for="xlsTemplate">Template</label></td>
-                  <td><input id="xlsTemplate" name="xlsTemplate" type="text"></td>
-                </tr>
-                <tr>
-                  <td colspan="2"><slot name="xls_SelectedWidgets"></slot></td>
-                </tr>
-              </table>
-            </fieldset>
+
             <fieldset>
               <legend>Publishing</legend>
               <table>
@@ -153,6 +162,10 @@
             <fieldset>
               <legend>Background Execution</legend>
               <table>
+                <tr hidden>
+                  <td><label for="tenantUrl">Tenant URL</label></td>
+                  <td><input id="tenantUrl" name="tenantUrl" type="text" readonly></td>
+                </tr>
                 <tr hidden>
                   <td><label for="oauthId">OAuth Client</label></td>
                   <td><select id="oauthId" name="oauthId"><option value=""> - </option></select></td>
@@ -226,6 +239,47 @@
         `;
 
     class BiExportAps extends HTMLElement {
+        
+        _getWidgetModel() {
+            let tableComponents = this["tablesSelectedWidgets"] ? JSON.parse(this["tablesSelectedWidgets"]) : [];
+            let pdfVisibleComponents = this["pdfSelectedWidgets"] ? JSON.parse(this["pdfSelectedWidgets"]) : [];
+            let pptVisibleComponents = this["pptSelectedWidgets"] ? JSON.parse(this["pptSelectedWidgets"]) : [];
+            let xlsVisibleComponents = this["xlsSelectedWidgets"] ? JSON.parse(this["xlsSelectedWidgets"]) : [];
+            let docVisibleComponents = this["docSelectedWidgets"] ? JSON.parse(this["docSelectedWidgets"]) : [];
+            let allComponents = biExportGetMetadata({}).components;
+            let components = [];
+            for (let componentId in allComponents) {
+                let component = allComponents[componentId];
+                component.id = componentId;
+                component.tablesSelectedWidgets = false;
+                component.pdfSelectedWidgets = false;
+                component.xlsSelectedWidgets = false;
+                component.docSelectedWidgets = false;
+                component.pptSelectedWidgets = false;
+                if (tableComponents.length > 0 && !tableComponents.some(v => v.component == component.name && v.isExcluded)) {
+                    component.tablesSelectedWidgets = true;
+                }
+                if (pdfVisibleComponents.length > 0 && !pdfVisibleComponents.some(v => v.component == component.name && v.isExcluded)) {
+                    component.pdfSelectedWidgets = true;
+                }
+                if (pptVisibleComponents.length > 0 && !pptVisibleComponents.some(v => v.component == component.name && v.isExcluded)) {
+                    component.pptSelectedWidgets = true;
+                }
+                if (docVisibleComponents.length > 0 && !docVisibleComponents.some(v => v.component == component.name && v.isExcluded)) {
+                    component.docSelectedWidgets = true;
+                }
+                if (xlsVisibleComponents.length > 0 && !xlsVisibleComponents.some(v => v.component == component.name && v.isExcluded)) {
+                    component.xlsSelectedWidgets = true;
+                }
+                components.push(component);
+            }
+
+            let model = new sap.ui.model.json.JSONModel(components);
+            model.setSizeLimit(9999);
+
+            return model;
+        }
+
         constructor() {
             super();
             this._shadowRoot = this.attachShadow({ mode: "open" });
@@ -235,54 +289,118 @@
             form.addEventListener("submit", this._submit.bind(this));
             form.addEventListener("change", this._change.bind(this));
 
-            // visible components
-            ["pdf_SelectedWidgets", "ppt_SelectedWidgets", "doc_SelectedWidgets", "xls_SelectedWidgets"].forEach(slotId => {
+            // visible components - model filters
+            let modelFilters = {};
+            modelFilters["Tables"] = [new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "table")];
+            modelFilters["Charts"] = [new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "viz")];
+            modelFilters["Layouts"] = [new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "pagebook"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "panel"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "flowpanel"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "tabstrip")];
+            modelFilters["Texts"] = [new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "textWidget"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "inputField"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "textArea")];
+            modelFilters["Filters"] = [new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "filterLine"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "dropdownBox")];
+            modelFilters["Others"] = new sap.ui.model.Filter({
+                filters: [
+                    new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "sdk_com_biexcellence_openbi_sap_sac_export__0"),
+                    new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "pagebook"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "panel"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "flowpanel"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "tabstrip"),
+                    new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "textWidget"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "inputField"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "textArea"),
+                    new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "filterLine"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "dropdownBox"),
+                    new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "table"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "viz")
+                ],
+                and: true
+            });
+
+            // visible components - UI elements
+            this.filters = [];
+            ["tables_SelectedWidgets", "pdf_SelectedWidgets", "ppt_SelectedWidgets", "doc_SelectedWidgets", "xls_SelectedWidgets"].forEach(slotId => {
                 let id = slotId.replace("_", "");
 
                 let filter = new sap.m.FacetFilter({
                     showSummaryBar: true,
                     showReset: false,
                     showPersonalization: true,
-                    type: sap.m.FacetFilterType.Light, //Light
+                    type: sap.m.FacetFilterType.Light,
                     showPopoverOKButton: true
                 });
 
-                // split components by filter , "Charts", "Layouts", "Texts", "Filters", "Others"
-                ["Tables"].forEach(typeGroup => {
+                let filterTemplate;
+                switch (id) {
+                    case "tablesSelectedWidgets":
+                        filterTemplate = new sap.m.FacetFilterItem({
+                            key: "{name}",
+                            text: "{name}",
+                            selected: "{tablesSelectedWidgets}"
+                        });
+                        break;
+                    case "pdfSelectedWidgets":
+                        filterTemplate = new sap.m.FacetFilterItem({
+                            key: "{name}",
+                            text: "{name}",
+                            selected: "{pdfSelectedWidgets}"
+                        });
+                        break;
+                    case "pptSelectedWidgets":
+                        filterTemplate = new sap.m.FacetFilterItem({
+                            key: "{name}",
+                            text: "{name}",
+                            selected: "{pptSelectedWidgets}"
+                        });
+                        break;
+                    case "docSelectedWidgets":
+                        filterTemplate = new sap.m.FacetFilterItem({
+                            key: "{name}",
+                            text: "{name}",
+                            selected: "{docSelectedWidgets}"
+                        });
+                        break;
+                    case "xlsSelectedWidgets":
+                        filterTemplate = new sap.m.FacetFilterItem({
+                            key: "{name}",
+                            text: "{name}",
+                            selected: "{xlsSelectedWidgets}"
+                        });
+                }
+
+                // split components by filter 
+                ["Tables", "Charts", "Layouts", "Texts", "Filters", "Others"].forEach(typeGroup => {
+
+                    if ((id == "tablesSelectedWidgets") && (typeGroup != "Tables")) {
+                        return;
+                    }
+
                     let filterList = new sap.m.FacetFilterList({
                         title: typeGroup,
                         items: {
                             path: "/",
-                            sorter: new sap.ui.model.Sorter("name"), // add selection here!
-                            template: new sap.m.FacetFilterItem({
-                                key: "{name}",
-                                text: "{name}"
-                            })
+                            sorter: [{
+                                path: id,
+                                descending: true
+                            }, {
+                                path: "name",
+                                descending: false
+                            }],
+                            filters: modelFilters[typeGroup],
+                            template: filterTemplate
                         },
                         listOpen: oEvent => {
                             let list = oEvent.getSource();
-                            // list.setModel(_initializeModel(id, typeGroup, model));
+
+                            // check model changes - this could be performance optimized by just checking the elements that have been changed in the dashboards
+                            list.setModel(this._getWidgetModel());
                         },
                         listClose: oEvent => {
                             let list = oEvent.getSource();
+                            let components = list.getModel().getData();
 
-                            let selectedComponents = list.getSelectedKeys();
-
-                            let allComponents = biExportGetMetadata(/*withoutData*/true).components;
+                            // set visible components 
                             let visibleComponents = [];
-                            for (let componentId in allComponents) {
-                                let component = allComponents[componentId];
-
-                                if (component.type == "sdk_com_biexcellence_openbi_sap_sac_export__0") {
-                                    continue;
-                                }
-
+                            for (let componentId in components) {
+                                
                                 visibleComponents.push({
-                                    component: component.name,
-                                    isExcluded: !(component.name in selectedComponents)
+                                    component: components[componentId].name,
+                                    isExcluded: !components[componentId][id],
+                                    id: components[componentId].id
                                 });
                             }
 
+                            // set parameter
                             let value = "";
                             if (visibleComponents.some(v => v.isExcluded) && visibleComponents.some(v => !v.isExcluded)) {
                                 value = JSON.stringify(visibleComponents);
@@ -295,103 +413,28 @@
 
                     });
 
-
-                    // move to separate method returning selectedComponents and model
-                    let value = this[id];
-                    let visibleComponents = value ? JSON.parse(value) : [];
-                    let allComponents = biExportGetMetadata(/*withoutData*/true).components;
-                    let components = [];
-                    let selectedComponents = {};
-                    for (let componentId in allComponents) {
-                        let component = allComponents[componentId];
-
-                        // filter lists
-                        switch (typeGroup) {
-                            case "Tables":
-                                if (component.type != "sap.fpa.ui.story.entity.dynamictable.DynamicTableWidget") {
-                                    continue;
-                                }
-                                break;
-                            case "Charts":
-                                if (component.type != "sap.fpa.ui.story.entity.infochartviz.InfochartVizWidget") {
-                                    continue;
-                                }
-                                break;
-                            case "Layouts":
-                                if ((component.type != "sap.fpa.ui.appBuilding.entity.pagebook.PageBookWidget") && (component.type != "sap.fpa.ui.appBuilding.entity.panel.PanelWidget") && (component.type != "sap.fpa.ui.appBuilding.entity.flowpanel.FlowPanelWidget") && (component.type != "sap.fpa.ui.appBuilding.entity.tabstrip.TabstripWidget")) {
-                                    continue;
-                                }
-                                break;
-                            case "Texts":
-                                if ((component.type != "sap.fpa.ui.story.entity.text.TextWidget") && (component.type != "sap.fpa.ui.appBuilding.entity.inputfield.InputFieldWidget") && (component.type != "sap.fpa.ui.appBuilding.entity.textarea.TextAreaWidget")) {                                 
-                                    continue;
-                                }
-                               
-                                break;
-                            case "Filters":
-                                if ((component.type != "sap.fpa.ui.appBuilding.entity.filterline.FilterLineWidget") && (component.type != "sap.fpa.ui.appBuilding.entity.dropdownbox.DropdownBoxWidget")) {
-                                    continue;
-                                }                               
-                                break;
-                            default:
-                                if (component.type == "sdk_com_biexcellence_openbi_sap_sac_export__0") {
-                                    continue;
-                                }
-                                if ((component.type == "sap.fpa.ui.appBuilding.entity.filterline.FilterLineWidget") || (component.type == "sap.fpa.ui.appBuilding.entity.dropdownbox.DropdownBoxWidget")) {
-                                    continue;
-                                }
-                                if ((component.type == "sap.fpa.ui.story.entity.text.TextWidget") || (component.type == "sap.fpa.ui.appBuilding.entity.inputfield.InputFieldWidget") || (component.type == "sap.fpa.ui.appBuilding.entity.textarea.TextAreaWidget")) {
-                                    continue;
-                                }
-                                if ((component.type == "sap.fpa.ui.appBuilding.entity.pagebook.PageBookWidget") || (component.type == "sap.fpa.ui.appBuilding.entity.panel.PanelWidget") || (component.type == "sap.fpa.ui.appBuilding.entity.flowpanel.FlowPanelWidget") || (component.type == "sap.fpa.ui.appBuilding.entity.tabstrip.TabstripWidget")) {
-                                    continue;
-                                }
-                                if (component.type == "sap.fpa.ui.story.entity.dynamictable.DynamicTableWidget") {
-                                    continue;
-                                }
-                                if (component.type == "sap.fpa.ui.story.entity.infochartviz.InfochartVizWidget") {
-                                    continue;
-                                }
-
-                        }
-
-                        components.push(component);
-
-                        if (!visibleComponents.some(v => v.component == component.name && v.isExcluded)) {
-                            selectedComponents[component.name] = component.name;
-                        }
-                    }
-
-                    let model = new sap.ui.model.json.JSONModel(components);
-                    model.setSizeLimit(9999);
-
-                    if (Object.keys(selectedComponents).length == components.length) {
-                        selectedComponents = {};
-                    }
-                    //
-                    filterList.setModel(model);
-                    filterList.setSelectedKeys(selectedComponents);
-
                     filter.addList(filterList);
-
-               });
+                    
+                });
 
                 let excludeSlot = document.createElement("div");
+                excludeSlot.style.width = "210px";
                 excludeSlot.slot = slotId;
                 this.appendChild(excludeSlot);
 
                 filter.addStyleClass("sapUiSizeCompact");
                 filter.placeAt(excludeSlot);
+                this.filters.push(filter);
             });
 
-            // notificationHtml
+            // page section HTML
             let slotId = "pdf_PageSections";
             let idHeader = "pdfHeader";
             let idFooter = "pdfFooter";
             let idOrientation = "pdfOrient";
 
             let link = new sap.m.Link({
-                text: "Edit PDF Sections...",
+                text: "PDF Sections...",
                 press: oEvent => {
 
                     let orientDropdown = new sap.m.ComboBox({
@@ -451,7 +494,6 @@
                                 value = textEditorFooter.getValue();
                                 this[idFooter] = properties[idFooter] = value;
                                 value = orientDropdown.getSelectedItemId();
-                                this[idOrientation] = properties[idOrientation] = value;
                                 this._firePropertiesChanged(properties);
                                 dialog.close();
                             }
@@ -484,7 +526,24 @@
 
         }
 
+        onCustomWidgetAfterUpdate() {
+        }
+        
         connectedCallback() {
+            let model = this._getWidgetModel();
+            this.filters.forEach(filter => {
+                filter.getLists().forEach(filterList => {
+                    filterList.setModel(model);
+                });
+            });
+
+            // try to display tenant URL
+            if (window.sap && sap.fpa && sap.fpa.ui && sap.fpa.ui.infra && sap.fpa.ui.infra.service && sap.fpa.ui.infra.service.AjaxHelper) {
+                var tenantUrl = this._shadowRoot.getElementById("tenantUrl")
+                tenantUrl.value = sap.fpa.ui.infra.service.AjaxHelper.getTenantUrl(false); // true for PUBLIC_FQDN
+                tenantUrl.closest("tr").hidden = false;
+            }
+
             // try to load oauth info
             fetch("/oauthservice/api/v1/oauthclient?tenant=" + window.TENANT).then(response => {
                 if (response.ok) {
@@ -776,6 +835,12 @@
             this.pdf_footer = value;
         }
 
+        get tablesSelectedWidgets() {
+            return this.tables_SelectedWidgets;
+        }
+        set tablesSelectedWidgets(value) {
+            this.tables_SelectedWidgets = value;
+        }
 
         get pdfSelectedWidgets() {
             return this.pdf_SelectedWidgets;
@@ -859,6 +924,7 @@
                 "screenHeight",
                 "parseCss",
                 "biAnalyticsDocument",
+                "tablesSelectedWidgets",
 
                 "pdfTemplate",
                 "pdfSelectedWidgets",
