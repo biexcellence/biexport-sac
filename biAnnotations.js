@@ -268,9 +268,11 @@
                 ltable = document.querySelector("#" + this.widgetId + ">div");
             }
 
-            // get tablecell
-            let tablecell = ltable.querySelector('[data-col="' + irow.columnNumber + '"][data-row="' + irow.rowNumber + '"]');
+            // get tablecell 
+            // data - col is based on 1
+            let tablecell = ltable.querySelector('[data-col="' + (irow.columnNumber + 1) + '"][data-row="' + (irow.rowNumber + 1) + '"]');
             if (tablecell == null) {
+                // tablecol is based on 0
                 tablecell = ltable.querySelector('[data-tablecol="' + irow.columnNumber + '"][data-tablerow="' + irow.rowNumber + '"]');
             }
 
