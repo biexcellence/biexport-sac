@@ -395,6 +395,7 @@
 
             let tr = document.createElement("tr");
 
+            // index
             let td1 = document.createElement("td");
             td1.setAttribute("class", "default defaultTableCell generalCell hideBorder generalCell dimMember rowDimMemberCell generalCell sapDimMemberCellHeading")
             td1.setAttribute("style", "font-size: 11px; line-height: 12px; color: rgb(0, 0, 0); fill: rgb(0, 0, 0); font-family: arial; background-color: transparent; vertical-align: middle;font-weight:bold;max-width:30px;");
@@ -402,11 +403,45 @@
             td1.setAttribute("title", irow.index);
             tr.appendChild(td1);
 
+            // comment
             let td2 = document.createElement("td");
             td2.setAttribute("class", "default defaultTableCell generalCell hideBorder generalCell dimMember rowDimMemberCell generalCell sapDimMemberCellHeading")
             td2.setAttribute("style", "font-size: 11px; line-height: 12px; color: rgb(0, 0, 0); fill: rgb(0, 0, 0); font-family: arial; background-color: transparent; vertical-align: middle;max-width:100%;");
-            td2.textContent = irow.comment;
             td2.setAttribute("title", irow.comment);
+
+            // split comment links to create HTML links
+            let linkProtocol = "";
+            if (irow.comment.indexOf("https://") >= 0) {
+                linkProtocol = "https://";
+            } else if (irow.comment.indexOf("http://") >= 0) {
+                linkProtocol = "http://";
+            } 
+
+            if (linkProtocol == "") {
+                let commentParts = irow.comment.split(linkProtocol);
+                for (let i = 0; i < commentParts.length, i++) {
+                    if (i mod 2 == 1) {
+                        // normal text
+                        let span = document.createElement("span");
+                        span.textContent = commentParts[i];
+                        ltd2.appendChild(span);
+                    } else {
+                        // link text
+                        let href = document.createElement("a");
+                        href.textContent = linkProtocol + commentParts[i].substr(0, commentParts[i].indexOf(' '))
+                        href.href = linkProtocol + commentParts[i];
+                        ltd2.appendChild(href);
+    
+                        let span = document.createElement("span");
+                        span.textContent = commentParts[i].substr(commentParts[i].indexOf(' ') + 1); 
+                        ltd2.appendChild(span);
+                    }
+                }
+                
+            } else {
+                td2.textContent = irow.comment;
+            }
+
             tr.appendChild(td2);
 
             tbody.appendChild(tr);
