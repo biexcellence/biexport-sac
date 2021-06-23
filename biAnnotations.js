@@ -417,10 +417,10 @@
                 linkProtocol = "http://";
             } 
 
-            if (linkProtocol == "") {
+            if (linkProtocol != "") {
                 let commentParts = irow.comment.split(linkProtocol);
                 for (let i = 0; i < commentParts.length; i++) {
-                    if (i % 2 == 1) {
+                    if (i % 2 == 0) {
                         // normal text
                         let span = document.createElement("span");
                         span.textContent = commentParts[i];
@@ -430,11 +430,11 @@
                         let href = document.createElement("a");
                         href.textContent = linkProtocol + commentParts[i].substr(0, commentParts[i].indexOf(' '))
                         href.href = linkProtocol + commentParts[i];
-                        ltd2.appendChild(href);
+                        td2.appendChild(href);
     
                         let span = document.createElement("span");
                         span.textContent = commentParts[i].substr(commentParts[i].indexOf(' ') + 1); 
-                        ltd2.appendChild(span);
+                        td2.appendChild(span);
                     }
                 }
                 
