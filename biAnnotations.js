@@ -427,14 +427,28 @@
                         td2.appendChild(span);
                     } else {
                         // link text
+                        let part1 = "";
+                        let part2 = "";
+                        if (commentParts[i].indexOf(' ') > 0) {
+                            part1 = commentParts[i].substr(0, commentParts[i].indexOf(' '));
+                            part2 = " " + commentParts[i].substr(commentParts[i].indexOf(' ') + 1);
+                        } else if (commentParts[i].indexOf('\n') > 0) {
+                            part1 = commentParts[i].substr(0, commentParts[i].indexOf('\n'));
+                            part2 = "\n" + commentParts[i].substr(commentParts[i].indexOf('\n') + 1);
+                        } else {
+                            part1 = commentParts[i];
+                        }
+
                         let href = document.createElement("a");
-                        href.textContent = linkProtocol + commentParts[i].substr(0, commentParts[i].indexOf(' '))
-                        href.href = linkProtocol + commentParts[i];
+                        href.textContent = linkProtocol + part1;
+                        href.href = linkProtocol + part1;
                         td2.appendChild(href);
-    
-                        let span = document.createElement("span");
-                        span.textContent = commentParts[i].substr(commentParts[i].indexOf(' ') + 1); 
-                        td2.appendChild(span);
+
+                        if (part2 != "") {
+                            let span = document.createElement("span");
+                            span.textContent = part2;
+                            td2.appendChild(span);
+                        }
                     }
                 }
                 
