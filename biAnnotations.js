@@ -419,7 +419,7 @@
 
             if (linkProtocol == "") {
                 let commentParts = irow.comment.split(linkProtocol);
-                for (let i = 0; i < commentParts.length, i++) {
+                for (let i = 0; i < commentParts.length; i++) {
                     if (i % 2 == 1) {
                         // normal text
                         let span = document.createElement("span");
