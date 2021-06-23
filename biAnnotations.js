@@ -424,7 +424,7 @@
                         // normal text
                         let span = document.createElement("span");
                         span.textContent = commentParts[i];
-                        ltd2.appendChild(span);
+                        td2.appendChild(span);
                     } else {
                         // link text
                         let href = document.createElement("a");
