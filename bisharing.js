@@ -278,6 +278,7 @@
     }
 
     _launchOneDrivePicker(clientId, lnk, showNav) {
+        let that = this;
         var odOptions = {
             clientId: clientId,
             action: "share",
@@ -295,13 +296,13 @@
                 createLinkParameters: { type: "view", scope: "organization" } // anonymous
             },
             success: function (response) {
-                handleResponse(response, true);
+                that._handleResponse(response, true);
             },
             cancel: function (response) {
-                handleResponse(response, false);
+                that._handleResponse(response, false);
             },
             error: function (response) {
-                handleResponse(response, false);
+                that._handleResponse(response, false);
             }
         }
         OneDrive.open(odOptions);
