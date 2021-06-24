@@ -94,6 +94,20 @@
             }));
         }
 
+        getTableSelections() {
+            let ldata = this._metadata.components[this.widgetId].data;
+            let larray = [];
+
+            for (var y = 0; y < ldata.length; y++) {
+                for (var x = 0; x < ldata[y].length; x++) {
+                    larray.push(ldata[y][x].cellMemberContext);
+                }
+            }
+
+            return larray;
+
+        }
+
         getSelectedRow(selection) {
             return this._getSelectedCell(selection).row;
         }
@@ -144,7 +158,6 @@
                             break;
                         }
                     }
-
                 }
 
                 if (lrow > 0 && lcol > 0) { break; }

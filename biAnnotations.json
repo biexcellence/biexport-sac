@@ -103,7 +103,7 @@
     },
     "getSelectedRow": {
       "returnType": "integer",
-      "description": "Gets the selected row.",
+      "description": "Gets the selected row",
       "parameters": [
         {
           "name": "selection",
@@ -114,7 +114,7 @@
     },
     "getSelectedCol": {
       "returnType": "integer",
-      "description": "Gets the selected column.",
+      "description": "Gets the selected column",
       "parameters": [
         {
           "name": "selection",
@@ -122,6 +122,11 @@
           "description": "The selection"
         }
       ]
+    },
+    "getTableSelections": {
+      "returnType": "Selection[]",
+      "description": "Gets the selections for all table cells",
+      "parameters": []
     },
     "commentCell": {
       "description": "Add a comment to be displayed in the cell of the widget.",
