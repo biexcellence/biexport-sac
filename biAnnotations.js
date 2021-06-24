@@ -361,6 +361,7 @@
                                     ltablecell.appendChild(lsup);
                                 }
                                 lsup.textContent = larray.join(", ");
+                                ltablecell.setAttribute("title", ltablecell.setAttribute("title") + " " + lsup.textContent);
 
                             }
 
