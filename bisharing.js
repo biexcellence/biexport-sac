@@ -195,6 +195,10 @@
 
             window.addEventListener("message", onMessage);
 
+            if (document.getElementById(this._id + "_sharing_iframe") != null) {
+                document.getElementById(this._id + "_sharing_iframe").remove();
+            }
+
             let liframe = document.createElement("iframe");
             liframe.setAttribute('id', this._id + "_sharing_iframe");
             liframe.setAttribute('name', "sharing_iframe");
