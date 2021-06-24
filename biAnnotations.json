@@ -123,6 +123,11 @@
       "description": "Gets the selections for all table cells",
       "parameters": []
     },
+    "getCommentSelections": {
+      "returnType": "Selection[]",
+      "description": "Gets the selections for all commented cells",
+      "parameters": []
+    },
     "commentCell": {
       "description": "Add a comment to be displayed in the cell of the widget.",
       "parameters": [

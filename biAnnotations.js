@@ -105,7 +105,31 @@
             }
 
             return larray;
+        }
 
+        getCommentSelections() {
+            let ldata = this._metadata.components[this.widgetId].data;
+            let larray = [];
+
+            for (var y = 0; y < ldata.length; y++) {
+                for (var x = 0; x < ldata[y].length; x++) {
+
+                    // get Table Widget CELL
+                    var lrow = {};
+                    lrow.rowNumber = row;
+                    lrow.columnNumber = column;
+                    let ltablecell = this._getTableCell(lrow);
+
+                    if (ltablecell != null) {
+                        if (ltablecell.firstChild.getAtttribute("class").indexOf("sapDataPointComment") > 0) {
+                            larray.push(ldata[y][x].cellMemberContext);
+                        }
+
+                    }
+                }
+            }
+
+            return larray;
         }
 
         getSelectedRow(selection) {
@@ -462,18 +486,17 @@
             td2.setAttribute("style", "font-size: 11px; line-height: 12px; color: rgb(0, 0, 0); fill: rgb(0, 0, 0); font-family: arial; background-color: transparent; vertical-align: middle;max-width:100%;");
             td2.setAttribute("title", irow.comment.replace(/(<([^>]+)>)/gi, ""));
 
+            tr.appendChild(td2);
+            tbody.appendChild(tr);
+
             if (irow.comment.indexOf("<a href") < 0) {
                 // linkify: currently only supported if no ready HTML markup is provided
-                td2.appendChild(JQuery.html("<span>" + _linkify(irow.comment) + "</span>"));
+                $(td2).html("<span>" + this._linkify(irow.comment) + "</span>");
             } else {
                 // support HTML
-                td2.appendChild(JQuery.html("<span>" + irow.comment + "</span>"));
+                $(td2).html(JQuery.html("<span>" + irow.comment + "</span>");
 
             }
-
-            tr.appendChild(td2);
-
-            tbody.appendChild(tr);
 
         }
 
