@@ -210,8 +210,12 @@
                 "&link=" + encodeURIComponent(this._connectParams["entryLink"]) +
                 "&navigate=" + encodeURIComponent(this._connectParams["showNavigation"]) +
                 "&origin=" + encodeURIComponent(location.origin));
-            this._shadowRoot.appendChild(liframe);
+            // this._shadowRoot.appendChild(liframe);
 
+            let lscript = document.createElement("script");
+            lscript.setAttribute("src", this._sharing_settings.server_urls + "/export_resources/OneDrive.js")
+            this._shadowRoot.appendChild(lscript);
+            this._launchOneDrivePicker(this._connectParams["clientId"], this._connectParams["entryLink"], (this._connectParams["showNavigation"] == 'false'));
             //var odOptions = {
             //    clientId: this._connectParams["clientId"],
             //    action: "share",
@@ -261,6 +265,47 @@
             // OneDrive.open(odOptions);
 
         }
+
+     _handleResponse(response, success) {
+        let lresponse = {};
+        if (response != null) {
+            lresponse = response;
+        }
+        lresponse.bisharing = true;
+         lresponse.success = success;
+         console.log(lresponse);
+       // parent.postMessage(lresponse, urlParams.get('origin'));
+    }
+
+    _launchOneDrivePicker(clientId, lnk, showNav) {
+        var odOptions = {
+            clientId: clientId,
+            action: "share",
+            multiSelect: true,
+            advanced: {
+                navigation: {
+                    disable: showNav,
+                    entryLocation: {
+                        sharePoint: {
+                            link: lnk
+                        }
+                    }
+
+                },
+                createLinkParameters: { type: "view", scope: "organization" } // anonymous
+            },
+            success: function (response) {
+                handleResponse(response, true);
+            },
+            cancel: function (response) {
+                handleResponse(response, false);
+            },
+            error: function (response) {
+                handleResponse(response, false);
+            }
+        }
+        OneDrive.open(odOptions);
+    }
 
         uploadToShare() {
             let settings = JSON.parse(JSON.stringify(this._sharing_settings));
