@@ -27,6 +27,7 @@
             this._values = [];
             this._highlights = [];
             this.tableType = 0;
+            this.hideCommentIcons = true;
         }
 
         onCustomWidgetBeforeUpdate(changedProperties) {
@@ -57,6 +58,13 @@
             if (lkey == "") {
                 this._setValue("widgetId", value);
             }
+        }
+
+        isCommentIconsHidden() {
+            return this.hideCommentIcons;
+        }
+        hideCommentIcons(value) {
+            this._setValue("hideCommentIcons", value);
         }
 
         getInlineStlye() {
@@ -284,13 +292,24 @@
 
         _updateTableCell(itablecell, irow, overwrite) {
             if (itablecell != null) {
-                let ltablecell = itablecell;
 
-                // tableType 0 renders a DIV instead of a SPAN with the number
-                //if (this.tableType == 1) {
+                // set for Excel so the index is not interpreted as a number!
+                itablecell.setAttribute("data-disable-number-formatting", "X");
+
+                let ltablecell;
+                if (itablecell.firstChild.class.indexOf("sapDataPointComment") >= 0) {
+                    // skip datapoint comment
+                    ltablecell = itablecell.childNodes[1];
+
+                    // delete icon on hideCommentIcons
+                    if (this.hideCommentIcons) {
+                        itablecell.firstChild.class = itablecell.firstChild.class.Replace("sapsapUiIcon", "");
+                    }
+
+                } else {
+                    // tableType 0 renders a DIV instead of a SPAN with the number
                     ltablecell = ltablecell.firstChild;
-                //}
-                ltablecell.setAttribute("data-disable-number-formatting", "X");
+                }
 
                 for (var i = 0; i < ltablecell.childNodes.length; i++) {
                     if (ltablecell.childNodes[i].nodeType == 3) {

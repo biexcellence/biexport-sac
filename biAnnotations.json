@@ -33,6 +33,11 @@
       "type": "string",
       "description": "The CSS style for the footnote legend ",
       "default": ""
+    },
+    "hideCommentIcons": {
+      "type": "boolean",
+      "description": "Whether to hide the standard comment icons for marked cells",
+      "default": ""
     }
   },
   "methods": {
@@ -48,6 +53,21 @@
           "name": "value",
           "type": "string",
           "description": "The new Widget ID"
+        }
+      ]
+    },
+    "isCommentIconsHidden": {
+      "returnType": "boolean",
+      "description": "Returns true if standard comment icons are hidden",
+      "parameters": []
+    },
+    "hideCommentIcons": {
+      "description": "Set to true to hide standard comment icons",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "boolean",
+          "description": "The new hide state"
         }
       ]
     },
