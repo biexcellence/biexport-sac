@@ -116,8 +116,8 @@
 
                     // get Table Widget CELL
                     var lrow = {};
-                    lrow.rowNumber = row;
-                    lrow.columnNumber = column;
+                    lrow.rowNumber = y;
+                    lrow.columnNumber = x;
                     let ltablecell = this._getTableCell(lrow);
 
                     if (ltablecell != null) {
