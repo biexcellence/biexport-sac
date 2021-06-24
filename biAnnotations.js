@@ -303,6 +303,24 @@
             return tablecell;
         }
 
+        _linkify(inputText) {
+        var replacedText, replacePattern1, replacePattern2, replacePattern3;
+
+        //URLs starting with http://, https://, or ftp://
+        replacePattern1 = /(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gim;
+        replacedText = inputText.replace(replacePattern1, '<a href="$1" target="_blank">$1</a>');
+
+        //URLs starting with "www." (without // before it, or it'd re-link the ones done above).
+        replacePattern2 = /(^|[^\/])(www\.[\S]+(\b|$))/gim;
+        replacedText = replacedText.replace(replacePattern2, '$1<a href="http://$2" target="_blank">$2</a>');
+
+        //Change email addresses to mailto:: links.
+        replacePattern3 = /(([a-zA-Z0-9\-\_\.])+@[a-zA-Z\_]+?(\.[a-zA-Z]{2,6})+)/gim;
+        replacedText = replacedText.replace(replacePattern3, '<a href="mailto:$1">$1</a>');
+
+        return replacedText;
+        }
+
         _updateTableCell(itablecell, irow, overwrite) {
             if (itablecell != null) {
 
@@ -310,13 +328,13 @@
                 itablecell.setAttribute("data-disable-number-formatting", "X");
 
                 let ltablecell;
-                if (itablecell.firstChild.class.indexOf("sapDataPointComment") >= 0) {
+                if (itablecell.firstChild.getAttribute("class").indexOf("sapDataPointComment") >= 0) {
                     // skip datapoint comment
                     ltablecell = itablecell.childNodes[1];
 
                     // delete icon on hideCommentIcons
                     if (this.hideCommentIcons) {
-                        itablecell.firstChild.class = itablecell.firstChild.class.Replace("sapsapUiIcon", "");
+                        itablecell.firstChild.setAttribute("class", itablecell.firstChild.getAttribute("class").Replace("sapsapUiIcon", ""));
                     }
 
                 } else {
@@ -343,9 +361,11 @@
                         // comments
                         if (irow.index != null) {
                             var larray = [];
+                            var ltexts = [];
                             for (var j = 0; j < this._comments.length; j++) {
                                 if (this._comments[j].rowNumber == irow.rowNumber && this._comments[j].columnNumber == irow.columnNumber && this._comments[j].comment != "") {
                                     larray.push(this._comments[j].index);
+                                    ltexts.push(this._comments[j].comment);
                                 }
                             }
 
@@ -361,7 +381,7 @@
                                     ltablecell.appendChild(lsup);
                                 }
                                 lsup.textContent = larray.join(", ");
-                                ltablecell.setAttribute("title", ltablecell.setAttribute("title") + " " + lsup.textContent);
+                                ltablecell.setAttribute("title", ltablecell.getAttribute("title") + " " + ltexts.join(", ").replace(/(<([^>]+)>)/gi, "");
 
                             }
 
@@ -440,53 +460,15 @@
             let td2 = document.createElement("td");
             td2.setAttribute("class", "default defaultTableCell generalCell hideBorder generalCell dimMember rowDimMemberCell generalCell sapDimMemberCellHeading")
             td2.setAttribute("style", "font-size: 11px; line-height: 12px; color: rgb(0, 0, 0); fill: rgb(0, 0, 0); font-family: arial; background-color: transparent; vertical-align: middle;max-width:100%;");
-            td2.setAttribute("title", irow.comment);
+            td2.setAttribute("title", irow.comment.replace(/(<([^>]+)>)/gi, ""));
 
-            // split comment links to create HTML links
-            let linkProtocol = "";
-            if (irow.comment.indexOf("https://") >= 0) {
-                linkProtocol = "https://";
-            } else if (irow.comment.indexOf("http://") >= 0) {
-                linkProtocol = "http://";
-            } 
-
-            if (linkProtocol != "") {
-                let commentParts = irow.comment.split(linkProtocol);
-                for (let i = 0; i < commentParts.length; i++) {
-                    if (i % 2 == 0) {
-                        // normal text
-                        let span = document.createElement("span");
-                        span.textContent = commentParts[i];
-                        td2.appendChild(span);
-                    } else {
-                        // link text
-                        let part1 = "";
-                        let part2 = "";
-                        if (commentParts[i].indexOf(' ') > 0) {
-                            part1 = commentParts[i].substr(0, commentParts[i].indexOf(' '));
-                            part2 = " " + commentParts[i].substr(commentParts[i].indexOf(' ') + 1);
-                        } else if (commentParts[i].indexOf('\n') > 0) {
-                            part1 = commentParts[i].substr(0, commentParts[i].indexOf('\n'));
-                            part2 = "\n" + commentParts[i].substr(commentParts[i].indexOf('\n') + 1);
-                        } else {
-                            part1 = commentParts[i];
-                        }
-
-                        let href = document.createElement("a");
-                        href.textContent = linkProtocol + part1;
-                        href.href = linkProtocol + part1;
-                        td2.appendChild(href);
-
-                        if (part2 != "") {
-                            let span = document.createElement("span");
-                            span.textContent = part2;
-                            td2.appendChild(span);
-                        }
-                    }
-                }
-                
+            if (irow.comment.indexOf("<a href") < 0) {
+                // linkify: currently only supported if no ready HTML markup is provided
+                td2.appendChild(JQuery.html("<span>" + _linkify(irow.comment) + "</span>"));
             } else {
-                td2.textContent = irow.comment;
+                // support HTML
+                td2.appendChild(JQuery.html("<span>" + irow.comment + "</span>"));
+
             }
 
             tr.appendChild(td2);

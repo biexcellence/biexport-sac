@@ -33,11 +33,6 @@
       "type": "string",
       "description": "The CSS style for the footnote legend ",
       "default": ""
-    },
-    "hideCommentIcons": {
-      "type": "boolean",
-      "description": "Whether to hide the standard comment icons for marked cells",
-      "default": ""
     }
   },
   "methods": {
