@@ -27,6 +27,7 @@
             this.settings.id = this._id + "_export_settings_json";
 
             this._serviceMessage = "";
+            this._response = {};
             this._channel = "";
             this._connectParams = {};
 
@@ -147,12 +148,22 @@
             return this._serviceMessage;
         }
 
+        getFileName() {
+            return this._response.name;
+        }
+
+        getFileUrl() {
+            return this._response.webUrl;
+        }
+
         selectToShare() {
             // references: 
             // https://docs.microsoft.com/en-us/onedrive/developer/controls/file-pickers/js-v72/save-file?view=odsp-graph-online
             // https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_createlink?view=odsp-graph-online
 
             this._serviceMessage = "";
+            this._response = {};
+
             this.dispatchEvent(new CustomEvent("onSend", {
                 detail: {
                     settings: this._sharing_settings
@@ -163,6 +174,7 @@
                 if (event.data.bisharing != null) {
                     if (event.data.success) {
                         this._serviceMessage = event.data.value[0].webUrl;
+                        this._response = event.data.value[0];
                         this.dispatchEvent(new CustomEvent("onSuccess", {
                             detail: {
                                 settings: this._sharing_settings

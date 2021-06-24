@@ -111,6 +111,16 @@
       "description": "Gets the Service Message",
       "parameters": []
     },
+    "getFileName": {
+      "returnType": "string",
+      "description": "Gets the name of the selected file",
+      "parameters": []
+    },
+    "getFileUrl": {
+      "returnType": "string",
+      "description": "Gets the URL of the selected file",
+      "parameters": []
+    },
     "selectToShare": {
       "description": "Select a file from a channel to receive a sharing link.",
       "parameters": []
