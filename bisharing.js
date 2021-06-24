@@ -199,7 +199,7 @@
             liframe.setAttribute('id', this._id + "_sharing_iframe");
             liframe.setAttribute('name', "sharing_iframe");
             liframe.setAttribute('style', "display:none;");
-            liframe.setAttribute('sandbox', "allow-same-origin allow-scripts allow-forms allow-popups-to-escape-sandbox");
+            liframe.setAttribute('sandbox', "allow-same-origin allow-scripts allow-forms allow-popups");
 
             liframe.setAttribute('src', this._sharing_settings.server_urls + "/export_resources/bisharing.html" + 
                 "?clientId=" + encodeURIComponent(this._connectParams["clientId"]) +
