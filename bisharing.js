@@ -1233,7 +1233,7 @@ var __extends = this && this.__extends || function (e, t) {
                     e.state = s;
                     return new i.Promise(function (i, n) {
                         var o = u.onMessage(function (e) {
-                            if (e.data && 0 === e.data.indexOf(w)) {
+                            if (typeof e.data == "string" && 0 === e.data.indexOf(w)) {
                                 var t = JSON.parse(e.data.substring(w.length));
                                 if (t.state === s && e.source === a.getPopupWindow()) {
                                     u.removeMessageListener(o);
