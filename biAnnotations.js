@@ -334,12 +334,12 @@
 
                     // delete icon on hideCommentIcons
                     if (this.hideCommentIcons) {
-                        itablecell.firstChild.setAttribute("class", itablecell.firstChild.getAttribute("class").Replace("sapsapUiIcon", ""));
+                        itablecell.firstChild.setAttribute("class", itablecell.firstChild.getAttribute("class").replace("sapUiIcon", ""));
                     }
 
                 } else {
                     // tableType 0 renders a DIV instead of a SPAN with the number
-                    ltablecell = ltablecell.firstChild;
+                    ltablecell = itablecell.firstChild;
                 }
 
                 for (var i = 0; i < ltablecell.childNodes.length; i++) {
