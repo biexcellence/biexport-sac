@@ -100,7 +100,20 @@
 
             for (var y = 0; y < ldata.length; y++) {
                 for (var x = 0; x < ldata[y].length; x++) {
-                    larray.push(ldata[y][x].cellMemberContext);
+                    let lcell = ldata[y][x].cellMemberContext;
+                    let selection = {};
+
+                    if (lcell != null) {
+                        for (var key in lcell) {
+                            if (key.indexOf("Account_") >= 0) {
+                                selection["@MeasureDimension"] = lcell[key].id;
+                            } else {
+                                selection[key] = lcell[key].id;
+                            }
+                        }
+
+                        larray.push(selection);
+                    }
                 }
             }
 
@@ -123,7 +136,20 @@
                     if (ltablecell != null) {
                         if (ltablecell.firstElementChild != null) {
                             if (ltablecell.firstElementChild.getAttribute("class").indexOf("sapDataPointComment") > 0) {
-                                larray.push(ldata[y][x].cellMemberContext);
+                                let lcell = ldata[y][x].cellMemberContext;
+                                let selection = {};
+
+                                if (lcell != null) {
+                                    for (var key in lcell) {
+                                        if (key.indexOf("Account_") >= 0) {
+                                            selection["@MeasureDimension"] = lcell[key].id;
+                                        } else {
+                                            selection[key] = lcell[key].id;
+                                        }
+                                    }
+
+                                    larray.push(selection);
+                                }
                             }
                         }
                     }
