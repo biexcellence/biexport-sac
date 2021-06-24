@@ -121,7 +121,7 @@
                     let ltablecell = this._getTableCell(lrow);
 
                     if (ltablecell != null) {
-                        if (ltablecell.children[0].getAtttribute("class").indexOf("sapDataPointComment") > 0) {
+                        if (ltablecell.firstElementChild.getAtttribute("class").indexOf("sapDataPointComment") > 0) {
                             larray.push(ldata[y][x].cellMemberContext);
                         }
 
