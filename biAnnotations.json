@@ -1,6 +1,6 @@
 {
   "id": "com.biexcellence.openbi.sap.sac.biannotations",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "name": "biAnnotations",
   "description": "Inline annotations, highlighting, overwriting for table cells and dashboard elements",
   "newInstancePrefix": "biAnnotations",
