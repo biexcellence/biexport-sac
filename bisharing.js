@@ -214,7 +214,7 @@
 
             //let lscript = document.createElement("script");
             //lscript.setAttribute("src", this._sharing_settings.server_urls + "/export_resources/OneDrive.js")
-            this._shadowRoot.appendChild(lscript);
+            //this._shadowRoot.appendChild(lscript);
             this._launchOneDrivePicker(this._connectParams["clientId"], this._connectParams["entryLink"], (this._connectParams["showNavigation"] == 'false'));
             //var odOptions = {
             //    clientId: this._connectParams["clientId"],
