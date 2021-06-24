@@ -494,7 +494,7 @@
                 $(td2).html("<span>" + this._linkify(irow.comment) + "</span>");
             } else {
                 // support HTML
-                $(td2).html(JQuery.html("<span>" + irow.comment + "</span>");
+                $(td2).html("<span>" + irow.comment + "</span>");
 
             }
 
