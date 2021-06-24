@@ -121,10 +121,11 @@
                     let ltablecell = this._getTableCell(lrow);
 
                     if (ltablecell != null) {
-                        if (ltablecell.firstElementChild.getAttribute("class").indexOf("sapDataPointComment") > 0) {
-                            larray.push(ldata[y][x].cellMemberContext);
+                        if (ltablecell.firstElementChild != null) {
+                            if (ltablecell.firstElementChild.getAttribute("class").indexOf("sapDataPointComment") > 0) {
+                                larray.push(ldata[y][x].cellMemberContext);
+                            }
                         }
-
                     }
                 }
             }
