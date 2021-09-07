@@ -509,7 +509,7 @@
     }
 
     function getAppId(context) {
-        let app = (context || sap.fpa.ui.infra.common.getContext()).getInternalAppArguments();
+        let app = (context || sap.fpa.ui.infra.common.getContext()).getInternalAppArguments(); // sap.fpa.ui.story.Utils.getInternalAppArguments()
         return app && (app.appId /* application */ || app.resource_id /* story */);
     }
 
