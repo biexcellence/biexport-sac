@@ -84,6 +84,15 @@
               </table>
             </fieldset>
             <fieldset>
+              <legend>Images</legend>
+              <table>
+                <tr>
+                  <td><label for="png_SelectedWidgets">Widgets</label></td>
+                  <td><slot name="png_SelectedWidgets"></slot></td>
+                </tr>
+              </table>
+            </fieldset>
+            <fieldset>
               <legend>Excel</legend>
               <table>
                 <tr>
@@ -232,6 +241,10 @@
                   <td><label for="enableCsv">Enable CSV</label></td>
                   <td><input id="enableCsv" name="enableCsv" type="checkbox"></td>
                 </tr>
+                <tr>
+                  <td><label for="enablePng">Enable Images</label></td>
+                  <td><input id="enablePng" name="enablePng" type="checkbox"></td>
+                </tr>
               </table>
             </fieldset>
             <button type="submit" hidden>Submit</button>
@@ -246,6 +259,7 @@
             let pptVisibleComponents = this["pptSelectedWidgets"] ? JSON.parse(this["pptSelectedWidgets"]) : [];
             let xlsVisibleComponents = this["xlsSelectedWidgets"] ? JSON.parse(this["xlsSelectedWidgets"]) : [];
             let docVisibleComponents = this["docSelectedWidgets"] ? JSON.parse(this["docSelectedWidgets"]) : [];
+            let pngVisibleComponents = this["pngSelectedWidgets"] ? JSON.parse(this["pngSelectedWidgets"]) : [];
             let allComponents = biExportGetMetadata({}).components;
             let components = [];
             for (let componentId in allComponents) {
@@ -256,6 +270,7 @@
                 component.xlsSelectedWidgets = false;
                 component.docSelectedWidgets = false;
                 component.pptSelectedWidgets = false;
+                component.pngSelectedWidgets = false;
                 if (tableComponents.length > 0 && !tableComponents.some(v => v.component == component.name && v.isExcluded)) {
                     component.tablesSelectedWidgets = true;
                 }
@@ -270,6 +285,9 @@
                 }
                 if (xlsVisibleComponents.length > 0 && !xlsVisibleComponents.some(v => v.component == component.name && v.isExcluded)) {
                     component.xlsSelectedWidgets = true;
+                }
+                if (pngVisibleComponents.length > 0 && !pngVisibleComponents.some(v => v.component == component.name && v.isExcluded)) {
+                    component.pngSelectedWidgets = true;
                 }
                 components.push(component);
             }
@@ -309,7 +327,7 @@
 
             // visible components - UI elements
             this.filters = [];
-            ["tables_SelectedWidgets", "pdf_SelectedWidgets", "ppt_SelectedWidgets", "doc_SelectedWidgets", "xls_SelectedWidgets"].forEach(slotId => {
+            ["tables_SelectedWidgets", "pdf_SelectedWidgets", "png_SelectedWidgets", "ppt_SelectedWidgets", "doc_SelectedWidgets", "xls_SelectedWidgets"].forEach(slotId => {
                 let id = slotId.replace("_", "");
 
                 let filter = new sap.m.FacetFilter({
@@ -348,6 +366,13 @@
                             key: "{name}",
                             text: "{name}",
                             selected: "{docSelectedWidgets}"
+                        });
+                        break;
+                    case "pngSelectedWidgets":
+                        filterTemplate = new sap.m.FacetFilterItem({
+                            key: "{name}",
+                            text: "{name}",
+                            selected: "{pngSelectedWidgets}"
                         });
                         break;
                     case "xlsSelectedWidgets":
@@ -814,6 +839,13 @@
             this._setBooleanValue("enableCsv", value);
         }
 
+        get enablePng() {
+            return this._getBooleanValue("enablePng");
+        }
+        set enablePng(value) {
+            this._setBooleanValue("enablePng", value);
+        }
+
         get pdfOrient() {
             return this.pdf_orient;
         }
@@ -870,6 +902,12 @@
             this.xls_SelectedWidgets = value;
         }
 
+        get pngSelectedWidgets() {
+            return this.png_SelectedWidgets;
+        }
+        set pngSelectedWidgets(value) {
+            this.png_SelectedWidgets = value;
+        }
         get oauth() {
             if (this._getValue("oauthClientId")) {
                 return JSON.stringify({
@@ -943,6 +981,8 @@
                 "xlsTemplate",
                 "xlsSelectedWidgets",
 
+                "pngSelectedWidgets",
+
                 "publishMode",
                 "publishSync",
                 "mailFrom",
@@ -959,6 +999,7 @@
                 "enablePdf",
                 "enableXls",
                 "enableCsv",
+                "enablePng",
 
                 "oauth"
             ];

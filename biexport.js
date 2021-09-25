@@ -34,11 +34,13 @@
             this._cPDF_text = "PDF";
             this._cXLS_text = "Excel";
             this._cCSV_text = "CSV";
+            this._cPNG_text = "Image";
             this._cPPT_icon = "sap-icon://ppt-attachment";
             this._cDOC_icon = "sap-icon://doc-attachment";
             this._cPDF_icon = "sap-icon://pdf-attachment";
             this._cXLS_icon = "sap-icon://excel-attachment";
             this._cCSV_icon = "sap-icon://attachment-text-file";
+            this._cPNG_icon = "sap-icon://picture";
             this._cExport_text = "Export";
             this._cExport_icon = "sap-icon://download";
 
@@ -51,6 +53,7 @@
             this._enableXLS = true;
             this._enablePDF = true;
             this._enableDOC = true;
+            this._enablePNG = false;
 
             this._export_settings = {};
             this._export_settings.dashboard = "";
@@ -104,6 +107,7 @@
             this._export_settings.xls_template = "";
             this._export_settings.xls_template_def = {};
 
+            this._export_settings.png_exclude = "";
             this._export_settings.tables_exclude = "";
 
             this._export_settings.filename = "";
@@ -168,6 +172,10 @@
             this._csvMenuItem.setVisible(this.enableCsv);
             this._csvMenuItem.setText(this.showTexts ? this._cCSV_text : null);
             this._csvMenuItem.setIcon(this.showIcons ? this._cCSV_icon : null);
+
+            this._pngMenuItem.setVisible(this.enablePng);
+            this._pngMenuItem.setText(this.showTexts ? this._cPNG_text : null);
+            this._pngMenuItem.setIcon(this.showIcons ? this._cPNG_icon : null);
 
             this._pdfMenuItem.setVisible(this.enablePdf);
             this._pdfMenuItem.setText(this.showTexts ? this._cPDF_text : null);
@@ -426,7 +434,10 @@
             this._csvMenuItem = new sap.m.MenuItem({ key: "CSV" });
             menu.addItem(this._csvMenuItem);
 
-            this._pdfMenuItem = new sap.m.MenuItem({ key: "PDF" });
+            this._pngMenuItem = new sap.m.MenuItem({ key: "PNG" });
+            menu.addItem(this._pngMenuItem);
+
+             this._pdfMenuItem = new sap.m.MenuItem({ key: "PDF" });
             menu.addItem(this._pdfMenuItem);
 
             let buttonSlot = document.createElement("div");
@@ -493,6 +504,20 @@
         }
         set showComponentSelector(value) {
             this._showComponentSelector = value;
+        }
+
+        getPngButtonVisible() {
+            return this.enablePng;
+        }
+        setPngButtonVisible(value) {
+            this._setValue("enablePng", value);
+        }
+
+        get enablePng() {
+            return this._enablePNG;
+        }
+        set enablePng(value) {
+            this._enablePNG = value;
         }
 
         getPdfButtonVisible() {
@@ -784,6 +809,14 @@
         }
         set pdfOrient(value) {
             this._export_settings.pdf_orient = value;
+            this._updateSettings();
+        }
+
+        get pngSelectedWidgets() {
+            return this._export_settings.png_exclude;
+        }
+        set pngSelectedWidgets(value) {
+            this._export_settings.png_exclude = value;
             this._updateSettings();
         }
 

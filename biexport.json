@@ -8,7 +8,7 @@
   "vendor": "bi excellence software GmbH",
   "eula": "",
   "license": "",
-  "imports": ["input-controls"],
+  "imports": [ "input-controls" ],
   "webcomponents": [
     {
       "kind": "main",
@@ -167,6 +167,11 @@
       "description": "Show CSV Export option",
       "default": false
     },
+    "enablePng": {
+      "type": "boolean",
+      "description": "Show Images Export option",
+      "default": true
+    },
 
     "pdfHeader": {
       "type": "string",
@@ -207,6 +212,11 @@
     "xlsSelectedWidgets": {
       "type": "string",
       "description": "Selected Widgets for Excel export",
+      "default": ""
+    },
+    "pngSelectedWidgets": {
+      "type": "string",
+      "description": "Selected Widgets for Images export",
       "default": ""
     },
 
@@ -647,6 +657,21 @@
         }
       ]
     },
+    "getPngButtonVisible": {
+      "returnType": "boolean",
+      "description": "Get the visibility of the Images export button",
+      "parameters": []
+    },
+    "setPngButtonVisible": {
+      "description": "Set the visibility of the Images export button",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "boolean",
+          "description": "The new visibility"
+        }
+      ]
+    },
     "getCsvButtonVisible": {
       "returnType": "boolean",
       "description": "Get the visibility of the CSV export button",
@@ -668,7 +693,7 @@
         {
           "name": "format",
           "type": "string",
-          "description": "The export format: \"PDF\", \"PPT\", \"DOC\", \"XLS\""
+          "description": "The export format: \"PDF\", \"PPT\", \"DOC\", \"XLS\", \"PNG\""
         },
         {
           "name": "widget",
@@ -688,7 +713,7 @@
         {
           "name": "format",
           "type": "string",
-          "description": "The export format: \"PDF\", \"PPT\", \"DOC\", \"XLS\""
+          "description": "The export format: \"PDF\", \"PPT\", \"DOC\", \"XLS\", \"PNG\""
         }
       ]
     },
