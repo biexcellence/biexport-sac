@@ -1452,6 +1452,50 @@
                                 }
                             }
                         }
+                    } else if (widgetControl.oViz) { // chart
+                        let infoChart = widgetControl.oViz.infoChart();
+                        let vizOptions = infoChart.vizOptions();
+                        let data = vizOptions.data.data();
+                        //let points = infoChart.getAllPointsData();
+
+                        component.chartDefinition = {
+                            bindings: vizOptions.bindings,
+                            properties: vizOptions.properties,
+                            scales: vizOptions.scales,
+                            size: vizOptions.size,
+                            title: vizOptions.title,
+                            type: vizOptions.type,
+                            metadata: data.metadata,
+                            data: data.data
+                        };
+/*
+                        component.data = points.map(point => {
+                            let info = point.info;
+                            return {
+                                dimensions: info.dimensions.map(dimension => {
+                                    return {
+                                        id: dimension.dimension,
+                                        name: dimension.dimensionDisplayName,
+                                        members: dimension.members.map(member => {
+                                            return {
+                                                id: member,
+                                                name: dimension.memberDisplayNames[member]
+                                            }
+                                        })
+                                    };
+                                }),
+                                measures: info.measures.map(measure => {
+                                    return {
+                                        id: measure.measure,
+                                        name: measure.measureDisplayName,
+                                        value: measure.magnitude,
+                                        formatInfo: measure.formatInfo,
+                                        exceptionSettings: measure.exceptionSettings
+                                    };
+                                })
+                            }
+                        });
+*/
                     }
                 }
 
