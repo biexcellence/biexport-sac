@@ -385,8 +385,8 @@
 
                 // split components by filter 
                 ["Tables", "Charts", "Layouts", "Texts", "Filters", "Others"].forEach(typeGroup => {
-
-                    if ((id == "tablesSelectedWidgets") && (typeGroup != "Tables")) {
+                    // for tables Selector, only support Tables (to add hidden cells) and Charts (to support native charts
+                    if ((id == "tablesSelectedWidgets") && (typeGroup != "Tables") && (typeGroup != "Charts") {
                         return;
                     }
 
