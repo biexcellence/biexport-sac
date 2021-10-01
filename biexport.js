@@ -1464,10 +1464,10 @@
                             scales: vizOptions.scales,
                             size: vizOptions.size,
                             title: vizOptions.title,
-                            type: vizOptions.type,
-                            metadata: data.metadata,
-                            data: data.data
+                            type: vizOptions.type
                         };
+
+                        component.data = data;
 /*
                         component.data = points.map(point => {
                             let info = point.info;
