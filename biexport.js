@@ -1467,7 +1467,8 @@
                             type: vizOptions.type
                         };
 
-                        component.data = data;
+                        component.data = data.data;
+                        component.metadata = data.metadata;
 /*
                         component.data = points.map(point => {
                             let info = point.info;
