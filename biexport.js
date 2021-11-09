@@ -1158,8 +1158,6 @@
                 }
             }
 
-            settings.metadata = JSON.stringify(getMetadata({ tablesSelectedWidget: settings.tables_exclude ? JSON.parse(settings.tables_exclude) : [] }));
-
             if (settings.publish_mode === "" || settings.publish_mode === "ONLINE" || settings.publish_mode === "VIEWER" || settings.publish_mode === "PRINT") {
                 settings.publish_sync = true;
             }
@@ -1169,6 +1167,8 @@
                     settings: settings
                 }
             }));
+
+            settings.metadata = JSON.stringify(getMetadata({ tablesSelectedWidget: settings.tables_exclude ? JSON.parse(settings.tables_exclude) : [] }));
 
             let sendHtml = true;
             if (settings.application_array && settings.oauth) {
