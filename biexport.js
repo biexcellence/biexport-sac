@@ -1379,7 +1379,7 @@
                 if (settings) {
                     // if widget is excluded, do not include information
                     if (settings.formatSelectedWidget !== undefined) {
-                        if (settings.formatSelectedWidget.length > 0 && !settings.formatSelectedWidget.some(v => v.id == widget.id && v.isExcluded)) {
+                        if (settings.formatSelectedWidget.length > 0 && settings.formatSelectedWidget.some(v => v.id == widget.id && v.isExcluded)) {
                             return;
                         }
                     }
