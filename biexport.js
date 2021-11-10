@@ -1168,7 +1168,7 @@
                 }
             }));
 
-            settings.metadata = JSON.stringify(getMetadata({ tablesSelectedWidget: settings.tables_exclude ? JSON.parse(settings.tables_exclude) : [], formatSelectedWidget: settings[settings.format.toLowerCase() + "_exclude"] ? JSON.parse(settings[settings.format.toLowerCase() + "_exclude"]) : [] }));
+            settings.metadata = JSON.stringify(getMetadata({ tablesSelectedWidget: settings.tables_exclude ? JSON.parse(settings.tables_exclude) : [], formatSelectedWidget: settings[format.toLowerCase() + "_exclude"] ? JSON.parse(settings[format.toLowerCase() + "_exclude"]) : [] }));
 
             let sendHtml = true;
             if (settings.application_array && settings.oauth) {
@@ -1513,7 +1513,7 @@
             };
 
             storyModel.getWidgetsByDatasetId(datasetId).forEach((widget) => {
-                components[widget.id].datasource = datasetId;
+                if (components[widget.id] != undefined) { components[widget.id].datasource = datasetId; }
             });
         });
 
