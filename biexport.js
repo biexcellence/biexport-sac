@@ -437,7 +437,7 @@
             this._pngMenuItem = new sap.m.MenuItem({ key: "PNG" });
             menu.addItem(this._pngMenuItem);
 
-             this._pdfMenuItem = new sap.m.MenuItem({ key: "PDF" });
+            this._pdfMenuItem = new sap.m.MenuItem({ key: "PDF" });
             menu.addItem(this._pdfMenuItem);
 
             let buttonSlot = document.createElement("div");
@@ -1168,7 +1168,10 @@
                 }
             }));
 
-            settings.metadata = JSON.stringify(getMetadata({ tablesSelectedWidget: settings.tables_exclude ? JSON.parse(settings.tables_exclude) : [], formatSelectedWidget: settings[format.toLowerCase() + "_exclude"] ? JSON.parse(settings[format.toLowerCase() + "_exclude"]) : [] }));
+            settings.metadata = JSON.stringify(getMetadata({
+                tablesSelectedWidget: settings.tables_exclude ? JSON.parse(settings.tables_exclude) : [],
+                formatSelectedWidget: settings[format.toLowerCase() + "_exclude"] ? JSON.parse(settings[format.toLowerCase() + "_exclude"]) : []
+            }));
 
             let sendHtml = true;
             if (settings.application_array && settings.oauth) {
@@ -1373,45 +1376,47 @@
 
         let components = {};
         storyModel.getAllWidgets().forEach((widget) => {
-            if (widget) { // might be undefined during edit
+            if (!widget) { // might be undefined during edit
+                return;
+            }
 
-                let includeData = !settings; // no settings => include everything
-                if (settings) {
-                    // if widget is excluded, do not include information
-                    if (settings.formatSelectedWidget !== undefined) {
-                        if (settings.formatSelectedWidget.length > 0 && settings.formatSelectedWidget.some(v => v.id == widget.id && v.isExcluded)) {
-                            return;
-                        }
-                    }
-                    // if widget is not chosen, do not include additional lines
-                    if (settings.tablesSelectedWidget !== undefined && settings.tablesSelectedWidget.some(v => v.id == widget.id && !v.isExcluded)) {
-                        includeData = true;
+            let includeData = !settings; // no settings => include everything
+            if (settings) {
+                // if widget is excluded, do not include information
+                if (settings.formatSelectedWidget !== undefined) {
+                    if (settings.formatSelectedWidget.length > 0 && settings.formatSelectedWidget.some(v => v.id == widget.id && v.isExcluded)) {
+                        return;
                     }
                 }
-
-                let component = {
-                    type: widget.class
+                // if widget is not chosen, do not include additional lines
+                if (settings.tablesSelectedWidget !== undefined && settings.tablesSelectedWidget.some(v => v.id == widget.id && !v.isExcluded)) {
+                    includeData = true;
                 }
+            }
 
-                let widgetControl = widgetControls.filter((control) => control.getWidgetId() == widget.id)[0];
-                if (widgetControl && includeData) { // control specific stuff
-                    if (typeof widgetControl.getTableController == "function") { // table
-                        let tableController = widgetControl.getTableController();
-                        let view = tableController.getView();
-                        let tableCellFactory = view.getTableCellFactory();
-                        let regions = tableController.getDataRegions();
-                        let region = regions[0];
-                        if (region) {
-                            let grid = region.getGrid();
-                            let rows = grid.getRows();
-                            let cols = grid.getColumns();
-                            let cells = region.getCells();
+            let component = {
+                type: widget.class
+            };
 
-                            component.data = cells.map((row) => row.map((cell) => {
-                                let coordinate = cell.getCoordinate();
-                                let x = coordinate.getX();
-                                let y = coordinate.getY();
-                                return {
+            let widgetControl = widgetControls.filter((control) => control.getWidgetId() == widget.id)[0];
+            if (widgetControl && includeData) { // control specific stuff
+                if (typeof widgetControl.getTableController == "function") { // table
+                    let tableController = widgetControl.getTableController();
+                    let view = tableController.getView();
+                    let tableCellFactory = view.getTableCellFactory();
+                    let regions = tableController.getDataRegions();
+                    let region = regions[0];
+                    if (region) {
+                        let grid = region.getGrid();
+                        let rows = grid.getRows();
+                        let cols = grid.getColumns();
+                        let cells = region.getCells();
+
+                        component.data = cells.map((row) => row.map((cell) => {
+                            let coordinate = cell.getCoordinate();
+                            let x = coordinate.getX();
+                            let y = coordinate.getY();
+                            return {
 //                                    type: cell.getType(),
 //                                    rawVal: cell.getRawVal(),
 //                                    formattedValue: cell.getFormattedValue(),
@@ -1421,87 +1426,57 @@
 //                                    level: cell.getLevel(),
 //                                    hasNOPNullValue: cell.getHasNOPNullValue(),
 //                                    style: tableController.getEffectiveCellStyle(cell),
-                                    html: tableCellFactory && tableCellFactory._oGlobalTableViewMode && tableCellFactory.generateDivStringFromCellContent({
-                                        tableRow: y,
-                                        tableCol: x,
-                                        globalRow: y,
-                                        globalCol: x,
-                                        colspan: 1,
-                                        rowspan: 1,
-                                        // referencedRow: null,
-                                        // referencedCol: null,
-                                        hidden: false,
-                                        height: rows[y] && rows[y].data.size,
-                                        width: cols[x] && cols[x].data.size
-                                    })
-                                };
-                            }));
+                                html: tableCellFactory && tableCellFactory._oGlobalTableViewMode && tableCellFactory.generateDivStringFromCellContent({
+                                    tableRow: y,
+                                    tableCol: x,
+                                    globalRow: y,
+                                    globalCol: x,
+                                    colspan: 1,
+                                    rowspan: 1,
+                                    // referencedRow: null,
+                                    // referencedCol: null,
+                                    hidden: false,
+                                    height: rows[y] && rows[y].data.size,
+                                    width: cols[x] && cols[x].data.size
+                                })
+                            };
+                        }));
 
-                            if (region.getShowTitle()) {
-                                component.data.shift(); // remove title (removing regionHeaderDummyCell cells)
-                            }
+                        if (region.getShowTitle()) {
+                            component.data.shift(); // remove title (removing regionHeaderDummyCell cells)
+                        }
 
-                            // make sure react tables are rendered
-                            if (view.getReactTableWrapper) {
-                                let reactTableWrapper = view.getReactTableWrapper();
-                                if (reactTableWrapper && reactTableWrapper.getTableData) {
-                                    let tableData = reactTableWrapper.getTableData();
-                                    tableData.widgetHeight = 10000;
-                                    tableData.widgetWidth = 10000;
-                                    reactTableWrapper.updateTableData(tableData);
-                                }
+                        // make sure react tables are rendered
+                        if (view.getReactTableWrapper) {
+                            let reactTableWrapper = view.getReactTableWrapper();
+                            if (reactTableWrapper && reactTableWrapper.getTableData) {
+                                let tableData = reactTableWrapper.getTableData();
+                                tableData.widgetHeight = 10000;
+                                tableData.widgetWidth = 10000;
+                                reactTableWrapper.updateTableData(tableData);
                             }
                         }
-                    } else if (widgetControl.oViz) { // chart
-                        let infoChart = widgetControl.oViz.infoChart();
-                        let vizOptions = infoChart.vizOptions();
-                        let data = vizOptions.data.data();
-                        //let points = infoChart.getAllPointsData();
-
-                        component.chartDefinition = {
-                            bindings: vizOptions.bindings,
-                            properties: vizOptions.properties,
-                            scales: vizOptions.scales,
-                            size: vizOptions.size,
-                            title: vizOptions.title,
-                            type: vizOptions.type
-                        };
-
-                        component.data = data.data;
-                        component.metadata = data.metadata;
-/*
-                        component.data = points.map(point => {
-                            let info = point.info;
-                            return {
-                                dimensions: info.dimensions.map(dimension => {
-                                    return {
-                                        id: dimension.dimension,
-                                        name: dimension.dimensionDisplayName,
-                                        members: dimension.members.map(member => {
-                                            return {
-                                                id: member,
-                                                name: dimension.memberDisplayNames[member]
-                                            }
-                                        })
-                                    };
-                                }),
-                                measures: info.measures.map(measure => {
-                                    return {
-                                        id: measure.measure,
-                                        name: measure.measureDisplayName,
-                                        value: measure.magnitude,
-                                        formatInfo: measure.formatInfo,
-                                        exceptionSettings: measure.exceptionSettings
-                                    };
-                                })
-                            }
-                        });
-*/
                     }
-                }
+                } else if (widgetControl.oViz) { // chart
+                    let infoChart = widgetControl.oViz.infoChart();
+                    let vizOptions = infoChart.vizOptions();
+                    let data = vizOptions.data.data();
 
-                components[widget.id] = component;
+                    component.chartDefinition = {
+                        bindings: vizOptions.bindings,
+                        properties: vizOptions.properties,
+                        scales: vizOptions.scales,
+                        size: vizOptions.size,
+                        title: vizOptions.title,
+                        type: vizOptions.type
+                    };
+
+                    component.data = data.data;
+                    component.metadata = data.metadata;
+                }
             }
+
+            components[widget.id] = component;
         });
         let datasources = {};
         entityService.getDatasets().forEach((datasetId) => {
@@ -1513,7 +1488,10 @@
             };
 
             storyModel.getWidgetsByDatasetId(datasetId).forEach((widget) => {
-                if (components[widget.id] != undefined) { components[widget.id].datasource = datasetId; }
+                let component = components[widget.id];
+                if (component) {
+                    component.datasource = datasetId;
+                }
             });
         });
 
