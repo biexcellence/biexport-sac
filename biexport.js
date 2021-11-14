@@ -1187,7 +1187,7 @@
 
                     this._createExportForm(settings, html);
                 }, reason => {
-                    console.error("Error in getHtml:", reason);
+                    console.error("[biExport] Error in getHtml:", reason);
                 });
             } else {
                 this._createExportForm(settings, null);
@@ -1236,7 +1236,7 @@
                         }
                     }));
 
-                    console.error("Export failed:", error);
+                    console.error("[biExport] Export failed:", error);
                 } else if (filename) {
                     if (filename.indexOf("E:") === 0) {
                         callback(new Error(filename)); // error...
