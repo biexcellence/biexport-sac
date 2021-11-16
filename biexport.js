@@ -1417,15 +1417,15 @@
                             let x = coordinate.getX();
                             let y = coordinate.getY();
                             return {
-//                                    type: cell.getType(),
-//                                    rawVal: cell.getRawVal(),
-//                                    formattedValue: cell.getFormattedValue(),
+                                    type: cell.getType(),
+                                    rawVal: cell.getRawVal(),
+                                    formattedValue: cell.getFormattedValue(),
 //                                    scale: cell.getScale(),
 //                                    refIndex: cell.getRefIndex() || undefined,
 //                                    totalCell: cell.getTotalCell(),
 //                                    level: cell.getLevel(),
 //                                    hasNOPNullValue: cell.getHasNOPNullValue(),
-//                                    style: tableController.getEffectiveCellStyle(cell),
+                                    style: tableController.getEffectiveCellStyle(cell),
                                 html: tableCellFactory && tableCellFactory._oGlobalTableViewMode && tableCellFactory.generateDivStringFromCellContent({
                                     tableRow: y,
                                     tableCol: x,
