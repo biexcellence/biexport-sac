@@ -191,7 +191,7 @@
 
     "tablesSelectedWidgets": {
       "type": "string",
-      "description": "Selected Widgets for Table Parser",
+      "description": "Selected Widgets for Meta Data / Result Set Retrieve",
       "default": ""
     },
     "pdfSelectedWidgets": {
