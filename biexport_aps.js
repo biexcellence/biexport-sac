@@ -129,7 +129,7 @@
                   <td><input id="biAnalyticsDocument" name="biAnalyticsDocument" type="checkbox"></td>
                 </tr>
                 <tr>
-                  <td><label for="tables_SelectedWidgets">Load hidden content</label></td>
+                  <td><label for="tables_SelectedWidgets">Retrieve meta data</label></td>
                   <td><slot name="tables_SelectedWidgets"></slot></td>
                 </tr>
               </table>
