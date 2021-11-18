@@ -148,30 +148,30 @@
         }
 
         setModel(modelId) {
-            this.dataBindings.getDataBinding().setModel(modelId);
+            return this.dataBindings.getDataBinding().setModel(modelId);
         }
         openSelectModelDialog() {
-            this.dataBindings.getDataBinding().openSelectModelDialog();
+            return this.dataBindings.getDataBinding().openSelectModelDialog();
         }
 
         getDimensions() {
             return this.dataBindings.getDataBinding().getDimensions("dimensions");
         }
         addDimension(dimensionId) {
-            this.dataBindings.getDataBinding().addDimensionToFeed("dimensions", dimensionId);
+            return this.dataBindings.getDataBinding().addDimensionToFeed("dimensions", dimensionId);
         }
         removeDimension(dimensionId) {
-            this.dataBindings.getDataBinding().removeDimension(dimensionId);
+            return this.dataBindings.getDataBinding().removeDimension(dimensionId);
         }
 
         getMeasures() {
             return this.dataBindings.getDataBinding().getMembers("measures");
         }
         addMeasure(measureId) {
-            this.dataBindings.getDataBinding().addMemberToFeed("measures", measureId);
+            return this.dataBindings.getDataBinding().addMemberToFeed("measures", measureId);
         }
         removeMeasure(measureId) {
-            this.dataBindings.getDataBinding().removeMember(measureId);
+            return this.dataBindings.getDataBinding().removeMember(measureId);
         }
 
 
