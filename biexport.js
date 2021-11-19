@@ -1468,7 +1468,8 @@
                         scales: vizOptions.scales,
                         size: vizOptions.size,
                         title: vizOptions.title,
-                        type: vizOptions.type
+                        type: vizOptions.type,
+                        coloration: vizOptions.coloration
                     };
 
                     component.data = data.data;
