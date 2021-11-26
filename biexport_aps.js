@@ -11,7 +11,7 @@
                   width: 100%;
               }
               input, textarea, select {
-                  font-family: "72",Arial,Helvetica,sans-serif;
+                  font-family: "72","72full",Arial,Helvetica,sans-serif;
                   width: 100%;
                   padding: 4px;
                   box-sizing: border-box;
