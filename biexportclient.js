@@ -202,6 +202,20 @@
             let dataFormat = this.dataFormat;
 
             let rows = [];
+
+            if (this.includeHeader) {
+                let row = [];
+                for (let j = 0; j < feedDimensions.length; j++) {
+                    let id = feedDimensions[j];
+                    row.push(dimensions[id].description);
+                }
+                for (let j = 0; j < feedMeasures.length; j++) {
+                    let id = feedMeasures[j];
+                    row.push(measures[id].label);
+                }
+                rows.push(row);
+            }
+
             for (let i = 0; i < data.length; i++) {
                 let d = data[i];
                 let row = [];
@@ -214,19 +228,6 @@
                     row.push(d[id][dataFormat]);
                 }
                 rows.push(row);
-            }
-
-            if (this.includeHeader) {
-                let row = [];
-                for (let j = 0; j < feedDimensions.length; j++) {
-                    let id = feedDimensions[j];
-                    row.push(dimensions[id].description);
-                }
-                for (let j = 0; j < feedMeasures.length; j++) {
-                    let id = feedMeasures[j];
-                    row.push(measures[id].label);
-                }
-                rows.unshift(row);
             }
 
             let text = rows.map(r => r.join(fieldDelimiter)).join(recordDelimiter);
