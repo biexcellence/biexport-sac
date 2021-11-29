@@ -1459,21 +1459,24 @@
                     }
                 } else if (widgetControl.oViz) { // chart
                     let infoChart = widgetControl.oViz.infoChart();
-                    let vizOptions = infoChart.vizOptions();
-                    let data = vizOptions.data.data();
+                    if (infoChart != null){ // infochart may not be initialized
+                        let vizOptions = infoChart.vizOptions();
+                        let data = vizOptions.data.data();
 
-                    component.chartDefinition = {
-                        bindings: vizOptions.bindings,
-                        properties: vizOptions.properties,
-                        scales: vizOptions.scales,
-                        size: vizOptions.size,
-                        title: vizOptions.title,
-                        type: vizOptions.type,
-                        coloration: vizOptions.coloration
-                    };
+                        component.chartDefinition = {
+                            bindings: vizOptions.bindings,
+                            properties: vizOptions.properties,
+                            scales: vizOptions.scales,
+                            size: vizOptions.size,
+                            title: vizOptions.title,
+                            type: vizOptions.type,
+                            coloration: vizOptions.coloration
+                        };
 
-                    component.data = data.data;
-                    component.metadata = data.metadata;
+                        component.data = data.data;
+                        component.metadata = data.metadata;
+                
+                    }
                 }
             }
 
