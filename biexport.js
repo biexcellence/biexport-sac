@@ -992,7 +992,7 @@
         }
 
         addSelectedWidget(format, comp, isIncluded) {
-            let current = this[format.toLowerCase() + "_exclude"] ? JSON.parse(this[format.toLowerCase() + "_exclude"]) : [];
+            let current =  this._export_settings[format.toLowerCase() + "_exclude"] ? JSON.parse( this._export_settings[format.toLowerCase() + "_exclude"]) : [];
             current.push({ component: comp, isExcluded: !isIncluded });
 
             this._export_settings[format.toLowerCase() + "_exclude"] = JSON.stringify(current);
