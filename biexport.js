@@ -1416,16 +1416,24 @@
                             let coordinate = cell.getCoordinate();
                             let x = coordinate.getX();
                             let y = coordinate.getY();
+
+                            // remove unused styles to reduce size
+                            let style = tableController.getEffectiveCellStyle(cell);
+                            delete style["cellChartSetting"];
+                            if (style["number"] && style["number"]["typeSettings"]) {
+                                style["number"]["typeSettings"] = [style["number"]["typeSettings"][0]];
+                            }
+
                             return {
-                                    type: cell.getType(),
-                                    rawVal: cell.getRawVal(),
-                                    formattedValue: cell.getFormattedValue(),
-                                    scale: cell.getScale(),
-                                    refIndex: cell.getRefIndex() || undefined,
-                                    totalCell: cell.getTotalCell(),
-                                    level: cell.getLevel(),
-                                    hasNOPNullValue: cell.getHasNOPNullValue(),
-                                    style: tableController.getEffectiveCellStyle(cell),
+                                type: cell.getType(),
+                                rawVal: cell.getRawVal(),
+                                formattedValue: cell.getFormattedValue(),
+                                scale: cell.getScale(),
+                                refIndex: cell.getRefIndex() || undefined,
+                                totalCell: cell.getTotalCell(),
+                                level: cell.getLevel(),
+                                hasNOPNullValue: cell.getHasNOPNullValue(),
+                                style: style,
                                 html: tableCellFactory && tableCellFactory._oGlobalTableViewMode && tableCellFactory.generateDivStringFromCellContent({
                                     tableRow: y,
                                     tableCol: x,
@@ -1459,7 +1467,7 @@
                     }
                 } else if (widgetControl.oViz) { // chart
                     let infoChart = widgetControl.oViz.infoChart();
-                    if (infoChart != null){ // infochart may not be initialized
+                    if (infoChart != null) { // infochart may not be initialized
                         let vizOptions = infoChart.vizOptions();
                         let data = vizOptions.data.data();
 
@@ -1475,7 +1483,7 @@
 
                         component.data = data.data;
                         component.metadata = data.metadata;
-                
+
                     }
                 }
             }
