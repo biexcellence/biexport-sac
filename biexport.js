@@ -1402,72 +1402,74 @@
             if (widgetControl && includeData) { // control specific stuff
                 if (typeof widgetControl.getTableController == "function") { // table
                     let tableController = widgetControl.getTableController();
-                    let view = tableController.getView();
-                    let tableCellFactory = view.getTableCellFactory();
-                    let regions = tableController.getDataRegions();
-                    let region = regions[0];
-                    if (region) {
-                        let grid = region.getGrid();
-                        let rows = grid.getRows();
-                        let cols = grid.getColumns();
-                        let cells = region.getCells();
+                    if (tableController) { // tableController may not be initialized
+                        let view = tableController.getView();
+                        let tableCellFactory = view.getTableCellFactory();
+                        let regions = tableController.getDataRegions();
+                        let region = regions[0];
+                        if (region) {
+                            let grid = region.getGrid();
+                            let rows = grid.getRows();
+                            let cols = grid.getColumns();
+                            let cells = region.getCells();
 
-                        component.data = cells.map((row) => row.map((cell) => {
-                            let coordinate = cell.getCoordinate();
-                            let x = coordinate.getX();
-                            let y = coordinate.getY();
+                            component.data = cells.map((row) => row.map((cell) => {
+                                let coordinate = cell.getCoordinate();
+                                let x = coordinate.getX();
+                                let y = coordinate.getY();
 
-                            // remove unused styles to reduce size
-                            let style = tableController.getEffectiveCellStyle(cell);
-                            delete style["cellChartSetting"];
-                            if (style["number"] && style["number"]["typeSettings"]) {
-                                style["number"]["typeSettings"] = [style["number"]["typeSettings"][0]];
+                                // remove unused styles to reduce size
+                                let style = tableController.getEffectiveCellStyle(cell);
+                                delete style["cellChartSetting"];
+                                if (style["number"] && style["number"]["typeSettings"]) {
+                                    style["number"]["typeSettings"] = [style["number"]["typeSettings"][0]];
+                                }
+
+                                return {
+                                    type: cell.getType(),
+                                    rawVal: cell.getRawVal(),
+                                    formattedValue: cell.getFormattedValue(),
+                                    scale: cell.getScale(),
+                                    refIndex: cell.getRefIndex() || undefined,
+                                    totalCell: cell.getTotalCell(),
+                                    level: cell.getLevel(),
+                                    hasNOPNullValue: cell.getHasNOPNullValue(),
+                                    style: style,
+                                    html: tableCellFactory && tableCellFactory._oGlobalTableViewMode && tableCellFactory.generateDivStringFromCellContent({
+                                        tableRow: y,
+                                        tableCol: x,
+                                        globalRow: y,
+                                        globalCol: x,
+                                        colspan: 1,
+                                        rowspan: 1,
+                                        // referencedRow: null,
+                                        // referencedCol: null,
+                                        hidden: false,
+                                        height: rows[y] && rows[y].data.size,
+                                        width: cols[x] && cols[x].data.size
+                                    })
+                                };
+                            }));
+
+                            if (region.getShowTitle()) {
+                                component.data.shift(); // remove title (removing regionHeaderDummyCell cells)
                             }
 
-                            return {
-                                type: cell.getType(),
-                                rawVal: cell.getRawVal(),
-                                formattedValue: cell.getFormattedValue(),
-                                scale: cell.getScale(),
-                                refIndex: cell.getRefIndex() || undefined,
-                                totalCell: cell.getTotalCell(),
-                                level: cell.getLevel(),
-                                hasNOPNullValue: cell.getHasNOPNullValue(),
-                                style: style,
-                                html: tableCellFactory && tableCellFactory._oGlobalTableViewMode && tableCellFactory.generateDivStringFromCellContent({
-                                    tableRow: y,
-                                    tableCol: x,
-                                    globalRow: y,
-                                    globalCol: x,
-                                    colspan: 1,
-                                    rowspan: 1,
-                                    // referencedRow: null,
-                                    // referencedCol: null,
-                                    hidden: false,
-                                    height: rows[y] && rows[y].data.size,
-                                    width: cols[x] && cols[x].data.size
-                                })
-                            };
-                        }));
-
-                        if (region.getShowTitle()) {
-                            component.data.shift(); // remove title (removing regionHeaderDummyCell cells)
-                        }
-
-                        // make sure react tables are rendered
-                        if (view.getReactTableWrapper) {
-                            let reactTableWrapper = view.getReactTableWrapper();
-                            if (reactTableWrapper && reactTableWrapper.getTableData) {
-                                let tableData = reactTableWrapper.getTableData();
-                                tableData.widgetHeight = 10000;
-                                tableData.widgetWidth = 10000;
-                                reactTableWrapper.updateTableData(tableData);
+                            // make sure react tables are rendered
+                            if (view.getReactTableWrapper) {
+                                let reactTableWrapper = view.getReactTableWrapper();
+                                if (reactTableWrapper && reactTableWrapper.getTableData) {
+                                    let tableData = reactTableWrapper.getTableData();
+                                    tableData.widgetHeight = 10000;
+                                    tableData.widgetWidth = 10000;
+                                    reactTableWrapper.updateTableData(tableData);
+                                }
                             }
                         }
                     }
                 } else if (widgetControl.oViz) { // chart
                     let infoChart = widgetControl.oViz.infoChart();
-                    if (infoChart != null) { // infochart may not be initialized
+                    if (infoChart != null) { // infoChart may not be initialized
                         let vizOptions = infoChart.vizOptions();
                         let data = vizOptions.data.data();
 
