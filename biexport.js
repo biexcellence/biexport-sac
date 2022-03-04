@@ -1411,14 +1411,12 @@
                             let grid = region.getGrid();
                             let rows = grid.getRows();
                             let cols = grid.getColumns();
-
-                            component.mergedCells = grid.getMergedCells();
+                            let mergedCells = grid.getMergedCells();
 
                             component.data = [];
                             for (let y = 0; y < rows.length; y++) {
                                 for (let x = 0; x < cols.length; x++) {
-                                    let cell = grid.getCellByCoord({x: x, y: y});
-
+                                    let cell = grid.getCellByCoord({ x: x, y: y });
                                     if (!cell) { /* empty custom cell */
                                         continue;
                                     }
@@ -1430,8 +1428,21 @@
                                         style["number"]["typeSettings"] = [style["number"]["typeSettings"][0]];
                                     }
 
+                                    // calculate colsspan / rowspan
+                                    let key = cell.getKey();
+                                    let colspan, rowspan;
+                                    let mergedCell = mergedCells[key];
+                                    if (mergedCell) {
+                                        colspan = mergedCell.width + 1;
+                                        rowspan = mergedCell.height + 1;
+                                    }
+
                                     (component.data[y] || (component.data[y] = []))[x] = {
-                                        key: cell.getKey(),
+                                        key: key,
+                                        style: style,
+                                        colspan: colspan,
+                                        rowspan: rowspan,
+
                                         type: cell.getType ? cell.getType() : 100 /* custom cell */,
                                         rawVal: cell.getRawVal ? cell.getRawVal() : cell.getVal() /* custom cell */,
                                         formattedValue: cell.getFormattedValue(),
@@ -1440,14 +1451,15 @@
                                         totalCell: cell.getTotalCell ? cell.getTotalCell() : cell.isTotalCell() /* custom cell */,
                                         level: cell.getLevel ? cell.getLevel() : undefined,
                                         hasNOPNullValue: cell.getHasNOPNullValue ? cell.getHasNOPNullValue() : undefined,
-                                        style: style,
+
+                                        // none optimized table
                                         html: tableCellFactory && tableCellFactory._oGlobalTableViewMode && tableCellFactory.generateDivStringFromCellContent({
                                             tableRow: y,
                                             tableCol: x,
                                             globalRow: y,
                                             globalCol: x,
-                                            colspan: 1,
-                                            rowspan: 1,
+                                            colspan: colspan,
+                                            rowspan: rowspan,
                                             // referencedRow: null,
                                             // referencedCol: null,
                                             hidden: false,
@@ -1455,7 +1467,6 @@
                                             width: cols[x] && cols[x].data.size
                                         })
                                     };
-
                                 }
                             }
 
@@ -1477,7 +1488,7 @@
                     }
                 } else if (widgetControl.oViz) { // chart
                     let infoChart = widgetControl.oViz.infoChart();
-                    if (infoChart != null) { // infoChart may not be initialized
+                    if (infoChart) { // infoChart may not be initialized
                         let vizOptions = infoChart.vizOptions();
                         let data = vizOptions.data.data();
 
@@ -1493,7 +1504,6 @@
 
                         component.data = data.data;
                         component.metadata = data.metadata;
-
                     }
                 }
             }
