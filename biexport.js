@@ -1411,45 +1411,53 @@
                             let grid = region.getGrid();
                             let rows = grid.getRows();
                             let cols = grid.getColumns();
-                            let cells = region.getCells();
 
-                            component.data = cells.map((row) => row.map((cell) => {
-                                let coordinate = cell.getCoordinate();
-                                let x = coordinate.getX();
-                                let y = coordinate.getY();
+                            component.mergedCells = grid.getMergedCells();
 
-                                // remove unused styles to reduce size
-                                let style = tableController.getEffectiveCellStyle(cell);
-                                delete style["cellChartSetting"];
-                                if (style["number"] && style["number"]["typeSettings"]) {
-                                    style["number"]["typeSettings"] = [style["number"]["typeSettings"][0]];
+                            component.data = [];
+                            for (let y = 0; y < rows.length; y++) {
+                                for (let x = 0; x < cols.length; x++) {
+                                    let cell = grid.getCellByCoord({x: x, y: y});
+
+                                    if (!cell) { /* empty custom cell */
+                                        continue;
+                                    }
+
+                                    // remove unused styles to reduce size
+                                    let style = tableController.getEffectiveCellStyle(cell);
+                                    delete style["cellChartSetting"];
+                                    if (style["number"] && style["number"]["typeSettings"]) {
+                                        style["number"]["typeSettings"] = [style["number"]["typeSettings"][0]];
+                                    }
+
+                                    (component.data[y] || (component.data[y] = []))[x] = {
+                                        key: cell.getKey(),
+                                        type: cell.getType ? cell.getType() : 100 /* custom cell */,
+                                        rawVal: cell.getRawVal ? cell.getRawVal() : cell.getVal() /* custom cell */,
+                                        formattedValue: cell.getFormattedValue(),
+                                        scale: cell.getScale ? cell.getScale() : undefined,
+                                        refIndex: cell.getRefIndex && cell.getRefIndex() || undefined,
+                                        totalCell: cell.getTotalCell ? cell.getTotalCell() : cell.isTotalCell() /* custom cell */,
+                                        level: cell.getLevel ? cell.getLevel() : undefined,
+                                        hasNOPNullValue: cell.getHasNOPNullValue ? cell.getHasNOPNullValue() : undefined,
+                                        style: style,
+                                        html: tableCellFactory && tableCellFactory._oGlobalTableViewMode && tableCellFactory.generateDivStringFromCellContent({
+                                            tableRow: y,
+                                            tableCol: x,
+                                            globalRow: y,
+                                            globalCol: x,
+                                            colspan: 1,
+                                            rowspan: 1,
+                                            // referencedRow: null,
+                                            // referencedCol: null,
+                                            hidden: false,
+                                            height: rows[y] && rows[y].data.size,
+                                            width: cols[x] && cols[x].data.size
+                                        })
+                                    };
+
                                 }
-
-                                return {
-                                    type: cell.getType(),
-                                    rawVal: cell.getRawVal(),
-                                    formattedValue: cell.getFormattedValue(),
-                                    scale: cell.getScale(),
-                                    refIndex: cell.getRefIndex() || undefined,
-                                    totalCell: cell.getTotalCell(),
-                                    level: cell.getLevel(),
-                                    hasNOPNullValue: cell.getHasNOPNullValue(),
-                                    style: style,
-                                    html: tableCellFactory && tableCellFactory._oGlobalTableViewMode && tableCellFactory.generateDivStringFromCellContent({
-                                        tableRow: y,
-                                        tableCol: x,
-                                        globalRow: y,
-                                        globalCol: x,
-                                        colspan: 1,
-                                        rowspan: 1,
-                                        // referencedRow: null,
-                                        // referencedCol: null,
-                                        hidden: false,
-                                        height: rows[y] && rows[y].data.size,
-                                        width: cols[x] && cols[x].data.size
-                                    })
-                                };
-                            }));
+                            }
 
                             if (region.getShowTitle()) {
                                 component.data.shift(); // remove title (removing regionHeaderDummyCell cells)
