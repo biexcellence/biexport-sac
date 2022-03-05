@@ -1428,7 +1428,7 @@
                                         style["number"]["typeSettings"] = [style["number"]["typeSettings"][0]];
                                     }
 
-                                    // calculate colsspan / rowspan
+                                    // calculate colspan / rowspan
                                     let key = cell.getKey();
                                     let colspan, rowspan;
                                     let mergedCell = mergedCells[key];
