@@ -1794,7 +1794,7 @@
                         let url = cssUrlRegExp.exec(value)[1];
                         if (url) {
                             let index = css.length;
-                            css.push(""); // placeholder
+                            // css.push(value); is placeholder
                             promises.push(getUrlAsDataUrl(toAbsoluteUrl(baseUrl, url)).then(d => css[index] = "url(" + d + ")", () => css[index] = value));
                         }
                     }
@@ -1809,19 +1809,18 @@
                 css.push("@font-face {");
                 for (let j = 0; j < rule.style.length; j++) {
                     let name = rule.style[j]
-                    let value = rule.style[name];
+                    let value = rule.style.getPropertyValue(name);
                     css.push(name);
                     css.push(":");
                     if (name == "src" && value && value.includes("url") && !value.includes("data:")) {
                         let url = cssUrlRegExp.exec(value)[1];
                         if (url) {
                             let index = css.length;
-                            css.push(""); // placeholder
+                            // css.push(value); is placeholder
                             promises.push(getUrlAsDataUrl(toAbsoluteUrl(baseUrl, url)).then(d => css[index] = "url(" + d + ")", () => css[index] = value));
                         }
-                    } else {
-                        css.push(value);
                     }
+                    css.push(value);
                     css.push(";");
                 }
                 css.push("}");
