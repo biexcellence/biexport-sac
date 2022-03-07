@@ -1742,7 +1742,7 @@
                 isEmpty = false;
             }
         }
-        if (isEmpty && !new RegExp("</" + node.tagName + ">$", "i").test(node.outerHTML)) {
+        if (isEmpty && node.outerHTML.slice(- (node.tagName.length + 3) ).toUpperCase() != "</" + node.tagName + ">") {
             // no end tag
         } else {
             html.push("</");
