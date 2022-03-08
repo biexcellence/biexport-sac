@@ -1597,9 +1597,9 @@
         if (node.tagName == "SCRIPT") return; // SCRIPT
 
         if (node.nodeType == 3) { // TEXT
-            var value = node.nodeValue;
+            let value = node.nodeValue;
             if (htmlEntitiesRegExp.test(value)) {
-                var el = document.createElement(node.parentNode.tagName);
+                let el = document.createElement(node.parentNode.tagName);
                 el.appendChild(document.createTextNode(value));
                 value = el.innerHTML;
             }
@@ -1614,7 +1614,6 @@
             let attribute = node.attributes[i];
             attributes[attribute.name] = attribute.value;
         }
-
 
         switch (node.tagName) {
             case "INPUT":
@@ -1631,7 +1630,12 @@
                 }
                 break;
             case "TEXTAREA":
-                content = node.innerHTML; // already escaped!
+                content = node.value;
+                if (htmlEntitiesRegExp.test(content)) {
+                    let el = document.createElement(node.parentNode.tagName);
+                    el.appendChild(document.createTextNode(content));
+                    content = el.innerHTML;
+                }
                 break;
             case "CANVAS":
                 name = "img";
@@ -1663,45 +1667,23 @@
                     // always download relative stylesheets
                     let relative = sheet.href && attributes["href"] && sheet.href != attributes["href"];
                     // always parse local stylesheets as they might be dynamic
-                    let dynamic = !sheet.href && sheet.rules && sheet.rules.length > 0;
+                    let dynamic = !sheet.href && sheet.cssRules && sheet.cssRules.length > 0;
 
                     if (shadowHost || dynamic || relative || settings.parse_css) {
-                        if (sheet.href) { // download external stylesheets
+                        content = getCssText(sheet, document.baseURI, shadowHost);
+
+                        if (content && name != "style") {
                             name = "style";
-                            attributes = { "type": "text/css" };
-                            content = fetch(sheet.href).then(r => r.text()).then(t => {
-                                let style = document.createElement("style");
-                                style.type = "text/css";
-                                style.appendChild(document.createTextNode(t));
-                                document.body.appendChild(style);
-                                style.sheet.disabled = true;
-                                return getCssText(style.sheet, sheet.href, shadowHost).then(r => {
-                                    document.body.removeChild(style);
-                                    return r;
-                                });
-                            }, reason => {
-                                return "";
-                            });
-                        } else {
-                            content = getCssText(sheet, document.baseURI, shadowHost);
+                            attributes = {};
                         }
                     }
                 }
                 break;
         }
 
-        if (settings.parse_css) {
-            if (attributes["style"]) {
-                let style = attributes["style"];
-                if (style.includes("url") && !style.includes("data:")) {
-                    let url = cssUrlRegExp.exec(style)[1];
-                    if (url) {
-                        attributes["style"] = getUrlAsDataUrl(toAbsoluteUrl(document.baseURI, url)).then(d => style.replace(url, d), () => style);
-                    }
-                }
-            }
+        if (settings.parse_css && attributes["style"]) {
+            attributes["style"] = parseCssStyle(node.style, document.baseURI);
         }
-
 
         html.push("<");
         html.push(name);
@@ -1742,7 +1724,7 @@
                 isEmpty = false;
             }
         }
-        if (isEmpty && node.outerHTML.slice(- (node.tagName.length + 3) ).toUpperCase() != "</" + node.tagName + ">") {
+        if (isEmpty && node.outerHTML.slice(- (node.tagName.length + 3)).toUpperCase() != "</" + node.tagName + ">") {
             // no end tag
         } else {
             html.push("</");
@@ -1752,7 +1734,22 @@
     }
 
     function getCssText(sheet, baseUrl, shadowHost) {
-        return parseCssRules(sheet.cssRules, baseUrl, shadowHost);
+        try {
+            return parseCssRules(sheet.cssRules, sheet.href || baseUrl, shadowHost); // sheet.cssRules might throw
+        } catch (e) {
+            if (sheet.href) { // download external stylesheets
+                return fetch(sheet.href).then(r => r.text()).then(t => {
+                    let style = document.createElement("style");
+                    style.appendChild(document.createTextNode(t));
+                    let doc = document.implementation.createHTMLDocument("");
+                    doc.body.appendChild(style);
+                    return getCssText(style.sheet, sheet.href, shadowHost);
+                }, reason => {
+                    return "";
+                });
+            }
+        }
+        return Promise.resolve("");
     }
     function parseCssRules(rules, baseUrl, shadowHost) {
         let promises = [];
@@ -1774,7 +1771,7 @@
             } else if (rule.type == CSSRule.IMPORT_RULE) { // @import
                 let index = css.length;
                 css.push(""); // placeholder
-                promises.push(getCssText(rule.styleSheet, baseUrl, shadowHost).then(c => css[index] = c));
+                promises.push(getCssText(rule.styleSheet || Object.defineProperty({ href: rule.href && toAbsoluteUrl(baseUrl, rule.href) }, "cssRules", { get: () => { throw new Error() } }), baseUrl, shadowHost).then(c => css[index] = c));
             } else if (rule.type == CSSRule.STYLE_RULE) {
                 if (shadowHost) { // prefix with shadow host name...
                     css.push(shadowHost.localName);
@@ -1784,45 +1781,21 @@
                     css.push(rule.selectorText);
                 }
                 css.push(" {");
-                for (let j = 0; j < rule.style.length; j++) {
-                    let name = rule.style[j];
-                    let value = rule.style.getPropertyValue(name);
-                    let priority = rule.style.getPropertyPriority(name);
-                    css.push(name);
-                    css.push(":");
-                    if (name.startsWith("background") && value && value.includes("url") && !value.includes("data:")) {
-                        let url = cssUrlRegExp.exec(value)[1];
-                        if (url) {
-                            let index = css.length;
-                            // css.push(value); is placeholder
-                            promises.push(getUrlAsDataUrl(toAbsoluteUrl(baseUrl, url)).then(d => css[index] = "url(" + d + ")", () => css[index] = value));
-                        }
-                    }
-                    css.push(value);
-                    if (priority == "important") {
-                        css.push("!important");
-                    }
-                    css.push(";");
+                let value = parseCssStyle(rule.style, baseUrl);
+                if (value.then) {
+                    let index = css.length;
+                    promises.push(value.then(s => css[index] = s));
                 }
+                css.push(value); // placeholder
                 css.push("}");
             } else if (rule.type == CSSRule.FONT_FACE_RULE) {
                 css.push("@font-face {");
-                for (let j = 0; j < rule.style.length; j++) {
-                    let name = rule.style[j]
-                    let value = rule.style.getPropertyValue(name);
-                    css.push(name);
-                    css.push(":");
-                    if (name == "src" && value && value.includes("url") && !value.includes("data:")) {
-                        let url = cssUrlRegExp.exec(value)[1];
-                        if (url) {
-                            let index = css.length;
-                            // css.push(value); is placeholder
-                            promises.push(getUrlAsDataUrl(toAbsoluteUrl(baseUrl, url)).then(d => css[index] = "url(" + d + ")", () => css[index] = value));
-                        }
-                    }
-                    css.push(value);
-                    css.push(";");
+                let value = parseCssStyle(rule.style, baseUrl);
+                if (value.then) {
+                    let index = css.length;
+                    promises.push(value.then(s => css[index] = s));
                 }
+                css.push(value); // placeholder
                 css.push("}");
             } else {
                 css.push(rule.cssText);
@@ -1830,6 +1803,35 @@
         }
 
         return Promise.all(promises).then(() => css.join(""));
+    }
+    function parseCssStyle(style, baseUrl) {
+        let promises;
+        let css = [];
+
+        for (let i = 0; i < style.length; i++) {
+            let name = style[i]
+            let value = style.getPropertyValue(name);
+            let priority = style.getPropertyPriority(name);
+            css.push(name);
+            css.push(":");
+            if ((name == "src" || name.startsWith("background")) && value && value.includes("url") && !value.includes("data:")) {
+                let url = cssUrlRegExp.exec(value)[1];
+                if (url) {
+                    let index = css.length;
+                    (promises || (promises = [])).push(getUrlAsDataUrl(toAbsoluteUrl(baseUrl, url)).then(d => css[index] = "url(" + d + ")", () => css[index] = value));
+                }
+            }
+            css.push(value); // placeholder
+            if (priority == "important") {
+                css.push("!important");
+            }
+            css.push(";");
+        }
+
+        if (promises) {
+            return Promise.all(promises).then(() => css.join(""));
+        }
+        return css.join("");
     }
 
     function toAbsoluteUrl(baseUrl, url) {
