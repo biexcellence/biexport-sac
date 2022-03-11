@@ -1742,6 +1742,7 @@
                     let style = document.createElement("style");
                     style.appendChild(document.createTextNode(t));
                     let doc = document.implementation.createHTMLDocument("");
+                    doc.head.appendChild(document.createElement("base")).href = sheet.href;
                     doc.body.appendChild(style);
                     return getCssText(style.sheet, sheet.href, shadowHost);
                 }, reason => {
