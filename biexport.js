@@ -1670,7 +1670,7 @@
                     let dynamic = !sheet.href && sheet.cssRules && sheet.cssRules.length > 0;
 
                     if (shadowHost || dynamic || relative || settings.parse_css) {
-                        content = getCssText(sheet, document.baseURI, shadowHost);
+                        content = getCssText(sheet, node.baseURI, shadowHost);
 
                         if (content && name != "style") {
                             name = "style";
@@ -1682,7 +1682,7 @@
         }
 
         if (settings.parse_css && attributes["style"]) {
-            attributes["style"] = parseCssStyle(node.style, document.baseURI);
+            attributes["style"] = parseCssStyle(node.style, node.baseURI);
         }
 
         html.push("<");
@@ -1724,7 +1724,7 @@
                 isEmpty = false;
             }
         }
-        if (isEmpty && node.outerHTML.slice(- (node.tagName.length + 3)).toUpperCase() != "</" + node.tagName + ">") {
+        if (isEmpty && node.outerHTML.slice(- (node.tagName.length + 3)).toUpperCase() != "</" + node.tagName.toUpperCase() + ">") {
             // no end tag
         } else {
             html.push("</");
