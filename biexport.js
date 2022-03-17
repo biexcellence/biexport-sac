@@ -1146,8 +1146,17 @@
 
                     settings.appid = getAppId(context);
 
-                    let user = context.getUser();
-                    settings.sac_user = user.getUsername();
+                    if (context.getUserFormatting) {
+                        let userFormatting = context.getUserFormatting();
+                        settings.number_decimal_separator = userFormatting.decimalFormat.decimalSeparator.symbol;
+                        settings.number_grouping_separator = userFormatting.decimalFormat.groupingSeparator.symbol;
+                    }
+
+                    if (context.getTenantUrl) {
+                        settings.tenant_URL = context.getTenantUrl(false); // true for PUBLIC_FQDN
+                    }
+
+                    settings.sac_user = context.getUser().getUsername();
 
                     if (settings.lng == "") {
                         settings.lng = context.getLanguage();
