@@ -1414,19 +1414,23 @@
                     if (tableController) { // tableController may not be initialized
                         let view = tableController.getView();
                         let tableCellFactory = view.getTableCellFactory();
-                        let regions = tableController.getDataRegions();
-                        let region = regions[0];
+                        let region = tableController.getActiveDataRegion();
                         if (region) {
                             let grid = region.getGrid();
-                            let rows = grid.getRows();
-                            let cols = grid.getColumns();
+                            let rowSizes = grid.getRows();
+                            let columnSizes = grid.getColumns();
                             let mergedCells = grid.getMergedCells();
 
+                            let dimensions = grid.calculateGridContentDimensions();
+                            let rowCount = dimensions.row; // sometimes there are too many rows... // region.getHeight();
+                            let columnCount = dimensions.col; // region.getWidth();
+
                             component.data = [];
-                            for (let y = 0; y < rows.length; y++) {
-                                for (let x = 0; x < cols.length; x++) {
+                            for (let y = 0; y < rowCount; y++) {
+                                for (let x = 0; x < columnCount; x++) {
                                     let cell = grid.getCellByCoord({ x: x, y: y });
                                     if (!cell) { /* empty custom cell */
+                                        (component.data[y] || (component.data[y] = []))[x] = null;
                                         continue;
                                     }
 
@@ -1472,11 +1476,15 @@
                                             // referencedRow: null,
                                             // referencedCol: null,
                                             hidden: false,
-                                            height: rows[y] && rows[y].data.size,
-                                            width: cols[x] && cols[x].data.size
+                                            height: rowSizes[y] && rowSizes[y].data.size,
+                                            width: columnSizes[x] && columnSizes[x].data.size
                                         })
                                     };
                                 }
+                            }
+
+                            while (component.data.length > 0 && component.data[component.data.length - 1].every(c => !c)) {
+                                component.data.pop(); // remove empty rows at the end
                             }
 
                             if (!region.getNewTableType() && region.getShowTitle()) {
