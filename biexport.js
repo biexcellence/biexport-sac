@@ -1425,6 +1425,8 @@
                             let rowCount = dimensions.row; // sometimes there are too many rows... // region.getHeight();
                             let columnCount = dimensions.col; // region.getWidth();
 
+                            grid.finishPartialProcessing && grid.finishPartialProcessing(); // create all cells
+
                             component.data = [];
                             for (let y = 0; y < rowCount; y++) {
                                 for (let x = 0; x < columnCount; x++) {
