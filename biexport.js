@@ -1446,10 +1446,12 @@
                                     // calculate colspan / rowspan
                                     let key = cell.getKey();
                                     let colspan, rowspan;
-                                    let mergedCell = mergedCells[key];
-                                    if (mergedCell) {
-                                        colspan = mergedCell.width + 1;
-                                        rowspan = mergedCell.height + 1;
+                                    if (key in mergedCells) {
+                                        let mergedCell = mergedCells[key];
+                                        if (mergedCell) {
+                                            colspan = mergedCell.width + 1;
+                                            rowspan = mergedCell.height + 1;
+                                        }
                                     }
 
                                     (component.data[y] || (component.data[y] = []))[x] = {
