@@ -1454,6 +1454,22 @@
                                         }
                                     }
 
+                                    // get drill state
+                                    let drillState;
+                                    if (cell.isInHierarchy && cell.isInHierarchy()) {
+                                        switch (cell.getFlags()) {
+                                            case 0:
+                                                drillState = "L";
+                                                break;
+                                            case 1:
+                                                drillState = "C";
+                                                break;
+                                            case 2:
+                                                drillState = "E";
+                                                break;
+                                        }
+                                    }
+
                                     (component.data[y] || (component.data[y] = []))[x] = {
                                         key: key,
                                         style: style,
@@ -1467,6 +1483,7 @@
                                         refIndex: cell.getRefIndex && cell.getRefIndex() || undefined,
                                         totalCell: cell.getTotalCell ? cell.getTotalCell() : cell.isTotalCell() /* custom cell */,
                                         level: cell.getLevel ? cell.getLevel() : undefined,
+                                        drillState: drillState,
                                         hasNOPNullValue: cell.getHasNOPNullValue ? cell.getHasNOPNullValue() : undefined,
 
                                         // none optimized table
