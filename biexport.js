@@ -1416,6 +1416,8 @@
                         let tableCellFactory = view.getTableCellFactory();
                         let region = tableController.getActiveDataRegion();
                         if (region) {
+                            let thresholdManager = region.getThresholdManager();
+                            //let thresholdStyle = region.getThresholdStyle();
                             let grid = region.getGrid();
                             let rowSizes = grid.getRows();
                             let columnSizes = grid.getColumns();
@@ -1470,6 +1472,17 @@
                                         }
                                     }
 
+                                    // get threshold
+                                    let thresholdInterval;
+                                    if (cell.getAlertLevel && cell.getAlertLevel()) {
+                                        let alertLevelName = cell.getAlertLevelName();
+                                        let index = alertLevelName.lastIndexOf(":");
+                                        let alertLevelId = alertLevelName.substring(0, index);
+                                        let alertLevelIndex = alertLevelName.substring(index + 1);
+                                        let threshold = sap.fpa.ui.pa.reportEngine.KPIManager.getThresholdById(thresholdManager, alertLevelId);
+                                        thresholdInterval = threshold.intervals[alertLevelIndex];
+                                    }
+
                                     (component.data[y] || (component.data[y] = []))[x] = {
                                         key: key,
                                         style: style,
@@ -1484,6 +1497,7 @@
                                         totalCell: cell.getTotalCell ? cell.getTotalCell() : cell.isTotalCell() /* custom cell */,
                                         level: cell.getLevel ? cell.getLevel() : undefined,
                                         drillState: drillState,
+                                        thresholdInterval: thresholdInterval,
                                         hasNOPNullValue: cell.getHasNOPNullValue ? cell.getHasNOPNullValue() : undefined,
 
                                         // none optimized table
