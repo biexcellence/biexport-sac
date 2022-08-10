@@ -1416,8 +1416,9 @@
                         let tableCellFactory = view.getTableCellFactory();
                         let region = tableController.getActiveDataRegion();
                         if (region) {
-                            let thresholdManager = region.getThresholdManager();
+                            //let thresholdManager = region.getThresholdManager();
                             //let thresholdStyle = region.getThresholdStyle();
+                            //let repeatMembers = region.getRepeatMembers(); // show repeated members
                             let grid = region.getGrid();
                             let rowSizes = grid.getRows();
                             let columnSizes = grid.getColumns();
@@ -1429,12 +1430,12 @@
 
                             grid.finishPartialProcessing && grid.finishPartialProcessing(); // create all cells
 
-                            component.data = [];
+                            let rows = [];
                             for (let y = 0; y < rowCount; y++) {
                                 for (let x = 0; x < columnCount; x++) {
                                     let cell = grid.getCellByCoord({ x: x, y: y });
                                     if (!cell) { /* empty custom cell */
-                                        (component.data[y] || (component.data[y] = []))[x] = null;
+                                        (rows[y] || (rows[y] = []))[x] = null;
                                         continue;
                                     }
 
@@ -1456,34 +1457,28 @@
                                         }
                                     }
 
-                                    // get drill state
-                                    let drillState;
-                                    if (cell.isInHierarchy && cell.isInHierarchy()) {
+                                    // get drill state / level
+                                    let drillState, level;
+                                    if (cell.getFlags && cell.getLevel) {
+                                        level = cell.getLevel();
                                         switch (cell.getFlags()) {
-                                            case 0:
-                                                drillState = "L";
-                                                break;
-                                            case 1:
-                                                drillState = "C";
-                                                break;
-                                            case 2:
-                                                drillState = "E";
-                                                break;
+                                            case 0: if (level > 0) { drillState = "L"; } break;
+                                            case 1: drillState = "C"; break;
+                                            case 2: drillState = "E"; break;
                                         }
                                     }
 
                                     // get threshold
                                     let thresholdInterval;
-                                    if (cell.getAlertLevel && cell.getAlertLevel()) {
-                                        let alertLevelName = cell.getAlertLevelName();
-                                        let index = alertLevelName.lastIndexOf(":");
-                                        let alertLevelId = alertLevelName.substring(0, index);
-                                        let alertLevelIndex = alertLevelName.substring(index + 1);
-                                        let threshold = sap.fpa.ui.pa.reportEngine.KPIManager.getThresholdById(thresholdManager, alertLevelId);
-                                        thresholdInterval = threshold.intervals[alertLevelIndex];
+                                    if (cell.getAppliedThreshold) {
+                                        let appliedThreshold = cell.getAppliedThreshold();
+                                        let threshold = appliedThreshold.threshold;
+                                        if (threshold) {
+                                            thresholdInterval = threshold.intervals[appliedThreshold.intervalId];
+                                        }
                                     }
 
-                                    (component.data[y] || (component.data[y] = []))[x] = {
+                                    (rows[y] || (rows[y] = []))[x] = {
                                         key: key,
                                         style: style,
                                         colspan: colspan,
@@ -1494,8 +1489,8 @@
                                         formattedValue: cell.getFormattedValue(),
                                         scale: cell.getScale ? cell.getScale() : undefined,
                                         refIndex: cell.getRefIndex && cell.getRefIndex() || undefined,
-                                        totalCell: cell.getTotalCell ? cell.getTotalCell() : cell.isTotalCell() /* custom cell */,
-                                        level: cell.getLevel ? cell.getLevel() : undefined,
+                                        total: cell.getTotalCell ? cell.getTotalCell() : cell.isTotalCell() /* custom cell */,
+                                        level: level,
                                         drillState: drillState,
                                         thresholdInterval: thresholdInterval,
                                         hasNOPNullValue: cell.getHasNOPNullValue ? cell.getHasNOPNullValue() : undefined,
@@ -1518,13 +1513,15 @@
                                 }
                             }
 
-                            while (component.data.length > 0 && component.data[component.data.length - 1].every(c => !c)) {
-                                component.data.pop(); // remove empty rows at the end
+                            while (rows.length > 0 && rows[rows.length - 1].every(c => !c)) {
+                                rows.pop(); // remove empty rows at the end
                             }
 
                             if (!region.getNewTableType() && region.getShowTitle()) {
-                                component.data.shift(); // remove title (removing regionHeaderDummyCell cells)
+                                rows.shift(); // remove title (removing regionHeaderDummyCell cells)
                             }
+
+                            component.data = rows;
 
                             // make sure react tables are rendered
                             if (view.getReactTableWrapper) {
