@@ -219,6 +219,11 @@
       "description": "Selected Widgets for Images export",
       "default": ""
     },
+    "csvSelectedWidgets": {
+      "type": "string",
+      "description": "Selected Widgets for CSV export",
+      "default": ""
+    },
 
     "oauth": {
       "type": "string",

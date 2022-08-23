@@ -94,6 +94,7 @@
             this._export_settings.pdf_template_def = {};
             this._export_settings.header_footer_width = 0;
             this._export_settings.header_footer_css = true;
+
             this._export_settings.ppt_exclude = "";
             this._export_settings.ppt_template = "";
             this._export_settings.ppt_seperate = "";
@@ -108,6 +109,9 @@
             this._export_settings.xls_template_def = {};
 
             this._export_settings.png_exclude = "";
+
+            this._export_settings.csv_exclude = "";
+
             this._export_settings.tables_exclude = "";
 
             this._export_settings.filename = "";
@@ -812,14 +816,6 @@
             this._updateSettings();
         }
 
-        get pngSelectedWidgets() {
-            return this._export_settings.png_exclude;
-        }
-        set pngSelectedWidgets(value) {
-            this._export_settings.png_exclude = value;
-            this._updateSettings();
-        }
-
         get pdfSelectedWidgets() {
             return this._export_settings.pdf_exclude;
         }
@@ -849,6 +845,22 @@
         }
         set xlsSelectedWidgets(value) {
             this._export_settings.xls_exclude = value;
+            this._updateSettings();
+        }
+
+        get pngSelectedWidgets() {
+            return this._export_settings.png_exclude;
+        }
+        set pngSelectedWidgets(value) {
+            this._export_settings.png_exclude = value;
+            this._updateSettings();
+        }
+
+        get csvSelectedWidgets() {
+            return this._export_settings.csv_exclude;
+        }
+        set csvSelectedWidgets(value) {
+            this._export_settings.csv_exclude = value;
             this._updateSettings();
         }
 

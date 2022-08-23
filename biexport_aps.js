@@ -84,15 +84,6 @@
               </table>
             </fieldset>
             <fieldset>
-              <legend>Images</legend>
-              <table>
-                <tr>
-                  <td><label for="png_SelectedWidgets">Widgets</label></td>
-                  <td><slot name="png_SelectedWidgets"></slot></td>
-                </tr>
-              </table>
-            </fieldset>
-            <fieldset>
               <legend>Excel</legend>
               <table>
                 <tr>
@@ -102,6 +93,24 @@
                 <tr>
                   <td><label for="xls_SelectedWidgets">CONTENT Widgets</label></td>
                   <td><slot name="xls_SelectedWidgets"></slot></td>
+                </tr>
+              </table>
+            </fieldset>
+            <fieldset>
+              <legend>Images</legend>
+              <table>
+                <tr>
+                  <td><label for="png_SelectedWidgets">Widgets</label></td>
+                  <td><slot name="png_SelectedWidgets"></slot></td>
+                </tr>
+              </table>
+            </fieldset>
+            <fieldset>
+              <legend>CSV</legend>
+              <table>
+                <tr>
+                  <td><label for="csv_SelectedWidgets">Widgets</label></td>
+                  <td><slot name="csv_SelectedWidgets"></slot></td>
                 </tr>
               </table>
             </fieldset>
@@ -238,12 +247,12 @@
                   <td><input id="enableXls" name="enableXls" type="checkbox"></td>
                 </tr>
                 <tr>
-                  <td><label for="enableCsv">Enable CSV</label></td>
-                  <td><input id="enableCsv" name="enableCsv" type="checkbox"></td>
-                </tr>
-                <tr>
                   <td><label for="enablePng">Enable Images</label></td>
                   <td><input id="enablePng" name="enablePng" type="checkbox"></td>
+                </tr>
+                <tr>
+                  <td><label for="enableCsv">Enable CSV</label></td>
+                  <td><input id="enableCsv" name="enableCsv" type="checkbox"></td>
                 </tr>
               </table>
             </fieldset>
@@ -252,7 +261,7 @@
         `;
 
     class BiExportAps extends HTMLElement {
-        
+
         _getWidgetModel() {
             let tableComponents = this["tablesSelectedWidgets"] ? JSON.parse(this["tablesSelectedWidgets"]) : [];
             let pdfVisibleComponents = this["pdfSelectedWidgets"] ? JSON.parse(this["pdfSelectedWidgets"]) : [];
@@ -260,6 +269,7 @@
             let xlsVisibleComponents = this["xlsSelectedWidgets"] ? JSON.parse(this["xlsSelectedWidgets"]) : [];
             let docVisibleComponents = this["docSelectedWidgets"] ? JSON.parse(this["docSelectedWidgets"]) : [];
             let pngVisibleComponents = this["pngSelectedWidgets"] ? JSON.parse(this["pngSelectedWidgets"]) : [];
+            let csvVisibleComponents = this["csvSelectedWidgets"] ? JSON.parse(this["csvSelectedWidgets"]) : [];
             let allComponents = biExportGetMetadata({}).components;
             let components = [];
             for (let componentId in allComponents) {
@@ -271,6 +281,7 @@
                 component.docSelectedWidgets = false;
                 component.pptSelectedWidgets = false;
                 component.pngSelectedWidgets = false;
+                component.csvSelectedWidgets = false;
                 if (tableComponents.length > 0 && !tableComponents.some(v => v.component == component.name && v.isExcluded)) {
                     component.tablesSelectedWidgets = true;
                 }
@@ -288,6 +299,9 @@
                 }
                 if (pngVisibleComponents.length > 0 && !pngVisibleComponents.some(v => v.component == component.name && v.isExcluded)) {
                     component.pngSelectedWidgets = true;
+                }
+                if (csvVisibleComponents.length > 0 && !csvVisibleComponents.some(v => v.component == component.name && v.isExcluded)) {
+                    component.csvSelectedWidgets = true;
                 }
                 components.push(component);
             }
@@ -327,7 +341,7 @@
 
             // visible components - UI elements
             this.filters = [];
-            ["tables_SelectedWidgets", "pdf_SelectedWidgets", "png_SelectedWidgets", "ppt_SelectedWidgets", "doc_SelectedWidgets", "xls_SelectedWidgets"].forEach(slotId => {
+            ["tables_SelectedWidgets", "pdf_SelectedWidgets", "ppt_SelectedWidgets", "doc_SelectedWidgets", "xls_SelectedWidgets", "png_SelectedWidgets", "csv_SelectedWidgets"].forEach(slotId => {
                 let id = slotId.replace("_", "");
 
                 let filter = new sap.m.FacetFilter({
@@ -368,6 +382,13 @@
                             selected: "{docSelectedWidgets}"
                         });
                         break;
+                    case "xlsSelectedWidgets":
+                        filterTemplate = new sap.m.FacetFilterItem({
+                            key: "{name}",
+                            text: "{name}",
+                            selected: "{xlsSelectedWidgets}"
+                        });
+                        break;
                     case "pngSelectedWidgets":
                         filterTemplate = new sap.m.FacetFilterItem({
                             key: "{name}",
@@ -375,12 +396,13 @@
                             selected: "{pngSelectedWidgets}"
                         });
                         break;
-                    case "xlsSelectedWidgets":
+                    case "csvSelectedWidgets":
                         filterTemplate = new sap.m.FacetFilterItem({
                             key: "{name}",
                             text: "{name}",
-                            selected: "{xlsSelectedWidgets}"
+                            selected: "{csvSelectedWidgets}"
                         });
+                        break;
                 }
 
                 // split components by filter 
@@ -417,7 +439,7 @@
                             // set visible components 
                             let visibleComponents = [];
                             for (let componentId in components) {
-                                
+
                                 visibleComponents.push({
                                     component: components[componentId].name,
                                     isExcluded: !components[componentId][id],
@@ -439,7 +461,7 @@
                     });
 
                     filter.addList(filterList);
-                    
+
                 });
 
                 let excludeSlot = document.createElement("div");
@@ -553,7 +575,7 @@
 
         onCustomWidgetAfterUpdate() {
         }
-        
+
         connectedCallback() {
             let model = this._getWidgetModel();
             this.filters.forEach(filter => {
@@ -908,6 +930,14 @@
         set pngSelectedWidgets(value) {
             this.png_SelectedWidgets = value;
         }
+
+        get csvSelectedWidgets() {
+            return this.csv_SelectedWidgets;
+        }
+        set csvSelectedWidgets(value) {
+            this.csv_SelectedWidgets = value;
+        }
+
         get oauth() {
             if (this._getValue("oauthClientId")) {
                 return JSON.stringify({
@@ -982,6 +1012,8 @@
                 "xlsSelectedWidgets",
 
                 "pngSelectedWidgets",
+
+                "csvSelectedWidgets",
 
                 "publishMode",
                 "publishSync",
