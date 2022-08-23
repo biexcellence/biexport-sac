@@ -1397,9 +1397,7 @@
 
         let components = {};
         storyModel.getAllWidgets().forEach((widget) => {
-            if (!widget) { // might be undefined during edit
-                return;
-            }
+            if (!widget) return; // might be undefined during edit
 
             let includeData = !settings; // no settings => include everything
             if (settings) {
@@ -1422,150 +1420,9 @@
             let widgetControl = widgetControls.filter((control) => control.getWidgetId() == widget.id)[0];
             if (widgetControl && includeData) { // control specific stuff
                 if (typeof widgetControl.getTableController == "function") { // table
-                    let tableController = widgetControl.getTableController();
-                    if (tableController) { // tableController may not be initialized
-                        let view = tableController.getView();
-                        let tableCellFactory = view.getTableCellFactory();
-                        let region = tableController.getActiveDataRegion();
-                        if (region) {
-                            //let thresholdManager = region.getThresholdManager();
-                            //let thresholdStyle = region.getThresholdStyle();
-                            //let repeatMembers = region.getRepeatMembers(); // show repeated members
-                            let grid = region.getGrid();
-                            let rowSizes = grid.getRows();
-                            let columnSizes = grid.getColumns();
-                            let mergedCells = grid.getMergedCells();
-
-                            let dimensions = grid.calculateGridContentDimensions();
-                            let rowCount = dimensions.row; // sometimes there are too many rows... // region.getHeight();
-                            let columnCount = dimensions.col; // region.getWidth();
-
-                            grid.finishPartialProcessing && grid.finishPartialProcessing(); // create all cells
-
-                            let rows = [];
-                            for (let y = 0; y < rowCount; y++) {
-                                for (let x = 0; x < columnCount; x++) {
-                                    let cell = grid.getCellByCoord({ x: x, y: y });
-                                    if (!cell) { /* empty custom cell */
-                                        (rows[y] || (rows[y] = []))[x] = null;
-                                        continue;
-                                    }
-
-                                    // remove unused styles to reduce size
-                                    let style = tableController.getEffectiveCellStyle(cell);
-                                    delete style["cellChartSetting"];
-                                    if (style["number"] && style["number"]["typeSettings"]) {
-                                        style["number"]["typeSettings"] = [style["number"]["typeSettings"][0]];
-                                    }
-
-                                    // calculate colspan / rowspan
-                                    let key = cell.getKey();
-                                    let colspan, rowspan;
-                                    if (key in mergedCells) {
-                                        let mergedCell = mergedCells[key];
-                                        if (mergedCell) {
-                                            colspan = mergedCell.width + 1;
-                                            rowspan = mergedCell.height + 1;
-                                        }
-                                    }
-
-                                    // get drill state / level
-                                    let drillState, level;
-                                    if (cell.getFlags && cell.getLevel) {
-                                        level = cell.getLevel();
-                                        switch (cell.getFlags()) {
-                                            case 0: if (level > 0) { drillState = "L"; } break;
-                                            case 1: drillState = "C"; break;
-                                            case 2: drillState = "E"; break;
-                                        }
-                                    }
-
-                                    // get threshold
-                                    let thresholdInterval;
-                                    if (cell.getAppliedThreshold) {
-                                        let appliedThreshold = cell.getAppliedThreshold();
-                                        let threshold = appliedThreshold.threshold;
-                                        if (threshold) {
-                                            thresholdInterval = threshold.intervals[appliedThreshold.intervalId];
-                                        }
-                                    }
-
-                                    (rows[y] || (rows[y] = []))[x] = {
-                                        key: key,
-                                        style: style,
-                                        colspan: colspan,
-                                        rowspan: rowspan,
-
-                                        type: cell.getType ? cell.getType() : 100 /* custom cell */,
-                                        rawVal: cell.getRawVal ? cell.getRawVal() : cell.getVal() /* custom cell */,
-                                        formattedValue: cell.getFormattedValue(),
-                                        scale: cell.getScale ? cell.getScale() : undefined,
-                                        refIndex: cell.getRefIndex && cell.getRefIndex() || undefined,
-                                        total: cell.getTotalCell ? cell.getTotalCell() : cell.isTotalCell() /* custom cell */,
-                                        level: level,
-                                        drillState: drillState,
-                                        thresholdInterval: thresholdInterval,
-                                        hasNOPNullValue: cell.getHasNOPNullValue ? cell.getHasNOPNullValue() : undefined,
-
-                                        // none optimized table
-                                        html: tableCellFactory && tableCellFactory._oGlobalTableViewMode && tableCellFactory.generateDivStringFromCellContent({
-                                            tableRow: y,
-                                            tableCol: x,
-                                            globalRow: y,
-                                            globalCol: x,
-                                            colspan: colspan,
-                                            rowspan: rowspan,
-                                            // referencedRow: null,
-                                            // referencedCol: null,
-                                            hidden: false,
-                                            height: rowSizes[y] && rowSizes[y].data.size,
-                                            width: columnSizes[x] && columnSizes[x].data.size
-                                        })
-                                    };
-                                }
-                            }
-
-                            while (rows.length > 0 && rows[rows.length - 1].every(c => !c)) {
-                                rows.pop(); // remove empty rows at the end
-                            }
-
-                            if (!region.getNewTableType() && region.getShowTitle()) {
-                                rows.shift(); // remove title (removing regionHeaderDummyCell cells)
-                            }
-
-                            component.data = rows;
-
-                            // make sure react tables are rendered
-                            if (view.getReactTableWrapper) {
-                                let reactTableWrapper = view.getReactTableWrapper();
-                                if (reactTableWrapper && reactTableWrapper.appendTableRows) {
-                                    let tableData = reactTableWrapper.getTableData();
-                                    tableData.widgetWidth = 9999999;
-                                    tableData.widgetHeight = 9999999;
-                                    reactTableWrapper.appendTableRows(9999999);
-                                }
-                            }
-                        }
-                    }
+                    extractTableWidgetData(widgetControl, component);
                 } else if (widgetControl.oViz) { // chart
-                    let infoChart = widgetControl.oViz.infoChart();
-                    if (infoChart) { // infoChart may not be initialized
-                        let vizOptions = infoChart.vizOptions();
-                        let data = vizOptions.data.data();
-
-                        component.chartDefinition = {
-                            bindings: vizOptions.bindings,
-                            properties: vizOptions.properties,
-                            scales: vizOptions.scales,
-                            size: vizOptions.size,
-                            title: vizOptions.title,
-                            type: vizOptions.type,
-                            coloration: vizOptions.coloration
-                        };
-
-                        component.data = data.data;
-                        component.metadata = data.metadata;
-                    }
+                    extractChartWidgetData(widgetControl, component);
                 }
             }
 
@@ -1638,6 +1495,156 @@
         }
 
         return result;
+    }
+
+    function extractTableWidgetData(widgetControl, component) {
+        let tableController = widgetControl.getTableController();
+        if (!tableController) return; // tableController may not be initialized
+
+        let region = tableController.getActiveDataRegion();
+        if (!region) return;
+
+        let view = tableController.getView();
+        let tableCellFactory = view.getTableCellFactory();
+
+        //let thresholdManager = region.getThresholdManager();
+        //let thresholdStyle = region.getThresholdStyle();
+        //let repeatMembers = region.getRepeatMembers(); // show repeated members
+        let grid = region.getGrid();
+        let rowSizes = grid.getRows();
+        let columnSizes = grid.getColumns();
+        let mergedCells = grid.getMergedCells();
+
+        let dimensions = grid.calculateGridContentDimensions();
+        let rowCount = dimensions.row; // sometimes there are too many rows... // region.getHeight();
+        let columnCount = dimensions.col; // region.getWidth();
+
+        grid.finishPartialProcessing && grid.finishPartialProcessing(); // create all cells
+
+        let rows = [];
+        for (let y = 0; y < rowCount; y++) {
+            for (let x = 0; x < columnCount; x++) {
+                let cell = grid.getCellByCoord({ x: x, y: y });
+                if (!cell) { /* empty custom cell */
+                    (rows[y] || (rows[y] = []))[x] = null;
+                    continue;
+                }
+
+                // remove unused styles to reduce size
+                let style = tableController.getEffectiveCellStyle(cell);
+                delete style["cellChartSetting"];
+                if (style["number"] && style["number"]["typeSettings"]) {
+                    style["number"]["typeSettings"] = [style["number"]["typeSettings"][0]];
+                }
+
+                // calculate colspan / rowspan
+                let key = cell.getKey();
+                let colspan, rowspan;
+                if (key in mergedCells) {
+                    let mergedCell = mergedCells[key];
+                    if (mergedCell) {
+                        colspan = mergedCell.width + 1;
+                        rowspan = mergedCell.height + 1;
+                    }
+                }
+
+                // get drill state / level
+                let drillState, level;
+                if (cell.getFlags && cell.getLevel) {
+                    level = cell.getLevel();
+                    switch (cell.getFlags()) {
+                        case 0: if (level > 0) { drillState = "L"; } break;
+                        case 1: drillState = "C"; break;
+                        case 2: drillState = "E"; break;
+                    }
+                }
+
+                // get threshold
+                let thresholdInterval;
+                if (cell.getAppliedThreshold) {
+                    let appliedThreshold = cell.getAppliedThreshold();
+                    let threshold = appliedThreshold.threshold;
+                    if (threshold) {
+                        thresholdInterval = threshold.intervals[appliedThreshold.intervalId];
+                    }
+                }
+
+                (rows[y] || (rows[y] = []))[x] = {
+                    key: key,
+                    style: style,
+                    colspan: colspan,
+                    rowspan: rowspan,
+
+                    type: cell.getType ? cell.getType() : 100 /* custom cell */,
+                    rawVal: cell.getRawVal ? cell.getRawVal() : cell.getVal() /* custom cell */,
+                    formattedValue: cell.getFormattedValue(),
+                    scale: cell.getScale ? cell.getScale() : undefined,
+                    refIndex: cell.getRefIndex && cell.getRefIndex() || undefined,
+                    total: cell.getTotalCell ? cell.getTotalCell() : cell.isTotalCell() /* custom cell */,
+                    level: level,
+                    drillState: drillState,
+                    thresholdInterval: thresholdInterval,
+                    hasNOPNullValue: cell.getHasNOPNullValue ? cell.getHasNOPNullValue() : undefined,
+
+                    // none optimized table
+                    html: tableCellFactory && tableCellFactory._oGlobalTableViewMode && tableCellFactory.generateDivStringFromCellContent({
+                        tableRow: y,
+                        tableCol: x,
+                        globalRow: y,
+                        globalCol: x,
+                        colspan: colspan,
+                        rowspan: rowspan,
+                        // referencedRow: null,
+                        // referencedCol: null,
+                        hidden: false,
+                        height: rowSizes[y] && rowSizes[y].data.size,
+                        width: columnSizes[x] && columnSizes[x].data.size
+                    })
+                };
+            }
+        }
+
+        while (rows.length > 0 && rows[rows.length - 1].every(c => !c)) {
+            rows.pop(); // remove empty rows at the end
+        }
+
+        if (!region.getNewTableType() && region.getShowTitle()) {
+            rows.shift(); // remove title (removing regionHeaderDummyCell cells)
+        }
+
+        component.data = rows;
+
+        // make sure react tables are rendered
+        if (view.getReactTableWrapper) {
+            let reactTableWrapper = view.getReactTableWrapper();
+            if (reactTableWrapper && reactTableWrapper.appendTableRows) {
+                let tableData = reactTableWrapper.getTableData();
+                tableData.widgetWidth = 9999999;
+                tableData.widgetHeight = 9999999;
+                reactTableWrapper.appendTableRows(9999999);
+            }
+        }
+    }
+
+    function extractChartWidgetData(widgetControl, component) {
+        let infoChart = widgetControl.oViz.infoChart();
+        if (!infoChart) return; // infoChart may not be initialized
+
+        let vizOptions = infoChart.vizOptions();
+        let data = vizOptions.data.data();
+
+        component.chartDefinition = {
+            bindings: vizOptions.bindings,
+            properties: vizOptions.properties,
+            scales: vizOptions.scales,
+            size: vizOptions.size,
+            title: vizOptions.title,
+            type: vizOptions.type,
+            coloration: vizOptions.coloration
+        };
+
+        component.data = data.data;
+        component.metadata = data.metadata;
     }
 
     function getHtml(settings) {
