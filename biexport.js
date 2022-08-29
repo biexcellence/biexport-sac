@@ -1194,11 +1194,9 @@
                 formatSelectedWidget: settings[format.toLowerCase() + "_exclude"] ? JSON.parse(settings[format.toLowerCase() + "_exclude"]) : []
             }));
 
-            let sendHtml = true;
             if (settings.application_array && settings.oauth) {
-                sendHtml = false;
-            }
-            if (sendHtml) {
+                this._createExportForm(settings, null); // iterations
+            } else {
                 // add settings to html so they can be serialized
                 // NOTE: this is not "promise" save!
                 this.settings.value = JSON.stringify(settings);
@@ -1210,8 +1208,6 @@
                 }, reason => {
                     console.error("[biExport] Error in getHtml:", reason);
                 });
-            } else {
-                this._createExportForm(settings, null);
             }
         }
 
@@ -1243,54 +1239,7 @@
         }
 
         _submitExport(host, exportUrl, form, settings) {
-
             this._serviceMessage = "";
-
-            // handle response types
-            let callback = (error, filename, blob) => {
-                if (error) {
-                    this._serviceMessage = error;
-                    this.dispatchEvent(new CustomEvent("onError", {
-                        detail: {
-                            error: error,
-                            settings: settings
-                        }
-                    }));
-
-                    console.error("[biExport] Export failed:", error);
-                } else if (filename) {
-                    if (filename.indexOf("E:") === 0) {
-                        callback(new Error(filename)); // error...
-                        return;
-                    }
-
-                    this._serviceMessage = "Export has been produced";
-                    this.dispatchEvent(new CustomEvent("onReturn", {
-                        detail: {
-                            filename: filename,
-                            settings: settings
-                        }
-                    }));
-
-                    if (blob) { // download blob
-                        let downloadUrl = URL.createObjectURL(blob);
-                        let a = document.createElement("a");
-                        a.download = filename;
-                        a.href = downloadUrl;
-                        document.body.appendChild(a);
-                        a.click();
-
-                        setTimeout(() => {
-                            document.body.removeChild(a);
-                            URL.revokeObjectURL(downloadUrl);
-                        }, 0);
-                    } else if (filename.indexOf("I:") !== 0) { // download via filename and not scheduled
-                        let downloadUrl = host + "/sac/download.html?FILE=" + encodeURIComponent(filename);
-
-                        window.open(downloadUrl, "_blank");
-                    }
-                }
-            };
 
             if (exportUrl.indexOf(location.protocol) == 0 || exportUrl.indexOf("https:") == 0) { // same protocol => use fetch?
                 fetch(exportUrl, {
@@ -1305,11 +1254,11 @@
                         let contentDisposition = response.headers.get("Content-Disposition");
                         if (contentDisposition) {
                             return response.blob().then(blob => {
-                                callback(null, contentDispositionFilenameRegExp.exec(contentDisposition)[1], blob);
+                                this._receiveExport(settings, null, contentDispositionFilenameRegExp.exec(contentDisposition)[1], blob);
                             });
                         }
                         return response.text().then(text => {
-                            callback(null, text);
+                            this._receiveExport(settings, null, text);
                         });
                     } else if (response.status == 401) {
                         return response.text().then(oauthUrl => {
@@ -1334,7 +1283,7 @@
                         throw new Error(response.status + ": " + response.statusText);
                     }
                 }).catch(reason => {
-                    callback(reason);
+                    this._receiveExport(settings, reason);
                 });
             } else { // use form with blank target...
                 form.action = exportUrl;
@@ -1348,7 +1297,54 @@
 
                 form.remove();
 
-                callback(null, "I:Export running in separate tab");
+                this._receiveExport(settings, null, "I:Export running in separate tab");
+            }
+        }
+
+        _receiveExport(settings, error, filename, blob) {
+            if (error) {
+                this._serviceMessage = error;
+                this.dispatchEvent(new CustomEvent("onError", {
+                    detail: {
+                        error: error,
+                        settings: settings
+                    }
+                }));
+                console.error("[biExport] Export failed:", error);
+            } else if (filename) {
+                if (filename.indexOf("E:") === 0) {
+                    this._receiveExport(settings, new Error(filename)); // error...
+                    return;
+                }
+
+                this._serviceMessage = "Export has been produced";
+
+                if (blob) { // download blob
+                    let downloadUrl = URL.createObjectURL(blob);
+                    let a = document.createElement("a");
+                    a.download = filename;
+                    a.href = downloadUrl;
+                    document.body.appendChild(a);
+                    a.click();
+
+                    setTimeout(() => {
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(downloadUrl);
+                    });
+                } else if (filename.indexOf("I:") === 0) {
+                    this._serviceMessage = filename;
+                    filename = null;
+                } else { // download via filename and not scheduled
+                    let downloadUrl = host + "/sac/download.html?FILE=" + encodeURIComponent(filename);
+                    window.open(downloadUrl, "_blank");
+                }
+
+                this.dispatchEvent(new CustomEvent("onReturn", {
+                    detail: {
+                        filename: filename,
+                        settings: settings
+                    }
+                }));
             }
         }
 
