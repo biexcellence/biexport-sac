@@ -1392,7 +1392,7 @@
         let widgetControls = documentContext.get("sap.fpa.story.document.widgetControls");
 
         let components = {};
-        storyModel.getAllWidgets().forEach((widget) => {
+        storyModel.getAllWidgets().forEach(widget => {
             if (!widget) return; // might be undefined during edit
 
             let includeData = !settings; // no settings => include everything
@@ -1413,7 +1413,7 @@
                 type: widget.class
             };
 
-            let widgetControl = widgetControls.filter((control) => control.getWidgetId() == widget.id)[0];
+            let widgetControl = widgetControls.filter(control => control.getWidgetId() == widget.id)[0];
             if (widgetControl && includeData) { // control specific stuff
                 if (typeof widgetControl.getTableController == "function") { // table
                     extractTableWidgetData(widgetControl, component);
@@ -1425,20 +1425,28 @@
             components[widget.id] = component;
         });
         let datasources = {};
-        entityService.getDatasets().forEach((datasetId) => {
+        entityService.getDatasets().forEach(datasetId => {
             let dataset = entityService.getDatasetById(datasetId);
             datasources[datasetId] = {
                 name: dataset.name,
                 description: dataset.description,
-                model: dataset.model
+                model: dataset.model,
+                filters: []
             };
 
-            storyModel.getWidgetsByDatasetId(datasetId).forEach((widget) => {
+            storyModel.getWidgetsByDatasetId(datasetId).forEach(widget => {
                 let component = components[widget.id];
                 if (component) {
                     component.datasource = datasetId;
                 }
             });
+        });
+        storyModel.getAllFilterInfos().forEach(filterInfo => {
+            let filter = filterInfo.filter;
+            let dataset = datasources[filter.datasetId];
+            if (dataset) {
+                dataset.filters = dataset.filters.concat(filter.filters);
+            }
         });
 
         let result = {
