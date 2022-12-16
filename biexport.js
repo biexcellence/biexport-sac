@@ -1505,6 +1505,8 @@
         let tableController = widgetControl.getTableController();
         if (!tableController) return; // tableController may not be initialized
 
+        //let metadata = tableController.getQueryDefinitionMap();
+
         let region = tableController.getActiveDataRegion();
         if (!region) return;
 
@@ -1582,13 +1584,14 @@
                     type: cell.getType ? cell.getType() : 100 /* custom cell */,
                     rawVal: cell.getRawVal ? cell.getRawVal() : cell.getVal() /* custom cell */,
                     formattedValue: cell.getFormattedValue(),
-                    scale: cell.getScale ? cell.getScale() : undefined,
+                    scale: cell.getScale && cell.getScale() || undefined,
                     refIndex: cell.getRefIndex && cell.getRefIndex() || undefined,
                     total: cell.getTotalCell ? cell.getTotalCell() : cell.isTotalCell() /* custom cell */,
                     level: level,
                     drillState: drillState,
                     thresholdInterval: thresholdInterval,
-                    hasNOPNullValue: cell.getHasNOPNullValue ? cell.getHasNOPNullValue() : undefined,
+                    hasNOPNullValue: cell.getHasNOPNullValue && cell.getHasNOPNullValue() || undefined,
+                    dimensionId : cell.getDimensionId && cell.getDimensionId() || undefined,
 
                     // none optimized table
                     html: tableCellFactory && tableCellFactory._oGlobalTableViewMode && tableCellFactory.generateDivStringFromCellContent({
