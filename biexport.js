@@ -1417,8 +1417,10 @@
             if (widgetControl && includeData) { // control specific stuff
                 if (typeof widgetControl.getTableController == "function") { // table
                     extractTableWidgetData(widgetControl, component);
-                } else if (widgetControl.oViz) { // chart
+                } else if (widgetControl.oViz) { // chart (viz)
                     extractChartWidgetData(widgetControl, component);
+                } else if (widgetControl._destroyViz) { // chart (viz2)
+                    extractChart2WidgetData(widgetControl, component);
                 }
             }
 
@@ -1652,6 +1654,27 @@
 
         component.data = data.data;
         component.metadata = data.metadata;
+    }
+
+    function extractChart2WidgetData(widgetControl, component) {
+        let props = widgetControl._getUIProps();
+        let vizProps = props && props.chartAreaUIProps && props.chartAreaUIProps.vizInstanceUIProps;
+        if (!vizProps) return; // viz may not be initialized
+
+        // let instanceId = widgetControl.getInstanceId();
+        // let unifiedStore = widgetControl.getUnifiedStore();
+        // let viz2StoryEntityInterfaces = widgetControl.getStoreEntityInterface().viz2.v1;
+
+        let chartOptions = vizProps.chartOptions; // unifiedStore.getState(viz2StoryEntityInterfaces.getChartOptions, instanceId)
+        chartOptions.title = widgetControl.getTitle(); // unifiedStore.getState(viz2StoryEntityInterfaces.getTitleDisplayText, instanceId);
+        component.chartDefinition = chartOptions;
+        
+        //let resultSets = unifiedStore.getState(viz2StoryEntityInterfaces.getDecoratedResultSets, instanceId);
+        let resultSet = vizProps.uqmResultSet; // resultSets && resultSets.uqmResultSet && resultSets.uqmResultSet.resultSet;
+        if (resultSet) {
+            component.data = resultSet.data;
+            component.metadata = resultSet.metadata;
+        }
     }
 
     function getHtml(settings) {
