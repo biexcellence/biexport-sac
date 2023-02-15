@@ -1593,7 +1593,7 @@
                     drillState: drillState,
                     thresholdInterval: thresholdInterval,
                     hasNOPNullValue: cell.getHasNOPNullValue && cell.getHasNOPNullValue() || undefined,
-                    dimensionId : cell.getDimensionId && cell.getDimensionId() || undefined,
+                    dimensionId: cell.getDimensionId && cell.getDimensionId() || undefined,
 
                     // none optimized table
                     html: tableCellFactory && tableCellFactory._oGlobalTableViewMode && tableCellFactory.generateDivStringFromCellContent({
@@ -1680,8 +1680,30 @@
     function getHtml(settings) {
         let html = [];
         let promises = [];
-        cloneNode(document.documentElement, html, promises, settings || {});
+        
+        let cache = Object.create(null);
+        let cssVariables = [];
+        let urlCache = url => {
+            var result = cache[url];
+            if (result) return result;
+
+            let index = cssVariables.length;
+            cssVariables.push(""); // placeholder
+            let variableName = "--openbidataurl-" + index;
+            let variableValue = "var(" + variableName + ")";
+
+            return cache[url] = getUrlAsDataUrl(url).then(d => {
+                cssVariables[index] = variableName + ":url(" + d + ");"
+                return variableValue;
+            });
+        };
+
+        cloneNode(document.documentElement, html, promises, urlCache, settings || {});
         return Promise.all(promises).then(() => {
+            if (cssVariables.length > 0 && urlCache.headIndex) {
+                html[urlCache.headIndex] = ["<style>:root{\n", cssVariables.join("\n"), "\n}</style>"].join("");
+            }
+
             if (document.doctype && typeof XMLSerializer != "undefined") { // <!DOCTYPE html>
                 html.unshift(new XMLSerializer().serializeToString(document.doctype));
             }
@@ -1690,11 +1712,10 @@
         });
     }
 
-    function cloneNode(node, html, promises, settings) {
-        if (node.nodeType == 8) return; // COMMENT
-        if (node.tagName == "SCRIPT") return; // SCRIPT
-
-        if (node.nodeType == 3) { // TEXT
+    function cloneNode(node, html, promises, urlCache, settings) {
+        let nodeType = node.nodeType;
+        if (nodeType == 8) return; // COMMENT
+        if (nodeType == 3) { // TEXT
             let value = node.nodeValue;
             if (htmlEntitiesRegExp.test(value)) {
                 let el = document.createElement(node.parentNode.tagName);
@@ -1705,6 +1726,9 @@
             return;
         }
 
+        let tagName = node.tagName;
+        if (tagName == "SCRIPT" || tagName == "UI5-SHARED-RESOURCES") return; // ignore
+
         let name = node.localName;
         let content = null;
         let attributes = Object.create(null);
@@ -1713,7 +1737,7 @@
             attributes[attribute.name] = attribute.value;
         }
 
-        switch (node.tagName) {
+        switch (tagName) {
             case "INPUT":
                 attributes["value"] = node.value;
                 delete attributes["checked"];
@@ -1768,7 +1792,7 @@
                     let dynamic = !sheet.href && sheet.cssRules && sheet.cssRules.length > 0;
 
                     if (shadowHost || dynamic || relative || settings.parse_css) {
-                        content = getCssText(sheet, node.baseURI, shadowHost);
+                        content = getCssText(sheet, node.baseURI, urlCache, shadowHost);
 
                         if (content && name != "style") {
                             name = "style";
@@ -1780,7 +1804,7 @@
         }
 
         if (settings.parse_css && attributes["style"]) {
-            attributes["style"] = parseCssStyle(node.style, node.baseURI);
+            attributes["style"] = parseCssStyle(node.style, node.baseURI, urlCache);
         }
 
         html.push("<");
@@ -1812,17 +1836,22 @@
             }
             isEmpty = false;
         } else {
+            if (tagName == "HEAD") {
+                urlCache.headIndex = html.length;
+                html.push(""); // placeholder for cssVariables
+            }
+
             let child = node.firstChild;
-            if ((!child || node.tagName == "COM-BIEXCELLENCE-OPENBI-SAP-SAC-EXPORT") && node.shadowRoot) { // shadowRoot
+            if ((!child || tagName == "COM-BIEXCELLENCE-OPENBI-SAP-SAC-EXPORT") && node.shadowRoot) { // shadowRoot
                 child = node.shadowRoot.firstChild;
             }
             while (child) {
-                html.push(cloneNode(child, html, promises, settings));
+                html.push(cloneNode(child, html, promises, urlCache, settings));
                 child = child.nextSibling;
                 isEmpty = false;
             }
         }
-        if (isEmpty && node.outerHTML.slice(- (node.tagName.length + 3)).toUpperCase() != "</" + node.tagName.toUpperCase() + ">") {
+        if (isEmpty && node.outerHTML.slice(- (tagName.length + 3)).toUpperCase() != "</" + tagName.toUpperCase() + ">") {
             // no end tag
         } else {
             html.push("</");
@@ -1831,9 +1860,9 @@
         }
     }
 
-    function getCssText(sheet, baseUrl, shadowHost) {
+    function getCssText(sheet, baseUrl, urlCache, shadowHost) {
         try {
-            return parseCssRules(sheet.cssRules, sheet.href || baseUrl, shadowHost); // sheet.cssRules might throw
+            return parseCssRules(sheet.cssRules, sheet.href || baseUrl, urlCache, shadowHost); // sheet.cssRules might throw
         } catch (e) {
             if (sheet.href) { // download external stylesheets
                 return fetch(sheet.href).then(r => r.text()).then(t => {
@@ -1842,7 +1871,7 @@
                     let doc = document.implementation.createHTMLDocument("");
                     doc.head.appendChild(document.createElement("base")).href = sheet.href;
                     doc.body.appendChild(style);
-                    return getCssText(style.sheet, sheet.href, shadowHost);
+                    return getCssText(style.sheet, sheet.href, urlCache, shadowHost);
                 }, reason => {
                     return "";
                 });
@@ -1850,7 +1879,7 @@
         }
         return Promise.resolve("");
     }
-    function parseCssRules(rules, baseUrl, shadowHost) {
+    function parseCssRules(rules, baseUrl, urlCache, shadowHost) {
         let promises = [];
         let css = [];
 
@@ -1864,13 +1893,13 @@
 
                 let index = css.length;
                 css.push(""); // placeholder
-                promises.push(parseCssRules(rule.cssRules, baseUrl, shadowHost).then(c => css[index] = c));
+                promises.push(parseCssRules(rule.cssRules, baseUrl, urlCache, shadowHost).then(c => css[index] = c));
 
                 css.push("}");
             } else if (rule.type == CSSRule.IMPORT_RULE) { // @import
                 let index = css.length;
                 css.push(""); // placeholder
-                promises.push(getCssText(rule.styleSheet || Object.defineProperty({ href: rule.href && toAbsoluteUrl(baseUrl, rule.href) }, "cssRules", { get: () => { throw new Error() } }), baseUrl, shadowHost).then(c => css[index] = c));
+                promises.push(getCssText(rule.styleSheet || Object.defineProperty({ href: rule.href && toAbsoluteUrl(baseUrl, rule.href) }, "cssRules", { get: () => { throw new Error() } }), baseUrl, urlCache, shadowHost).then(c => css[index] = c));
             } else if (rule.type == CSSRule.STYLE_RULE) {
                 if (shadowHost) { // prefix with shadow host name...
                     css.push(shadowHost.localName);
@@ -1880,7 +1909,7 @@
                     css.push(rule.selectorText);
                 }
                 css.push(" {");
-                let value = parseCssStyle(rule.style, baseUrl);
+                let value = parseCssStyle(rule.style, baseUrl, urlCache);
                 if (value.then) {
                     let index = css.length;
                     promises.push(value.then(s => css[index] = s));
@@ -1889,7 +1918,7 @@
                 css.push("}");
             } else if (rule.type == CSSRule.FONT_FACE_RULE) {
                 css.push("@font-face {");
-                let value = parseCssStyle(rule.style, baseUrl);
+                let value = parseCssStyle(rule.style, baseUrl, urlCache);
                 if (value.then) {
                     let index = css.length;
                     promises.push(value.then(s => css[index] = s));
@@ -1903,7 +1932,7 @@
 
         return Promise.all(promises).then(() => css.join(""));
     }
-    function parseCssStyle(style, baseUrl) {
+    function parseCssStyle(style, baseUrl, urlCache) {
         let promises;
         let css = [];
 
@@ -1917,7 +1946,11 @@
                 let url = cssUrlRegExp.exec(value)[1];
                 if (url) {
                     let index = css.length;
-                    (promises || (promises = [])).push(getUrlAsDataUrl(toAbsoluteUrl(baseUrl, url)).then(d => css[index] = "url(" + d + ")", () => css[index] = value));
+                    if (name == "src") { // src (e.g. in @font-face) can't use css variables...
+                        (promises || (promises = [])).push(getUrlAsDataUrl(toAbsoluteUrl(baseUrl, url)).then(d => css[index] = "url(" + d + ")", () => css[index] = value));
+                    } else {
+                        (promises || (promises = [])).push(urlCache(toAbsoluteUrl(baseUrl, url)).then(v => css[index] = v, () => css[index] = value));
+                    }
                 }
             }
             css.push(value); // placeholder
