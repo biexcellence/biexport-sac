@@ -1199,7 +1199,7 @@
             } else {
                 // add settings to html so they can be serialized
                 // NOTE: this is not "promise" save!
-                this.settings.value = JSON.stringify(settings);
+                this.settings.value = JSON.stringify(settings, (key, value) => key == "metadata" ? undefined : value);
 
                 getHtml(settings).then(html => {
                     this._updateSettings(); // reset settings
