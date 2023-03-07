@@ -1358,7 +1358,7 @@
 
     // UTILS
 
-    const cssUrlRegExp = /url\(["']?(.*?)["']?\)/i;
+    const cssUrlRegExp = /url\(["']?(.*?)["']?\)/ig;
     const contentDispositionFilenameRegExp = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/i;
     const startsWithHttpRegExp = /^http/i;
     const htmlEntitiesRegExp = /[<>&]/;
@@ -1684,7 +1684,7 @@
         let cache = Object.create(null);
         let cssVariables = [];
         let urlCache = url => {
-            var result = cache[url];
+            let result = cache[url];
             if (result) return result;
 
             let index = cssVariables.length;
@@ -1943,17 +1943,30 @@
             css.push(name);
             css.push(":");
             if ((name == "src" || name.startsWith("background")) && value && value.includes("url") && !value.includes("data:")) {
-                let url = cssUrlRegExp.exec(value)[1];
-                if (url) {
+                let lastValueIndex = 0;
+                for (let match of value.matchAll(cssUrlRegExp)) { // fonts can have more than one url
+                    let result = match[0];
+                    let url = match[1];
+
+                    if (lastValueIndex != match.index) {
+                        css.push(value.substring(lastValueIndex, match.index)); // prefix
+                    }
+                    lastValueIndex = match.index + result.length;
+
                     let index = css.length;
+                    css.push(result); // placeholder
                     if (name == "src") { // src (e.g. in @font-face) can't use css variables...
                         (promises || (promises = [])).push(getUrlAsDataUrl(toAbsoluteUrl(baseUrl, url)).then(d => css[index] = "url(" + d + ")", () => css[index] = value));
                     } else {
                         (promises || (promises = [])).push(urlCache(toAbsoluteUrl(baseUrl, url)).then(v => css[index] = v, () => css[index] = value));
                     }
                 }
+                if (lastValueIndex != value.length) {
+                    css.push(value.substring(lastValueIndex, value.length)); // suffix
+                }
+            } else {
+                css.push(value);
             }
-            css.push(value); // placeholder
             if (priority == "important") {
                 css.push("!important");
             }
