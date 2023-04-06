@@ -1639,10 +1639,6 @@
             rows.pop(); // remove empty rows at the end
         }
 
-        if (!region.getNewTableType() && region.getShowTitle()) {
-            rows.shift(); // remove title (removing regionHeaderDummyCell cells)
-        }
-
         component.data = rows;
     }
 
