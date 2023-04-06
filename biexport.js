@@ -1514,6 +1514,24 @@
 
         let view = tableController.getView();
         let tableCellFactory = view.getTableCellFactory();
+        let includeStyles = true;
+
+        if (view.getReactTableWrapper) { // make sure react tables are rendered
+            let reactTableWrapper = view.getReactTableWrapper();
+            if (reactTableWrapper && reactTableWrapper.appendTableRows) {
+                let tableData = reactTableWrapper.getTableData();
+                tableData.widgetWidth = Number.MAX_VALUE;
+                tableData.widgetHeight = Number.MAX_VALUE;
+                reactTableWrapper.appendTableRows(Number.MAX_VALUE);
+                includeStyles = false;
+            }
+        }
+        if (view._oScrollableTable) { // make sure tables are rendered
+            view._oScrollableTable.setDisplaySize(Number.MAX_VALUE, Number.MAX_VALUE);
+            view._oScrollableTable.setTopLeftCell({ row: 0, col: 0 });
+            view._oScrollableTable.redrawTable();
+            includeStyles = false;
+        }
 
         //let thresholdManager = region.getThresholdManager();
         //let thresholdStyle = region.getThresholdStyle();
@@ -1538,11 +1556,14 @@
                     continue;
                 }
 
-                // remove unused styles to reduce size
-                let style = tableController.getEffectiveCellStyle(cell);
-                delete style["cellChartSetting"];
-                if (style["number"] && style["number"]["typeSettings"]) {
-                    style["number"]["typeSettings"] = [style["number"]["typeSettings"][0]];
+                // get effective style
+                let style;
+                if (includeStyles) {
+                    style = tableController.getEffectiveCellStyle(cell);
+                    delete style["cellChartSetting"]; // remove unused styles to reduce size
+                    if (style["number"] && style["number"]["typeSettings"]) {
+                        style["number"]["typeSettings"] = [style["number"]["typeSettings"][0]];
+                    }
                 }
 
                 // calculate colspan / rowspan
@@ -1589,7 +1610,7 @@
                     formattedValue: cell.getFormattedValue(),
                     scale: cell.getScale && cell.getScale() || undefined,
                     refIndex: cell.getRefIndex && cell.getRefIndex() || undefined,
-                    total: cell.getTotalCell ? cell.getTotalCell() : cell.isTotalCell() /* custom cell */ || undefined,
+                    total: (cell.getTotalCell ? cell.getTotalCell() : cell.isTotalCell()) /* custom cell */ || undefined,
                     level: level,
                     drillState: drillState,
                     thresholdInterval: thresholdInterval,
@@ -1597,7 +1618,7 @@
                     dimensionId: cell.getDimensionId && cell.getDimensionId() || undefined,
 
                     // none optimized table
-                    html: tableCellFactory && tableCellFactory._oGlobalTableViewMode && tableCellFactory.generateDivStringFromCellContent({
+                    html: includeStyles && tableCellFactory && tableCellFactory._oGlobalTableViewMode && tableCellFactory.generateDivStringFromCellContent({
                         tableRow: y,
                         tableCol: x,
                         globalRow: y,
@@ -1609,7 +1630,7 @@
                         hidden: false,
                         height: rowSizes[y] && rowSizes[y].data.size,
                         width: columnSizes[x] && columnSizes[x].data.size
-                    })
+                    }) || undefined
                 };
             }
         }
@@ -1623,17 +1644,6 @@
         }
 
         component.data = rows;
-
-        // make sure react tables are rendered
-        if (view.getReactTableWrapper) {
-            let reactTableWrapper = view.getReactTableWrapper();
-            if (reactTableWrapper && reactTableWrapper.appendTableRows) {
-                let tableData = reactTableWrapper.getTableData();
-                tableData.widgetWidth = 9999999;
-                tableData.widgetHeight = 9999999;
-                reactTableWrapper.appendTableRows(9999999);
-            }
-        }
     }
 
     function extractChartWidgetData(widgetControl, component) {
@@ -1669,7 +1679,7 @@
         let chartOptions = vizProps.chartOptions; // unifiedStore.getState(viz2StoryEntityInterfaces.getChartOptions, instanceId)
         chartOptions.title = widgetControl.getTitle(); // unifiedStore.getState(viz2StoryEntityInterfaces.getTitleDisplayText, instanceId);
         component.chartDefinition = chartOptions;
-        
+
         //let resultSets = unifiedStore.getState(viz2StoryEntityInterfaces.getDecoratedResultSets, instanceId);
         let resultSet = vizProps.uqmResultSet; // resultSets && resultSets.uqmResultSet && resultSets.uqmResultSet.resultSet;
         if (resultSet) {
@@ -1681,7 +1691,7 @@
     function getHtml(settings) {
         let html = [];
         let promises = [];
-        
+
         let cache = Object.create(null);
         let cssVariables = [];
         let urlCache = url => {
