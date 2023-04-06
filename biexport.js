@@ -1579,7 +1579,7 @@
                 }
 
                 (rows[y] || (rows[y] = []))[x] = {
-                    key: key,
+                    //key: key,
                     style: style,
                     colspan: colspan,
                     rowspan: rowspan,
