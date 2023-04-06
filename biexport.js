@@ -1588,7 +1588,7 @@
                     formattedValue: cell.getFormattedValue(),
                     scale: cell.getScale && cell.getScale() || undefined,
                     refIndex: cell.getRefIndex && cell.getRefIndex() || undefined,
-                    total: cell.getTotalCell ? cell.getTotalCell() : cell.isTotalCell() /* custom cell */,
+                    total: cell.getTotalCell ? cell.getTotalCell() : cell.isTotalCell() /* custom cell */ || undefined,
                     level: level,
                     drillState: drillState,
                     thresholdInterval: thresholdInterval,
