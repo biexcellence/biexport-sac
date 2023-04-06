@@ -1561,9 +1561,10 @@
                 if (cell.getFlags && cell.getLevel) {
                     level = cell.getLevel();
                     switch (cell.getFlags()) {
-                        case 0: if (level > 0) { drillState = "L"; } break;
+                        case 0: if (level > 0) { drillState = "L"; } else { level = undefined; } break;
                         case 1: drillState = "C"; break;
                         case 2: drillState = "E"; break;
+                        default: level = undefined; break;
                     }
                 }
 
