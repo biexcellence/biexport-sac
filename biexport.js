@@ -1391,27 +1391,66 @@
         let entityService = documentContext.get("sap.fpa.bi.entityService");
         let widgetControls = documentContext.get("sap.fpa.story.document.widgetControls");
 
+        // only for applications (not stories)
+        let app, appNames = Object.create(null);
+        let outlineContainer = findAggregatedObjects(e => e.hasStyleClass && e.hasStyleClass("sapAppBuildingOutline"))[0]; // sId: "__container0"
+        if (outlineContainer) { // outlineContainer has more recent data than applicationEntity during edit
+            if (!app) {
+                try {
+                    app = outlineContainer.getReactProps().store.getState().globalState.instances.app["[{\"app\":\"MAIN_APPLICATION\"}]"]._usis; /* SAC 2021.5.1 */
+                } catch (e) { /* ignore */ }
+            }
+            if (!app) {
+                try {
+                    app = outlineContainer.getReactProps().store.getState().globalState.instances.app["[{\"app\":\"MAIN_APPLICATION\"}]"]; /* old SAC */
+                } catch (e) { /* ignore */ }
+            }
+        }
+        if (!app) {
+            let applicationEntity = storyModel.getApplicationEntity();
+            if (applicationEntity) {
+                app = applicationEntity.app;
+            }
+        }
+        if (app) {
+            let names = app.names;
+            for (let key in names) {
+                let name = names[key];
+                let obj = JSON.parse(key).pop();
+                let type = Object.keys(obj)[0];
+                let id = obj[type];
+
+                appNames[id] = {
+                    type: type,
+                    name: name
+                };
+            }
+        }
+
         let components = {};
         storyModel.getAllWidgets().forEach(widget => {
             if (!widget) return; // might be undefined during edit
 
+            let component = appNames[widget.id] || {
+                type: widget.class
+            };
+
             let includeData = !settings; // no settings => include everything
             if (settings) {
                 // if widget is excluded, do not include information
-                if (settings.formatSelectedWidget !== undefined) {
-                    if (settings.formatSelectedWidget.length > 0 && settings.formatSelectedWidget.some(v => v.id == widget.id && v.isExcluded)) {
-                        return;
-                    }
+                if (settings.formatSelectedWidget !== undefined &&
+                    settings.formatSelectedWidget.length > 0 &&
+                    settings.formatSelectedWidget.some(v => (v.id == widget.id || v.component == component.name) && v.isExcluded)
+                ) {
+                    return;
                 }
                 // if widget is not chosen, do not include additional lines
-                if (settings.tablesSelectedWidget !== undefined && settings.tablesSelectedWidget.some(v => v.id == widget.id && !v.isExcluded)) {
+                if (settings.tablesSelectedWidget !== undefined &&
+                    settings.tablesSelectedWidget.some(v => (v.id == widget.id || v.component == component.name) && !v.isExcluded)
+                ) {
                     includeData = true;
                 }
             }
-
-            let component = {
-                type: widget.class
-            };
 
             let widgetControl = widgetControls.filter(control => control.getWidgetId() == widget.id)[0];
             if (widgetControl && includeData) { // control specific stuff
@@ -1454,49 +1493,9 @@
         let result = {
             components: components,
             datasources: datasources
-        }
-
-        // only for applications (not stories)
-        let app;
-
-        let outlineContainer = findAggregatedObjects(e => e.hasStyleClass && e.hasStyleClass("sapAppBuildingOutline"))[0]; // sId: "__container0"
-        if (outlineContainer) { // outlineContainer has more recent data than applicationEntity during edit
-            if (!app) {
-                try {
-                    app = outlineContainer.getReactProps().store.getState().globalState.instances.app["[{\"app\":\"MAIN_APPLICATION\"}]"]._usis; /* SAC 2021.5.1 */
-                } catch (e) { /* ignore */ }
-            }
-            if (!app) {
-                try {
-                    app = outlineContainer.getReactProps().store.getState().globalState.instances.app["[{\"app\":\"MAIN_APPLICATION\"}]"]; /* old SAC */
-                } catch (e) { /* ignore */ }
-            }
-        }
-
-        if (!app) {
-            let applicationEntity = storyModel.getApplicationEntity();
-            if (applicationEntity) {
-                app = applicationEntity.app;
-            }
-        }
+        };
 
         if (app) {
-            let names = app.names;
-
-            for (let key in names) {
-                let name = names[key];
-
-                let obj = JSON.parse(key).pop();
-                let type = Object.keys(obj)[0];
-                let id = obj[type];
-
-                let component = components[id];
-                if (component) { // might be undefined during edit
-                    component.type = type;
-                    component.name = name;
-                }
-            }
-
             result.vars = app.globalVars;
         }
 
