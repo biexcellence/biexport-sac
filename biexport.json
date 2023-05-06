@@ -67,6 +67,10 @@
       "description": "If set to true, the export automatically creates native Office objects when possible - charts, tables, dropdowns, texts etc.",
       "default": false
     },
+    "tablesCellLimit": {
+      "type": "integer",
+      "description": "Styled table cell limit, when set no cell styles for tables with more cells than specified will be retrieved."
+    },
     "pdfTemplate": {
       "type": "string",
       "description": "As an alternative to the HTML Template property, you can also specify a DOC, DOCX, PPT or PPTX template which will be used as a fully formatted template for your PDF export",

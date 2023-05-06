@@ -141,6 +141,10 @@
                   <td><label for="tables_SelectedWidgets">Retrieve add. data</label></td>
                   <td><slot name="tables_SelectedWidgets"></slot></td>
                 </tr>
+                <tr>
+                  <td><label for="tablesCellLimit">Styled cells limit</label></td>
+                  <td><input id="tablesCellLimit" name="tablesCellLimit" type="number" placeholder="Unlimited if empty"></td>
+                </tr>
               </table>
             </fieldset>
 
@@ -725,6 +729,13 @@
             this._setBooleanValue("biAnalyticsDocument", value);
         }
 
+        get tablesCellLimit() {
+            return this._getValue("tablesCellLimit");
+        }
+        set tablesCellLimit(value) {
+            this._setValue("tablesCellLimit", value);
+        }
+
         get pdfTemplate() {
             return this._getValue("pdfTemplate");
         }
@@ -997,6 +1008,7 @@
                 "parseCss",
                 "biAnalyticsDocument",
                 "tablesSelectedWidgets",
+                "tablesCellLimit",
 
                 "pdfTemplate",
                 "pdfSelectedWidgets",

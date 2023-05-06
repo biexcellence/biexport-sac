@@ -147,6 +147,7 @@
             this._export_settings.application_array = "";
 
             this._export_settings.bianalytics = false;
+            this._export_settings.tables_cell_limit = "";
             this._export_settings.parseCssClassFilter = "";
 
             this._updateSettings();
@@ -717,6 +718,14 @@
             this._updateSettings();
         }
 
+        get tablesCellLimit() {
+            return this._export_settings.tables_cell_limit;
+        }
+        set tablesCellLimit(value) {
+            this._export_settings.tables_cell_limit = value;
+            this._updateSettings();
+        }
+
         getPptSeparateSlides() {
             return this.pptSeparate;
         }
@@ -1191,7 +1200,8 @@
 
             settings.metadata = JSON.stringify(getMetadata({
                 tablesSelectedWidget: settings.tables_exclude ? JSON.parse(settings.tables_exclude) : [],
-                formatSelectedWidget: settings[format.toLowerCase() + "_exclude"] ? JSON.parse(settings[format.toLowerCase() + "_exclude"]) : []
+                formatSelectedWidget: settings[format.toLowerCase() + "_exclude"] ? JSON.parse(settings[format.toLowerCase() + "_exclude"]) : [],
+                tablesCellLimit: settings.tables_cell_limit || undefined
             }));
 
             if (settings.application_array && settings.oauth) {
@@ -1453,7 +1463,7 @@
             let widgetControl = widgetControls.filter(control => control.getWidgetId() == widget.id)[0];
             if (widgetControl && includeData) { // control specific stuff
                 if (typeof widgetControl.getTableController == "function") { // table
-                    extractTableWidgetData(widgetControl, component, settings && settings.tablesCellLimit || 30000);// default drill limitation 500 * 60
+                    extractTableWidgetData(widgetControl, component, settings && settings.tablesCellLimit);
                 } else if (widgetControl.oViz) { // chart (viz)
                     extractChartWidgetData(widgetControl, component);
                 } else if (widgetControl._destroyViz) { // chart (viz2)
@@ -1524,7 +1534,7 @@
         let rowCount = dimensions.row; // sometimes there are too many rows... // region.getHeight();
         let columnCount = dimensions.col; // region.getWidth();
 
-        let includeStyles = rowCount * columnCount < tablesCellLimit;
+        let includeStyles = tablesCellLimit ? rowCount * columnCount < tablesCellLimit : true;
 
         if (includeStyles && view.getReactTableWrapper) { // make sure react tables are rendered
             let reactTableWrapper = view.getReactTableWrapper();
