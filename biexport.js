@@ -1435,7 +1435,7 @@
                 type: widget.class
             };
 
-            let includeData = !settings; // no settings => include everything
+            let includeData = true; // no settings => include everything
             if (settings) {
                 // if widget is excluded, do not include information
                 if (settings.formatSelectedWidget !== undefined &&
@@ -1445,17 +1445,15 @@
                     return;
                 }
                 // if widget is not chosen, do not include additional lines
-                if (settings.tablesSelectedWidget !== undefined &&
-                    settings.tablesSelectedWidget.some(v => (v.id == widget.id || v.component == component.name) && !v.isExcluded)
-                ) {
-                    includeData = true;
+                if (settings.tablesSelectedWidget !== undefined) {
+                    includeData = settings.tablesSelectedWidget.some(v => (v.id == widget.id || v.component == component.name) && !v.isExcluded);
                 }
             }
 
             let widgetControl = widgetControls.filter(control => control.getWidgetId() == widget.id)[0];
             if (widgetControl && includeData) { // control specific stuff
                 if (typeof widgetControl.getTableController == "function") { // table
-                    extractTableWidgetData(widgetControl, component);
+                    extractTableWidgetData(widgetControl, component, settings && settings.tablesCellLimit || 30000);// default drill limitation 500 * 60
                 } else if (widgetControl.oViz) { // chart (viz)
                     extractChartWidgetData(widgetControl, component);
                 } else if (widgetControl._destroyViz) { // chart (viz2)
@@ -1502,7 +1500,7 @@
         return result;
     }
 
-    function extractTableWidgetData(widgetControl, component) {
+    function extractTableWidgetData(widgetControl, component, tablesCellLimit) {
         let tableController = widgetControl.getTableController();
         if (!tableController) return; // tableController may not be initialized
 
@@ -1513,24 +1511,6 @@
 
         let view = tableController.getView();
         let tableCellFactory = view.getTableCellFactory();
-        let includeStyles = true;
-
-        if (view.getReactTableWrapper) { // make sure react tables are rendered
-            let reactTableWrapper = view.getReactTableWrapper();
-            if (reactTableWrapper && reactTableWrapper.appendTableRows) {
-                let tableData = reactTableWrapper.getTableData();
-                tableData.widgetWidth = Number.MAX_VALUE;
-                tableData.widgetHeight = Number.MAX_VALUE;
-                reactTableWrapper.appendTableRows(Number.MAX_VALUE);
-                includeStyles = false;
-            }
-        }
-        if (view._oScrollableTable) { // make sure tables are rendered
-            view._oScrollableTable.setDisplaySize(Number.MAX_VALUE, Number.MAX_VALUE);
-            view._oScrollableTable.setTopLeftCell({ row: 0, col: 0 });
-            view._oScrollableTable.redrawTable();
-            includeStyles = false;
-        }
 
         //let thresholdManager = region.getThresholdManager();
         //let thresholdStyle = region.getThresholdStyle();
@@ -1543,6 +1523,27 @@
         let dimensions = grid.calculateGridContentDimensions();
         let rowCount = dimensions.row; // sometimes there are too many rows... // region.getHeight();
         let columnCount = dimensions.col; // region.getWidth();
+
+        let includeStyles = rowCount * columnCount < tablesCellLimit;
+
+        if (includeStyles && view.getReactTableWrapper) { // make sure react tables are rendered
+            let reactTableWrapper = view.getReactTableWrapper();
+            if (reactTableWrapper && reactTableWrapper.appendTableRows) {
+                let tableData = reactTableWrapper.getTableData();
+                //tableData.widgetWidth = reactTableWrapper.reactTable.tableSizes.htmlTableWrapperWidth;
+                //tableData.widgetHeight = reactTableWrapper.reactTable.tableSizes.htmlTableWrapperHeight;
+                tableData.widgetWidth = Number.MAX_VALUE;
+                tableData.widgetHeight = Number.MAX_VALUE;
+                reactTableWrapper.appendTableRows(Number.MAX_VALUE);
+                includeStyles = false;
+            }
+        }
+        if (includeStyles && view._oScrollableTable) { // make sure tables are rendered
+            view._oScrollableTable.setDisplaySize(Number.MAX_VALUE, Number.MAX_VALUE);
+            view._oScrollableTable.setTopLeftCell({ row: 0, col: 0 });
+            view._oScrollableTable.redrawTable();
+            includeStyles = false;
+        }
 
         grid.finishPartialProcessing && grid.finishPartialProcessing(); // create all cells
 

@@ -270,7 +270,7 @@
             let docVisibleComponents = this["docSelectedWidgets"] ? JSON.parse(this["docSelectedWidgets"]) : [];
             let pngVisibleComponents = this["pngSelectedWidgets"] ? JSON.parse(this["pngSelectedWidgets"]) : [];
             let csvVisibleComponents = this["csvSelectedWidgets"] ? JSON.parse(this["csvSelectedWidgets"]) : [];
-            let allComponents = biExportGetMetadata({}).components;
+            let allComponents = biExportGetMetadata({ tablesSelectedWidget: [] }).components;
             let components = [];
             for (let componentId in allComponents) {
                 let component = allComponents[componentId];
