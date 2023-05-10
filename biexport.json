@@ -26,6 +26,25 @@
       "ignoreIntegrity": true
     }
   ],
+  "types": {
+    "biExportParameter": {
+      "description": "A parameter with name and value",
+      "properties": [
+        {
+          "name": "name",
+          "type": "string",
+          "description": "The name of the parameter",
+          "mandatory": true
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "description": "The value of the parameter",
+          "mandatory": true
+        }
+      ]
+    }
+  },
   "properties": {
     "serverURL": {
       "type": "string",
@@ -103,7 +122,7 @@
     },
     "publishSync": {
       "type": "boolean",
-      "description": "If set to true, the export process runs synchronuously even if the file shall not be returned to the user.",
+      "description": "If set to true, the export process runs synchronuously even if the file shall not be returned to the user",
       "default": false
     },
     "mailFrom": {
@@ -378,7 +397,7 @@
       "parameters": []
     },
     "setPptSeparateSlides": {
-      "description": "Sets the Property 'One Component by Slide' for PowerPoint Export.",
+      "description": "Sets the Property 'One Component by Slide' for PowerPoint Export",
       "parameters": [
         {
           "name": "value",
@@ -433,7 +452,7 @@
       ]
     },
     "getExportTemplate": {
-      "description": "Add an Export Template",
+      "description": "Get the Export Template",
       "parameters": [
         {
           "name": "format",
@@ -698,7 +717,7 @@
       ]
     },
     "addSelectedWidget": {
-      "description": "Add a widget to be exported.",
+      "description": "Add a widget to be exported",
       "parameters": [
         {
           "name": "format",
@@ -708,7 +727,7 @@
         {
           "name": "widget",
           "type": "string",
-          "description": "The name of the Widget."
+          "description": "The name of the Widget"
         },
         {
           "name": "isSelected",
@@ -718,7 +737,7 @@
       ]
     },
     "clearSelectedWidgets": {
-      "description": "Clears all applications to be exported during background execution.",
+      "description": "Clears all applications to be exported during background execution",
       "parameters": [
         {
           "name": "format",
@@ -728,104 +747,119 @@
       ]
     },
     "addCustomText": {
-      "description": "Add a Custom Text to replace a placeholder in the export.",
+      "description": "Add a Custom Text to replace a placeholder in the export",
       "parameters": [
         {
           "name": "name",
           "type": "string",
-          "description": "The name of the placeholder."
+          "description": "The name of the placeholder"
         },
         {
           "name": "value",
           "type": "string",
-          "description": "The text to be displayed for the placeholder."
+          "description": "The text to be displayed for the placeholder"
         }
       ]
     },
     "clearCustomTexts": {
-      "description": "Clears all Custom Texts."
+      "description": "Clears all Custom Texts"
     },
     "addExportApplication": {
-      "description": "Add an application to be exported during background execution.",
+      "description": "Add an application to be exported during background execution",
       "parameters": [
         {
           "name": "id",
           "type": "string",
-          "description": "The id of the application."
+          "description": "The id of the application"
         }
       ]
     },
     "clearExportApplications": {
-      "description": "Clears all applications to be exported during background execution."
+      "description": "Clears all applications to be exported during background execution"
     },
     "addURLParameter": {
-      "description": "Add an URL parameter and value which is used during background execution.",
+      "description": "Add an URL parameter and value which is used during background execution",
       "parameters": [
         {
           "name": "name",
           "type": "string",
-          "description": "The name of the URL parameter."
+          "description": "The name of the URL parameter"
         },
         {
           "name": "values",
           "type": "string[]",
-          "description": "The values of the URL parameter."
+          "description": "The values of the URL parameter"
         },
         {
           "name": "iterative",
           "type": "boolean",
-          "description": "Whether the URL parameter values should be iterated over."
+          "description": "Whether the URL parameter values should be iterated over"
         },
         {
           "name": "applicationIds",
           "type": "string[]",
-          "description": "The applications for which the URL parameter will be used, if empty the URL parameter is used for all applications."
+          "description": "The applications for which the URL parameter will be used, if empty the URL parameter is used for all applications"
+        }
+      ]
+    },
+    "addURLParameters": {
+      "description": "Adds URL parameters which are used during background execution",
+      "parameters": [
+        {
+          "name": "parameters",
+          "type": "biExportParameter[]",
+          "description": "The URL parameters"
+        },
+        {
+          "name": "applicationIds",
+          "type": "string[]",
+          "description": "The applications for which the URL parameter will be used, if empty the URL parameter is used for all applications"
         }
       ]
     },
     "clearURLParameters": {
-      "description": "Clears all URLs parameters which are used during background execution."
+      "description": "Clears all URLs parameters which are used during background execution"
     },
     "addPdfSection": {
-      "description": "Add a PDF Section as an Export Template.",
+      "description": "Add a PDF Section as an Export Template",
       "parameters": [
         {
           "name": "name",
           "type": "string",
-          "description": "The name of the PDF Section. May be empty."
+          "description": "The name of the PDF Section. May be empty"
         },
         {
           "name": "header",
           "type": "string",
-          "description": "The page header for the PDF Section."
+          "description": "The page header for the PDF Section"
         },
         {
           "name": "footer",
           "type": "string",
-          "description": "The page footer for the PDF Section."
+          "description": "The page footer for the PDF Section"
         },
         {
           "name": "content",
           "type": "string",
-          "description": "The page content for the PDF Section."
+          "description": "The page content for the PDF Section"
         },
         {
           "name": "orientation",
           "type": "string",
-          "description": "(P)ortrait or (L)andscape."
+          "description": "(P)ortrait or (L)andscape"
         },
         {
           "name": "iterative",
           "type": "boolean",
-          "description": "Whether the URL parameter values should be iterated over."
+          "description": "Whether the URL parameter values should be iterated over"
         }
       ]
     },
     "clearPdfSections": {
-      "description": "Clears all PDF Sections."
+      "description": "Clears all PDF Sections"
     },
     "addBriefingBookDefinition": {
-      "description": "Add a Briefing Book Definition which is used during background execution.",
+      "description": "Add a Briefing Book Definition which is used during background execution",
       "parameters": [
         {
           "name": "parameters",
@@ -835,17 +869,17 @@
         {
           "name": "index",
           "type": "integer",
-          "description": "Ordinal of the execution."
+          "description": "Ordinal of the execution"
         },
         {
           "name": "filename",
           "type": "string",
-          "description": "Optional:The filename to which the results of the application shall be added."
+          "description": "Optional:The filename to which the results of the application shall be added"
         },
         {
           "name": "template",
           "type": "string",
-          "description": "Optional: The Export Template which shall be used for this particular execution."
+          "description": "Optional: The Export Template which shall be used for this particular execution"
         },
         {
           "name": "customTexts",
@@ -855,20 +889,20 @@
         {
           "name": "selectedWidgets",
           "type": "string[]",
-          "description": "Optional: The widgets to be added into the export document."
+          "description": "Optional: The widgets to be added into the export document"
         },
         {
           "name": "applicationIds",
           "type": "string[]",
-          "description": "Optional: The applications for which the URL parameter will be used."
+          "description": "Optional: The applications for which the URL parameter will be used"
         }
       ]
     },
     "clearBriefingBookDefinitions": {
-      "description": "Clears all Briefing Book Definitions which are used during background execution."
+      "description": "Clears all Briefing Book Definitions which are used during background execution"
     },
     "addExportTemplateSection": {
-      "description": "Add an Export Template Section dynamically for the given format.",
+      "description": "Add an Export Template Section dynamically for the given format",
       "parameters": [
         {
           "name": "format",
@@ -883,7 +917,7 @@
         {
           "name": "pageBreakAfter",
           "type": "boolean",
-          "description": "If set to false, the Word document section will not be ended with a page break."
+          "description": "If set to false, the Word document section will not be ended with a page break"
         },
         {
           "name": "placeholderRedefinitions",
@@ -898,7 +932,7 @@
       ]
     },
     "clearExportTemplateSections": {
-      "description": "Clears the Export Template Sections for the given format.",
+      "description": "Clears the Export Template Sections for the given format",
       "parameters": [
         {
           "name": "format",
@@ -913,7 +947,7 @@
       "parameters": []
     },
     "doExport": {
-      "description": "Triggers the export process.",
+      "description": "Triggers the export process",
       "parameters": [
         {
           "name": "format",

@@ -1050,6 +1050,13 @@
             this._export_settings.array_var.push({ "parameter": name, "values": values.join(";"), "iterative": iterative, "applications": applicationIds.join(";") });
             this._updateSettings();
         }
+        addURLParameters(parameters, applicationIds) {
+            if (!this._export_settings.array_var) {
+                this._export_settings.array_var = [];
+            }
+            this._export_settings.array_var.push({ "index": this._export_settings.array_var.length, "parameters": parameters, "applications": applicationIds.join(";") });
+            this._updateSettings();
+        }
         clearURLParameters() {
             this._export_settings.array_var = "";
             this._updateSettings();
