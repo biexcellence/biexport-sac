@@ -1262,6 +1262,7 @@
                 fetch(exportUrl, {
                     method: "POST",
                     mode: "cors",
+                    credentials: "include",
                     body: new FormData(form),
                     headers: {
                         "X-Requested-With": "XMLHttpRequest"
