@@ -1575,82 +1575,98 @@
                     continue;
                 }
 
-                // get effective style
-                let style;
-                if (includeStyles) {
-                    style = tableController.getEffectiveCellStyle(cell);
-                    delete style["cellChartSetting"]; // remove unused styles to reduce size
-                    if (style["number"] && style["number"]["typeSettings"]) {
-                        style["number"]["typeSettings"] = [style["number"]["typeSettings"][0]];
-                    }
+                let d = {
+                    type: cell.getType ? cell.getType() : 100 /* custom cell */,
+                    rawVal: cell.getRawVal ? cell.getRawVal() : cell.getVal() /* custom cell */,
+                    formattedValue: cell.getFormattedValue()
+                };
+
+                if (cell.getScale) {
+                    d.scale = cell.getScale() || undefined;
+                }
+                if (cell.getRefIndex) {
+                    d.refIndex = cell.getRefIndex() || undefined;
+                }
+                if (cell.getTotalCell) {
+                    d.total = cell.getTotalCell() || undefined;
+                } else if (cell.isTotalCell) { /* custom cell */
+                    d.total = cell.isTotalCell() || undefined;
+                }
+                if (cell.getHasNOPNullValue) {
+                    d.hasNOPNullValue = cell.getHasNOPNullValue() || undefined;
+                }
+                if (cell.getDimensionId) {
+                    d.dimensionId = cell.getDimensionId() || undefined;
                 }
 
                 // calculate colspan / rowspan
                 let key = cell.getKey();
-                let colspan, rowspan;
                 if (key in mergedCells) {
                     let mergedCell = mergedCells[key];
                     if (mergedCell) {
-                        colspan = mergedCell.width + 1;
-                        rowspan = mergedCell.height + 1;
+                        d.colspan = mergedCell.width + 1;
+                        d.rowspan = mergedCell.height + 1;
                     }
                 }
 
                 // get drill state / level
-                let drillState, level;
                 if (cell.getFlags && cell.getLevel) {
-                    level = cell.getLevel();
+                    let level = cell.getLevel();
                     switch (cell.getFlags()) {
-                        case 0: if (level > 0) { drillState = "L"; } else { level = undefined; } break;
-                        case 1: drillState = "C"; break;
-                        case 2: drillState = "E"; break;
-                        default: level = undefined; break;
+                        case 0:
+                            if (level > 0) {
+                                d.level = level;
+                                d.drillState = "L";
+                            }
+                            break;
+                        case 1: 
+                            d.level = level;
+                            d.drillState = "C";
+                            break;
+                        case 2:
+                            d.level = level;
+                            d.drillState = "E";
+                            break;
                     }
                 }
 
                 // get threshold
-                let thresholdInterval;
                 if (cell.getAppliedThreshold) {
                     let appliedThreshold = cell.getAppliedThreshold();
                     let threshold = appliedThreshold.threshold;
                     if (threshold) {
-                        thresholdInterval = threshold.intervals[appliedThreshold.intervalId];
+                        d.thresholdInterval = threshold.intervals[appliedThreshold.intervalId];
                     }
                 }
 
-                (rows[y] || (rows[y] = []))[x] = {
-                    //key: key,
-                    style: style,
-                    colspan: colspan,
-                    rowspan: rowspan,
-
-                    type: cell.getType ? cell.getType() : 100 /* custom cell */,
-                    rawVal: cell.getRawVal ? cell.getRawVal() : cell.getVal() /* custom cell */,
-                    formattedValue: cell.getFormattedValue(),
-                    scale: cell.getScale && cell.getScale() || undefined,
-                    refIndex: cell.getRefIndex && cell.getRefIndex() || undefined,
-                    total: (cell.getTotalCell ? cell.getTotalCell() : cell.isTotalCell()) /* custom cell */ || undefined,
-                    level: level,
-                    drillState: drillState,
-                    thresholdInterval: thresholdInterval,
-                    hasNOPNullValue: cell.getHasNOPNullValue && cell.getHasNOPNullValue() || undefined,
-                    dimensionId: cell.getDimensionId && cell.getDimensionId() || undefined,
+                // get effective style
+                if (includeStyles) {
+                    let style = tableController.getEffectiveCellStyle(cell);
+                    delete style["cellChartSetting"]; // remove unused styles to reduce size
+                    if (style["number"] && style["number"]["typeSettings"]) {
+                        style["number"]["typeSettings"] = [style["number"]["typeSettings"][0]];
+                    }
+                    d.style = style;
 
                     // none optimized table
-                    html: includeStyles && tableCellFactory && tableCellFactory._oGlobalTableViewMode && tableCellFactory.generateDivStringFromCellContent({
-                        tableRow: y,
-                        tableCol: x,
-                        globalRow: y,
-                        globalCol: x,
-                        colspan: colspan,
-                        rowspan: rowspan,
-                        // referencedRow: null,
-                        // referencedCol: null,
-                        hidden: false,
-                        height: rowSizes[y] && rowSizes[y].data.size,
-                        width: columnSizes[x] && columnSizes[x].data.size
-                    }) || undefined
-                };
+                    if (tableCellFactory && tableCellFactory._oGlobalTableViewMode) {
+                        d.html = tableCellFactory.generateDivStringFromCellContent({
+                            tableRow: y,
+                            tableCol: x,
+                            globalRow: y,
+                            globalCol: x,
+                            colspan: d.colspan,
+                            rowspan: d.rowspan,
+                            // referencedRow: null,
+                            // referencedCol: null,
+                            hidden: false,
+                            height: rowSizes[y] && rowSizes[y].data.size,
+                            width: columnSizes[x] && columnSizes[x].data.size
+                        }) || undefined;
+                    }
+                }
+
+                (rows[y] || (rows[y] = []))[x] = d;
             }
         }
 
