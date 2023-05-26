@@ -1038,23 +1038,30 @@
             this._export_settings.application_array.push({ "application": id });
             this._updateSettings();
         }
+        addExportStory(id) {
+            if (!this._export_settings.application_array) {
+                this._export_settings.application_array = [];
+            }
+            this._export_settings.application_array.push({ "document": id });
+            this._updateSettings();
+        }
         clearExportApplications() {
             this._export_settings.application_array = "";
             this._updateSettings();
         }
 
-        addURLParameter(name, values, iterative, applicationIds) {
+        addURLParameter(name, values, iterative, applicationOrStoryIds) {
             if (!this._export_settings.array_var) {
                 this._export_settings.array_var = [];
             }
-            this._export_settings.array_var.push({ "parameter": name, "values": values.join(";"), "iterative": iterative, "applications": applicationIds.join(";") });
+            this._export_settings.array_var.push({ "parameter": name, "values": values.join(";"), "iterative": iterative, "applications": applicationOrStoryIds.join(";") });
             this._updateSettings();
         }
-        addURLParameters(parameters, applicationIds) {
+        addURLParameters(parameters, applicationOrStoryIds) {
             if (!this._export_settings.array_var) {
                 this._export_settings.array_var = [];
             }
-            this._export_settings.array_var.push({ "index": this._export_settings.array_var.length, "parameters": parameters, "applications": applicationIds.join(";") });
+            this._export_settings.array_var.push({ "index": this._export_settings.array_var.length, "parameters": parameters, "applications": applicationOrStoryIds.join(";") });
             this._updateSettings();
         }
         clearURLParameters() {
@@ -1079,7 +1086,7 @@
             this._updateSettings();
         }
 
-        addBriefingBookDefinition(parameters, index, filename, template, customTexts, selectedWidgets, applicationIds) {
+        addBriefingBookDefinition(parameters, index, filename, template, customTexts, selectedWidgets, applicationOrStoryIds) {
             if (!this._export_settings.array_var) {
                 this._export_settings.array_var = [];
             }
@@ -1102,7 +1109,7 @@
                 params.push(JSON.parse(s));
             });
 
-            this._export_settings.array_var.push({ "index": index, "filename": filename, "template": template, "texts": texts, "parameters": params, "selected": selected, "applications": applicationIds.join(";") });
+            this._export_settings.array_var.push({ "index": index, "filename": filename, "template": template, "texts": texts, "parameters": params, "selected": selected, "applications": applicationOrStoryIds.join(";") });
             this._updateSettings();
         }
         clearBriefingBookDefinitions() {

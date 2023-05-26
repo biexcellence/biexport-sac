@@ -737,7 +737,7 @@
       ]
     },
     "clearSelectedWidgets": {
-      "description": "Clears all applications to be exported during background execution",
+      "description": "Clears all widgets to be exported",
       "parameters": [
         {
           "name": "format",
@@ -774,8 +774,18 @@
         }
       ]
     },
+    "addExportStory": {
+      "description": "Add a story to be exported during background execution",
+      "parameters": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "The id of the story"
+        }
+      ]
+    },
     "clearExportApplications": {
-      "description": "Clears all applications to be exported during background execution"
+      "description": "Clears all applications and stories to be exported during background execution"
     },
     "addURLParameter": {
       "description": "Add an URL parameter and value which is used during background execution",
@@ -813,7 +823,7 @@
         {
           "name": "applicationIds",
           "type": "string[]",
-          "description": "The applications for which the URL parameter will be used, if empty the URL parameter is used for all applications"
+          "description": "The applications or stories for which the URL parameter will be used, if empty the URL parameter is used for all applications and stories"
         }
       ]
     },
@@ -864,7 +874,7 @@
         {
           "name": "parameters",
           "type": "string[]",
-          "description": "The url parameters to be passed to the application in JSON notation {\"name\": \"myUrlParameter\", \"value\": \"itsValue\"}"
+          "description": "The url parameters to be passed to the application or story in JSON notation {\"name\": \"myUrlParameter\", \"value\": \"itsValue\"}"
         },
         {
           "name": "index",
@@ -874,7 +884,7 @@
         {
           "name": "filename",
           "type": "string",
-          "description": "Optional:The filename to which the results of the application shall be added"
+          "description": "Optional:The filename to which the results of the application or story shall be added"
         },
         {
           "name": "template",
@@ -894,7 +904,7 @@
         {
           "name": "applicationIds",
           "type": "string[]",
-          "description": "Optional: The applications for which the URL parameter will be used"
+          "description": "Optional: The applications or stories for which the URL parameter will be used"
         }
       ]
     },
