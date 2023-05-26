@@ -1551,6 +1551,11 @@
 
         let includeStyles = tablesCellLimit ? rowCount * columnCount < tablesCellLimit : true;
 
+        if (!includeStyles && region._oProcessor && region._oProcessor.currentResultSet) {
+            component.data = extractTableResultSet(region._oProcessor.currentResultSet);
+            return;
+        }
+
         if (includeStyles && view.getReactTableWrapper) { // make sure react tables are rendered
             let reactTableWrapper = view.getReactTableWrapper();
             if (reactTableWrapper && reactTableWrapper.appendTableRows) {
@@ -1573,6 +1578,218 @@
 
         grid.finishPartialProcessing && grid.finishPartialProcessing(); // create all cells
 
+        let rows = extractTableGrid(rowCount, columnCount, grid, mergedCells, includeStyles, tableController, tableCellFactory, rowSizes, columnSizes);
+        while (rows.length > 0 && rows[rows.length - 1].every(c => !c)) {
+            rows.pop(); // remove empty rows at the end
+        }
+        component.data = rows;
+    }
+    function extractTableResultSet(resultSet) {
+        let columnAxis = resultSet.getCursorColumnsAxis();
+        let rowAxis = resultSet.getCursorRowsAxis();
+
+        let columnDimensions = columnAxis.getRsDimensions();
+        let rowDimensions = rowAxis.getRsDimensions();
+
+        let columnDimensionsLength = columnDimensions.size();
+        let rowDimensionsLength = rowDimensions.size();
+
+        let dataColumnsLength = resultSet.getDataColumns();
+        let dataRowsLength = resultSet.getDataRows();
+
+        let rows = [];
+        let x = 0, y = 0;
+
+        // column members
+        columnAxis.setTupleCursorBeforeStart();
+        while (columnAxis.hasNextTuple()) {
+            columnAxis.nextTuple();
+            y = 0;
+
+            while (columnAxis.hasNextTupleElement()) {
+                let element = columnAxis.nextTupleElement();
+                let d = { type: 7 }; // COL_DIMENSION_MEMBER
+                extractTupleElement(columnAxis, element, d);
+                (rows[y] || (rows[y] = [])).push(d);
+
+                y++;
+            }
+        }
+
+        // column headers
+        if (columnDimensionsLength > 0) {
+            for (y = 0; y < columnDimensionsLength; y++) {
+                let columnDimension = columnDimensions.get(y);
+                x = 0;
+
+                rowAxis.setTupleCursorBeforeStart();
+                if (rowAxis.hasNextTuple()) { // there is always one tuple
+                    rowAxis.nextTuple();
+
+                    if (rowAxis.hasNextTupleElement()) {
+                        while (rowAxis.hasNextTupleElement()) {
+                            rowAxis.nextTupleElement();
+
+                            x++;
+                            rows[y].unshift({
+                                type: 0, // GENERAL_CELL
+                                rawVal: "",
+                                formattedValue: ""
+                            });
+                        }
+                    } else {
+                        x++;
+                        rows[y].unshift({
+                            type: 0, // GENERAL_CELL
+                            rawVal: "",
+                            formattedValue: ""
+                        });
+                    }
+                }
+
+                rows[y][x - 1] = {
+                    type: 5, // COL_DIMENSION_HEADER
+                    rawVal: columnDimension.getName(),
+                    formattedValue: columnDimension.getText()
+                };
+            }
+        }
+
+        // row headers
+        if (rowDimensionsLength > 0) {
+            let row = [];
+
+            for (x = 0; x < rowDimensionsLength; x++) {
+                let rowDimension = rowDimensions.get(x);
+                row.push({
+                    type: 4, // ROW_DIMENSION_HEADER
+                    rawVal: rowDimension.getName(),
+                    formattedValue: rowDimension.getText()
+                });
+            }
+
+            columnAxis.setTupleCursorBeforeStart();
+            while (columnAxis.hasNextTuple()) { // there is always one tuple
+                columnAxis.nextTuple();
+
+                row.push({
+                    type: 0, // GENERAL_CELL
+                    rawVal: "",
+                    formattedValue: ""
+                });
+            }
+
+            rows.push(row);
+        }
+
+        // row members + data
+        rowAxis.setTupleCursorBeforeStart();
+        for (y = 0; y < dataRowsLength; y++) {
+            let row = [];
+
+            if (rowAxis.hasNextTuple()) { // there is always one tuple
+                rowAxis.nextTuple();
+
+                if (rowAxis.hasNextTupleElement()) {
+                    while (rowAxis.hasNextTupleElement()) {
+                        let element = rowAxis.nextTupleElement();
+                        let d = { type: 6 }; // ROW_DIMENSION_MEMBER
+                        extractTupleElement(rowAxis, element, d);
+                        row.push(d);
+                    }
+                } else { // fake empty cell when there is now row dim
+                    row.push({
+                        type: 0, // GENERAL_CELL
+                        rawVal: "",
+                        formattedValue: ""
+                    });
+                }
+            }
+
+            for (x = 0; x < dataColumnsLength; x++) {
+                let dataCell = resultSet.getDataCell(x, y);
+                let rawVal = null;
+                let formattedValue = rawVal;
+                let type = 99; // NULL_CELL
+
+                let valueException = dataCell.getValueException();
+                if (valueException == sap.firefly.ValueException.NORMAL || valueException == sap.firefly.ValueException.ZERO) {
+                    rawVal = dataCell.getValue();
+                    formattedValue = dataCell.getFormattedValue();
+                    type = 8; // DATA_CELL
+
+                    let currencyUnit = dataCell.getCurrencyUnit();
+                    if (currencyUnit) {
+                        let prefix = currencyUnit.getPrefix();
+                        if (prefix) {
+                            formattedValue = prefix + formattedValue;
+                        }
+                        let suffix = currencyUnit.getSuffix();
+                        if (suffix) {
+                            formattedValue = formattedValue + suffix;
+                        }
+                    }
+                }
+
+                row.push({
+                    type: type,
+                    rawVal: rawVal,
+                    formattedValue: formattedValue
+                });
+            }
+
+            rows.push(row);
+        }
+
+        return rows;
+
+        function extractTupleElement(axis, element, d) {
+            while (axis.hasNextFieldValue()) {
+                let fieldValue = axis.nextFieldValue();
+
+                let fieldType = fieldValue.getField().getPresentationType(), parentType;
+                while ((parentType = fieldType.getParent())) {
+                    fieldType = parentType;
+                }
+                let fieldTypeName = fieldType.getName();
+
+                if (fieldTypeName == "AbstractKey") {
+                    d.rawVal = fieldValue.getFormattedValue();
+                } else if (fieldTypeName == "AbstractText") {
+                    d.formattedValue = fieldValue.getFormattedValue() || d.rawVal;
+                }
+            }
+
+            if (d.formattedValue && d.formattedValue.startsWith("[") && d.formattedValue.endsWith("]")) {
+                let index = d.formattedValue.lastIndexOf("&["); // hierarchy values might have this structure: [Root].[Parent].[Parent].&[Child]
+                if (index >= 0) {
+                    d.formattedValue = d.formattedValue.substring(index + 2, d.formattedValue.length - 1);
+                }
+            }
+
+            let drillState = element.getDrillState();
+            if (drillState) {
+                let level = element.getDisplayLevel();
+                switch (drillState.getName()) {
+                    case "Leaf":
+                        if (level > 0) {
+                            d.level = level;
+                            d.drillState = "L";
+                        }
+                        break;
+                    case "Collapsed":
+                        d.level = level;
+                        d.drillState = "C";
+                        break;
+                    case "Expanded":
+                        d.level = level;
+                        d.drillState = "E";
+                        break;
+                }
+            }
+        }
+    }
+    function extractTableGrid(rowCount, columnCount, grid, mergedCells, includeStyles, tableController, tableCellFactory, rowSizes, columnSizes) {
         let rows = [];
         for (let y = 0; y < rowCount; y++) {
             for (let x = 0; x < columnCount; x++) {
@@ -1626,7 +1843,7 @@
                                 d.drillState = "L";
                             }
                             break;
-                        case 1: 
+                        case 1:
                             d.level = level;
                             d.drillState = "C";
                             break;
@@ -1676,12 +1893,7 @@
                 (rows[y] || (rows[y] = []))[x] = d;
             }
         }
-
-        while (rows.length > 0 && rows[rows.length - 1].every(c => !c)) {
-            rows.pop(); // remove empty rows at the end
-        }
-
-        component.data = rows;
+        return rows;
     }
 
     function extractChartWidgetData(widgetControl, component) {
