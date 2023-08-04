@@ -1218,55 +1218,64 @@
                 tablesCellLimit: settings.tables_cell_limit || undefined
             }));
 
+            let contentPromise;
             if (settings.application_array && settings.oauth) {
-                this._createExportForm(settings, null); // iterations
+                contentPromise = Promise.resolve(null); // iterations
             } else {
                 // add settings to html so they can be serialized
                 // NOTE: this is not "promise" save!
                 this.settings.value = JSON.stringify(settings, (key, value) => key == "metadata" ? undefined : value);
 
-                getHtml(settings).then(html => {
+                contentPromise = getHtml(settings).then(content => {
                     this._updateSettings(); // reset settings
-
-                    this._createExportForm(settings, html);
+                    return content;
                 }, reason => {
                     console.error("[biExport] Error in getHtml:", reason);
+                    throw reason;
                 });
             }
-        }
 
-        _createExportForm(settings, content) {
-            this.dispatchEvent(new CustomEvent("onSend", {
-                detail: {
-                    settings: settings
+            contentPromise.then(content => {
+                let gzipPromises = [compressGzip(JSON.stringify(settings))];
+                if (content) {
+                    gzipPromises.push(compressGzip(content));
                 }
-            }));
+                return Promise.all(gzipPromises);
+            }).then(result => {
+                let form = document.createElement("form");
 
-            let form = document.createElement("form");
+                let settingsEl = form.appendChild(document.createElement("input"));
+                settingsEl.name = "bie_openbi_export_settings_json";
+                settingsEl.type = "file";
+                settingsEl.files = createFileList(result[0], "export_settings.json.gz", "application/json");
 
-            let settingsEl = form.appendChild(document.createElement("input"));
-            settingsEl.name = "bie_openbi_export_settings_json";
-            settingsEl.type = "file";
-            settingsEl.files = createFileList(JSON.stringify(settings), "export_settings.json", "application/json");
+                if (result.length > 1) {
+                    let contentEl = form.appendChild(document.createElement("input"));
+                    contentEl.name = "bie_openbi_export_content";
+                    contentEl.type = "file";
+                    contentEl.files = createFileList(result[1], "export_content.html.gz", "text/html");
+                }
 
-            if (content) {
-                let contentEl = form.appendChild(document.createElement("input"));
-                contentEl.name = "bie_openbi_export_content";
-                contentEl.type = "file";
-                contentEl.files = createFileList(content, "export_content.html", "text/html");
-            }
+                this.dispatchEvent(new CustomEvent("onSend", {
+                    detail: {
+                        settings: settings
+                    }
+                }));
 
-            let host = settings.server_urls;
-            let url = host + "/sac/export.html";
+                let url = settings.server_urls + "/sac/export.html";
 
-            this._submitExport(host, url, form, settings);
+                return this._submitExport(url, form, settings);
+            }, reason => {
+                console.error("[biExport] Error creating form:", reason);
+                throw reason;
+            });
         }
 
-        _submitExport(host, exportUrl, form, settings) {
+        _submitExport(exportUrl, form, settings) {
             this._serviceMessage = "";
 
             if (exportUrl.indexOf(location.protocol) == 0 || exportUrl.indexOf("https:") == 0) { // same protocol => use fetch?
-                fetch(exportUrl, {
+                return fetch(exportUrl, {
                     method: "POST",
                     mode: "cors",
                     credentials: "include",
@@ -1301,7 +1310,7 @@
                                 })();
                             }).then(() => {
                                 // try again after oauth
-                                this._submitExport(host, exportUrl, form, settings);
+                                this._submitExport(exportUrl, form, settings);
                             });
                         });
                     } else {
@@ -2277,6 +2286,12 @@
         let dataTransfer = new DataTransfer();
         dataTransfer.items.add(file);
         return dataTransfer.files;
+    }
+
+    function compressGzip(content) {
+        let blob = new Blob([content]);
+        let compress = blob.stream().pipeThrough(new CompressionStream("gzip"));
+        return new Response(compress).blob();
     }
 
     function escapeAttributeValue(value) {
