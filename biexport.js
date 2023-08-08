@@ -1500,11 +1500,12 @@
         let datasources = {};
         entityService.getDatasets().forEach(datasetId => {
             let dataset = entityService.getDatasetById(datasetId);
+            let promptValues = storyModel.getDatasetPromptValues(datasetId);
             datasources[datasetId] = {
                 name: dataset.name,
                 description: dataset.description,
                 model: dataset.model,
-                filters: []
+                filters: promptValues && promptValues.variables || []
             };
 
             storyModel.getWidgetsByDatasetId(datasetId).forEach(widget => {
