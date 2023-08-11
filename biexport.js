@@ -1532,7 +1532,10 @@
 
             let dataset = entityService.getDatasetById(datasetId);
             let modelData = dataset.idMapping.modelData;
-            let modelId = modelData.data && modelData.data.packageName && modelData.data.name && (modelData.data.packageName + ":" + modelData.data.name) || datasetId; // construct modelId
+            let modelId = (modelData.isRemote ?
+                modelData.dataSource && modelData.dataSource.ObjectName :
+                modelData.data && modelData.data.packageName && modelData.data.name && (modelData.data.packageName + ":" + modelData.data.name))
+                || datasetId; // construct modelId
 
             datasources[modelId] = {
                 name: dataset.name,
