@@ -1423,6 +1423,7 @@
         let documentContext = findAggregatedObjects(e => e.getMetadata().hasProperty("resourceType") && e.getProperty("resourceType") == "STORY")[0].getDocumentContext();
         let storyModel = documentContext.get("sap.fpa.story.getstorymodel");
         let entityService = documentContext.get("sap.fpa.bi.entityService");
+        let filterService = documentContext.get("sap.fpa.bi.filter.filterService");
         let widgetControls = documentContext.get("sap.fpa.story.document.widgetControls");
 
         // only for applications (not stories)
@@ -1497,33 +1498,59 @@
 
             components[widget.id] = component;
         });
+
+        // only for optimized stories
+        let allICFilters = (filterService.getUQMStoryFiltersForIBN && filterService.getUQMStoryFiltersForIBN() || []).map(filter => { // map DimensionMemberICElement back to story filter...
+            let ids = JSON.parse(filter.targetedEntity.entityId).reduce((a, v) => Object.assign(a, v), {});
+            return {
+                "datasetId": ids.datasetId, // fake for easier use
+                "attributeId": [
+                    ids.attributeId
+                ],
+                "exclude": filter.setSign == "EXCLUDING",
+                "type": "filter",
+                "entityId": [{
+                    "id": ids.dimensionId,
+                    "type": "dimension",
+                    "parentKey": {
+                        "id": ids.datasetId,
+                        "type": "dataset"
+                    }
+                }],
+                "answers": [{
+                    "function": "IN", // = EQUAL
+                    "arguments": filter.memberKeys
+                }]
+            };
+        });
+
         let datasources = {};
         entityService.getDatasets().forEach(datasetId => {
+            let filters = storyModel.getAllFilterInfos(datasetId).map(filterInfo => filterInfo.filter.filters).flat(); // none optimized
+            let icFilters = allICFilters.filter(filter => filter.datasetId == datasetId); // optimized
+            let promptValues = storyModel.getDatasetPromptValues(datasetId); // documentContext.get("sap.bi.container.variables").getVariables(datasetId)
+
             let dataset = entityService.getDatasetById(datasetId);
-            let promptValues = storyModel.getDatasetPromptValues(datasetId);
-            datasources[datasetId] = {
+            let modelData = dataset.idMapping.modelData;
+            let modelId = modelData.data && modelData.data.packageName && modelData.data.name && (modelData.data.packageName + ":" + modelData.data.name) || datasetId; // construct modelId
+
+            datasources[modelId] = {
                 name: dataset.name,
                 description: dataset.description,
                 model: dataset.model,
-                filters: promptValues && promptValues.variables || []
+                filters: filters.concat(icFilters).concat(promptValues && promptValues.variables || [])
             };
 
             storyModel.getWidgetsByDatasetId(datasetId).forEach(widget => {
                 let component = components[widget.id];
                 if (component) {
-                    component.datasource = datasetId;
+                    component.datasource = modelId;
                 }
             });
         });
-        storyModel.getAllFilterInfos().forEach(filterInfo => {
-            let filter = filterInfo.filter;
-            let dataset = datasources[filter.datasetId];
-            if (dataset) {
-                dataset.filters = dataset.filters.concat(filter.filters);
-            }
-        });
 
         let result = {
+            name: storyModel.getStoryTitle(),
             components: components,
             datasources: datasources
         };
