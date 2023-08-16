@@ -1553,7 +1553,7 @@
         });
 
         let result = {
-            name: storyModel.getStoryTitle(),
+            name: storyModel.getStoryTitle && storyModel.getStoryTitle(),
             components: components,
             datasources: datasources
         };
