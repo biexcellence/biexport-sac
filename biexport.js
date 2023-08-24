@@ -1288,7 +1288,7 @@
                         let contentDisposition = response.headers.get("Content-Disposition");
                         if (contentDisposition) {
                             return response.blob().then(blob => {
-                                this._receiveExport(settings, null, contentDispositionFilenameRegExp.exec(contentDisposition)[1], blob);
+                                this._receiveExport(settings, null, parseContentDispositionFilename(contentDisposition), blob);
                             });
                         }
                         return response.text().then(text => {
@@ -1393,7 +1393,8 @@
     // UTILS
 
     const cssUrlRegExp = /url\(["']?(.*?)["']?\)/ig;
-    const contentDispositionFilenameRegExp = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/i;
+    const contentDispositionUtf8FilenameRegExp = /filename\*=UTF-8''([\w%\-\.]+)(?:; ?|$)/i;
+    const contentDispositionAsciiFilenameRegExp = /^filename=(["']?)(.*?[^\\])\1(?:; ?|$)/i;
     const startsWithHttpRegExp = /^http/i;
     const htmlEntitiesRegExp = /[<>&]/;
 
@@ -2310,6 +2311,21 @@
                 fileReader.readAsDataURL(b);
             });
         });
+    }
+
+    function parseContentDispositionFilename(disposition) {
+        if (!disposition) return;
+        const matchesUtf8Filename = contentDispositionUtf8FilenameRegExp.exec(disposition);
+        if (matchesUtf8Filename) {
+            return decodeURIComponent(matchesUtf8Filename[1]);
+        }
+        const filenameStart = disposition.toLowerCase().indexOf("filename=");
+        if (filenameStart >= 0) {
+            const matchesAsciiFilename = contentDispositionAsciiFilenameRegExp.exec(disposition.slice(filenameStart));
+            if (matchesAsciiFilename) {
+                return matchesAsciiFilename[2];
+            }
+        }
     }
 
     function createFileList(content, name, type) {
