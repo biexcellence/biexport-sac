@@ -467,7 +467,7 @@
                         let contentDisposition = response.headers.get("Content-Disposition");
                         if (contentDisposition) {
                             return response.blob().then(blob => {
-                                callback(null, contentDispositionFilenameRegExp.exec(contentDisposition)[1], blob);
+                                callback(null, parseContentDispositionFilename(contentDisposition), blob);
                             });
                         }
                         return response.text().then(text => {
@@ -499,7 +499,8 @@
 
     // UTILS
 
-    const contentDispositionFilenameRegExp = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/i;
+    const contentDispositionUtf8FilenameRegExp = /filename\*=UTF-8''([\w%\-\.]+)(?:; ?|$)/i;
+    const contentDispositionAsciiFilenameRegExp = /^filename=(["']?)(.*?[^\\])\1(?:; ?|$)/i;
 
     function createGuid() {
         return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
@@ -511,6 +512,21 @@
     function getAppId(context) {
         let app = (context || sap.fpa.ui.infra.common.getContext()).getInternalAppArguments(); // sap.fpa.ui.story.Utils.getInternalAppArguments()
         return app && (app.appId /* application */ || app.resource_id /* story */);
+    }
+
+    function parseContentDispositionFilename(disposition) {
+        if (!disposition) return;
+        const matchesUtf8Filename = contentDispositionUtf8FilenameRegExp.exec(disposition);
+        if (matchesUtf8Filename) {
+            return decodeURIComponent(matchesUtf8Filename[1]);
+        }
+        const filenameStart = disposition.toLowerCase().indexOf("filename=");
+        if (filenameStart >= 0) {
+            const matchesAsciiFilename = contentDispositionAsciiFilenameRegExp.exec(disposition.slice(filenameStart));
+            if (matchesAsciiFilename) {
+                return matchesAsciiFilename[2];
+            }
+        }
     }
 
 })();
