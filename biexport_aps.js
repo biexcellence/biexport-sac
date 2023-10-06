@@ -184,7 +184,7 @@
             <fieldset>
               <legend>Background Execution</legend>
               <table>
-                <tr hidden>
+                <tr title="TENANT_URL" hidden>
                   <td><label for="tenantUrl">Tenant URL</label></td>
                   <td><input id="tenantUrl" name="tenantUrl" type="text" readonly></td>
                 </tr>
@@ -192,23 +192,23 @@
                   <td><label for="oauthId">OAuth Client</label></td>
                   <td><select id="oauthId" name="oauthId"><option value=""> - </option></select></td>
                 </tr>
-                <tr>
+                <tr title="OAUTH_CLIENT_ID">
                   <td><label for="oauthClientId">OAuth Client Id</label></td>
                   <td><input id="oauthClientId" name="oauth" type="text"></td>
                 </tr>
-                <tr>
+                <tr title="OAUTH_CLIENT_SECRET">
                   <td><label for="oauthClientSecret">OAuth Client Secret</label></td>
                   <td><input id="oauthClientSecret" name="oauth" type="password"></td>
                 </tr>
-                <tr>
+                <tr title="OAUTH_REDIRECT_URL">
                   <td><label for="oauthClientRedirectURL">OAuth Client Redirect URL</label></td>
                   <td><input id="oauthClientRedirectURL" name="oauth" type="text"></td>
                 </tr>
-                <tr>
+                <tr title="OAUTH_AUTHORIZATION_URL">
                   <td><label for="oauthAuthorizationURL">OAuth Authorization URL</label></td>
                   <td><input id="oauthAuthorizationURL" name="oauth" type="text"></td>
                 </tr>
-                <tr>
+                <tr title="OAUTH_TOKEN_URL">
                   <td><label for="oauthTokenURL">OAuth Token URL</label></td>
                   <td><input id="oauthTokenURL" name="oauth" type="text"></td>
                 </tr>
