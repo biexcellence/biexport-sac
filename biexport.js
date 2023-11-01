@@ -1154,16 +1154,26 @@
             }, 200);
         }
 
+        scheduleExport(format, schedule, user) {
+            if (schedule.frequence == "ONCE") {
+                schedule.frequence = " ";
+            }
+
+            let settings = JSON.parse(JSON.stringify(this._export_settings));
+            let overrideSettings = [{ name: "scheduling", value: schedule }];
+            if (user) {
+                overrideSettings.push({ name: "user", value: user });
+            }
+            overrideSettings = JSON.stringify(overrideSettings);
+
+            setTimeout(() => {
+                this._doExport(format, settings, overrideSettings);
+            }, 200);
+        }
+
         _doExport(format, settings, overrideSettings) {
             if (this._designMode) {
                 return false;
-            }
-
-            if (overrideSettings) {
-                let set = JSON.parse(overrideSettings);
-                set.forEach(s => {
-                    settings[s.name] = s.value;
-                });
             }
 
             settings.format = format;
@@ -1204,6 +1214,13 @@
 
             if (settings.publish_mode === "" || settings.publish_mode === "ONLINE" || settings.publish_mode === "VIEWER" || settings.publish_mode === "PRINT") {
                 settings.publish_sync = true;
+            }
+
+            if (overrideSettings) {
+                let set = JSON.parse(overrideSettings);
+                set.forEach(s => {
+                    settings[s.name] = s.value;
+                });
             }
 
             this.dispatchEvent(new CustomEvent("onStart", {

@@ -43,6 +43,106 @@
           "mandatory": true
         }
       ]
+    },
+    "biExportSchedule": {
+      "description": "A schedule",
+      "properties": [
+        {
+          "name": "name",
+          "type": "string",
+          "description": "The name of the schedule",
+          "mandatory": true
+        }
+      ]
+    },
+    "biExportScheduleEvent": {
+      "extends": "biExportSchedule",
+      "description": "A event based schedule",
+      "properties": [
+        {
+          "name": "eventName",
+          "type": "string",
+          "description": "The name of the event",
+          "mandatory": true
+        },
+        {
+          "name": "eventValue",
+          "type": "string",
+          "description": "The value of the event",
+          "mandatory": true
+        }
+      ]
+    },
+    "biExportScheduleTime": {
+      "extends": "biExportSchedule",
+      "description": "A time based schedule",
+      "properties": [
+        {
+          "name": "startDate",
+          "type": "string",
+          "description": "The start date of the schedule. Supported formats: yyyyMMdd, yyyy/MM/dd, dd.MM.yyyy"
+        },
+        {
+          "name": "startTime",
+          "type": "string",
+          "description": "The start time of the schedule. Supported formats: HH:mm"
+        },
+        {
+          "name": "endDate",
+          "type": "string",
+          "description": "The end date of the schedule. Supported formats: yyyyMMdd, yyyy/MM/dd, dd.MM.yyyy"
+        },
+        {
+          "name": "endTime",
+          "type": "string",
+          "description": "The end time of the schedule. Supported formats: HH:mm"
+        },
+        {
+          "name": "frequence",
+          "type": "biExportScheduleTimeFrequence",
+          "description": "The frequence of the schedule",
+          "mandatory": true
+        },
+        {
+          "name": "periodicGap",
+          "type": "integer",
+          "description": "Run schedule every N of frequence"
+        }
+      ]
+    },
+    "biExportScheduleTimeFrequence": {
+      "extends": "Enum",
+      "description": "Frequence of schedule",
+      "properties": [
+        {
+          "name": "MINUTE",
+          "description": "Minute"
+        },
+        {
+          "name": "HOUR",
+          "description": "Hour"
+        },
+        {
+          "name": "DAY",
+          "description": "Day"
+        },
+        {
+          "name": "WEEK",
+          "description": "Week"
+        },
+        {
+          "name": "MONTH",
+          "description": "Month"
+        },
+        {
+          "name": "YEAR",
+          "description": "Year"
+        },
+        {
+          "name": "ONCE",
+          "description": "Once"
+        }
+      ]
     }
   },
   "properties": {
@@ -722,7 +822,7 @@
         {
           "name": "format",
           "type": "string",
-          "description": "The export format: \"PDF\", \"PPT\", \"DOC\", \"XLS\", \"PNG\""
+          "description": "The export format: \"PDF\", \"PPT\", \"DOC\", \"XLS\", \"PNG\", \"CSV\", \"TABLES\""
         },
         {
           "name": "widget",
@@ -742,7 +842,7 @@
         {
           "name": "format",
           "type": "string",
-          "description": "The export format: \"PDF\", \"PPT\", \"DOC\", \"XLS\", \"PNG\""
+          "description": "The export format: \"PDF\", \"PPT\", \"DOC\", \"XLS\", \"PNG\", \"CSV\", \"TABLES\""
         }
       ]
     },
@@ -962,7 +1062,27 @@
         {
           "name": "format",
           "type": "string",
-          "description": "The export format: \"PDF\", \"PPT\", \"DOC\", \"XLS\""
+          "description": "The export format: \"PDF\", \"PPT\", \"DOC\", \"XLS\", \"PNG\", \"CSV\""
+        }
+      ]
+    },
+    "scheduleExport": {
+      "description": "Triggers the export process",
+      "parameters": [
+        {
+          "name": "format",
+          "type": "string",
+          "description": "The export format: \"PDF\", \"PPT\", \"DOC\", \"XLS\", \"PNG\", \"CSV\""
+        },
+        {
+          "name": "schedule",
+          "type": "biExportSchedule",
+          "description": "The schedule"
+        },
+        {
+          "name": "user",
+          "type": "string",
+          "description": "The schedule user (optional)"
         }
       ]
     }
