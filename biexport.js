@@ -1599,11 +1599,13 @@
         //let thresholdStyle = region.getThresholdStyle();
         //let repeatMembers = region.getRepeatMembers(); // show repeated members
         let grid = region.getGrid();
+        //let rowCount = grid.getMaxRows();
+        //let columnCount = grid.getMaxColumns();
         let rowSizes = grid.getRows();
         let columnSizes = grid.getColumns();
         let mergedCells = grid.getMergedCells();
 
-        let dimensions = grid.calculateGridContentDimensions();
+        let dimensions = grid.calculateGridContentDimensions(true);
         let rowCount = dimensions.row; // sometimes there are too many rows... // region.getHeight();
         let columnCount = dimensions.col; // region.getWidth();
 
