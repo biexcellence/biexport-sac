@@ -315,7 +315,7 @@
                                             if (objIndex > -1) {
                                                 this._export_settings.array_var[objIndex].values = oEvent.getParameter("value");
                                             } else {
-                                                this._export_settings.array_var.push({ "parameter": oEvent.getParameter("id").replace("_value", ""), "values": oEvent.getParameter("value"), "iterative": false, "applications": "" });
+                                                this._export_settings.array_var.push({ "parameter": oEvent.getParameter("id").replace("_value", ""), "values": oEvent.getParameter("value"), "iterative": false });
                                             }
 
                                         }
@@ -336,7 +336,7 @@
                                             if (objIndex > -1) {
                                                 this._export_settings.array_var[objIndex].iterative = oEvent.getParameter("selected");
                                             } else {
-                                                this._export_settings.array_var.push({ "parameter": oEvent.getParameter("id").replace("_iterative", ""), "values": "", "iterative": oEvent.getParameter("selected"), "applications": "" });
+                                                this._export_settings.array_var.push({ "parameter": oEvent.getParameter("id").replace("_iterative", ""), "values": "", "iterative": oEvent.getParameter("selected") });
                                             }
 
                                         }
@@ -1054,14 +1054,14 @@
             if (!this._export_settings.array_var) {
                 this._export_settings.array_var = [];
             }
-            this._export_settings.array_var.push({ "parameter": name, "values": values.join(";"), "iterative": iterative, "applications": applicationOrStoryIds.join(";") });
+            this._export_settings.array_var.push({ "parameter": name, "values": values.join(";"), "iterative": iterative, "document": applicationOrStoryIds.join(";"), "applications": applicationOrStoryIds.join(";") });
             this._updateSettings();
         }
         addURLParameters(parameters, applicationOrStoryIds) {
             if (!this._export_settings.array_var) {
                 this._export_settings.array_var = [];
             }
-            this._export_settings.array_var.push({ "index": this._export_settings.array_var.length, "parameters": parameters, "applications": applicationOrStoryIds.join(";") });
+            this._export_settings.array_var.push({ "index": this._export_settings.array_var.length, "parameters": parameters, "document": applicationOrStoryIds.join(";"), "applications": applicationOrStoryIds.join(";") });
             this._updateSettings();
         }
         clearURLParameters() {
@@ -1073,9 +1073,7 @@
             if (!this._export_settings.pdf_page_sections) {
                 this._export_settings.pdf_page_sections = [];
             }
-            this._export_settings.pdf_page_sections.push({
-                "name": name, "header": header, "footer": footer, "template": content, "optimizeheight": false, "iterative": iterative, "orientation": orientation
-            });
+            this._export_settings.pdf_page_sections.push({ "name": name, "header": header, "footer": footer, "template": content, "optimizeheight": false, "iterative": iterative, "orientation": orientation });
 
             // workaround as page section does not support orientation currently
             this._export_settings.pdf_orient = orientation;
@@ -1109,7 +1107,7 @@
                 params.push(JSON.parse(s));
             });
 
-            this._export_settings.array_var.push({ "index": index, "filename": filename, "template": template, "texts": texts, "parameters": params, "selected": selected, "applications": applicationOrStoryIds.join(";") });
+            this._export_settings.array_var.push({ "index": index, "filename": filename, "template": template, "texts": texts, "parameters": params, "selected": selected, "document": applicationOrStoryIds.join(";"), "applications": applicationOrStoryIds.join(";") });
             this._updateSettings();
         }
         clearBriefingBookDefinitions() {
