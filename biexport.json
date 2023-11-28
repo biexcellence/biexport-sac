@@ -78,24 +78,14 @@
       "description": "A time based schedule",
       "properties": [
         {
-          "name": "startDate",
+          "name": "start",
           "type": "string",
-          "description": "The start date of the schedule. Supported formats: yyyyMMdd, yyyy/MM/dd, dd.MM.yyyy"
+          "description": "The start of the schedule. Use Date.toISOString()"
         },
         {
-          "name": "startTime",
+          "name": "end",
           "type": "string",
-          "description": "The start time of the schedule. Supported formats: HH:mm"
-        },
-        {
-          "name": "endDate",
-          "type": "string",
-          "description": "The end date of the schedule. Supported formats: yyyyMMdd, yyyy/MM/dd, dd.MM.yyyy"
-        },
-        {
-          "name": "endTime",
-          "type": "string",
-          "description": "The end time of the schedule. Supported formats: HH:mm"
+          "description": "The end of the schedule. Use Date.toISOString()"
         },
         {
           "name": "frequence",
