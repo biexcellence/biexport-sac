@@ -544,11 +544,9 @@
                             text: "Submit",
                             press: () => {
                                 let properties = {};
-                                let value = textEditorHeader.getValue();
-                                this[idHeader] = properties[idHeader] = value;
-                                value = textEditorFooter.getValue();
-                                this[idFooter] = properties[idFooter] = value;
-                                value = orientDropdown.getSelectedItemId();
+                                this[idHeader] = properties[idHeader] = textEditorHeader.getValue();
+                                this[idFooter] = properties[idFooter] = textEditorFooter.getValue();
+                                this[idOrientation] = properties[idOrientation] = orientDropdown.getSelectedItemId();
                                 this._firePropertiesChanged(properties);
                                 dialog.close();
                             }
