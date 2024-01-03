@@ -1398,7 +1398,9 @@
         }
 
     }
-    customElements.define("com-biexcellence-openbi-sap-sac-export", BiExport);
+    if (!customElements.get("com-biexcellence-openbi-sap-sac-export")) {
+        customElements.define("com-biexcellence-openbi-sap-sac-export", BiExport);
+    }
 
     // PUBLIC API
 
