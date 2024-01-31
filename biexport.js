@@ -1629,12 +1629,12 @@
             }
         }
         // this somehow crashes the browser by deloitte
-        //if (includeStyles && view._oScrollableTable) { // make sure tables are rendered
-        //    view._oScrollableTable.setDisplaySize(Number.MAX_VALUE, Number.MAX_VALUE);
-        //    view._oScrollableTable.setTopLeftCell({ row: 0, col: 0 });
-        //    view._oScrollableTable.redrawTable();
-        //    includeStyles = false;
-        //}
+        if (includeStyles && view._oScrollableTable) { // make sure tables are rendered
+           view._oScrollableTable.setDisplaySize(Number.MAX_VALUE, Number.MAX_VALUE);
+           view._oScrollableTable.setTopLeftCell({ row: 0, col: 0 });
+           view._oScrollableTable.redrawTable();
+           includeStyles = false;
+        }
 
         grid.finishPartialProcessing && grid.finishPartialProcessing(); // create all cells
 
