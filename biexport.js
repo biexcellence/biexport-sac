@@ -1630,10 +1630,10 @@
         }
         // this somehow crashes the browser by deloitte
         if (includeStyles && view._oScrollableTable) { // make sure tables are rendered
-           view._oScrollableTable.setDisplaySize(Number.MAX_VALUE, Number.MAX_VALUE);
-           view._oScrollableTable.setTopLeftCell({ row: 0, col: 0 });
-           view._oScrollableTable.redrawTable();
-           includeStyles = false;
+            view._oScrollableTable.setDisplaySize(Number.MAX_VALUE, Number.MAX_VALUE);
+            view._oScrollableTable.setTopLeftCell({ row: 0, col: 0 });
+            view._oScrollableTable.redrawTable();
+            includeStyles = false;
         }
 
         grid.finishPartialProcessing && grid.finishPartialProcessing(); // create all cells
@@ -2223,9 +2223,12 @@
                 promises.push(getCssText(rule.styleSheet || Object.defineProperty({ href: rule.href && toAbsoluteUrl(baseUrl, rule.href) }, "cssRules", { get: () => { throw new Error() } }), baseUrl, urlCache, shadowHost).then(c => css[index] = c));
             } else if (rule.type == CSSRule.STYLE_RULE) {
                 if (shadowHost) { // prefix with shadow host name...
-                    css.push(shadowHost.localName);
+                    var hostSelector = shadowHost.localName;
+                    if (shadowHost.id) hostSelector += "#" + shadowHost.id;
+                    if (shadowHost.classList.length > 0) hostSelector += "." + Array.from(shadowHost.classList).join(".");
+                    css.push(hostSelector);
                     css.push(" ");
-                    css.push(rule.selectorText.split(",").join("," + shadowHost.localName));
+                    css.push(rule.selectorText.replace(/:host/g, "").split(",").join("," + hostSelector));
                 } else {
                     css.push(rule.selectorText);
                 }
