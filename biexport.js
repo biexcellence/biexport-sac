@@ -1612,7 +1612,11 @@
         let includeStyles = tablesCellLimit ? rowCount * columnCount < tablesCellLimit : true;
 
         if (!includeStyles && region._oProcessor && region._oProcessor.currentResultSet) {
-            component.data = extractTableResultSet(region._oProcessor.currentResultSet);
+            let rows = extractTableResultSet(region._oProcessor.currentResultSet);
+            if (region.getShowTitle() && region.getNewTableType && !region.getNewTableType()) { // only for non optimized table
+                rows.unshift([{ type: 0 /* GENERAL_CELL */, rawVal: null, formattedValue: region.getTitle() }]);
+            }
+            component.data = rows;
             return;
         }
 
