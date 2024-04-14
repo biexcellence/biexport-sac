@@ -88,6 +88,11 @@
           "description": "The end of the schedule. Use Date.toISOString()"
         },
         {
+          "name": "timeZone",
+          "type": "string",
+          "description": "The time zone of the schedule. (IANA ID)"
+        },
+        {
           "name": "frequence",
           "type": "biExportScheduleTimeFrequence",
           "description": "The frequence of the schedule",
