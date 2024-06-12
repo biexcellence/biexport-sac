@@ -1488,6 +1488,13 @@
                 type: widget.class
             };
 
+            if (!component.name) { // try to find widget name in story
+                let widgetElement = document.querySelector("[data-sap-widget-id='" + widget.id + "'] > .sapLumiraStoryLayoutCommonWidgetWrapper > [id^=__widget], [data-sap-widget-id='" + widget.id + "'] > [id^=__widget]");
+                if (widgetElement) {
+                    component.name = widgetElement.id;
+                }
+            }
+
             let includeData = true; // no settings => include everything
             if (settings) {
                 // if widget is excluded, do not include information
