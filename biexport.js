@@ -240,7 +240,7 @@
                                 }
 
                                 if (this["_initialVisibleComponents" + oItem.getKey()].length == 0 || this["_initialVisibleComponents" + oItem.getKey()].some(v => v.component == component.name && !v.isExcluded)) {
-                                    let ltext = component.name.replace(/_/g, " ");
+                                    let ltext = component.name.replaceAll("_", " ");
 
                                     lcomponent_box.addContent(new sap.m.CheckBox({
                                         id: component.name,
@@ -1414,6 +1414,7 @@
     const contentDispositionAsciiFilenameRegExp = /^filename=(["']?)(.*?[^\\])\1(?:; ?|$)/i;
     const startsWithHttpRegExp = /^http/i;
     const htmlEntitiesRegExp = /[<>&]/;
+    const unicodeRegExp = /[\u00A0-\uffff]/gu;
 
     function createGuid() {
         return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
@@ -2151,9 +2152,9 @@
             if (value.then) {
                 let index = html.length;
                 html.push(""); // placeholder
-                promises.push(value.then(v => html[index] = escapeAttributeValue(v)));
+                promises.push(value.then(v => html[index] = v.replaceAll('"', "&quot;")));
             } else {
-                html.push(escapeAttributeValue(value));
+                html.push(value.replaceAll('"', "&quot;"));
             }
             html.push("\"");
         }
@@ -2240,7 +2241,7 @@
                     if (shadowHost.classList.length > 0) hostSelector += "." + Array.from(shadowHost.classList).join(".");
                     css.push(hostSelector);
                     css.push(" ");
-                    css.push(rule.selectorText.replace(/:host/g, "").split(",").join("," + hostSelector));
+                    css.push(rule.selectorText.replaceAll(":host", "").split(",").join("," + hostSelector));
                 } else {
                     css.push(rule.selectorText);
                 }
@@ -2278,7 +2279,7 @@
             let priority = style.getPropertyPriority(name);
             css.push(name);
             css.push(":");
-            if ((name == "src" || name.startsWith("background")) && value && value.includes("url") && !value.includes("data:")) {
+            if ((name == "src" || name.startsWith("background")) && value.includes("url") && !value.includes("data:")) {
                 let lastValueIndex = 0;
                 for (let match of value.matchAll(cssUrlRegExp)) { // fonts can have more than one url
                     let result = match[0];
@@ -2301,7 +2302,7 @@
                     css.push(value.substring(lastValueIndex, value.length)); // suffix
                 }
             } else {
-                css.push(value);
+                css.push(value.replaceAll(unicodeRegExp, c => "\\" + c.charCodeAt(0).toString(16)));
             }
             if (priority == "important") {
                 css.push("!important");
@@ -2373,10 +2374,6 @@
         let blob = new Blob([content]);
         let compress = blob.stream().pipeThrough(new CompressionStream("gzip"));
         return new Response(compress).blob();
-    }
-
-    function escapeAttributeValue(value) {
-        return value.replace(/"/g, "&quot;");
     }
 
 })();
