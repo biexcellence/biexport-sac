@@ -584,12 +584,19 @@
         }
 
         connectedCallback() {
-            let model = this._getWidgetModel();
-            this.filters.forEach(filter => {
-                filter.getLists().forEach(filterList => {
-                    filterList.setModel(model);
-                });
-            });
+            const trySetModel = () => {
+                try {
+                    let model = this._getWidgetModel();
+                    this.filters.forEach(filter => {
+                        filter.getLists().forEach(filterList => {
+                            filterList.setModel(model);
+                        });
+                    });
+                } catch (e) {
+                    setTimeout(trySetModel); // biexport.js might not be loaded in time, try again later
+                }
+            };
+            trySetModel();
 
             // try to display tenant URL
             if (window.sap && sap.fpa && sap.fpa.ui && sap.fpa.ui.infra && sap.fpa.ui.infra.service && sap.fpa.ui.infra.service.AjaxHelper) {
