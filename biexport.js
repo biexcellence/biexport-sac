@@ -71,7 +71,6 @@
             this._export_settings.user = "";
             this._export_settings.lng = "";
             this._export_settings.version = "";
-            this._export_settings.cookie = "";
             this._export_settings.format = "";
             this._export_settings.URL = "";
 
