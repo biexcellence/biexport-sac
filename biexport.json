@@ -1026,12 +1026,12 @@
         },
         {
           "name": "placeholderRedefinitions",
-          "type": "string[]",
+          "type": "biExportParameter[]",
           "description": "List of specific placeholders that replace the generic placholders of the Export Template {\"name\": \"genericPlaceholderName\", \"value\": \"specificPlaceholderName\"}"
         },
         {
           "name": "placeholderValues",
-          "type": "string[]",
+          "type": "biExportParameter[]",
           "description": "List of values that replace the placholders of the Export Template {\"name\": \"placeholderName\", \"value\": \"myText\"}"
         }
       ]
