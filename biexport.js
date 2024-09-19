@@ -1049,18 +1049,18 @@
             this._updateSettings();
         }
 
-        addURLParameter(name, values, iterative, applicationOrStoryIds) {
+        addURLParameter(name, values, iterative, storyIds) {
             if (!this._export_settings.array_var) {
                 this._export_settings.array_var = [];
             }
-            this._export_settings.array_var.push({ "parameter": name, "values": values.join(";"), "iterative": iterative, "document": applicationOrStoryIds.join(";"), "applications": applicationOrStoryIds.join(";") });
+            this._export_settings.array_var.push({ "parameter": name, "values": values.join(";"), "iterative": iterative, "document": storyIds.join(";"), "applications": storyIds.join(";") });
             this._updateSettings();
         }
-        addURLParameters(parameters, applicationOrStoryIds) {
+        addURLParameters(parameters, storyId) {
             if (!this._export_settings.array_var) {
                 this._export_settings.array_var = [];
             }
-            this._export_settings.array_var.push({ "index": this._export_settings.array_var.length, "parameters": parameters, "document": applicationOrStoryIds.join(";"), "applications": applicationOrStoryIds.join(";") });
+            this._export_settings.array_var.push({ "index": this._export_settings.array_var.length, "parameters": parameters, "document": storyId || "", "applications": storyId || "" });
             this._updateSettings();
         }
         clearURLParameters() {
@@ -1083,10 +1083,20 @@
             this._updateSettings();
         }
 
-        addBriefingBookDefinition(parameters, index, filename, template, customTexts, selectedWidgets, applicationOrStoryIds) {
+        addBriefingBookDefinition(parameters, index, filename, template, customTexts, selectedWidgets, storyIds) {
             if (!this._export_settings.array_var) {
                 this._export_settings.array_var = [];
             }
+
+            let params = [];
+            parameters.forEach(s => {
+                params.push(JSON.parse(s));
+            });
+
+            let texts = [];
+            customTexts.forEach(s => {
+                texts.push(JSON.parse(s));
+            });
 
             let selected = [];
             selectedWidgets.forEach(s => {
@@ -1095,18 +1105,7 @@
                 });
             });
 
-            let texts = [];
-            customTexts.forEach(s => {
-                texts.push(JSON.parse(s));
-            });
-
-
-            let params = [];
-            parameters.forEach(s => {
-                params.push(JSON.parse(s));
-            });
-
-            this._export_settings.array_var.push({ "index": index, "filename": filename, "template": template, "texts": texts, "parameters": params, "selected": selected, "document": applicationOrStoryIds.join(";"), "applications": applicationOrStoryIds.join(";") });
+            this._export_settings.array_var.push({ "index": index, "filename": filename, "template": template, "texts": texts, "parameters": params, "selected": selected, "document": storyIds.join(";"), "applications": storyIds.join(";") });
             this._updateSettings();
         }
         clearBriefingBookDefinitions() {
@@ -1136,9 +1135,7 @@
         doExport(format, overrideSettings) {
             let settings = JSON.parse(JSON.stringify(this._export_settings));
 
-            setTimeout(() => {
-                this._doExport(format, settings, overrideSettings);
-            }, 200);
+            this._doExport(format, settings, overrideSettings);
         }
 
         scheduleExport(format, schedule, user) {
@@ -1153,9 +1150,7 @@
             }
             overrideSettings = JSON.stringify(overrideSettings);
 
-            setTimeout(() => {
-                this._doExport(format, settings, overrideSettings);
-            }, 200);
+            this._doExport(format, settings, overrideSettings);
         }
 
         _doExport(format, settings, overrideSettings) {
@@ -1223,19 +1218,21 @@
             }));
 
             let contentPromise;
-            if (settings.application_array && settings.oauth) {
+            if (settings.application_array) {
                 contentPromise = Promise.resolve(null); // iterations
             } else {
-                // add settings to html so they can be serialized
-                // NOTE: this is not "promise" save!
-                this.settings.value = JSON.stringify(settings, (key, value) => key == "metadata" ? undefined : value);
+                contentPromise = new Promise(resolve => setTimeout(resolve, 200)).then(() => {
+                    // add settings to html so they can be serialized
+                    // NOTE: this is not "promise" save!
+                    this.settings.value = JSON.stringify(settings, (key, value) => key == "metadata" ? undefined : value);
 
-                contentPromise = getHtml(settings).then(content => {
-                    this._updateSettings(); // reset settings
-                    return content;
-                }, reason => {
-                    console.error("[biExport] Error in getHtml:", reason);
-                    throw reason;
+                    return getHtml(settings).then(content => {
+                        this._updateSettings(); // reset settings
+                        return content;
+                    }, reason => {
+                        console.error("[biExport] Error in getHtml:", reason);
+                        throw reason;
+                    });
                 });
             }
 

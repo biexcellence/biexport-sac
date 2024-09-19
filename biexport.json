@@ -883,7 +883,7 @@
       "description": "Clears all applications and stories to be exported during background execution"
     },
     "addURLParameter": {
-      "description": "Add an URL parameter and value which is used during background execution",
+      "description": "[DEPRECATED] Add an URL parameter and value which is used during background execution",
       "parameters": [
         {
           "name": "name",
@@ -901,9 +901,9 @@
           "description": "Whether the URL parameter values should be iterated over"
         },
         {
-          "name": "applicationIds",
+          "name": "storyIds",
           "type": "string[]",
-          "description": "The applications for which the URL parameter will be used, if empty the URL parameter is used for all applications"
+          "description": "The stories or applications for which the URL parameter will be used, if empty the URL parameter is used for all stories and applications"
         }
       ]
     },
@@ -916,9 +916,9 @@
           "description": "The URL parameters"
         },
         {
-          "name": "applicationIds",
-          "type": "string[]",
-          "description": "The applications or stories for which the URL parameter will be used, if empty the URL parameter is used for all applications and stories"
+          "name": "storyId",
+          "type": "string",
+          "description": "The story or application for which the URL parameters will be used"
         }
       ]
     },
@@ -964,7 +964,7 @@
       "description": "Clears all PDF Sections"
     },
     "addBriefingBookDefinition": {
-      "description": "Add a Briefing Book Definition which is used during background execution",
+      "description": "[PREVIEW] Add a Briefing Book Definition which is used during background execution",
       "parameters": [
         {
           "name": "parameters",
@@ -997,9 +997,9 @@
           "description": "Optional: The widgets to be added into the export document"
         },
         {
-          "name": "applicationIds",
+          "name": "storyIds",
           "type": "string[]",
-          "description": "Optional: The applications or stories for which the URL parameter will be used"
+          "description": "Optional: The stories or applications for which the URL parameter will be used"
         }
       ]
     },
