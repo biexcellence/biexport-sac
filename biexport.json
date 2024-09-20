@@ -913,12 +913,17 @@
         {
           "name": "parameters",
           "type": "biExportParameter[]",
-          "description": "The URL parameters"
+          "description": "The URL parameters for a single iteration"
         },
         {
           "name": "storyId",
           "type": "string",
           "description": "The story or application for which the URL parameters will be used"
+        },
+        {
+          "name": "separateFileId",
+          "type": "string",
+          "description": "The id to generate separate files. Can be left empty when a single file should be generated"
         }
       ]
     },
