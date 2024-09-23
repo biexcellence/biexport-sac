@@ -924,6 +924,11 @@
           "name": "separateFileId",
           "type": "string",
           "description": "The id to generate separate files. Can be left empty when a single file should be generated"
+        },
+        {
+          "name": "settings",
+          "type": "biExportParameter[]",
+          "description": "The custom settings for this iteration"
         }
       ]
     },

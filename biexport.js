@@ -1055,14 +1055,14 @@
             this._export_settings.array_var.push({ "parameter": name, "values": values.join(";"), "iterative": iterative, "document": storyIds.join(";"), "applications": storyIds.join(";") });
             this._updateSettings();
         }
-        addURLParameters(parameters, storyId, separateFileId) {
+        addURLParameters(parameters, storyId, separateFileId, settings) {
             if (!this._export_settings.array_var) {
                 this._export_settings.array_var = [];
             }
             if (separateFileId) {
                 parameters.unshift({ name: "__SEPARATEFILES__", value: separateFileId });
             }
-            this._export_settings.array_var.push({ "index": this._export_settings.array_var.length, "parameters": parameters, "document": storyId || "", "applications": storyId || "", "separateFiles": !!separateFileId });
+            this._export_settings.array_var.push({ "index": this._export_settings.array_var.length, "parameters": parameters, "document": storyId || "", "applications": storyId || "", "separateFiles": !!separateFileId, "settings": settings });
             this._updateSettings();
         }
         clearURLParameters() {
