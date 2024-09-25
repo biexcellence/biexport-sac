@@ -493,15 +493,19 @@
                 text: "PDF Sections...",
                 press: oEvent => {
 
+                    // workaround because "" is not supported
+                    let temp = this[idOrientation];
+                    if (temp == "") { temp = "A" }
+                    
                     let orientDropdown = new sap.m.ComboBox({
-                        items: [new sap.ui.core.ListItem("", {
+                        items: [new sap.ui.core.ListItem("A", {
                             text: "Automatic"
                         }), new sap.ui.core.ListItem("P", {
                             text: "Portrait"
                         }), new sap.ui.core.ListItem("L", {
                             text: "Landscape"
                         })],
-                        selectedItemId: this[idOrientation]
+                        selectedItemId: temp
                     });
 
                     let textEditorHeader = new sap.ui.richtexteditor.RichTextEditor({
@@ -552,7 +556,7 @@
 
                                 // workaround because dropdown provides strange content if "" is selected
                                 var temp = orientDropdown.getSelectedItemId();
-                                if (temp != "P" && temp != "L") { temp = ""; } 
+                                if (temp == "A") { temp = ""; } 
                                 this[idOrientation] = properties[idOrientation] = temp;
                                 this._firePropertiesChanged(properties);
                                 dialog.close();
