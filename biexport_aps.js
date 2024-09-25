@@ -494,7 +494,7 @@
                 press: oEvent => {
 
                     let orientDropdown = new sap.m.ComboBox({
-                        items: [new sap.ui.core.ListItem(" ", {
+                        items: [new sap.ui.core.ListItem("", {
                             text: "Automatic"
                         }), new sap.ui.core.ListItem("P", {
                             text: "Portrait"
@@ -549,7 +549,11 @@
                                 let properties = {};
                                 this[idHeader] = properties[idHeader] = textEditorHeader.getValue();
                                 this[idFooter] = properties[idFooter] = textEditorFooter.getValue();
-                                this[idOrientation] = properties[idOrientation] = orientDropdown.getSelectedItemId();
+
+                                // workaround because dropdown provides strange content if "" is selected
+                                var temp = orientDropdown.getSelectedItemId();
+                                if (temp != "P" && temp != "L") { temp = ""; } 
+                                this[idOrientation] = properties[idOrientation] = temp;
                                 this._firePropertiesChanged(properties);
                                 dialog.close();
                             }
