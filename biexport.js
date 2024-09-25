@@ -74,7 +74,7 @@
             this._export_settings.format = "";
             this._export_settings.URL = "";
 
-            this._export_settings.pdf_orient = "L";
+            this._export_settings.pdf_orient = "";
             this._export_settings.pdf_header = '<table width=1000px style="font-family:Arial;"><tr><td width=850px>SAC Export</td><td width=150px><img src="" width=150px></table>';
             this._export_settings.pdf_footer = '<table width=1000px style="font-family:Arial;"><tr><td>%PAGE% of %PAGES%</td></tr></table>';
             this._export_settings.pdf_size = "";
