@@ -495,7 +495,7 @@
 
                     // workaround because "" is not supported
                     let temp = this[idOrientation];
-                    if (temp == "") { temp = "A" }
+                    if (temp == "") { temp = "A"; }
                     
                     let orientDropdown = new sap.m.ComboBox({
                         items: [new sap.ui.core.ListItem("A", {
@@ -555,7 +555,7 @@
                                 this[idFooter] = properties[idFooter] = textEditorFooter.getValue();
 
                                 // workaround because dropdown provides strange content if "" is selected
-                                var temp = orientDropdown.getSelectedItemId();
+                                let temp = orientDropdown.getSelectedItemId();
                                 if (temp == "A") { temp = ""; } 
                                 this[idOrientation] = properties[idOrientation] = temp;
                                 this._firePropertiesChanged(properties);
