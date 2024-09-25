@@ -494,7 +494,9 @@
                 press: oEvent => {
 
                     let orientDropdown = new sap.m.ComboBox({
-                        items: [new sap.ui.core.ListItem("P", {
+                        items: [new sap.ui.core.ListItem("", {
+                            text: "Automatic"
+                        }), new sap.ui.core.ListItem("P", {
                             text: "Portrait"
                         }), new sap.ui.core.ListItem("L", {
                             text: "Landscape"
