@@ -2139,7 +2139,7 @@
 
         // mark shdowRoot with custom data- attribute
         if (!node.firstChild && node.shadowRoot) { // shadowRoot
-            html.push(" data-biexport-custom-element");
+            html.push(" data-biexport-shadow-root");
         }
 
         html.push(">");
