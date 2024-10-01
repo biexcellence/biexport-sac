@@ -2098,23 +2098,13 @@
             case "STYLE":
                 let sheet = node.sheet;
                 if (sheet) {
-                    let shadowHost = null;
-                    let parent = node.parentNode;
-                    while (parent) {
-                        if (parent.host) {
-                            shadowHost = parent.host;
-                            break;
-                        }
-                        parent = parent.parentNode;
-                    }
-
                     // always download relative stylesheets
                     let relative = sheet.href && attributes["href"] && sheet.href != attributes["href"];
                     // always parse local stylesheets as they might be dynamic
                     let dynamic = !sheet.href && sheet.cssRules && sheet.cssRules.length > 0;
 
-                    if (shadowHost || dynamic || relative || settings.parse_css) {
-                        content = getCssText(sheet, node.baseURI, urlCache, shadowHost);
+                    if (dynamic || relative || settings.parse_css) {
+                        content = getCssText(sheet, node.baseURI, urlCache);
 
                         if (content && name != "style") {
                             name = "style";
@@ -2188,9 +2178,9 @@
         }
     }
 
-    function getCssText(sheet, baseUrl, urlCache, shadowHost) {
+    function getCssText(sheet, baseUrl, urlCache) {
         try {
-            return parseCssRules(sheet.cssRules, sheet.href || baseUrl, urlCache, shadowHost); // sheet.cssRules might throw
+            return parseCssRules(sheet.cssRules, sheet.href || baseUrl, urlCache); // sheet.cssRules might throw
         } catch (e) {
             if (sheet.href) { // download external stylesheets
                 return fetch(sheet.href).then(r => r.text()).then(t => {
@@ -2199,7 +2189,7 @@
                     let doc = document.implementation.createHTMLDocument("");
                     doc.head.appendChild(document.createElement("base")).href = sheet.href;
                     doc.body.appendChild(style);
-                    return getCssText(style.sheet, sheet.href, urlCache, shadowHost);
+                    return getCssText(style.sheet, sheet.href, urlCache);
                 }, reason => {
                     return "";
                 });
@@ -2207,7 +2197,7 @@
         }
         return Promise.resolve("");
     }
-    function parseCssRules(rules, baseUrl, urlCache, shadowHost) {
+    function parseCssRules(rules, baseUrl, urlCache) {
         let promises = [];
         let css = [];
 
@@ -2221,24 +2211,15 @@
 
                 let index = css.length;
                 css.push(""); // placeholder
-                promises.push(parseCssRules(rule.cssRules, baseUrl, urlCache, shadowHost).then(c => css[index] = c));
+                promises.push(parseCssRules(rule.cssRules, baseUrl, urlCache).then(c => css[index] = c));
 
                 css.push("}");
             } else if (rule.type == CSSRule.IMPORT_RULE) { // @import
                 let index = css.length;
                 css.push(""); // placeholder
-                promises.push(getCssText(rule.styleSheet || Object.defineProperty({ href: rule.href && toAbsoluteUrl(baseUrl, rule.href) }, "cssRules", { get: () => { throw new Error() } }), baseUrl, urlCache, shadowHost).then(c => css[index] = c));
+                promises.push(getCssText(rule.styleSheet || Object.defineProperty({ href: rule.href && toAbsoluteUrl(baseUrl, rule.href) }, "cssRules", { get: () => { throw new Error() } }), baseUrl, urlCache).then(c => css[index] = c));
             } else if (rule.type == CSSRule.STYLE_RULE) {
-                if (shadowHost) { // prefix with shadow host name...
-                    var hostSelector = shadowHost.localName;
-                    if (shadowHost.id) hostSelector += "#" + shadowHost.id;
-                    if (shadowHost.classList.length > 0) hostSelector += "." + Array.from(shadowHost.classList).join(".");
-                    css.push(hostSelector);
-                    css.push(" ");
-                    css.push(rule.selectorText.replaceAll(":host", "").split(",").join("," + hostSelector));
-                } else {
-                    css.push(rule.selectorText);
-                }
+                css.push(rule.selectorText);
                 css.push(" {");
                 let value = parseCssStyle(rule.style, baseUrl, urlCache);
                 if (value.then) {
