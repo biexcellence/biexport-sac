@@ -2082,6 +2082,7 @@
                 }
                 break;
             case "CANVAS":
+                tagName = "IMG";
                 name = "img";
                 attributes["src"] = node.toDataURL("image/png");
                 break;
