@@ -2146,6 +2146,12 @@
             }
             html.push("\"");
         }
+
+        // mark shdowRoot with custom data- attribute
+        if (!node.firstChild && node.shadowRoot) { // shadowRoot
+            html.push(" data-biexport-custom-element");
+        }
+
         html.push(">");
         let isEmpty = true;
         if (content) {
@@ -2164,7 +2170,7 @@
             }
 
             let child = node.firstChild;
-            if ((!child || tagName == "COM-BIEXCELLENCE-OPENBI-SAP-SAC-EXPORT") && node.shadowRoot) { // shadowRoot
+            if (!child && node.shadowRoot) { // shadowRoot
                 child = node.shadowRoot.firstChild;
             }
             while (child) {
