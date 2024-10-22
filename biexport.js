@@ -1505,6 +1505,11 @@
                     extractChartWidgetData(widgetControl, component);
                 } else if (widgetControl._destroyViz) { // chart (viz2)
                     extractChart2WidgetData(widgetControl, component);
+                } else {
+                    let className = widgetControl.getClassName();
+                    if (className == "sap.fpa.ui.story.entity.table.TableWidget") { // table SAC 2024.21.2
+                        extractTable2WidgetData(widgetControl, component, settings && settings.tablesCellLimit);
+                    }
                 }
             }
 
@@ -1575,6 +1580,10 @@
         }
 
         return result;
+    }
+
+    function extractTable2WidgetData(widgetControl, component, tablesCellLimit) {
+        let gridData = widgetControl.getUnifiedStore().getState(widgetControl.getSelector("table2.v2.getGridData"));
     }
 
     function extractTableWidgetData(widgetControl, component, tablesCellLimit) {
