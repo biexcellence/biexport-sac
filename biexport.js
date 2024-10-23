@@ -1619,11 +1619,17 @@
         if (includeStyles && view.getReactTableWrapper) { // make sure react tables are rendered
             let reactTableWrapper = view.getReactTableWrapper();
             if (reactTableWrapper && reactTableWrapper.appendTableRows) {
-                let tableData = reactTableWrapper.getTableData();
-                //tableData.widgetWidth = reactTableWrapper.reactTable.tableSizes.htmlTableWrapperWidth;
-                //tableData.widgetHeight = reactTableWrapper.reactTable.tableSizes.htmlTableWrapperHeight;
-                tableData.widgetWidth = Number.MAX_VALUE;
-                tableData.widgetHeight = Number.MAX_VALUE;
+                let reactTable = reactTableWrapper.reactTable;
+                if (reactTable && reactTable.cachedData && reactTable.tableDataWindowing) {
+                    reactTable.tableDataWindowing.columnsWindowing.contentLimit = Number.MAX_VALUE;
+                    reactTable.cachedData.rowContentLimitFactor = Number.MAX_VALUE;
+                } else {
+                    let tableData = reactTableWrapper.getTableData();
+                    // tableData.widgetWidth = reactTableWrapper.reactTable.tableSizes.htmlTableWrapperWidth;
+                    // tableData.widgetHeight = reactTableWrapper.reactTable.tableSizes.htmlTableWrapperHeight;
+                    tableData.widgetWidth = Number.MAX_VALUE;
+                    tableData.widgetHeight = Number.MAX_VALUE;
+                }
                 reactTableWrapper.appendTableRows(Number.MAX_VALUE);
                 includeStyles = false;
             }
