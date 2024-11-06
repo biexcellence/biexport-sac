@@ -66,7 +66,6 @@
             this._export_settings.client_version = "";
             this._export_settings.title = "";
             this._export_settings.appid = "";
-            this._export_settings.urlprefix = "";
             this._export_settings.cookie = "";
             this._export_settings.user = "";
             this._export_settings.lng = "";
@@ -128,7 +127,6 @@
             this._export_settings.fixed_width = "0";
             this._export_settings.fixed_height = "0";
             this._export_settings.sessionid = "";
-            this._export_settings.executeid = "";
             this._export_settings.scheduling = "";
             this._export_settings.incl_metadata = "";
             this._export_settings.width_from_children = "";
