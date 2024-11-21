@@ -624,7 +624,11 @@
                 label.textContent = p.title;
 
                 cellLeft.appendChild(label);
-                cellRight.innerHTML = `<input id=sacPageId_${i} name=sacPageId_${i} type='text' readonly value="${p.id}"/>`;
+
+
+                let input = document.createElement("input");
+                input.setAttribute(`id=sacPageId_${i} name=sacPageId_${i} type='text' readonly value="${p.id}"`);
+                cellRight.appendChild(input)
 
                 i++;
             }
