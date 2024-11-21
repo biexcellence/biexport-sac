@@ -502,7 +502,7 @@
                     // workaround because "" is not supported
                     let temp = this[idOrientation];
                     if (temp == "") { temp = "A"; }
-                    
+
                     let orientDropdown = new sap.m.ComboBox({
                         items: [new sap.ui.core.ListItem("A", {
                             text: "Automatic"
@@ -562,7 +562,7 @@
 
                                 // workaround because dropdown provides strange content if "" is selected
                                 let temp = orientDropdown.getSelectedItemId();
-                                if (temp == "A") { temp = ""; } 
+                                if (temp == "A") { temp = ""; }
                                 this[idOrientation] = properties[idOrientation] = temp;
                                 this._firePropertiesChanged(properties);
                                 dialog.close();
@@ -599,28 +599,34 @@
         onCustomWidgetAfterUpdate() {
         }
 
+        displayPageIds() {
+            const pages = biExportGetMetadata().pages;
 
-        displayPageIds(){
-            let pages = biExportGetMetadata().pages;
+            if (!pages) return;
 
-            if(!pages) return;
+            const table = this._shadowRoot.querySelector("#sacPageIds");
 
-            let table = document.getElementById("sacPageIDs");
-            
-            // table.remove();
+            table.innerHTML = ``;
 
-            for(p in pages) {
-                if(!p) continue;
-                if(!p.title) continue;
-                if(!p.id) continue;
+            let i = 0;
+            for (const p of pages) {
+                if (!p) continue;
+                if (!p.title) continue;
+                if (!p.id) continue;
 
                 let row = table.insertRow(-1);
-                
+
                 let cellLeft = row.insertCell(0);
                 let cellRight = row.insertCell(1);
 
-                cellLeft.innerText = p.title;
-                cellRight.innerText = p.id;
+                let label = document.createElement("label");
+                label.setAttribute("for", `sacPageId_${i}`);
+                label.textContent = p.title;
+
+                cellLeft.appendChild(label);
+                cellRight.innerHTML = `<input id=sacPageId_${i} name=sacPageId_${i} type='text' readonly value="${p.id}"/>`;
+
+                i++;
             }
         }
 

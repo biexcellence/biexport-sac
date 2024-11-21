@@ -1572,7 +1572,8 @@
         let result = {
             name: storyModel.getStoryTitle && storyModel.getStoryTitle(),
             components: components,
-            datasources: datasources
+            datasources: datasources,
+            pages: storyModel.getPages && storyModel.getPages()
         };
 
         if (app) {
