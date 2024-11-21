@@ -627,7 +627,12 @@
 
 
                 let input = document.createElement("input");
-                input.setAttribute(`id=sacPageId_${i} name=sacPageId_${i} type='text' readonly value="${p.id}"`);
+                input.setAttribute("id",`sacPageId_${i}`);
+                input.setAttribute("name",`sacPageId_${i}`);
+                input.setAttribute("type",`text`);
+                input.setAttribute("readonly",true);
+                input.setAttribute("value",p.id);
+                
                 cellRight.appendChild(input)
 
                 i++;
