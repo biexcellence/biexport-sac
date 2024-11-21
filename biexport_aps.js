@@ -38,6 +38,12 @@
               </table>
             </fieldset>
             <fieldset>
+              <legend>SAC Page IDs</legend>
+              <table id="sacPageIds">
+                
+              </table>
+            </fieldset>
+            <fieldset>
               <legend>PDF</legend>
               <table>
                 <tr>
@@ -593,6 +599,31 @@
         onCustomWidgetAfterUpdate() {
         }
 
+
+        displayPageIds(){
+            let pages = biExportGetMetadata().pages;
+
+            if(!pages) return;
+
+            let table = document.getElementById("sacPageIDs");
+            
+            // table.remove();
+
+            for(p in pages) {
+                if(!p) continue;
+                if(!p.title) continue;
+                if(!p.id) continue;
+
+                let row = table.insertRow(-1);
+                
+                let cellLeft = row.insertCell(0);
+                let cellRight = row.insertCell(1);
+
+                cellLeft.innerText = p.title;
+                cellRight.innerText = p.id;
+            }
+        }
+
         connectedCallback() {
             const trySetModel = () => {
                 try {
@@ -614,6 +645,8 @@
                 tenantUrl.value = sap.fpa.ui.infra.service.AjaxHelper.getTenantUrl(false); // true for PUBLIC_FQDN
                 tenantUrl.closest("tr").hidden = false;
             }
+
+            this.displayPageIds()
 
             // try to load oauth info
             fetch("/oauthservice/api/v1/oauthclient?tenant=" + window.TENANT).then(response => {
