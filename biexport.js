@@ -2178,15 +2178,6 @@
             if (tagName == "HEAD") {
                 urlCache.headIndex = html.length;
                 html.push(""); // placeholder for cssVariables
-
-                for (let i = 0; i < document.adoptedStyleSheets.length; i++) {
-                    let sheet = document.adoptedStyleSheets[i];
-                    html.push("<style>");
-                    let index = html.length;
-                    html.push(""); // placeholder
-                    promises.push(getCssText(sheet, node.baseURI, urlCache).then(c => html[index] = c));
-                    html.push("</style>");
-                }
             }
 
             let child = node.firstChild;
@@ -2207,6 +2198,17 @@
                 html.push(cloneNode(child, html, promises, urlCache, settings));
                 child = child.nextSibling;
                 isEmpty = false;
+            }
+
+            if (tagName == "HEAD") {
+                for (let i = 0; i < document.adoptedStyleSheets.length; i++) {
+                    let sheet = document.adoptedStyleSheets[i];
+                    html.push("<style>");
+                    let index = html.length;
+                    html.push(""); // placeholder
+                    promises.push(getCssText(sheet, node.baseURI, urlCache).then(c => html[index] = c));
+                    html.push("</style>");
+                }
             }
         }
         if (isEmpty && node.outerHTML.slice(- (tagName.length + 3)).toUpperCase() != "</" + tagName.toUpperCase() + ">") {
