@@ -1573,7 +1573,13 @@
             name: storyModel.getStoryTitle && storyModel.getStoryTitle(),
             components: components,
             datasources: datasources,
-            pages: storyModel.getPages && storyModel.getPages()
+            pages: storyModel.getPages && storyModel.getPages().map(page => {
+                return {
+                    id: page.id,
+                    title: page.title,
+                    hidden: page.hidden
+                };
+            })
         };
 
         if (app) {
