@@ -38,12 +38,6 @@
               </table>
             </fieldset>
             <fieldset>
-              <legend>SAC Page IDs</legend>
-              <table id="sacPageIds">
-                
-              </table>
-            </fieldset>
-            <fieldset>
               <legend>PDF</legend>
               <table>
                 <tr>
@@ -220,6 +214,10 @@
                 </tr>
                 <tr>
               </table>
+            </fieldset>
+            <fieldset>
+              <legend>Page IDs</legend>
+              <table id="pageIds"></table>
             </fieldset>
             <fieldset>
               <legend>Display</legend>
@@ -604,9 +602,9 @@
 
             if (!pages) return;
 
-            const table = this._shadowRoot.querySelector("#sacPageIds");
+            const table = this._shadowRoot.querySelector("#pageIds");
 
-            table.innerHTML = ``;
+            table.innerHTML = "";
 
             let i = 0;
             for (const p of pages) {
@@ -627,12 +625,12 @@
 
 
                 let input = document.createElement("input");
-                input.setAttribute("id",`sacPageId_${i}`);
-                input.setAttribute("name",`sacPageId_${i}`);
-                input.setAttribute("type",`text`);
-                input.setAttribute("readonly",true);
-                input.setAttribute("value",p.id);
-                
+                input.setAttribute("id", `sacPageId_${i}`);
+                input.setAttribute("name", `sacPageId_${i}`);
+                input.setAttribute("type", `text`);
+                input.readOnly = true;
+                input.value = p.id;
+
                 cellRight.appendChild(input)
 
                 i++;
