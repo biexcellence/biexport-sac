@@ -2172,10 +2172,29 @@
             if (tagName == "HEAD") {
                 urlCache.headIndex = html.length;
                 html.push(""); // placeholder for cssVariables
+
+                for (let i = 0; i < document.adoptedStyleSheets.length; i++) {
+                    let sheet = document.adoptedStyleSheets[i];
+                    html.push("<style>");
+                    let index = html.length;
+                    html.push(""); // placeholder
+                    promises.push(getCssText(sheet, node.baseURI, urlCache).then(c => html[index] = c));
+                    html.push("</style>");
+                }
             }
 
             let child = node.firstChild;
             if (!child && node.shadowRoot) { // shadowRoot
+
+                for (let i = 0; i < node.shadowRoot.adoptedStyleSheets.length; i++) {
+                    let sheet = node.shadowRoot.adoptedStyleSheets[i];
+                    html.push("<style>");
+                    let index = html.length;
+                    html.push(""); // placeholder
+                    promises.push(getCssText(sheet, node.baseURI, urlCache).then(c => html[index] = c));
+                    html.push("</style>");
+                }
+
                 child = node.shadowRoot.firstChild;
             }
             while (child) {
