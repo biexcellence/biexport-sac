@@ -1,5 +1,5 @@
 (function () {
-    let tmpl = document.createElement("template");
+    const tmpl = document.createElement("template");
     tmpl.innerHTML = `
           <style>
               fieldset {
@@ -270,18 +270,18 @@
 
     class BiExportAps extends HTMLElement {
 
-        _getWidgetModel() {
-            let tableComponents = this["tablesSelectedWidgets"] ? JSON.parse(this["tablesSelectedWidgets"]) : [];
-            let pdfVisibleComponents = this["pdfSelectedWidgets"] ? JSON.parse(this["pdfSelectedWidgets"]) : [];
-            let pptVisibleComponents = this["pptSelectedWidgets"] ? JSON.parse(this["pptSelectedWidgets"]) : [];
-            let xlsVisibleComponents = this["xlsSelectedWidgets"] ? JSON.parse(this["xlsSelectedWidgets"]) : [];
-            let docVisibleComponents = this["docSelectedWidgets"] ? JSON.parse(this["docSelectedWidgets"]) : [];
-            let pngVisibleComponents = this["pngSelectedWidgets"] ? JSON.parse(this["pngSelectedWidgets"]) : [];
-            let csvVisibleComponents = this["csvSelectedWidgets"] ? JSON.parse(this["csvSelectedWidgets"]) : [];
-            let allComponents = biExportGetMetadata({ tablesSelectedWidget: [] }).components;
-            let components = [];
-            for (let componentId in allComponents) {
-                let component = allComponents[componentId];
+        _getWidgetModel(metadata) {
+            const tableComponents = this["tablesSelectedWidgets"] ? JSON.parse(this["tablesSelectedWidgets"]) : [];
+            const pdfVisibleComponents = this["pdfSelectedWidgets"] ? JSON.parse(this["pdfSelectedWidgets"]) : [];
+            const pptVisibleComponents = this["pptSelectedWidgets"] ? JSON.parse(this["pptSelectedWidgets"]) : [];
+            const xlsVisibleComponents = this["xlsSelectedWidgets"] ? JSON.parse(this["xlsSelectedWidgets"]) : [];
+            const docVisibleComponents = this["docSelectedWidgets"] ? JSON.parse(this["docSelectedWidgets"]) : [];
+            const pngVisibleComponents = this["pngSelectedWidgets"] ? JSON.parse(this["pngSelectedWidgets"]) : [];
+            const csvVisibleComponents = this["csvSelectedWidgets"] ? JSON.parse(this["csvSelectedWidgets"]) : [];
+            const allComponents = metadata.components;
+            const components = [];
+            for (const componentId in allComponents) {
+                const component = allComponents[componentId];
                 component.id = componentId;
                 component.tablesSelectedWidgets = false;
                 component.pdfSelectedWidgets = false;
@@ -314,7 +314,7 @@
                 components.push(component);
             }
 
-            let model = new sap.ui.model.json.JSONModel(components);
+            const model = new sap.ui.model.json.JSONModel(components);
             model.setSizeLimit(9999);
 
             return model;
@@ -325,12 +325,12 @@
             this._shadowRoot = this.attachShadow({ mode: "open" });
             this._shadowRoot.appendChild(tmpl.content.cloneNode(true));
 
-            let form = this._shadowRoot.getElementById("form");
+            const form = this._shadowRoot.getElementById("form");
             form.addEventListener("submit", this._submit.bind(this));
             form.addEventListener("change", this._change.bind(this));
 
             // visible components - model filters
-            let modelFilters = {};
+            const modelFilters = {};
             modelFilters["Tables"] = [new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "table")];
             modelFilters["Charts"] = [new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "viz"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "viz2")];
             modelFilters["Layouts"] = [new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "pagebook"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "panel"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "flowpanel"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "tabstrip")];
@@ -351,9 +351,9 @@
             // visible components - UI elements
             this.filters = [];
             ["tables_SelectedWidgets", "pdf_SelectedWidgets", "ppt_SelectedWidgets", "doc_SelectedWidgets", "xls_SelectedWidgets", "png_SelectedWidgets", "csv_SelectedWidgets"].forEach(slotId => {
-                let id = slotId.replace("_", "");
+                const id = slotId.replace("_", "");
 
-                let filter = new sap.m.FacetFilter({
+                const filter = new sap.m.FacetFilter({
                     showSummaryBar: true,
                     showReset: false,
                     showPersonalization: true,
@@ -425,7 +425,7 @@
                         return;
                     }
 
-                    let filterList = new sap.m.FacetFilterList({
+                    const filterList = new sap.m.FacetFilterList({
                         title: typeGroup,
                         items: {
                             path: "/",
@@ -439,19 +439,21 @@
                             filters: modelFilters[typeGroup],
                             template: filterTemplate
                         },
-                        listOpen: oEvent => {
-                            let list = oEvent.getSource();
+                        listOpen: async oEvent => {
+                            const list = oEvent.getSource();
+
+                            const metadata = await biExportGetMetadata({ tablesSelectedWidget: [] });
 
                             // check model changes - this could be performance optimized by just checking the elements that have been changed in the dashboards
-                            list.setModel(this._getWidgetModel());
+                            list.setModel(this._getWidgetModel(metadata));
                         },
                         listClose: oEvent => {
-                            let list = oEvent.getSource();
-                            let components = list.getModel().getData();
+                            const list = oEvent.getSource();
+                            const components = list.getModel().getData();
 
                             // set visible components 
-                            let visibleComponents = [];
-                            for (let componentId in components) {
+                            const visibleComponents = [];
+                            for (const componentId in components) {
 
                                 visibleComponents.push({
                                     component: components[componentId].name,
@@ -466,7 +468,7 @@
                                 value = JSON.stringify(visibleComponents);
                             }
 
-                            let properties = {};
+                            const properties = {};
                             this[id] = properties[id] = value;
                             this._firePropertiesChanged(properties);
                         }
@@ -477,7 +479,7 @@
 
                 });
 
-                let excludeSlot = document.createElement("div");
+                const excludeSlot = document.createElement("div");
                 excludeSlot.style.width = "210px";
                 excludeSlot.slot = slotId;
                 this.appendChild(excludeSlot);
@@ -488,20 +490,15 @@
             });
 
             // page section HTML
-            let slotId = "pdf_PageSections";
-            let idHeader = "pdfHeader";
-            let idFooter = "pdfFooter";
-            let idOrientation = "pdfOrient";
+            const slotId = "pdf_PageSections";
+            const idHeader = "pdfHeader";
+            const idFooter = "pdfFooter";
+            const idOrientation = "pdfOrient";
 
-            let link = new sap.m.Link({
+            const link = new sap.m.Link({
                 text: "PDF Sections...",
                 press: oEvent => {
-
-                    // workaround because "" is not supported
-                    let temp = this[idOrientation];
-                    if (temp == "") { temp = "A"; }
-
-                    let orientDropdown = new sap.m.ComboBox({
+                    const orientDropdown = new sap.m.ComboBox({
                         items: [new sap.ui.core.ListItem("A", {
                             text: "Automatic"
                         }), new sap.ui.core.ListItem("P", {
@@ -509,10 +506,10 @@
                         }), new sap.ui.core.ListItem("L", {
                             text: "Landscape"
                         })],
-                        selectedItemId: temp
+                        selectedItemId: this[idOrientation] || "A" // workaround because "" is not supported
                     });
 
-                    let textEditorHeader = new sap.ui.richtexteditor.RichTextEditor({
+                    const textEditorHeader = new sap.ui.richtexteditor.RichTextEditor({
                         editorType: sap.ui.richtexteditor.EditorType.TinyMCE4,
                         width: "100%",
                         height: "100%",
@@ -527,7 +524,7 @@
                         }
                     });
 
-                    let textEditorFooter = new sap.ui.richtexteditor.RichTextEditor({
+                    const textEditorFooter = new sap.ui.richtexteditor.RichTextEditor({
                         editorType: sap.ui.richtexteditor.EditorType.TinyMCE4,
                         width: "100%",
                         height: "100%",
@@ -542,7 +539,7 @@
                         }
                     });
 
-                    let dialog = new sap.m.Dialog({
+                    const dialog = new sap.m.Dialog({
                         title: "Edit Pdf Section",
                         contentWidth: "800px",
                         contentHeight: "500px",
@@ -554,7 +551,7 @@
                         beginButton: new sap.m.Button({
                             text: "Submit",
                             press: () => {
-                                let properties = {};
+                                const properties = {};
                                 this[idHeader] = properties[idHeader] = textEditorHeader.getValue();
                                 this[idFooter] = properties[idFooter] = textEditorFooter.getValue();
 
@@ -585,7 +582,7 @@
                 }
             });
 
-            let excludeSlot = document.createElement("div");
+            const excludeSlot = document.createElement("div");
             excludeSlot.slot = slotId;
             this.appendChild(excludeSlot);
 
@@ -597,34 +594,28 @@
         onCustomWidgetAfterUpdate() {
         }
 
-        displayPageIds() {
-            const pages = biExportGetMetadata().pages;
-
+        displayPageIds(metadata) {
+            const pages = metadata.pages;
             if (!pages) return;
 
             const table = this._shadowRoot.querySelector("#pageIds");
-
             table.innerHTML = "";
 
             let i = 0;
             for (const p of pages) {
-                if (!p) continue;
-                if (!p.title) continue;
-                if (!p.id) continue;
+                const row = table.insertRow(-1);
 
-                let row = table.insertRow(-1);
+                const cellLeft = row.insertCell(0);
+                const cellRight = row.insertCell(1);
 
-                let cellLeft = row.insertCell(0);
-                let cellRight = row.insertCell(1);
-
-                let label = document.createElement("label");
+                const label = document.createElement("label");
                 label.setAttribute("for", `sacPageId_${i}`);
                 label.textContent = p.title;
 
                 cellLeft.appendChild(label);
 
 
-                let input = document.createElement("input");
+                const input = document.createElement("input");
                 input.setAttribute("id", `sacPageId_${i}`);
                 input.setAttribute("name", `sacPageId_${i}`);
                 input.setAttribute("type", `text`);
@@ -638,14 +629,16 @@
         }
 
         connectedCallback() {
-            const trySetModel = () => {
+            const trySetModel = async () => {
                 try {
-                    let model = this._getWidgetModel();
+                    const metadata = await biExportGetMetadata({ tablesSelectedWidget: [] });
+                    const model = this._getWidgetModel(metadata);
                     this.filters.forEach(filter => {
                         filter.getLists().forEach(filterList => {
                             filterList.setModel(model);
                         });
                     });
+                    this.displayPageIds(metadata);
                 } catch (e) {
                     setTimeout(trySetModel); // biexport.js might not be loaded in time, try again later
                 }
@@ -659,8 +652,6 @@
                 tenantUrl.closest("tr").hidden = false;
             }
 
-            this.displayPageIds()
-
             // try to load oauth info
             fetch("/oauthservice/api/v1/oauthclient?tenant=" + window.TENANT).then(response => {
                 if (response.ok) {
@@ -668,8 +659,8 @@
                 }
                 throw new Error("Failed to get oauth clients: " + response.status)
             }).then(oauthClients => {
-                let oauthSelect = this._shadowRoot.getElementById("oauthId");
-                let clientId = this._getValue("oauthClientId");
+                const oauthSelect = this._shadowRoot.getElementById("oauthId");
+                const clientId = this._getValue("oauthClientId");
                 while (oauthSelect.options.length > 1) {
                     oauthSelect.options.remove(1);
                 }
@@ -681,9 +672,9 @@
                 });
 
                 oauthSelect.addEventListener("change", () => {
-                    let value = oauthSelect.value;
+                    const value = oauthSelect.value;
                     if (value) {
-                        let oauth = {};
+                        const oauth = {};
                         Promise.all([
                             fetch("/oauthservice/api/v1/tenantinfo?tenant=" + window.TENANT).then(response => response.json()).then(tenantOauthInfo => {
                                 oauth.authorization_URL = tenantOauthInfo.baseUrl + tenantOauthInfo.authEndpoint;
@@ -711,7 +702,7 @@
 
         _submit(e) {
             e.preventDefault();
-            let properties = {};
+            const properties = {};
             for (let name of BiExportAps.observedAttributes) {
                 properties[name] = this[name];
             }
@@ -722,7 +713,7 @@
             this._changeProperty(e.target.name);
         }
         _changeProperty(name) {
-            let properties = {};
+            const properties = {};
             properties[name] = this[name];
             this._firePropertiesChanged(properties);
         }
@@ -1029,7 +1020,7 @@
         }
         set oauth(value) {
             if (value) {
-                let oauth = JSON.parse(value);
+                const oauth = JSON.parse(value);
                 this._setValue("oauthClientId", oauth.client_id);
                 this._setValue("oauthClientSecret", oauth.client_secret);
                 this._setValue("oauthClientRedirectURL", oauth.client_redirect_URL);

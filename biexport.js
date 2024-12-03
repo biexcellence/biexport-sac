@@ -1,5 +1,5 @@
 (function () {
-    let tmpl = document.createElement("template");
+    const tmpl = document.createElement("template");
     tmpl.innerHTML = `
       <style>
       </style>
@@ -191,16 +191,16 @@
         }
 
         _renderExportButton() {
-            let menu = new sap.m.Menu({
+            const menu = new sap.m.Menu({
                 title: this._cExport_text,
-                itemSelected: oEvent => {
-                    let oItem = oEvent.getParameter("item");
+                itemSelected: async oEvent => {
+                    const oItem = oEvent.getParameter("item");
                     if (!this.showComponentSelector && !this.showViewSelector) {
                         this.doExport(oItem.getKey());
                     } else {
-                        let metadata = getMetadata({});
+                        const metadata = await getMetadata({});
 
-                        let ltab = new sap.m.IconTabBar({
+                        const ltab = new sap.m.IconTabBar({
                             expandable: false
                         });
 
@@ -212,31 +212,31 @@
                                 columnsL: 4
                             });
 
-                            let components = metadata.components;
+                            const components = metadata.components;
                             if (this["_initialVisibleComponents" + oItem.getKey()] == null) {
                                 this["_initialVisibleComponents" + oItem.getKey()] = this[oItem.getKey().toLowerCase() + "SelectedWidgets"] ? JSON.parse(this[oItem.getKey().toLowerCase() + "SelectedWidgets"]) : [];
                             }
 
                             if (this["_initialVisibleComponents" + oItem.getKey()].length == 0) {
-                                let linitial = [];
-                                for (let componentId in components) {
-                                    let component = components[componentId];
-                                    let lcomp = {};
-                                    lcomp.component = component.name;
-                                    lcomp.isExcluded = false;
-                                    linitial.push(lcomp);
+                                const linitial = [];
+                                for (const componentId in components) {
+                                    const component = components[componentId];
+                                    linitial.push({
+                                        component: component.name,
+                                        isExcluded: false
+                                    });
                                 }
                                 this[oItem.getKey().toLowerCase() + "SelectedWidgets"] = JSON.stringify(linitial);
                             }
-                            for (let componentId in components) {
-                                let component = components[componentId];
+                            for (const componentId in components) {
+                                const component = components[componentId];
 
                                 if (component.type == "sdk_com_biexcellence_openbi_sap_sac_export__0") {
                                     continue;
                                 }
 
                                 if (this["_initialVisibleComponents" + oItem.getKey()].length == 0 || this["_initialVisibleComponents" + oItem.getKey()].some(v => v.component == component.name && !v.isExcluded)) {
-                                    let ltext = component.name.replaceAll("_", " ");
+                                    const ltext = component.name.replaceAll("_", " ");
 
                                     lcomponent_box.addContent(new sap.m.CheckBox({
                                         id: component.name,
@@ -291,9 +291,9 @@
                                 ]
                             }));
 
-                            let vars = metadata.vars;
-                            for (let varId in vars) {
-                                let varObj = vars[varId];
+                            const vars = metadata.vars;
+                            for (const varId in vars) {
+                                const varObj = vars[varId];
                                 if (varObj.isExposed) {
                                     lview_box.addContent(new sap.m.Label({
                                         text: varObj.description || varObj.name
@@ -387,7 +387,7 @@
                             }));
                         }
 
-                        let dialog = new sap.m.Dialog({
+                        const dialog = new sap.m.Dialog({
                             title: "Configure Export",
                             contentWidth: "500px",
                             contentHeight: "400px",
@@ -441,7 +441,7 @@
             this._pdfMenuItem = new sap.m.MenuItem({ key: "PDF" });
             menu.addItem(this._pdfMenuItem);
 
-            let buttonSlot = document.createElement("div");
+            const buttonSlot = document.createElement("div");
             buttonSlot.slot = "export_button";
             this.appendChild(buttonSlot);
 
@@ -984,7 +984,7 @@
         _setValue(name, value) {
             this[name] = value;
 
-            let properties = {};
+            const properties = {};
             properties[name] = this[name];
             this.dispatchEvent(new CustomEvent("propertiesChanged", {
                 detail: {
@@ -1009,7 +1009,7 @@
         }
 
         addSelectedWidget(format, comp, isIncluded) {
-            let current = this._export_settings[format.toLowerCase() + "_exclude"] ? JSON.parse(this._export_settings[format.toLowerCase() + "_exclude"]) : [];
+            const current = this._export_settings[format.toLowerCase() + "_exclude"] ? JSON.parse(this._export_settings[format.toLowerCase() + "_exclude"]) : [];
             current.push({ component: comp, isExcluded: !isIncluded });
 
             this._export_settings[format.toLowerCase() + "_exclude"] = JSON.stringify(current);
@@ -1088,17 +1088,17 @@
                 this._export_settings.array_var = [];
             }
 
-            let params = [];
+            const params = [];
             parameters.forEach(s => {
                 params.push(JSON.parse(s));
             });
 
-            let texts = [];
+            const texts = [];
             customTexts.forEach(s => {
                 texts.push(JSON.parse(s));
             });
 
-            let selected = [];
+            const selected = [];
             selectedWidgets.forEach(s => {
                 selected.push({
                     component: s, isExclued: false
@@ -1133,7 +1133,7 @@
         }
 
         doExport(format, overrideSettings) {
-            let settings = JSON.parse(JSON.stringify(this._export_settings));
+            const settings = JSON.parse(JSON.stringify(this._export_settings));
 
             this._doExport(format, settings, overrideSettings);
         }
@@ -1143,8 +1143,8 @@
                 schedule.frequence = " ";
             }
 
-            let settings = JSON.parse(JSON.stringify(this._export_settings));
-            let overrideSettings = [{ name: "scheduling", value: schedule }];
+            const settings = JSON.parse(JSON.stringify(this._export_settings));
+            const overrideSettings = [{ name: "scheduling", value: schedule }];
             if (user) {
                 overrideSettings.push({ name: "user", value: user });
             }
@@ -1153,7 +1153,7 @@
             this._doExport(format, settings, overrideSettings);
         }
 
-        _doExport(format, settings, overrideSettings) {
+        async _doExport(format, settings, overrideSettings) {
             if (this._designMode) {
                 return false;
             }
@@ -1169,12 +1169,12 @@
             // try detect runtime settings
             if (window.sap && sap.fpa && sap.fpa.ui && sap.fpa.ui.infra) {
                 if (sap.fpa.ui.infra.common) {
-                    let context = sap.fpa.ui.infra.common.getContext();
+                    const context = sap.fpa.ui.infra.common.getContext();
 
                     settings.appid = getAppId(context);
 
                     if (context.getUserFormatting) {
-                        let userFormatting = context.getUserFormatting();
+                        const userFormatting = context.getUserFormatting();
                         settings.number_decimal_separator = userFormatting.decimalFormat.decimalSeparator.symbol;
                         settings.number_grouping_separator = userFormatting.decimalFormat.groupingSeparator.symbol;
                     }
@@ -1199,7 +1199,7 @@
             }
 
             if (overrideSettings) {
-                let set = JSON.parse(overrideSettings);
+                const set = JSON.parse(overrideSettings);
                 set.forEach(s => {
                     settings[s.name] = s.value;
                 });
@@ -1211,65 +1211,57 @@
                 }
             }));
 
-            settings.metadata = JSON.stringify(getMetadata({
+            const metadata = await getMetadata({
                 tablesSelectedWidget: settings.tables_exclude ? JSON.parse(settings.tables_exclude) : [],
                 formatSelectedWidget: settings[format.toLowerCase() + "_exclude"] ? JSON.parse(settings[format.toLowerCase() + "_exclude"]) : [],
                 tablesCellLimit: settings.tables_cell_limit || undefined
-            }));
+            });
+            settings.metadata = JSON.stringify(metadata);
 
-            let contentPromise;
+            let content = null;
             if (settings.application_array) {
-                contentPromise = Promise.resolve(null); // iterations
+                // iterations
             } else {
-                contentPromise = new Promise(resolve => setTimeout(resolve, 200)).then(() => {
-                    // add settings to html so they can be serialized
-                    // NOTE: this is not "promise" save!
-                    this.settings.value = JSON.stringify(settings, (key, value) => key == "metadata" ? undefined : value);
+                await new Promise(resolve => setTimeout(resolve, 200));
 
-                    return getHtml(settings).then(content => {
-                        this._updateSettings(); // reset settings
-                        return content;
-                    }, reason => {
-                        console.error("[biExport] Error in getHtml:", reason);
-                        throw reason;
-                    });
-                });
+                // add settings to html so they can be serialized
+                // NOTE: this is not "promise" save!
+                this.settings.value = JSON.stringify(settings, (key, value) => key == "metadata" ? undefined : value);
+                try {
+                    content = await getHtml(settings);
+                } catch (e) {
+                    console.error("[biExport] Error in getHtml:", e);
+                    throw e;
+                } finally {
+                    this._updateSettings(); // reset settings
+                }
             }
 
-            contentPromise.then(content => {
-                let gzipPromises = [compressGzip(JSON.stringify(settings))];
-                if (content) {
-                    gzipPromises.push(compressGzip(content));
+            const form = document.createElement("form");
+
+            const compressedSettings = await compressGzip(JSON.stringify(settings));
+            const settingsEl = form.appendChild(document.createElement("input"));
+            settingsEl.name = "bie_openbi_export_settings_json";
+            settingsEl.type = "file";
+            settingsEl.files = createFileList(compressedSettings, "export_settings.json.gz", "application/json");
+
+            if (content) {
+                const compressedContent = await compressGzip(content);
+                const contentEl = form.appendChild(document.createElement("input"));
+                contentEl.name = "bie_openbi_export_content";
+                contentEl.type = "file";
+                contentEl.files = createFileList(compressedContent, "export_content.html.gz", "text/html");
+            }
+
+            this.dispatchEvent(new CustomEvent("onSend", {
+                detail: {
+                    settings: settings
                 }
-                return Promise.all(gzipPromises);
-            }).then(result => {
-                let form = document.createElement("form");
+            }));
 
-                let settingsEl = form.appendChild(document.createElement("input"));
-                settingsEl.name = "bie_openbi_export_settings_json";
-                settingsEl.type = "file";
-                settingsEl.files = createFileList(result[0], "export_settings.json.gz", "application/json");
+            const url = settings.server_urls + "/sac/export.html";
 
-                if (result.length > 1) {
-                    let contentEl = form.appendChild(document.createElement("input"));
-                    contentEl.name = "bie_openbi_export_content";
-                    contentEl.type = "file";
-                    contentEl.files = createFileList(result[1], "export_content.html.gz", "text/html");
-                }
-
-                this.dispatchEvent(new CustomEvent("onSend", {
-                    detail: {
-                        settings: settings
-                    }
-                }));
-
-                let url = settings.server_urls + "/sac/export.html";
-
-                return this._submitExport(url, form, settings);
-            }, reason => {
-                console.error("[biExport] Error creating form:", reason);
-                throw reason;
-            });
+            return this._submitExport(url, form, settings);
         }
 
         _submitExport(exportUrl, form, settings) {
@@ -1286,7 +1278,7 @@
                     }
                 }).then(response => {
                     if (response.ok) {
-                        let contentDisposition = response.headers.get("Content-Disposition");
+                        const contentDisposition = response.headers.get("Content-Disposition");
                         if (contentDisposition) {
                             return response.blob().then(blob => {
                                 this._receiveExport(settings, null, parseContentDispositionFilename(contentDisposition), blob);
@@ -1297,7 +1289,7 @@
                         });
                     } else if (response.status == 401) {
                         return response.text().then(oauthUrl => {
-                            let oauthWindow = window.open(oauthUrl, "_blank", "height=500,width=500");
+                            const oauthWindow = window.open(oauthUrl, "_blank", "height=500,width=500");
                             if (!oauthWindow || oauthWindow.closed) {
                                 throw new Error("OAuth popup bocked");
                             }
@@ -1355,8 +1347,8 @@
                 this._serviceMessage = "Export has been produced";
 
                 if (blob) { // download blob
-                    let downloadUrl = URL.createObjectURL(blob);
-                    let a = document.createElement("a");
+                    const downloadUrl = URL.createObjectURL(blob);
+                    const a = document.createElement("a");
                     a.download = filename;
                     a.href = downloadUrl;
                     document.body.appendChild(a);
@@ -1370,7 +1362,7 @@
                     this._serviceMessage = filename;
                     filename = null;
                 } else { // download via filename and not scheduled
-                    let downloadUrl = host + "/sac/download.html?FILE=" + encodeURIComponent(filename);
+                    const downloadUrl = host + "/sac/download.html?FILE=" + encodeURIComponent(filename);
                     window.open(downloadUrl, "_blank");
                 }
 
@@ -1404,7 +1396,7 @@
 
     function createGuid() {
         return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
-            let r = Math.random() * 16 | 0, v = c === "x" ? r : (r & 0x3 | 0x8);
+            const r = Math.random() * 16 | 0, v = c === "x" ? r : (r & 0x3 | 0x8);
             return v.toString(16);
         });
     }
@@ -1414,10 +1406,10 @@
         return app && (app.appId /* application */ || app.resource_id /* story */);
     }
 
-    function getMetadata(settings) {
+    async function getMetadata(settings) {
         let findAggregatedObjects;
 
-        let shell = commonApp.getShell();
+        const shell = commonApp.getShell();
         if (shell) { // old SAC
             findAggregatedObjects = fn => shell.findElements(true, fn); // could this also be findAggregatedObjects ?
         }
@@ -1425,15 +1417,15 @@
             findAggregatedObjects = fn => sap.fpa.ui.story.Utils.getShellContainer().getCurrentPage().getComponentInstance().findAggregatedObjects(true, fn);
         }
 
-        let documentContext = findAggregatedObjects(e => e.getMetadata().hasProperty("resourceType") && e.getProperty("resourceType") == "STORY")[0].getDocumentContext();
-        let storyModel = documentContext.get("sap.fpa.story.getstorymodel");
-        let entityService = documentContext.get("sap.fpa.bi.entityService");
-        let filterService = documentContext.get("sap.fpa.bi.filter.filterService");
-        let widgetControls = documentContext.get("sap.fpa.story.document.widgetControls");
+        const documentContext = findAggregatedObjects(e => e.getMetadata().hasProperty("resourceType") && e.getProperty("resourceType") == "STORY")[0].getDocumentContext();
+        const storyModel = documentContext.get("sap.fpa.story.getstorymodel");
+        const entityService = documentContext.get("sap.fpa.bi.entityService");
+        const filterService = documentContext.get("sap.fpa.bi.filter.filterService");
+        const widgetControls = documentContext.get("sap.fpa.story.document.widgetControls");
 
         // only for applications (not stories)
         let app, appNames = Object.create(null);
-        let outlineContainer = findAggregatedObjects(e => e.hasStyleClass && e.hasStyleClass("sapAppBuildingOutline"))[0]; // sId: "__container0"
+        const outlineContainer = findAggregatedObjects(e => e.hasStyleClass && e.hasStyleClass("sapAppBuildingOutline"))[0]; // sId: "__container0"
         if (outlineContainer) { // outlineContainer has more recent data than applicationEntity during edit
             if (!app) {
                 try {
@@ -1447,18 +1439,18 @@
             }
         }
         if (!app) {
-            let applicationEntity = storyModel.getApplicationEntity();
+            const applicationEntity = storyModel.getApplicationEntity();
             if (applicationEntity) {
                 app = applicationEntity.app;
             }
         }
         if (app) {
-            let names = app.names;
-            for (let key in names) {
-                let name = names[key];
-                let obj = JSON.parse(key).pop();
-                let type = Object.keys(obj)[0];
-                let id = obj[type];
+            const names = app.names;
+            for (const key in names) {
+                const name = names[key];
+                const obj = JSON.parse(key).pop();
+                const type = Object.keys(obj)[0];
+                const id = obj[type];
 
                 appNames[id] = {
                     type: type,
@@ -1467,16 +1459,16 @@
             }
         }
 
-        let components = {};
-        storyModel.getAllWidgets().forEach(widget => {
+        const components = {};
+        await Promise.all(storyModel.getAllWidgets().map(async widget => {
             if (!widget) return; // might be undefined during edit
 
-            let component = appNames[widget.id] || {
+            const component = appNames[widget.id] || {
                 type: widget.class
             };
 
             if (!component.name) { // try to find widget name in story
-                let widgetElement = document.querySelector("[data-sap-widget-id='" + widget.id + "'] > .sapLumiraStoryLayoutCommonWidgetWrapper > [id^=__widget], [data-sap-widget-id='" + widget.id + "'] > [id^=__widget]");
+                const widgetElement = document.querySelector("[data-sap-widget-id='" + widget.id + "'] > .sapLumiraStoryLayoutCommonWidgetWrapper > [id^=__widget], [data-sap-widget-id='" + widget.id + "'] > [id^=__widget]");
                 if (widgetElement) {
                     component.name = widgetElement.id;
                 }
@@ -1497,28 +1489,25 @@
                 }
             }
 
-            let widgetControl = widgetControls.filter(control => control.getWidgetId() == widget.id)[0];
+            const widgetControl = widgetControls.filter(control => control.getWidgetId() == widget.id)[0];
             if (widgetControl && includeData) { // control specific stuff
                 if (typeof widgetControl.getTableController == "function") { // table
                     extractTableWidgetData(widgetControl, component, settings && settings.tablesCellLimit);
+                } else if (typeof widgetControl.getTablePlanningAdapter == "function") { // table2
+                    await extractTable2WidgetData(widgetControl, component, settings && settings.tablesCellLimit);
                 } else if (widgetControl.oViz) { // chart (viz)
                     extractChartWidgetData(widgetControl, component);
                 } else if (widgetControl._destroyViz) { // chart (viz2)
                     extractChart2WidgetData(widgetControl, component);
-                } else {
-                    let className = widgetControl.getClassName();
-                    if (className == "sap.fpa.ui.story.entity.table.TableWidget") { // table SAC 2024.21.2
-                        extractTable2WidgetData(widgetControl, component, settings && settings.tablesCellLimit);
-                    }
                 }
             }
 
             components[widget.id] = component;
-        });
+        }));
 
         // only for optimized stories
-        let allICFilters = (filterService.getUQMStoryFiltersForIBN && filterService.getUQMStoryFiltersForIBN() || []).map(filter => { // map DimensionMemberICElement back to story filter...
-            let ids = JSON.parse(filter.targetedEntity.entityId).reduce((a, v) => Object.assign(a, v), {});
+        const allICFilters = (filterService.getUQMStoryFiltersForIBN && filterService.getUQMStoryFiltersForIBN() || []).map(filter => { // map DimensionMemberICElement back to story filter...
+            const ids = JSON.parse(filter.targetedEntity.entityId).reduce((a, v) => Object.assign(a, v), {});
             return {
                 "datasetId": ids.datasetId, // fake for easier use
                 "attributeId": [
@@ -1541,15 +1530,15 @@
             };
         });
 
-        let datasources = {};
+        const datasources = {};
         entityService.getDatasets().forEach(datasetId => {
-            let filters = storyModel.getAllFilterInfos(datasetId).map(filterInfo => filterInfo.filter.filters).flat(); // none optimized
-            let icFilters = allICFilters.filter(filter => filter.datasetId == datasetId); // optimized
-            let promptValues = storyModel.getDatasetPromptValues(datasetId); // documentContext.get("sap.bi.container.variables").getVariables(datasetId)
+            const filters = storyModel.getAllFilterInfos(datasetId).map(filterInfo => filterInfo.filter.filters).flat(); // none optimized
+            const icFilters = allICFilters.filter(filter => filter.datasetId == datasetId); // optimized
+            const promptValues = storyModel.getDatasetPromptValues(datasetId); // documentContext.get("sap.bi.container.variables").getVariables(datasetId)
 
-            let dataset = entityService.getDatasetById(datasetId);
-            let modelData = dataset.idMapping.modelData;
-            let modelId = (modelData.isRemote ?
+            const dataset = entityService.getDatasetById(datasetId);
+            const modelData = dataset.idMapping.modelData;
+            const modelId = (modelData.isRemote ?
                 modelData.dataSource && modelData.dataSource.ObjectName :
                 modelData.data && modelData.data.packageName && modelData.data.name && (modelData.data.packageName + ":" + modelData.data.name))
                 || datasetId; // construct modelId
@@ -1562,14 +1551,14 @@
             };
 
             storyModel.getWidgetsByDatasetId(datasetId).forEach(widget => {
-                let component = components[widget.id];
+                const component = components[widget.id];
                 if (component) {
                     component.datasource = modelId;
                 }
             });
         });
 
-        let result = {
+        const result = {
             name: storyModel.getStoryTitle && storyModel.getStoryTitle(),
             components: components,
             datasources: datasources,
@@ -1589,40 +1578,47 @@
         return result;
     }
 
-    function extractTable2WidgetData(widgetControl, component, tablesCellLimit) {
-        let gridData = widgetControl.getUnifiedStore().getState(widgetControl.getSelector("table2.v2.getGridData"));
-    }
+    async function extractTable2WidgetData(widgetControl, component, tablesCellLimit) {
+        const planningAdapter = widgetControl.getTablePlanningAdapter();
+        if (!planningAdapter) return;
 
-    function extractTableWidgetData(widgetControl, component, tablesCellLimit) {
-        let tableController = widgetControl.getTableController();
-        if (!tableController) return; // tableController may not be initialized
+        const dataRegionResult = await planningAdapter.getDataRegionAsync();
+        if (!dataRegionResult) return;
 
-        //let metadata = tableController.getQueryDefinitionMap();
-
-        let region = tableController.getActiveDataRegion();
+        const region = dataRegionResult.dataRegion;
         if (!region) return;
 
-        let view = tableController.getView();
-        let tableCellFactory = view.getTableCellFactory();
+        // const gridData = widgetControl.getUnifiedStore().getState(widgetControl.getSelector("table2.v2.getGridData"));
 
-        //let thresholdManager = region.getThresholdManager();
-        //let thresholdStyle = region.getThresholdStyle();
-        //let repeatMembers = region.getRepeatMembers(); // show repeated members
-        let grid = region.getGrid();
-        //let rowCount = grid.getMaxRows();
-        //let columnCount = grid.getMaxColumns();
-        let rowSizes = grid.getRows();
-        let columnSizes = grid.getColumns();
-        let mergedCells = grid.getMergedCells();
+        extractTableDataRegion(region, component, tablesCellLimit);
+    }
+    function extractTableWidgetData(widgetControl, component, tablesCellLimit) {
+        const tableController = widgetControl.getTableController();
+        if (!tableController) return; // tableController may not be initialized
 
-        let dimensions = grid.calculateGridContentDimensions(true);
-        let rowCount = dimensions.row; // sometimes there are too many rows... // region.getHeight();
-        let columnCount = dimensions.col; // region.getWidth();
+        //const metadata = tableController.getQueryDefinitionMap();
+
+        const region = tableController.getActiveDataRegion();
+        if (!region) return;
+
+        extractTableDataRegion(region, component, tablesCellLimit, tableController);
+    }
+    function extractTableDataRegion(region, component, tablesCellLimit, tableController) {
+        //const thresholdManager = region.getThresholdManager();
+        //const thresholdStyle = region.getThresholdStyle();
+        //const repeatMembers = region.getRepeatMembers(); // show repeated members
+        const grid = region.getGrid();
+        //const rowCount = grid.getMaxRows();
+        //const columnCount = grid.getMaxColumns();
+
+        const dimensions = grid.calculateGridContentDimensions(true);
+        const rowCount = dimensions.row; // sometimes there are too many rows... // region.getHeight();
+        const columnCount = dimensions.col; // region.getWidth();
 
         let includeStyles = tablesCellLimit ? rowCount * columnCount < tablesCellLimit : true;
 
         if (!includeStyles && region._oProcessor && region._oProcessor.currentResultSet) {
-            let rows = extractTableResultSet(region._oProcessor.currentResultSet);
+            const rows = extractTableResultSet(region._oProcessor.currentResultSet);
             if (region.getShowTitle() && region.getNewTableType && !region.getNewTableType()) { // only for non optimized table
                 rows.unshift([{ type: 0 /* GENERAL_CELL */, rawVal: null, formattedValue: region.getTitle() }]);
             }
@@ -1630,55 +1626,58 @@
             return;
         }
 
-        if (includeStyles && view.getReactTableWrapper) { // make sure react tables are rendered
-            let reactTableWrapper = view.getReactTableWrapper();
-            if (reactTableWrapper && reactTableWrapper.appendTableRows) {
-                let reactTable = reactTableWrapper.reactTable;
-                if (reactTable && reactTable.cachedData && reactTable.tableDataWindowing) {
-                    reactTable.tableDataWindowing.columnsWindowing.contentLimit = Number.MAX_VALUE;
-                    reactTable.cachedData.rowContentLimitFactor = Number.MAX_VALUE;
-                } else {
-                    let tableData = reactTableWrapper.getTableData();
-                    // tableData.widgetWidth = reactTableWrapper.reactTable.tableSizes.htmlTableWrapperWidth;
-                    // tableData.widgetHeight = reactTableWrapper.reactTable.tableSizes.htmlTableWrapperHeight;
-                    tableData.widgetWidth = Number.MAX_VALUE;
-                    tableData.widgetHeight = Number.MAX_VALUE;
+        const view = tableController && tableController.getView();
+        if (includeStyles && view) {
+            if (view.getReactTableWrapper) { // make sure react tables are rendered
+                const reactTableWrapper = view.getReactTableWrapper();
+                if (reactTableWrapper && reactTableWrapper.appendTableRows) {
+                    const reactTable = reactTableWrapper.reactTable;
+                    if (reactTable && reactTable.cachedData && reactTable.tableDataWindowing) {
+                        reactTable.tableDataWindowing.columnsWindowing.contentLimit = Number.MAX_VALUE;
+                        reactTable.cachedData.rowContentLimitFactor = Number.MAX_VALUE;
+                    } else {
+                        const tableData = reactTableWrapper.getTableData();
+                        // tableData.widgetWidth = reactTableWrapper.reactTable.tableSizes.htmlTableWrapperWidth;
+                        // tableData.widgetHeight = reactTableWrapper.reactTable.tableSizes.htmlTableWrapperHeight;
+                        tableData.widgetWidth = Number.MAX_VALUE;
+                        tableData.widgetHeight = Number.MAX_VALUE;
+                    }
+                    reactTableWrapper.appendTableRows(Number.MAX_VALUE);
+                    includeStyles = false;
                 }
-                reactTableWrapper.appendTableRows(Number.MAX_VALUE);
+            }
+            // this somehow crashes the browser by deloitte
+            if (view._oScrollableTable) { // make sure tables are rendered
+                view._oScrollableTable.setResizeMode("dynamic");
+                view._oScrollableTable.setDisplaySize(Number.MAX_VALUE, Number.MAX_VALUE);
+                view._oScrollableTable.setTopLeftCell({ row: 0, col: 0 });
+                view._oScrollableTable.redrawTable();
                 includeStyles = false;
             }
-        }
-        // this somehow crashes the browser by deloitte
-        if (includeStyles && view._oScrollableTable) { // make sure tables are rendered
-            view._oScrollableTable.setResizeMode("dynamic");
-            view._oScrollableTable.setDisplaySize(Number.MAX_VALUE, Number.MAX_VALUE);
-            view._oScrollableTable.setTopLeftCell({ row: 0, col: 0 });
-            view._oScrollableTable.redrawTable();
-            includeStyles = false;
         }
 
         grid.finishPartialProcessing && grid.finishPartialProcessing(); // create all cells
 
-        let rows = extractTableGrid(rowCount, columnCount, grid, mergedCells, includeStyles, tableController, tableCellFactory, rowSizes, columnSizes);
+        const rows = extractTableGrid(rowCount, columnCount, grid, includeStyles, tableController, view && view.getTableCellFactory());
         while (rows.length > 0 && rows[rows.length - 1].every(c => !c)) {
             rows.pop(); // remove empty rows at the end
         }
         component.data = rows;
     }
     function extractTableResultSet(resultSet) {
-        let columnAxis = resultSet.getCursorColumnsAxis();
-        let rowAxis = resultSet.getCursorRowsAxis();
+        const columnAxis = resultSet.getCursorColumnsAxis();
+        const rowAxis = resultSet.getCursorRowsAxis();
 
-        let columnDimensions = columnAxis.getRsDimensions();
-        let rowDimensions = rowAxis.getRsDimensions();
+        const columnDimensions = columnAxis.getRsDimensions();
+        const rowDimensions = rowAxis.getRsDimensions();
 
-        let columnDimensionsLength = columnDimensions.size();
-        let rowDimensionsLength = rowDimensions.size();
+        const columnDimensionsLength = columnDimensions.size();
+        const rowDimensionsLength = rowDimensions.size();
 
-        let dataColumnsLength = resultSet.getDataColumns();
-        let dataRowsLength = resultSet.getDataRows();
+        const dataColumnsLength = resultSet.getDataColumns();
+        const dataRowsLength = resultSet.getDataRows();
 
-        let rows = [];
+        const rows = [];
         let x = 0, y = 0;
 
         // column members
@@ -1688,8 +1687,8 @@
             y = 0;
 
             while (columnAxis.hasNextTupleElement()) {
-                let element = columnAxis.nextTupleElement();
-                let d = { type: 7 }; // COL_DIMENSION_MEMBER
+                const element = columnAxis.nextTupleElement();
+                const d = { type: 7 }; // COL_DIMENSION_MEMBER
                 extractTupleElement(columnAxis, element, d);
                 (rows[y] || (rows[y] = [])).push(d);
 
@@ -1700,7 +1699,7 @@
         // column headers
         if (columnDimensionsLength > 0) {
             for (y = 0; y < columnDimensionsLength; y++) {
-                let columnDimension = columnDimensions.get(y);
+                const columnDimension = columnDimensions.get(y);
                 x = 0;
 
                 rowAxis.setTupleCursorBeforeStart();
@@ -1738,10 +1737,10 @@
 
         // row headers
         if (rowDimensionsLength > 0) {
-            let row = [];
+            const row = [];
 
             for (x = 0; x < rowDimensionsLength; x++) {
-                let rowDimension = rowDimensions.get(x);
+                const rowDimension = rowDimensions.get(x);
                 row.push({
                     type: 4, // ROW_DIMENSION_HEADER
                     rawVal: rowDimension.getName(),
@@ -1766,15 +1765,15 @@
         // row members + data
         rowAxis.setTupleCursorBeforeStart();
         for (y = 0; y < dataRowsLength; y++) {
-            let row = [];
+            const row = [];
 
             if (rowAxis.hasNextTuple()) { // there is always one tuple
                 rowAxis.nextTuple();
 
                 if (rowAxis.hasNextTupleElement()) {
                     while (rowAxis.hasNextTupleElement()) {
-                        let element = rowAxis.nextTupleElement();
-                        let d = { type: 6 }; // ROW_DIMENSION_MEMBER
+                        const element = rowAxis.nextTupleElement();
+                        const d = { type: 6 }; // ROW_DIMENSION_MEMBER
                         extractTupleElement(rowAxis, element, d);
                         row.push(d);
                     }
@@ -1788,7 +1787,7 @@
             }
 
             for (x = 0; x < dataColumnsLength; x++) {
-                let dataCell = resultSet.getDataCell(x, y);
+                const dataCell = resultSet.getDataCell(x, y);
                 let rawVal = null;
                 let formattedValue = rawVal;
                 let type = 99; // NULL_CELL
@@ -1826,13 +1825,13 @@
 
         function extractTupleElement(axis, element, d) {
             while (axis.hasNextFieldValue()) {
-                let fieldValue = axis.nextFieldValue();
+                const fieldValue = axis.nextFieldValue();
 
                 let fieldType = fieldValue.getField().getPresentationType(), parentType;
                 while ((parentType = fieldType.getParent())) {
                     fieldType = parentType;
                 }
-                let fieldTypeName = fieldType.getName();
+                const fieldTypeName = fieldType.getName();
 
                 if (fieldTypeName == "AbstractKey") {
                     d.rawVal = fieldValue.getFormattedValue();
@@ -1842,15 +1841,15 @@
             }
 
             if (d.formattedValue && d.formattedValue.startsWith("[") && d.formattedValue.endsWith("]")) {
-                let index = d.formattedValue.lastIndexOf("&["); // hierarchy values might have this structure: [Root].[Parent].[Parent].&[Child]
+                const index = d.formattedValue.lastIndexOf("&["); // hierarchy values might have this structure: [Root].[Parent].[Parent].&[Child]
                 if (index >= 0) {
                     d.formattedValue = d.formattedValue.substring(index + 2, d.formattedValue.length - 1);
                 }
             }
 
-            let drillState = element.getDrillState();
+            const drillState = element.getDrillState();
             if (drillState) {
-                let level = element.getDisplayLevel();
+                const level = element.getDisplayLevel();
                 switch (drillState.getName()) {
                     case "Leaf":
                         if (level > 0) {
@@ -1870,17 +1869,21 @@
             }
         }
     }
-    function extractTableGrid(rowCount, columnCount, grid, mergedCells, includeStyles, tableController, tableCellFactory, rowSizes, columnSizes) {
-        let rows = [];
+    function extractTableGrid(rowCount, columnCount, grid, includeStyles, tableController, tableCellFactory) {
+        const rowSizes = grid.getRows();
+        const columnSizes = grid.getColumns();
+        const mergedCells = grid.getMergedCells();
+
+        const rows = [];
         for (let y = 0; y < rowCount; y++) {
             for (let x = 0; x < columnCount; x++) {
-                let cell = grid.getCellByCoord({ x: x, y: y });
+                const cell = grid.getCellByCoord({ x: x, y: y });
                 if (!cell) { /* empty custom cell */
                     (rows[y] || (rows[y] = []))[x] = null;
                     continue;
                 }
 
-                let d = {
+                const d = {
                     type: cell.getType ? cell.getType() : 100 /* custom cell */,
                     rawVal: cell.getRawVal ? cell.getRawVal() : cell.getVal() /* custom cell */,
                     formattedValue: cell.getFormattedValue()
@@ -1905,9 +1908,9 @@
                 }
 
                 // calculate colspan / rowspan
-                let key = cell.getKey();
+                const key = cell.getKey();
                 if (key in mergedCells) {
-                    let mergedCell = mergedCells[key];
+                    const mergedCell = mergedCells[key];
                     if (mergedCell) {
                         d.colspan = mergedCell.width + 1;
                         d.rowspan = mergedCell.height + 1;
@@ -1916,7 +1919,7 @@
 
                 // get drill state / level
                 if (cell.getFlags && cell.getLevel) {
-                    let level = cell.getLevel();
+                    const level = cell.getLevel();
                     switch (cell.getFlags()) {
                         case 0:
                             if (level > 0) {
@@ -1937,16 +1940,16 @@
 
                 // get threshold
                 if (cell.getAppliedThreshold) {
-                    let appliedThreshold = cell.getAppliedThreshold();
-                    let threshold = appliedThreshold.threshold;
+                    const appliedThreshold = cell.getAppliedThreshold();
+                    const threshold = appliedThreshold.threshold;
                     if (threshold) {
                         d.thresholdInterval = threshold.intervals[appliedThreshold.intervalId];
                     }
                 }
 
                 // get effective style
-                if (includeStyles) {
-                    let style = tableController.getEffectiveCellStyle(cell);
+                if (includeStyles && tableController) {
+                    const style = tableController.getEffectiveCellStyle(cell);
                     delete style["cellChartSetting"]; // remove unused styles to reduce size
                     if (style["number"] && style["number"]["typeSettings"]) {
                         style["number"]["typeSettings"] = [style["number"]["typeSettings"][0]];
@@ -1978,11 +1981,11 @@
     }
 
     function extractChartWidgetData(widgetControl, component) {
-        let infoChart = widgetControl.oViz.infoChart();
+        const infoChart = widgetControl.oViz.infoChart();
         if (!infoChart) return; // infoChart may not be initialized
 
-        let vizOptions = infoChart.vizOptions();
-        let data = vizOptions.data.data();
+        const vizOptions = infoChart.vizOptions();
+        const data = vizOptions.data.data();
 
         component.chartDefinition = {
             bindings: vizOptions.bindings,
@@ -1999,40 +2002,40 @@
     }
 
     function extractChart2WidgetData(widgetControl, component) {
-        let props = widgetControl._getUIProps();
-        let vizProps = props && props.chartAreaUIProps && props.chartAreaUIProps.vizInstanceUIProps;
+        const props = widgetControl._getUIProps();
+        const vizProps = props && props.chartAreaUIProps && props.chartAreaUIProps.vizInstanceUIProps;
         if (!vizProps) return; // viz may not be initialized
 
-        // let instanceId = widgetControl.getInstanceId();
-        // let unifiedStore = widgetControl.getUnifiedStore();
-        // let viz2StoryEntityInterfaces = widgetControl.getStoreEntityInterface().viz2.v1;
+        // const instanceId = widgetControl.getInstanceId();
+        // const unifiedStore = widgetControl.getUnifiedStore();
+        // const viz2StoryEntityInterfaces = widgetControl.getStoreEntityInterface().viz2.v1;
 
-        let chartOptions = vizProps.chartOptions; // unifiedStore.getState(viz2StoryEntityInterfaces.getChartOptions, instanceId)
+        const chartOptions = vizProps.chartOptions; // unifiedStore.getState(viz2StoryEntityInterfaces.getChartOptions, instanceId)
         chartOptions.title = widgetControl.getTitle(); // unifiedStore.getState(viz2StoryEntityInterfaces.getTitleDisplayText, instanceId);
         component.chartDefinition = chartOptions;
 
-        //let resultSets = unifiedStore.getState(viz2StoryEntityInterfaces.getDecoratedResultSets, instanceId);
-        let resultSet = vizProps.uqmResultSet; // resultSets && resultSets.uqmResultSet && resultSets.uqmResultSet.resultSet;
+        //const resultSets = unifiedStore.getState(viz2StoryEntityInterfaces.getDecoratedResultSets, instanceId);
+        const resultSet = vizProps.uqmResultSet; // resultSets && resultSets.uqmResultSet && resultSets.uqmResultSet.resultSet;
         if (resultSet) {
             component.data = resultSet.data;
             component.metadata = resultSet.metadata;
         }
     }
 
-    function getHtml(settings) {
-        let html = [];
-        let promises = [];
+    async function getHtml(settings) {
+        const html = [];
+        const promises = [];
 
-        let cache = Object.create(null);
-        let cssVariables = [];
-        let urlCache = url => {
-            let result = cache[url];
+        const cache = Object.create(null);
+        const cssVariables = [];
+        const urlCache = url => {
+            const result = cache[url];
             if (result) return result;
 
-            let index = cssVariables.length;
+            const index = cssVariables.length;
             cssVariables.push(""); // placeholder
-            let variableName = "--openbidataurl-" + index;
-            let variableValue = "var(" + variableName + ")";
+            const variableName = "--openbidataurl-" + index;
+            const variableValue = "var(" + variableName + ")";
 
             return cache[url] = getUrlAsDataUrl(url).then(d => {
                 cssVariables[index] = variableName + ":url(" + d + ");"
@@ -2041,26 +2044,27 @@
         };
 
         cloneNode(document.documentElement, html, promises, urlCache, settings || {});
-        return Promise.all(promises).then(() => {
-            if (cssVariables.length > 0 && urlCache.headIndex) {
-                html[urlCache.headIndex] = ["<style>:root{\n", cssVariables.join("\n"), "\n}</style>"].join("");
-            }
 
-            if (document.doctype && typeof XMLSerializer != "undefined") { // <!DOCTYPE html>
-                html.unshift(new XMLSerializer().serializeToString(document.doctype));
-            }
+        await Promise.all(promises);
 
-            return html.join("");
-        });
+        if (cssVariables.length > 0 && urlCache.headIndex) {
+            html[urlCache.headIndex] = ["<style>:root{\n", cssVariables.join("\n"), "\n}</style>"].join("");
+        }
+
+        if (document.doctype && typeof XMLSerializer != "undefined") { // <!DOCTYPE html>
+            html.unshift(new XMLSerializer().serializeToString(document.doctype));
+        }
+
+        return html.join("");
     }
 
     function cloneNode(node, html, promises, urlCache, settings) {
-        let nodeType = node.nodeType;
+        const nodeType = node.nodeType;
         if (nodeType == 8) return; // COMMENT
         if (nodeType == 3) { // TEXT
             let value = node.nodeValue;
             if (htmlEntitiesRegExp.test(value)) {
-                let el = document.createElement(node.parentNode.tagName);
+                const el = document.createElement(node.parentNode.tagName);
                 el.appendChild(document.createTextNode(value));
                 value = el.innerHTML;
             }
@@ -2075,7 +2079,7 @@
         let content = null;
         let attributes = Object.create(null);
         for (let i = 0; i < node.attributes.length; i++) {
-            let attribute = node.attributes[i];
+            const attribute = node.attributes[i];
             attributes[attribute.name] = attribute.value;
         }
 
@@ -2117,12 +2121,12 @@
                 }
             // fallthrough
             case "STYLE":
-                let sheet = node.sheet;
+                const sheet = node.sheet;
                 if (sheet) {
                     // always download relative stylesheets
-                    let relative = sheet.href && attributes["href"] && sheet.href != attributes["href"];
+                    const relative = sheet.href && attributes["href"] && sheet.href != attributes["href"];
                     // always parse local stylesheets as they might be dynamic
-                    let dynamic = !sheet.href && sheet.cssRules && sheet.cssRules.length > 0;
+                    const dynamic = !sheet.href && sheet.cssRules && sheet.cssRules.length > 0;
 
                     if (dynamic || relative || settings.parse_css) {
                         content = getCssText(sheet, node.baseURI, urlCache);
@@ -2142,8 +2146,8 @@
 
         html.push("<");
         html.push(name);
-        for (let name in attributes) {
-            let value = attributes[name];
+        for (const name in attributes) {
+            const value = attributes[name];
 
             html.push(" ");
             html.push(name);
@@ -2167,7 +2171,7 @@
         let isEmpty = true;
         if (content) {
             if (content.then) {
-                let index = html.length;
+                const index = html.length;
                 html.push(""); // placeholder
                 promises.push(content.then(c => html[index] = c));
             } else {
@@ -2184,9 +2188,9 @@
             if (!child && node.shadowRoot) { // shadowRoot
 
                 for (let i = 0; i < node.shadowRoot.adoptedStyleSheets.length; i++) {
-                    let sheet = node.shadowRoot.adoptedStyleSheets[i];
+                    const sheet = node.shadowRoot.adoptedStyleSheets[i];
                     html.push("<style>");
-                    let index = html.length;
+                    const index = html.length;
                     html.push(""); // placeholder
                     promises.push(getCssText(sheet, node.baseURI, urlCache).then(c => html[index] = c));
                     html.push("</style>");
@@ -2202,9 +2206,9 @@
 
             if (tagName == "HEAD") {
                 for (let i = 0; i < document.adoptedStyleSheets.length; i++) {
-                    let sheet = document.adoptedStyleSheets[i];
+                    const sheet = document.adoptedStyleSheets[i];
                     html.push("<style>");
-                    let index = html.length;
+                    const index = html.length;
                     html.push(""); // placeholder
                     promises.push(getCssText(sheet, node.baseURI, urlCache).then(c => html[index] = c));
                     html.push("</style>");
@@ -2226,9 +2230,9 @@
         } catch (e) {
             if (sheet.href) { // download external stylesheets
                 return fetch(sheet.href).then(r => r.text()).then(t => {
-                    let style = document.createElement("style");
+                    const style = document.createElement("style");
                     style.appendChild(document.createTextNode(t));
-                    let doc = document.implementation.createHTMLDocument("");
+                    const doc = document.implementation.createHTMLDocument("");
                     doc.head.appendChild(document.createElement("base")).href = sheet.href;
                     doc.body.appendChild(style);
                     return getCssText(style.sheet, sheet.href, urlCache);
@@ -2240,41 +2244,41 @@
         return Promise.resolve("");
     }
     function parseCssRules(rules, baseUrl, urlCache) {
-        let promises = [];
-        let css = [];
+        const promises = [];
+        const css = [];
 
         for (let i = 0; i < rules.length; i++) {
-            let rule = rules[i];
+            const rule = rules[i];
 
             if (rule.type == CSSRule.MEDIA_RULE) { // media query
                 css.push("@media ");
                 css.push(rule.conditionText);
                 css.push("{");
 
-                let index = css.length;
+                const index = css.length;
                 css.push(""); // placeholder
                 promises.push(parseCssRules(rule.cssRules, baseUrl, urlCache).then(c => css[index] = c));
 
                 css.push("}");
             } else if (rule.type == CSSRule.IMPORT_RULE) { // @import
-                let index = css.length;
+                const index = css.length;
                 css.push(""); // placeholder
                 promises.push(getCssText(rule.styleSheet || Object.defineProperty({ href: rule.href && toAbsoluteUrl(baseUrl, rule.href) }, "cssRules", { get: () => { throw new Error() } }), baseUrl, urlCache).then(c => css[index] = c));
             } else if (rule.type == CSSRule.STYLE_RULE) {
                 css.push(rule.selectorText);
                 css.push(" {");
-                let value = parseCssStyle(rule.style, baseUrl, urlCache);
+                const value = parseCssStyle(rule.style, baseUrl, urlCache);
                 if (value.then) {
-                    let index = css.length;
+                    const index = css.length;
                     promises.push(value.then(s => css[index] = s));
                 }
                 css.push(value); // placeholder
                 css.push("}");
             } else if (rule.type == CSSRule.FONT_FACE_RULE) {
                 css.push("@font-face {");
-                let value = parseCssStyle(rule.style, baseUrl, urlCache);
+                const value = parseCssStyle(rule.style, baseUrl, urlCache);
                 if (value.then) {
-                    let index = css.length;
+                    const index = css.length;
                     promises.push(value.then(s => css[index] = s));
                 }
                 css.push(value); // placeholder
@@ -2288,26 +2292,26 @@
     }
     function parseCssStyle(style, baseUrl, urlCache) {
         let promises;
-        let css = [];
+        const css = [];
 
         for (let i = 0; i < style.length; i++) {
-            let name = style[i]
-            let value = style.getPropertyValue(name);
-            let priority = style.getPropertyPriority(name);
+            const name = style[i]
+            const value = style.getPropertyValue(name);
+            const priority = style.getPropertyPriority(name);
             css.push(name);
             css.push(":");
             if ((name == "src" || name.startsWith("background")) && value.includes("url") && !value.includes("data:")) {
                 let lastValueIndex = 0;
-                for (let match of value.matchAll(cssUrlRegExp)) { // fonts can have more than one url
-                    let result = match[0];
-                    let url = match[1];
+                for (const match of value.matchAll(cssUrlRegExp)) { // fonts can have more than one url
+                    const result = match[0];
+                    const url = match[1];
 
                     if (lastValueIndex != match.index) {
                         css.push(value.substring(lastValueIndex, match.index)); // prefix
                     }
                     lastValueIndex = match.index + result.length;
 
-                    let index = css.length;
+                    const index = css.length;
                     css.push(result); // placeholder
                     if (name == "src") { // src (e.g. in @font-face) can't use css variables...
                         (promises || (promises = [])).push(getUrlAsDataUrl(toAbsoluteUrl(baseUrl, url)).then(d => css[index] = "url(" + d + ")", () => css[index] = value));
@@ -2338,7 +2342,7 @@
             return url;
         }
 
-        let index = baseUrl.lastIndexOf("/");
+        const index = baseUrl.lastIndexOf("/");
         if (index > 8) {
             baseUrl = baseUrl.substring(0, index);
         }
@@ -2350,18 +2354,18 @@
         return baseUrl + url;
     }
 
-    function getUrlAsDataUrl(url) {
-        return fetch(url).then(r => r.blob()).then(b => {
-            return new Promise((resolve, reject) => {
-                let fileReader = new FileReader();
-                fileReader.onload = () => {
-                    resolve(fileReader.result);
-                };
-                fileReader.onerror = () => {
-                    reject(new Error("Failed to convert URL to data URL: " + url));
-                };
-                fileReader.readAsDataURL(b);
-            });
+    async function getUrlAsDataUrl(url) {
+        const response = await fetch(url);
+        const blob = await response.blob();
+        return await new Promise((resolve, reject) => {
+            const fileReader = new FileReader();
+            fileReader.onload = () => {
+                resolve(fileReader.result);
+            };
+            fileReader.onerror = () => {
+                reject(new Error("Failed to convert URL to data URL: " + url));
+            };
+            fileReader.readAsDataURL(blob);
         });
     }
 
@@ -2381,15 +2385,15 @@
     }
 
     function createFileList(content, name, type) {
-        let file = new File([content], name, { type: type, lastModified: Date.now() });
-        let dataTransfer = new DataTransfer();
+        const file = new File([content], name, { type: type, lastModified: Date.now() });
+        const dataTransfer = new DataTransfer();
         dataTransfer.items.add(file);
         return dataTransfer.files;
     }
 
     function compressGzip(content) {
-        let blob = new Blob([content]);
-        let compress = blob.stream().pipeThrough(new CompressionStream("gzip"));
+        const blob = new Blob([content]);
+        const compress = blob.stream().pipeThrough(new CompressionStream("gzip"));
         return new Response(compress).blob();
     }
 
