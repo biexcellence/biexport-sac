@@ -666,7 +666,7 @@
                 }
 
                 oauthClients.forEach(oauthClient => {
-                    if (oauthClient.apiAccessEnabled === false && oauthClient.redirectUris[0].endsWith("/sac/oauth.html")) {
+                    if (oauthClient.apiAccessEnabled === false && oauthClient.redirectUris.length > 0 && oauthClient.redirectUris[0].endsWith("/sac/oauth.html")) {
                         oauthSelect.options.add(new Option(oauthClient.name, oauthClient.id, false, oauthClient.clientId == clientId));
                     }
                 });
