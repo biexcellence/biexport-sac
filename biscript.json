@@ -12,7 +12,7 @@
       {
         "kind": "main",
         "tag": "com-biexcellence-openbi-sap-sac-script",
-        "url": "https://biexcellence.github.io/biexport-sac/biscript.js",
+        "url": "https://cdn.biexcellence.com/biexport/sac/git/biscript.js",
         "integrity": "",
         "ignoreIntegrity": true
       }

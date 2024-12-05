@@ -13,7 +13,7 @@
     {
       "kind": "main",
       "tag": "com-biexcellence-openbi-sap-sac-biannotations",
-      "url": "https://biexcellence.github.io/biexport-sac/biAnnotations.js",
+      "url": "https://cdn.biexcellence.com/biexport/sac/git/biAnnotations.js",
       "integrity": "",
       "ignoreIntegrity": true
     }

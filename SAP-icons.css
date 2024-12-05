@@ -2,9 +2,9 @@
 @font-face {
 	font-family: 'SAP Fiori Icons';
 	src:
-		url('https://biexcellence.github.io/biexport-sac/SAP-icons.woff2') format('woff2'),
-		url('https://biexcellence.github.io/biexport-sac/SAP-icons.woff') format('woff'),
-		url('https://biexcellence.github.io/biexport-sac/SAP-icons.ttf') format('truetype');
+		url('https://cdn.biexcellence.com/biexport/sac/git/SAP-icons.woff2') format('woff2'),
+		url('https://cdn.biexcellence.com/biexport/sac/git/SAP-icons.woff') format('woff'),
+		url('https://cdn.biexcellence.com/biexport/sac/git/SAP-icons.ttf') format('truetype');
 	font-weight: normal;
 	font-style: normal;
 }

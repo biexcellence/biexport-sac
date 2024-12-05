@@ -13,14 +13,14 @@
     {
       "kind": "main",
       "tag": "com-biexcellence-openbi-sap-sac-sharing",
-      "url": "https://biexcellence.github.io/biexport-sac/bisharing.js",
+      "url": "https://cdn.biexcellence.com/biexport/sac/git/bisharing.js",
       "integrity": "",
       "ignoreIntegrity": true
     },
     {
       "kind": "styling",
       "tag": "com-biexcellence-openbi-sap-sac-sharing-aps",
-      "url": "https://biexcellence.github.io/biexport-sac/bisharing_aps.js",
+      "url": "https://cdn.biexcellence.com/biexport/sac/git/bisharing_aps.js",
       "integrity": "",
       "ignoreIntegrity": true
     }

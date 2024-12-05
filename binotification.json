@@ -13,14 +13,14 @@
     {
       "kind": "main",
       "tag": "com-biexcellence-openbi-sap-sac-notification",
-      "url": "https://biexcellence.github.io/biexport-sac/binotification.js",
+      "url": "https://cdn.biexcellence.com/biexport/sac/git/binotification.js",
       "integrity": "",
       "ignoreIntegrity": true
     },
     {
       "kind": "styling",
       "tag": "com-biexcellence-openbi-sap-sac-notification-aps",
-      "url": "https://biexcellence.github.io/biexport-sac/binotification_aps.js",
+      "url": "https://cdn.biexcellence.com/biexport/sac/git/binotification_aps.js",
       "integrity": "",
       "ignoreIntegrity": true
     }

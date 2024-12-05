@@ -14,14 +14,14 @@
     {
       "kind": "main",
       "tag": "com-biexcellence-openbi-sap-sac-export",
-      "url": "https://biexcellence.github.io/biexport-sac/biexport.js",
+      "url": "https://cdn.biexcellence.com/biexport/sac/git/biexport.js",
       "integrity": "",
       "ignoreIntegrity": true
     },
     {
       "kind": "styling",
       "tag": "com-biexcellence-openbi-sap-sac-export-aps",
-      "url": "https://biexcellence.github.io/biexport-sac/biexport_aps.js",
+      "url": "https://cdn.biexcellence.com/biexport/sac/git/biexport_aps.js",
       "integrity": "",
       "ignoreIntegrity": true
     }

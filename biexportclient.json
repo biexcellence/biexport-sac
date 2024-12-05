@@ -12,7 +12,7 @@
       {
         "kind": "main",
         "tag": "com-biexcellence-openbi-sap-sac-exportclient",
-        "url": "https://biexcellence.github.io/biexport-sac/biexportclient.js",
+        "url": "https://cdn.biexcellence.com/biexport/sac/git/biexportclient.js",
         "integrity": "",
         "ignoreIntegrity": true
       }
