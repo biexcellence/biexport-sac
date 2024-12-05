@@ -1144,7 +1144,7 @@
             }
 
             const settings = JSON.parse(JSON.stringify(this._export_settings));
-            const overrideSettings = [{ name: "scheduling", value: schedule }];
+            let overrideSettings = [{ name: "scheduling", value: schedule }];
             if (user) {
                 overrideSettings.push({ name: "user", value: user });
             }
