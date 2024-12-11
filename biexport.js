@@ -1402,7 +1402,7 @@
     }
 
     function getAppId(context) {
-        let app = (context || sap.fpa.ui.infra.common.getContext()).getInternalAppArguments(); // sap.fpa.ui.story.Utils.getInternalAppArguments()
+        const app = (context || sap.fpa.ui.infra.common.getContext()).getInternalAppArguments(); // sap.fpa.ui.story.Utils.getInternalAppArguments()
         return app && (app.appId /* application */ || app.resource_id /* story */);
     }
 
@@ -2100,7 +2100,7 @@
             case "TEXTAREA":
                 content = node.value;
                 if (htmlEntitiesRegExp.test(content)) {
-                    let el = document.createElement(node.parentNode.tagName);
+                    const el = document.createElement(node.parentNode.tagName);
                     el.appendChild(document.createTextNode(content));
                     content = el.innerHTML;
                 }
@@ -2153,7 +2153,7 @@
             html.push(name);
             html.push("=\"");
             if (value.then) {
-                let index = html.length;
+                const index = html.length;
                 html.push(""); // placeholder
                 promises.push(value.then(v => html[index] = v.replaceAll('"', "&quot;")));
             } else {

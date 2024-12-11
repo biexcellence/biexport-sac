@@ -703,7 +703,7 @@
         _submit(e) {
             e.preventDefault();
             const properties = {};
-            for (let name of BiExportAps.observedAttributes) {
+            for (const name of BiExportAps.observedAttributes) {
                 properties[name] = this[name];
             }
             this._firePropertiesChanged(properties);
