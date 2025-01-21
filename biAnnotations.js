@@ -659,7 +659,7 @@
     function getMetadata() {
         let findAggregatedObjects;
 
-        let shell = commonApp.getShell();
+        let shell = globalThis.commonApp && commonApp.getShell && commonApp.getShell();
         if (shell) { // old SAC
             findAggregatedObjects = fn => shell.findElements(true, fn);
         }

@@ -1167,7 +1167,7 @@
             settings.scroll_height = document.body.scrollHeight;
 
             // try detect runtime settings
-            if (window.sap && sap.fpa && sap.fpa.ui && sap.fpa.ui.infra) {
+            if (globalThis.sap && sap.fpa && sap.fpa.ui && sap.fpa.ui.infra) {
                 if (sap.fpa.ui.infra.common) {
                     const context = sap.fpa.ui.infra.common.getContext();
 
@@ -1409,7 +1409,7 @@
     async function getMetadata(settings) {
         let findAggregatedObjects;
 
-        const shell = commonApp.getShell();
+        const shell = globalThis.commonApp && commonApp.getShell && commonApp.getShell();
         if (shell) { // old SAC
             findAggregatedObjects = fn => shell.findElements(true, fn); // could this also be findAggregatedObjects ?
         }
