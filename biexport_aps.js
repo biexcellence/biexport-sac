@@ -331,7 +331,7 @@
 
             // visible components - model filters
             const modelFilters = {};
-            modelFilters["Tables"] = [new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "table")];
+            modelFilters["Tables"] = [new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "table"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "table2"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "sap.fpa.ui.story.entity.dynamictable.DynamicTableWidget")];
             modelFilters["Charts"] = [new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "viz"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "viz2")];
             modelFilters["Layouts"] = [new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "pagebook"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "panel"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "flowpanel"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "tabstrip")];
             modelFilters["Texts"] = [new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "text"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "textWidget"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "inputField"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.EQ, "textArea")];
@@ -340,7 +340,7 @@
                 filters: [
                     new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "sdk_com_biexcellence_openbi_sap_sac_export__0"),
                     new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "pagebook"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "panel"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "flowpanel"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "tabstrip"),
-                    new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "table"),
+                    new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "table"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "table2"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "sap.fpa.ui.story.entity.dynamictable.DynamicTableWidget"),
                     new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "viz"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "viz2"),
                     new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "text"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "textWidget"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "inputField"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "textArea"),
                     new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "filterLine"), new sap.ui.model.Filter("type", sap.ui.model.FilterOperator.NE, "dropdownBox")
