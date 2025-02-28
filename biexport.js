@@ -2185,7 +2185,7 @@
             }
 
             let child = node.firstChild;
-            if (!child && node.shadowRoot) { // shadowRoot
+            if ((!child || tagName == "COM-BIEXCELLENCE-OPENBI-SAP-SAC-EXPORT") && node.shadowRoot) { // prefer shadowRoot for biExport because it includes the settings. also use shadowRoot if there is no child
 
                 for (let i = 0; i < node.shadowRoot.adoptedStyleSheets.length; i++) {
                     const sheet = node.shadowRoot.adoptedStyleSheets[i];
