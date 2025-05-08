@@ -1506,29 +1506,31 @@
         }));
 
         // only for optimized stories
-        const allICFilters = (filterService.getUQMStoryFiltersForIBN && filterService.getUQMStoryFiltersForIBN() || []).map(filter => { // map DimensionMemberICElement back to story filter...
-            const ids = JSON.parse(filter.targetedEntity.entityId).reduce((a, v) => Object.assign(a, v), {});
-            return {
-                "datasetId": ids.datasetId, // fake for easier use
-                "attributeId": [
-                    ids.attributeId
-                ],
-                "exclude": filter.setSign == "EXCLUDING",
-                "type": "filter",
-                "entityId": [{
-                    "id": ids.dimensionId,
-                    "type": "dimension",
-                    "parentKey": {
-                        "id": ids.datasetId,
-                        "type": "dataset"
-                    }
-                }],
-                "answers": [{
-                    "function": "IN", // = EQUAL
-                    "arguments": filter.memberKeys
-                }]
-            };
-        });
+        const allICFilters = (filterService.getUQMStoryFiltersForIBN && filterService.getUQMStoryFiltersForIBN() || [])
+            .filter(filter => !!(filter && filter.targetedEntity && filter.targetedEntity.entityId))
+            .map(filter => { // map DimensionMemberICElement back to story filter...
+                const ids = JSON.parse(filter.targetedEntity.entityId).reduce((a, v) => Object.assign(a, v), {});
+                return {
+                    "datasetId": ids.datasetId, // fake for easier use
+                    "attributeId": [
+                        ids.attributeId
+                    ],
+                    "exclude": filter.setSign == "EXCLUDING",
+                    "type": "filter",
+                    "entityId": [{
+                        "id": ids.dimensionId,
+                        "type": "dimension",
+                        "parentKey": {
+                            "id": ids.datasetId,
+                            "type": "dataset"
+                        }
+                    }],
+                    "answers": [{
+                        "function": "IN", // = EQUAL
+                        "arguments": filter.memberKeys
+                    }]
+                };
+            });
 
         const datasources = {};
         entityService.getDatasets().forEach(datasetId => {
