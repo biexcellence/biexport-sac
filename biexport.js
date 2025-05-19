@@ -1218,7 +1218,6 @@
             });
             settings.metadata = JSON.stringify(metadata);
 
-            let content = null;
             if (settings.application_array) {
                 // iterations
             } else {
@@ -1228,7 +1227,7 @@
                 // NOTE: this is not "promise" save!
                 this.settings.value = JSON.stringify(settings, (key, value) => key == "metadata" ? undefined : value);
                 try {
-                    content = await getHtml(settings);
+                    settings.content = await getHtml(settings);
                 } catch (e) {
                     console.error("[biExport] Error in getHtml:", e);
                     throw e;
@@ -1244,14 +1243,6 @@
             settingsEl.name = "bie_openbi_export_settings_json";
             settingsEl.type = "file";
             settingsEl.files = createFileList(compressedSettings, "export_settings.json.gz", "application/json");
-
-            if (content) {
-                const compressedContent = await compressGzip(content);
-                const contentEl = form.appendChild(document.createElement("input"));
-                contentEl.name = "bie_openbi_export_content";
-                contentEl.type = "file";
-                contentEl.files = createFileList(compressedContent, "export_content.html.gz", "text/html");
-            }
 
             this.dispatchEvent(new CustomEvent("onSend", {
                 detail: {
