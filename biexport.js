@@ -1601,12 +1601,12 @@
         //const thresholdStyle = region.getThresholdStyle();
         //const repeatMembers = region.getRepeatMembers(); // show repeated members
         const grid = region.getGrid();
-        //const rowCount = grid.getMaxRows();
-        //const columnCount = grid.getMaxColumns();
+        //let rowCount = grid.getMaxRows();
+        //let columnCount = grid.getMaxColumns();
 
-        const dimensions = grid.calculateGridContentDimensions(true);
-        const rowCount = dimensions.row; // sometimes there are too many rows... // region.getHeight();
-        const columnCount = dimensions.col; // region.getWidth();
+        let dimensions = grid.calculateGridContentDimensions(true);
+        let rowCount = dimensions.row; // sometimes there are too many rows... // region.getHeight();
+        let columnCount = dimensions.col; // region.getWidth();
 
         let includeStyles = tablesCellLimit ? rowCount * columnCount < tablesCellLimit : true;
 
@@ -1646,6 +1646,13 @@
                 view._oScrollableTable.setTopLeftCell({ row: 0, col: 0 });
                 view._oScrollableTable.redrawTable();
                 includeStyles = false;
+            }
+
+            if (!includeStyles) {
+                // rowCount / columnCount might have changed
+                dimensions = grid.calculateGridContentDimensions(true);
+                rowCount = dimensions.row;
+                columnCount = dimensions.col;
             }
         }
 
