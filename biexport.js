@@ -1583,7 +1583,8 @@
 
         // const gridData = widgetControl.getUnifiedStore().getState(widgetControl.getSelector("table2.v2.getGridData"));
 
-        extractTableDataRegion(region, component, tablesCellLimit);
+        const grid = region.getGrid();
+        extractTableDataGrid(grid, region, component, tablesCellLimit);
     }
     function extractTableWidgetData(widgetControl, component, tablesCellLimit) {
         const tableController = widgetControl.getTableController();
@@ -1592,15 +1593,19 @@
         //const metadata = tableController.getQueryDefinitionMap();
 
         const region = tableController.getActiveDataRegion();
-        if (!region) return;
-
-        extractTableDataRegion(region, component, tablesCellLimit, tableController);
+        if (region) {
+            const grid = region.getGrid();
+            extractTableDataGrid(grid, region, component, tablesCellLimit, tableController);
+        } else {
+            const grid = widgetControl.getContent().getGridModel();
+            extractTableDataGrid(grid, null, component, tablesCellLimit, tableController);
+        }
     }
-    function extractTableDataRegion(region, component, tablesCellLimit, tableController) {
+
+    function extractTableDataGrid(grid, region, component, tablesCellLimit, tableController) {
         //const thresholdManager = region.getThresholdManager();
         //const thresholdStyle = region.getThresholdStyle();
         //const repeatMembers = region.getRepeatMembers(); // show repeated members
-        const grid = region.getGrid();
         //let rowCount = grid.getMaxRows();
         //let columnCount = grid.getMaxColumns();
 
@@ -1610,7 +1615,7 @@
 
         let includeStyles = tablesCellLimit ? rowCount * columnCount < tablesCellLimit : true;
 
-        if (!includeStyles && region._oProcessor && region._oProcessor.currentResultSet) {
+        if (!includeStyles && region && region._oProcessor && region._oProcessor.currentResultSet) {
             const rows = extractTableResultSet(region._oProcessor.currentResultSet);
             if (region.getShowTitle() && region.getNewTableType && !region.getNewTableType()) { // only for non optimized table
                 rows.unshift([{ type: 0 /* GENERAL_CELL */, rawVal: null, formattedValue: region.getTitle() }]);
