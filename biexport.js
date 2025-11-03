@@ -2259,11 +2259,11 @@
                 css.push("@media ");
                 css.push(rule.conditionText);
                 css.push("{");
-
-                const index = css.length;
-                css.push(""); // placeholder
-                promises.push(parseCssRules(rule.cssRules, baseUrl, urlCache).then(c => css[index] = c));
-
+                if (rule.cssRules && rule.cssRules.length) {
+                    const index = css.length;
+                    css.push(""); // placeholder
+                    promises.push(parseCssRules(rule.cssRules, baseUrl, urlCache).then(c => css[index] = c));
+                }
                 css.push("}");
             } else if (rule.type == CSSRule.IMPORT_RULE) { // @import
                 const index = css.length;
@@ -2278,6 +2278,11 @@
                     promises.push(value.then(s => css[index] = s));
                 }
                 css.push(value); // placeholder
+                if (rule.cssRules && rule.cssRules.length) { // nested selectors
+                    const index = css.length;
+                    css.push(""); // placeholder
+                    promises.push(parseCssRules(rule.cssRules, baseUrl, urlCache).then(c => css[index] = c));
+                }
                 css.push("}");
             } else if (rule.type == CSSRule.FONT_FACE_RULE) {
                 css.push("@font-face {");
