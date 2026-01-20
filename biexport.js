@@ -1488,7 +1488,7 @@
                     await extractTable2WidgetData(widgetControl, component, settings && settings.tablesCellLimit);
                 } else if (widgetControl.oViz) { // chart (viz)
                     extractChartWidgetData(widgetControl, component);
-                } else if (widgetControl._destroyViz) { // chart (viz2)
+                } else if (widgetControl._vizBuilder || widgetControl._destroyViz) { // chart (viz2)
                     extractChart2WidgetData(widgetControl, component);
                 }
             }
