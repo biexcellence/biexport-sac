@@ -935,6 +935,19 @@
     "clearURLParameters": {
       "description": "Clears all URLs parameters which are used during background execution"
     },
+    "addView": {
+      "description": "Add the current view to be exported",
+      "parameters": [
+        {
+          "name": "settings",
+          "type": "biExportParameter[]",
+          "description": "The custom settings for this view"
+        }
+      ]
+    },
+    "clearViews": {
+      "description": "Clears all views to be exported"
+    },
     "addPdfSection": {
       "description": "Add a PDF Section as an Export Template",
       "parameters": [
@@ -1063,6 +1076,16 @@
     },
     "doExport": {
       "description": "Triggers the export process",
+      "parameters": [
+        {
+          "name": "format",
+          "type": "string",
+          "description": "The export format: \"PDF\", \"PPT\", \"DOC\", \"XLS\", \"PNG\", \"CSV\""
+        }
+      ]
+    },
+    "doExportViews": {
+      "description": "Triggers the export process with collected views",
       "parameters": [
         {
           "name": "format",

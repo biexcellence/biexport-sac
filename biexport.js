@@ -70,7 +70,6 @@
             this._export_settings.user = "";
             this._export_settings.lng = "";
             this._export_settings.version = "";
-            this._export_settings.format = "";
             this._export_settings.URL = "";
 
             this._export_settings.pdf_orient = "";
@@ -1068,6 +1067,35 @@
             this._updateSettings();
         }
 
+        async addView(overrideSettings) {
+            const settings = JSON.parse(JSON.stringify(this._export_settings));
+
+            if (overrideSettings) {
+                overrideSettings.forEach(s => {
+                    settings[s.name] = s.value;
+                });
+            }
+
+            if (typeof biExportContents === "undefined") {
+                globalThis.biExportContents = [];
+            }
+
+            const metadata = await getMetadata({
+                tablesSelectedWidget: settings.tables_exclude ? JSON.parse(settings.tables_exclude) : [],
+                //formatSelectedWidget: settings[format.toLowerCase() + "_exclude"] ? JSON.parse(settings[format.toLowerCase() + "_exclude"]) : [],
+                tablesCellLimit: settings.tables_cell_limit || undefined
+            });
+            settings.metadata = JSON.stringify(metadata);
+            settings.content = await getHtml(settings);
+
+            globalThis.biExportContents.push(settings);
+        }
+        clearViews() {
+            if (typeof biExportContents !== "undefined") {
+                globalThis.biExportContents = undefined;
+            }
+        }
+
         addPdfSection(name, header, footer, content, orientation, iterative) {
             if (!this._export_settings.pdf_page_sections) {
                 this._export_settings.pdf_page_sections = [];
@@ -1138,6 +1166,16 @@
             this._doExport(format, settings, overrideSettings);
         }
 
+        doExportViews(format, overrideSettings) {
+            if (typeof biExportContents === "undefined") {
+                return;
+            }
+
+            const settings = JSON.parse(JSON.stringify(this._export_settings));
+
+            this._doExport(format, settings, overrideSettings, globalThis.biExportContents);
+        }
+
         scheduleExport(format, schedule, user) {
             if (schedule.frequence == "ONCE") {
                 schedule.frequence = " ";
@@ -1148,12 +1186,11 @@
             if (user) {
                 overrideSettings.push({ name: "user", value: user });
             }
-            overrideSettings = JSON.stringify(overrideSettings);
 
             this._doExport(format, settings, overrideSettings);
         }
 
-        async _doExport(format, settings, overrideSettings) {
+        async _doExport(format, settings, overrideSettings, contents) {
             if (this._designMode) {
                 return false;
             }
@@ -1199,8 +1236,7 @@
             }
 
             if (overrideSettings) {
-                const set = JSON.parse(overrideSettings);
-                set.forEach(s => {
+                overrideSettings.forEach(s => {
                     settings[s.name] = s.value;
                 });
             }
@@ -1211,28 +1247,32 @@
                 }
             }));
 
-            const metadata = await getMetadata({
-                tablesSelectedWidget: settings.tables_exclude ? JSON.parse(settings.tables_exclude) : [],
-                formatSelectedWidget: settings[format.toLowerCase() + "_exclude"] ? JSON.parse(settings[format.toLowerCase() + "_exclude"]) : [],
-                tablesCellLimit: settings.tables_cell_limit || undefined
-            });
-            settings.metadata = JSON.stringify(metadata);
-
-            if (settings.application_array) {
-                // iterations
+            if (contents) { // contents
+                settings.contents = contents;
             } else {
-                await new Promise(resolve => setTimeout(resolve, 200));
+                const metadata = await getMetadata({
+                    tablesSelectedWidget: settings.tables_exclude ? JSON.parse(settings.tables_exclude) : [],
+                    formatSelectedWidget: settings[format.toLowerCase() + "_exclude"] ? JSON.parse(settings[format.toLowerCase() + "_exclude"]) : [],
+                    tablesCellLimit: settings.tables_cell_limit || undefined
+                });
+                settings.metadata = JSON.stringify(metadata);
 
-                // add settings to html so they can be serialized
-                // NOTE: this is not "promise" save!
-                this.settings.value = JSON.stringify(settings, (key, value) => key == "metadata" ? undefined : value);
-                try {
-                    settings.content = await getHtml(settings);
-                } catch (e) {
-                    console.error("[biExport] Error in getHtml:", e);
-                    throw e;
-                } finally {
-                    this._updateSettings(); // reset settings
+                if (settings.application_array) { // iterations
+
+                } else { // online
+                    await new Promise(resolve => setTimeout(resolve, 200));
+
+                    // add settings to html so they can be serialized
+                    // NOTE: this is not "promise" save!
+                    this.settings.value = JSON.stringify(settings, (key, value) => key == "metadata" ? undefined : value);
+                    try {
+                        settings.content = await getHtml(settings);
+                    } catch (e) {
+                        console.error("[biExport] Error in getHtml:", e);
+                        throw e;
+                    } finally {
+                        this._updateSettings(); // reset settings
+                    }
                 }
             }
 
@@ -1373,8 +1413,8 @@
 
     // PUBLIC API
 
-    window.biExportGetHtml = window.getHtml = getHtml;
-    window.biExportGetMetadata = getMetadata;
+    globalThis.biExportGetHtml = globalThis.getHtml = getHtml;
+    globalThis.biExportGetMetadata = getMetadata;
 
     // UTILS
 
