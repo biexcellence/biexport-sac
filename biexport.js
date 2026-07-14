@@ -1202,6 +1202,9 @@
             settings.cookie = document.cookie;
             settings.scroll_width = document.body.scrollWidth;
             settings.scroll_height = document.body.scrollHeight;
+            try {
+                settings.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            } catch (e) { /* ignore */ }
 
             // try detect runtime settings
             if (globalThis.sap && sap.fpa && sap.fpa.ui && sap.fpa.ui.infra) {
