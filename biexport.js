@@ -136,7 +136,6 @@
             this._export_settings.server_urls = "";
             this._export_settings.license = "";
             this._export_settings.server_waittime = 0;
-            this._export_settings.server_engine = "";
             this._export_settings.server_quality = 0;
             this._export_settings.server_processes = 0;
             this._export_settings.application_array = "";
@@ -1627,7 +1626,63 @@
         // const gridData = widgetControl.getUnifiedStore().getState(widgetControl.getSelector("table2.v2.getGridData"));
 
         const grid = region.getGrid();
+
+        // make sure table2 is rendered completely (same as for react tables in extractTableDataGrid, which needs a tableController / view)
+        const reactTable = getTable2ReactTable(widgetControl);
+        if (reactTable) {
+            const dimensions = grid.calculateGridContentDimensions(true);
+            const includeStyles = tablesCellLimit ? dimensions.row * dimensions.col < tablesCellLimit : true;
+            if (includeStyles) {
+                try {
+                    await renderTable2Completely(reactTable);
+                } catch (e) { console.error("Failed to render table2 completely. " + e); }
+            }
+        }
+
         extractTableDataGrid(grid, region, component, tablesCellLimit);
+    }
+    /**
+     * table2 (UQM): the ReactTable instance (same class as for the optimized table) is owned by a react component and only registered
+     * as external object in the unified store, so it is not reachable through the widget control. Find it through the react fiber of its DOM.
+     */
+    function getTable2ReactTable(widgetControl) {
+        const root = document.querySelector("[data-sap-widget-id='" + widgetControl.getWidgetId() + "'] .reactTableComponent");
+        if (!root) return null;
+
+        const fiberKey = Object.keys(root).find(key => key.startsWith("__reactFiber$") || key.startsWith("__reactInternalInstance$"));
+        for (let node = fiberKey && root[fiberKey]; node; node = node.return) {
+            if (node.stateNode && node.stateNode.reactTable) {
+                return node.stateNode.reactTable;
+            }
+        }
+        return null;
+    }
+    /**
+     * table2 (UQM): rows / columns are loaded incrementally into the grid data and the react table only renders the visible window.
+     * Load everything (same path SAC uses for Ctrl+End) and disable the windowing so all cells end up in the DOM.
+     */
+    async function renderTable2Completely(reactTable) {
+        const externalHandler = reactTable.externalHandler;
+        await new Promise(resolve => {
+            let pending = 0;
+            const done = () => { if (--pending === 0) resolve(); };
+            if (!reactTable.allRowsProcessed() && externalHandler.onAppendNewNumberOfRows) {
+                pending++;
+                externalHandler.onAppendNewNumberOfRows(Number.MAX_SAFE_INTEGER, done);
+            }
+            if (!reactTable.allColumnsProcessed() && externalHandler.onAppendNewNumberOfColumns) {
+                pending++;
+                externalHandler.onAppendNewNumberOfColumns(Number.MAX_SAFE_INTEGER, done);
+            }
+            if (pending === 0) resolve();
+        });
+
+        reactTable.cachedData.rowContentLimitFactor = Number.MAX_VALUE;
+        reactTable.tableDataWindowing.columnsWindowing.contentLimit = Number.MAX_VALUE;
+        reactTable.setScrollTop(0);
+        reactTable.setScrollLeft(0);
+        reactTable.tableDataWindowing.updateIndicesForWindowing(reactTable.cachedData, 0, 0, reactTable.getCurrentGeneralSettings());
+        reactTable.prepareDataAndRenderTable();
     }
     function extractTableWidgetData(widgetControl, component, tablesCellLimit) {
         const tableController = widgetControl.getTableController();
