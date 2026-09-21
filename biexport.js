@@ -136,7 +136,6 @@
             this._export_settings.server_urls = "";
             this._export_settings.license = "";
             this._export_settings.server_waittime = 0;
-            this._export_settings.server_engine = "";
             this._export_settings.server_quality = 0;
             this._export_settings.server_processes = 0;
             this._export_settings.application_array = "";
@@ -1619,15 +1618,179 @@
         if (!planningAdapter) return;
 
         const dataRegionResult = await planningAdapter.getDataRegionAsync();
-        if (!dataRegionResult) return;
+        const region = dataRegionResult && dataRegionResult.dataRegion;
 
-        const region = dataRegionResult.dataRegion;
-        if (!region) return;
+        // make sure table2 is rendered completely (same as for react tables in extractTableDataGrid, which needs a tableController / view)
+        const reactTable = getTable2ReactTable(widgetControl);
+
+        if (!region) { // no data region (e.g. table with custom cells only) => there is no grid model, take the data from the react table
+            if (reactTable) {
+                await extractTable2ReactTableData(reactTable, component, tablesCellLimit);
+            }
+            return;
+        }
 
         // const gridData = widgetControl.getUnifiedStore().getState(widgetControl.getSelector("table2.v2.getGridData"));
 
         const grid = region.getGrid();
+
+        if (reactTable) {
+            const dimensions = grid.calculateGridContentDimensions(true);
+            const includeStyles = tablesCellLimit ? dimensions.row * dimensions.col < tablesCellLimit : true;
+            if (includeStyles) {
+                try {
+                    await renderTable2Completely(reactTable);
+                } catch (e) { console.error("Failed to render table2 completely. " + e); }
+            }
+        }
+
         extractTableDataGrid(grid, region, component, tablesCellLimit);
+    }
+    /**
+     * table2 (UQM): the ReactTable instance (same class as for the optimized table) is owned by a react component and only registered
+     * as external object in the unified store, so it is not reachable through the widget control. Find it through the react fiber of its DOM.
+     */
+    function getTable2ReactTable(widgetControl) {
+        const root = document.querySelector("[data-sap-widget-id='" + widgetControl.getWidgetId() + "'] .reactTableComponent");
+        if (!root) return null;
+
+        const fiberKey = Object.keys(root).find(key => key.startsWith("__reactFiber$") || key.startsWith("__reactInternalInstance$"));
+        for (let node = fiberKey && root[fiberKey]; node; node = node.return) {
+            if (node.stateNode && node.stateNode.reactTable) {
+                return node.stateNode.reactTable;
+            }
+        }
+        return null;
+    }
+    /**
+     * table2 (UQM): rows / columns are loaded incrementally into the grid data and the react table only renders the visible window.
+     * Load everything (same path SAC uses for Ctrl+End) and disable the windowing so all cells end up in the DOM.
+     */
+    async function renderTable2Completely(reactTable) {
+        const externalHandler = reactTable.externalHandler;
+        // sequentially: when both run concurrently only the rows callback is invoked
+        if (!reactTable.allRowsProcessed() && externalHandler.onAppendNewNumberOfRows) {
+            await new Promise(resolve => externalHandler.onAppendNewNumberOfRows(Number.MAX_SAFE_INTEGER, resolve));
+        }
+        if (!reactTable.allColumnsProcessed() && externalHandler.onAppendNewNumberOfColumns) {
+            await new Promise(resolve => externalHandler.onAppendNewNumberOfColumns(Number.MAX_SAFE_INTEGER, resolve));
+        }
+
+        reactTable.cachedData.rowContentLimitFactor = Number.MAX_VALUE;
+        reactTable.tableDataWindowing.columnsWindowing.contentLimit = Number.MAX_VALUE;
+        reactTable.setScrollTop(0);
+        reactTable.setScrollLeft(0);
+        reactTable.tableDataWindowing.updateIndicesForWindowing(reactTable.cachedData, 0, 0, reactTable.getCurrentGeneralSettings());
+        reactTable.prepareDataAndRenderTable();
+    }
+    /**
+     * table2 without a grid model (no data region): render completely and take the data from the react table (cachedData).
+     */
+    async function extractTable2ReactTableData(reactTable, component, tablesCellLimit) {
+        const cachedData = reactTable.cachedData;
+        const rowCount = cachedData.totalNumberOfRows || cachedData.rows.length;
+        const columnCount = cachedData.totalNumberOfColumns || cachedData.columnSettings.length;
+
+        const includeStyles = tablesCellLimit ? rowCount * columnCount < tablesCellLimit : true;
+        if (includeStyles) {
+            await renderTable2Completely(reactTable); // make sure table2 is rendered completely
+        }
+
+        const rows = extractTable2CachedData(reactTable.cachedData);
+        while (rows.length > 0 && rows[rows.length - 1].every(c => !c)) {
+            rows.pop(); // remove empty rows at the end
+        }
+        component.data = rows;
+    }
+
+    // react table CellType => biExportSACResultSet.CellType
+    const REACT_TABLE_CELL_TYPES = {
+        0: 8, // Value => DATA_CELL
+        1: 0, // Header => GENERAL_CELL
+        2: 8, // Input => DATA_CELL
+        3: 8, // Chart => DATA_CELL
+        5: 8, // Unbooked => DATA_CELL
+        6: 8, // Threshold => DATA_CELL
+        7: 8, // DataLocking => DATA_CELL
+        8: 8, // Validation => DATA_CELL
+        12: 16, // Attribute => ROW_DIMENSION_MEMBER_ATTR
+        13: 0, // Empty => GENERAL_CELL
+        14: 4, // RowDimHeader => ROW_DIMENSION_HEADER
+        15: 5, // ColDimHeader => COL_DIMENSION_HEADER
+        16: 7, // ColDimMember => COL_DIMENSION_MEMBER
+        17: 6, // RowDimMember => ROW_DIMENSION_MEMBER
+        18: 14, // AttributeRowDimHeader => ROW_DIMENSION_HEADER_ATTR
+        19: 15, // AttributeColDimHeader => COL_DIMENSION_HEADER_ATTR
+        20: 16, // AttributeRowDimMember => ROW_DIMENSION_MEMBER_ATTR
+        21: 17, // AttributeColDimMember => COL_DIMENSION_MEMBER_ATTR
+        22: 0, // Title => GENERAL_CELL
+        23: 100, // Custom => CUSTOM_CELL
+        25: 11, // Comment => COMMENT_CELL
+        32: 18, // NewLineOnRow => ROW_DIMENSION_MEMBER_EDITABLE
+        33: 19, // NewLineOnColumn => COL_DIMENSION_MEMBER_EDITABLE
+        34: 4, // EmptyAxisRowHeader => ROW_DIMENSION_HEADER
+        35: 5 // EmptyAxisColumnHeader => COL_DIMENSION_HEADER
+    };
+
+    function extractTable2CachedData(cachedData) {
+        const rows = [];
+        cachedData.rows.forEach((row, y) => {
+            if (!row) return;
+            const cells = rows[row.row !== undefined ? row.row : y] || (rows[row.row !== undefined ? row.row : y] = []);
+
+            row.cells.forEach((cell, x) => {
+                if (!cell || cell.cellType == 30 /* MergedDummyCell */) { // covered by a merged cell
+                    cells[x] = null;
+                    return;
+                }
+
+                let type = REACT_TABLE_CELL_TYPES[cell.cellType];
+                if (type === undefined) type = 0; // GENERAL_CELL
+                if ((type == 6 || type == 7) && cell.isInATotalsContext) {
+                    type = type == 6 ? 20 /* ROW_DIMENSION_TOTAL_MEMBER */ : 21 /* COL_DIMENSION_TOTAL_MEMBER */;
+                }
+
+                let rawVal = cell.plain !== undefined ? cell.plain : null;
+                if (type == 8 /* DATA_CELL */ && typeof rawVal == "string" && rawVal.trim() !== "" && !isNaN(Number(rawVal))) {
+                    rawVal = Number(rawVal); // the grid model delivers numbers for data cells
+                }
+                const d = {
+                    type: type,
+                    rawVal: rawVal,
+                    formattedValue: cell.formatted !== undefined && cell.formatted !== null ? String(cell.formatted) : ""
+                };
+
+                // calculate colspan / rowspan (merged.columns / merged.rows hold the number of additional columns / rows, like mergedCell.width / height of the grid model)
+                const merged = cell.merged;
+                if (merged && (merged.columns > 0 || merged.rows > 0)) {
+                    d.colspan = (merged.columns || 0) + 1;
+                    d.rowspan = (merged.rows || 0) + 1;
+                }
+
+                // get drill state / level
+                if (type == 6 || type == 7 || type == 20 || type == 21) {
+                    const dimension = cell.context && cell.context.dimensions && cell.context.dimensions[cell.context.dimensions.length - 1];
+                    const level = dimension && dimension.member && dimension.member.level;
+                    if (dimension && dimension.id) {
+                        d.dimensionId = dimension.id;
+                    }
+                    if (cell.showDrillIcon) {
+                        d.level = level || 0;
+                        d.drillState = cell.expanded ? "E" : "C";
+                    } else if (level > 0) {
+                        d.level = level;
+                        d.drillState = "L";
+                    }
+                }
+
+                if (cell.thresholdRangeName) {
+                    d.thresholdRangeName = cell.thresholdRangeName;
+                }
+
+                cells[x] = d;
+            });
+        });
+        return rows;
     }
     function extractTableWidgetData(widgetControl, component, tablesCellLimit) {
         const tableController = widgetControl.getTableController();
