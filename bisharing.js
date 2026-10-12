@@ -10,6 +10,9 @@
       </div>
     `;
 
+    // the release build (SACWidgetIntegrityTask) sets the real version, the version in the widget JSON stays at 2024
+    const WIDGET_VERSION = "git";
+
     class BiSharing extends HTMLElement {
 
         constructor() {
@@ -37,7 +40,7 @@
             this._sharing_settings.requestid = "";
             this._sharing_settings.mastersys = "";
             this._sharing_settings.client_type = "";
-            this._sharing_settings.client_version = "";
+            this._sharing_settings.client_version = WIDGET_VERSION;
             this._sharing_settings.title = "";
             this._sharing_settings.appid = "";
             this._sharing_settings.urlprefix = "";

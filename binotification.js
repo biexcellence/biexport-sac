@@ -10,6 +10,9 @@
       </div>
     `;
 
+    // the release build (SACWidgetIntegrityTask) sets the real version, the version in the widget JSON stays at 2024
+    const WIDGET_VERSION = "git";
+
     class BiNotification extends HTMLElement {
 
         constructor() {
@@ -34,7 +37,7 @@
             this._notification_settings.requestid = "";
             this._notification_settings.mastersys = "";
             this._notification_settings.client_type = "";
-            this._notification_settings.client_version = "";
+            this._notification_settings.client_version = WIDGET_VERSION;
             this._notification_settings.title = "";
             this._notification_settings.appid = "";
             this._notification_settings.urlprefix = "";

@@ -11,6 +11,9 @@
       </div>
     `;
 
+    // the release build (SACWidgetIntegrityTask) sets the real version, the version in the widget JSON stays at 2024
+    const WIDGET_VERSION = "git";
+
     class BiExport extends HTMLElement {
 
         constructor() {
@@ -63,7 +66,7 @@
             this._export_settings.requestid = "";
             this._export_settings.mastersys = "";
             this._export_settings.client_type = "";
-            this._export_settings.client_version = "";
+            this._export_settings.client_version = WIDGET_VERSION;
             this._export_settings.title = "";
             this._export_settings.appid = "";
             this._export_settings.cookie = "";
@@ -356,7 +359,7 @@
                                         this._mail_to.setEnabled(oEvent.getParameter("selected"));
                                     }
                                     if (oEvent.getParameter("selected")) {
-                                        this._export_settings.mail_to = sap.fpa.ui.infra.common.getContext().getUser().getEmail();
+                                        this._export_settings.mail_to = getCurrentUserEmail();
                                     } else {
                                         this._export_settings.mail_to = "";
                                     }
@@ -372,7 +375,7 @@
                                     this._export_settings.mail_to = oEvent.getParameter("value");
                                 }
                             });
-                            this._mail_to.setValue(sap.fpa.ui.infra.common.getContext().getUser().getEmail());
+                            this._mail_to.setValue(getCurrentUserEmail());
                             lview_box.addContent(this._mail_to);
 
                             ltab.addItem(new sap.m.IconTabFilter({
@@ -1231,6 +1234,35 @@
                 if (sap.fpa.ui.infra.service && sap.fpa.ui.infra.service.AjaxHelper) {
                     settings.tenant_URL = sap.fpa.ui.infra.service.AjaxHelper.getTenantUrl(false); // true for PUBLIC_FQDN
                 }
+            } else if (isLWV()) { // lite viewer: core context from the webpack modules, FPA_SESSION as fallback
+                settings.appid = getAppId();
+
+                const context = getLWVCoreContext();
+                const userParams = globalThis.FPA_SESSION && FPA_SESSION.userParams || {};
+
+                let userFormatting;
+                try {
+                    userFormatting = context && (context.getUserFormatting || context.getUserFormattingWithoutDeepCopy).call(context);
+                } catch (e) { /* ignore */ }
+                if (!userFormatting && userParams.DECIMAL_FORMAT) {
+                    try { userFormatting = JSON.parse(userParams.DECIMAL_FORMAT); } catch (e) { /* ignore */ }
+                }
+                if (userFormatting && userFormatting.decimalFormat) {
+                    settings.number_decimal_separator = userFormatting.decimalFormat.decimalSeparator.symbol;
+                    settings.number_grouping_separator = userFormatting.decimalFormat.groupingSeparator.symbol;
+                }
+
+                if (context && context.getTenantUrl) {
+                    settings.tenant_URL = context.getTenantUrl(false); // true for PUBLIC_FQDN
+                } else if (globalThis.orca && orca.tenant) {
+                    settings.tenant_URL = location.origin + "/sap/fpa/ui/tenants/" + orca.tenant;
+                }
+
+                settings.sac_user = (context && context.getUser() && context.getUser().getUsername()) || userParams["X-ORCA-USERNAME"];
+
+                if (settings.lng == "") {
+                    settings.lng = (context && context.getLanguage && context.getLanguage()) || (globalThis.FPA_SESSION && FPA_SESSION.language) || userParams.LANGUAGE || "";
+                }
             }
 
             if (settings.publish_mode === "" || settings.publish_mode === "ONLINE" || settings.publish_mode === "VIEWER" || settings.publish_mode === "PRINT") {
@@ -1435,11 +1467,18 @@
     }
 
     function getAppId(context) {
+        if (!context && !(globalThis.sap && sap.fpa && sap.fpa.ui && sap.fpa.ui.infra && sap.fpa.ui.infra.common)) { // lite viewer
+            return getAppIdLWV();
+        }
         const app = (context || sap.fpa.ui.infra.common.getContext()).getInternalAppArguments(); // sap.fpa.ui.story.Utils.getInternalAppArguments()
         return app && (app.appId /* application */ || app.resource_id /* story */);
     }
 
     async function getMetadata(settings) {
+        if (isLWV()) { // lite viewer: no UI5 story runtime
+            return getMetadataLWV(settings);
+        }
+
         let findAggregatedObjects;
 
         const shell = globalThis.commonApp && commonApp.getShell && commonApp.getShell();
@@ -1541,29 +1580,7 @@
         // only for optimized stories
         const allICFilters = (filterService.getUQMStoryFiltersForIBN && filterService.getUQMStoryFiltersForIBN() || [])
             .filter(filter => !!(filter && filter.targetedEntity && filter.targetedEntity.entityId))
-            .map(filter => { // map DimensionMemberICElement back to story filter...
-                const ids = JSON.parse(filter.targetedEntity.entityId).reduce((a, v) => Object.assign(a, v), {});
-                return {
-                    "datasetId": ids.datasetId, // fake for easier use
-                    "attributeId": [
-                        ids.attributeId
-                    ],
-                    "exclude": filter.setSign == "EXCLUDING",
-                    "type": "filter",
-                    "entityId": [{
-                        "id": ids.dimensionId,
-                        "type": "dimension",
-                        "parentKey": {
-                            "id": ids.datasetId,
-                            "type": "dataset"
-                        }
-                    }],
-                    "answers": [{
-                        "function": "IN", // = EQUAL
-                        "arguments": filter.memberKeys
-                    }]
-                };
-            });
+            .map(mapICFilterToStoryFilter); // map DimensionMemberICElement back to story filter...
 
         const datasources = {};
         entityService.getDatasets().forEach(datasetId => {
@@ -1613,6 +1630,351 @@
         return result;
     }
 
+    // #region LWV (lite viewer)
+
+    /**
+     * The lite viewer (LWV) is a react only runtime: no UI5 story, no documentContext / storyModel / entityService / widgetControls
+     * and no sap.fpa.* at all. Everything is taken from the react props of the story components and the unified store instead.
+     */
+    function isLWV() {
+        return !(globalThis.sap && sap.fpa && sap.fpa.ui) && !!document.querySelector("#lwv-container, .lwvStoryContainer");
+    }
+
+    function getReactFiber(element) {
+        if (!element) return null;
+        const fiberKey = Object.keys(element).find(key => key.startsWith("__reactFiber$") || key.startsWith("__reactInternalInstance$"));
+        return fiberKey ? element[fiberKey] : null;
+    }
+
+    /** walks up the react tree starting at element and returns the first props matching the predicate */
+    function findReactProps(element, predicate) {
+        for (let node = getReactFiber(element); node; node = node.return) {
+            const props = node.memoizedProps;
+            if (props && typeof props === "object" && predicate(props)) {
+                return props;
+            }
+        }
+        return null;
+    }
+
+    /** walks down the react tree starting at element (depth first) and returns the first props matching the predicate */
+    function findReactPropsBelow(element, predicate, maxNodes) {
+        const stack = [getReactFiber(element)];
+        let visited = 0;
+        while (stack.length > 0 && visited++ < (maxNodes || 5000)) {
+            const node = stack.pop();
+            if (!node) continue;
+
+            const props = node.memoizedProps;
+            if (props && typeof props === "object" && predicate(props)) {
+                return props;
+            }
+            if (node.sibling) stack.push(node.sibling);
+            if (node.child) stack.push(node.child);
+        }
+        return null;
+    }
+
+    /**
+     * chart (viz2) without a widget control (LWV): the viz ui component receives the same chartAreaUIProps.vizInstanceUIProps
+     * as widgetControl._getUIProps() returns in the UI5 runtime (see extractChart2WidgetData).
+     */
+    function extractChart2WidgetDataLWV(widgetElement, component) {
+        const uiProps = findReactPropsBelow(widgetElement, props => props.chartAreaUIProps && props.chartAreaUIProps.vizInstanceUIProps);
+        const vizProps = uiProps && uiProps.chartAreaUIProps.vizInstanceUIProps;
+        if (!vizProps || !vizProps.chartOptions) return; // not a chart / viz may not be initialized
+
+        const chartOptions = Object.assign({}, vizProps.chartOptions); // do not modify the react props
+        const titleElement = document.getElementById("widget_ui_title_" + widgetElement.getAttribute("data-sap-widget-id"));
+        chartOptions.title = titleElement ? titleElement.textContent : undefined; // the title is a text entity in the store, take the rendered one
+        component.chartDefinition = chartOptions;
+
+        const resultSet = vizProps.uqmResultSet;
+        if (resultSet) {
+            component.data = resultSet.data;
+            component.metadata = resultSet.metadata;
+        }
+    }
+
+    /** collects the story level react props (page definition, entities, story ui) and the unified store */
+    function getLWVContext() {
+        const widgetElement = document.querySelector("[data-sap-widget-id]");
+        if (!widgetElement) return null;
+
+        let pageProps = null, storyUIProps = null, storyProps = null, store = null;
+        for (let node = getReactFiber(widgetElement); node; node = node.return) {
+            const props = node.memoizedProps;
+            if (!props || typeof props !== "object") continue;
+
+            if (!pageProps && props.pageDefinition && props.entities) pageProps = props; // page layout
+            if (!storyUIProps && props.pageProps && props.variableProps) storyUIProps = props; // Story-UI
+            if (!storyProps && props.storyId && "definitionWithBookmark" in props) storyProps = props; // story loader (name)
+            if (!store && props.store && props.storyId) store = props.store; // unified store provider
+        }
+        if (!pageProps) return null;
+
+        return {
+            store: store,
+            storyId: (storyProps && storyProps.storyId) || (storyUIProps && storyUIProps.storyId) || pageProps.storyId,
+            storyName: storyProps && storyProps.name,
+            entities: pageProps.entities || [],
+            pageDefinition: pageProps.pageDefinition,
+            pagesMetadata: (storyUIProps && storyUIProps.pageProps && storyUIProps.pageProps.pagesMetadata) || [],
+            variableDatasets: (storyUIProps && storyUIProps.variableProps && storyUIProps.variableProps.variableDatasets) || [],
+            applicationId: storyUIProps && storyUIProps.applicationId
+        };
+    }
+
+    async function getMetadataLWV(settings) {
+        const context = getLWVContext();
+        if (!context) {
+            console.warn("[biExport] LWV: story context not found.");
+            return { components: {}, datasources: {}, pages: [] };
+        }
+
+        const entities = context.entities;
+        const storyEntity = entities.find(entity => entity.type == "story");
+        const applicationEntity = entities.find(entity => entity.app && (entity.id || "").endsWith(":application"));
+
+        // application names (same as for the UI5 runtime)
+        const app = applicationEntity && applicationEntity.app, appNames = Object.create(null);
+        if (app && app.names) {
+            for (const key in app.names) {
+                const obj = JSON.parse(key).pop();
+                const type = Object.keys(obj)[0];
+                appNames[obj[type]] = {
+                    type: type,
+                    name: app.names[key]
+                };
+            }
+        }
+
+        // all widgets of all pages (storyModel.getAllWidgets())
+        const pages = (storyEntity && storyEntity.data && storyEntity.data.pages) || (context.pageDefinition ? [context.pageDefinition] : []);
+        const widgets = [];
+        pages.forEach(page => {
+            const pageWidgets = page.content && page.content.widgets;
+            (Array.isArray(pageWidgets) ? pageWidgets : Object.values(pageWidgets || {})).forEach(widget => widget && widgets.push(widget));
+        });
+
+        const components = {};
+        for (const widget of widgets) {
+            const component = appNames[widget.id] || {
+                type: widget.class
+            };
+
+            let includeData = true; // no settings => include everything
+            if (settings) {
+                // if widget is excluded, do not include information
+                if (settings.formatSelectedWidget !== undefined &&
+                    settings.formatSelectedWidget.length > 0 &&
+                    settings.formatSelectedWidget.some(v => (v.id == widget.id || v.component == component.name) && v.isExcluded)
+                ) {
+                    continue;
+                }
+                // if widget is not chosen, do not include additional lines
+                if (settings.tablesSelectedWidget !== undefined) {
+                    includeData = settings.tablesSelectedWidget.some(v => (v.id == widget.id || v.component == component.name) && !v.isExcluded);
+                }
+            }
+
+            if (includeData) { // control specific stuff (only rendered widgets of the current page have a DOM)
+                const widgetElement = document.querySelector("[data-sap-widget-id='" + widget.id + "']");
+                if (widgetElement) {
+                    const reactTable = getTable2ReactTable({ getWidgetId: () => widget.id });
+                    if (reactTable) { // table2
+                        try {
+                            await extractTable2ReactTableData(reactTable, component, settings && settings.tablesCellLimit);
+                        } catch (e) { console.error("[biExport] LWV: failed to extract table data. " + e); }
+                    } else { // chart (viz2)
+                        try {
+                            extractChart2WidgetDataLWV(widgetElement, component);
+                        } catch (e) { console.error("[biExport] LWV: failed to extract chart data. " + e); }
+                    }
+                }
+            }
+
+            components[widget.id] = component;
+        }
+
+        // filters: story / page filters are stored as IC filters (optimized story), prompts from the variable datasets
+        const storyData = (storyEntity && storyEntity.data) || {};
+        const allICFilters = [].concat(
+            storyData.uqmStoryFilters || [],
+            storyData.uqmStoryLAFilters || [],
+            ...pages.map(page => (page.content && page.content.uqmPageFilters) || []),
+            ...pages.map(page => (page.content && page.content.uqmLAPageFilters) || [])
+        )
+            .filter(filter => !!(filter && filter.targetedEntity && filter.targetedEntity.entityId))
+            .map(mapICFilterToStoryFilter);
+
+        const datasources = {};
+        entities.filter(entity => entity.type == "dataset").forEach(dataset => {
+            const datasetId = dataset.id;
+            const modelData = dataset.data || {};
+            const idMatch = /\[\/([^\/\]]+)\/([^\]]+?)(?:_qs)?\]$/.exec(datasetId); // planning:[TENANT][][/package/name_qs] => package:name
+            const modelId = (modelData.isRemote ?
+                modelData.dataSource && modelData.dataSource.ObjectName :
+                modelData.packageName && modelData.name && (modelData.packageName + ":" + modelData.name))
+                || (idMatch && idMatch[1] + ":" + idMatch[2]) || modelData.modelId || datasetId; // construct modelId
+
+            const alias = entities.find(entity => entity.type == "datasetAlias" && entity.datasetId == datasetId);
+            const promptValues = context.variableDatasets.find(variableDataset => variableDataset && (variableDataset.datasetId == datasetId || variableDataset.id == datasetId));
+
+            datasources[modelId] = {
+                name: modelData.modelId || (idMatch && idMatch[2]) || datasetId,
+                description: alias && typeof alias.alias == "string" ? alias.alias.replace(/^"|"$/g, "") : undefined,
+                model: undefined, // the LWV does not expose the json model
+                filters: allICFilters.filter(filter => filter.datasetId == datasetId).concat(promptValues && promptValues.variables || [])
+            };
+
+            // widgets using this dataset
+            entities.filter(entity => entity.datasets && entity.datasets.indexOf(datasetId) >= 0).forEach(entity => {
+                widgets.filter(widget => widget.definition && (widget.definition.entityId == entity.id /* viz */ || widget.definition.tileId == entity.id /* table */ || widget.definition.id == entity.id))
+                    .forEach(widget => { if (components[widget.id]) components[widget.id].datasource = modelId; });
+            });
+            widgets.forEach(widget => { // fallback: widget definition references the dataset directly
+                const definition = JSON.stringify(widget.definition || {});
+                if (components[widget.id] && !components[widget.id].datasource && definition.indexOf(datasetId) >= 0) {
+                    components[widget.id].datasource = modelId;
+                }
+            });
+        });
+
+        const result = {
+            name: context.storyName || document.title.replace(/ - [^-]+ - SAP Analytics Cloud$/, "") || (storyEntity && storyEntity.name), // the story entity only holds the initial title
+            components: components,
+            datasources: datasources,
+            pages: (context.pagesMetadata.length > 0 ? context.pagesMetadata : pages).map(page => {
+                return {
+                    id: page.id,
+                    title: page.title,
+                    hidden: page.hidden
+                };
+            })
+        };
+
+        if (app) {
+            result.vars = app.globalVars;
+        }
+
+        return result;
+    }
+
+    /** maps a DimensionMemberICElement (optimized story / LWV filter) back to a story filter */
+    function mapICFilterToStoryFilter(filter) {
+        const ids = JSON.parse(filter.targetedEntity.entityId).reduce((a, v) => Object.assign(a, v), {});
+        return {
+            "datasetId": ids.datasetId, // fake for easier use
+            "attributeId": [
+                ids.attributeId
+            ],
+            "exclude": filter.setSign == "EXCLUDING",
+            "type": "filter",
+            "entityId": [{
+                "id": ids.dimensionId,
+                "type": "dimension",
+                "parentKey": {
+                    "id": ids.datasetId,
+                    "type": "dataset"
+                }
+            }],
+            "answers": [{
+                "function": "IN", // = EQUAL
+                "arguments": filter.memberKeys
+            }]
+        };
+    }
+
+    /** the lite viewer has no sap.fpa.ui.infra.common.getContext(); its core Context lives in a webpack module (Configuration, FeatureToggle, Context, UserBase, ...) */
+    function getLWVWebpackRequire() {
+        const chunkName = Object.keys(globalThis).find(key => key.startsWith("webpackChunk"));
+        if (!chunkName || !Array.isArray(globalThis[chunkName])) return null;
+
+        let webpackRequire = null;
+        globalThis[chunkName].push([[Symbol("biExport")], {}, require => { webpackRequire = require; }]);
+        return webpackRequire;
+    }
+
+    let lwvCoreContext = null; // only a hit is cached: the webpack runtime / the re-export module may not be loaded yet on the first call
+    function getLWVCoreContext() {
+        if (lwvCoreContext) return lwvCoreContext;
+
+        const webpackRequire = getLWVWebpackRequire();
+        if (!webpackRequire || !webpackRequire.m) return null;
+
+        for (const id in webpackRequire.m) { // the module ids change with every build => find the re-export module by its content
+            const source = webpackRequire.m[id].toString();
+            if (source.length < 20000 && source.includes("\"Context\"") && source.includes("\"UserBase\"") && source.includes("\"FeatureToggle\"")) {
+                try {
+                    const exports = webpackRequire(id);
+                    if (exports && exports.Context && typeof exports.Context.getUser == "function" &&
+                        (!globalThis.uqmFpaFeature || exports.FeatureToggle === globalThis.uqmFpaFeature) // same instance as the global feature toggle
+                    ) {
+                        lwvCoreContext = exports.Context;
+                        break;
+                    }
+                } catch (e) { /* ignore */ }
+            }
+        }
+        return lwvCoreContext;
+    }
+
+    /** application id (appId) / story id (resource_id) from the url (sap.fpa.ui.story.Utils.getInternalAppArguments() is not available in the lite viewer) */
+    function getAppIdLWV() {
+        const hash = decodeURIComponent(location.hash);
+        const match = hash.match(/[;&?]appId=([^;&\/]+)/) || hash.match(/[;&?]resource_id=([^;&\/]+)/) || hash.match(/\/s2?\/([^\/;&?]+)/);
+        return match ? match[1] : undefined;
+    }
+
+    /** user formatting (decimal / grouping separator, date format) of the current runtime, used by the export executor */
+    function getUserFormatting() {
+        if (globalThis.sap && sap.fpa && sap.fpa.ui && sap.fpa.ui.infra && sap.fpa.ui.infra.common) {
+            return sap.fpa.ui.infra.common.getContext().getUserFormatting();
+        }
+        const context = getLWVCoreContext();
+        if (context) {
+            return (context.getUserFormatting || context.getUserFormattingWithoutDeepCopy).call(context);
+        }
+        const userParams = globalThis.FPA_SESSION && FPA_SESSION.userParams;
+        if (userParams && userParams.DECIMAL_FORMAT) {
+            return JSON.parse(userParams.DECIMAL_FORMAT);
+        }
+        return {};
+    }
+    globalThis.biExportGetUserFormatting = getUserFormatting;
+
+    /** SAC user name of the current runtime, used by the export executor */
+    function getUserName() {
+        if (globalThis.sap && sap.fpa && sap.fpa.ui && sap.fpa.ui.infra && sap.fpa.ui.infra.common) {
+            return sap.fpa.ui.infra.common.getContext().getUser().getUsername();
+        }
+        const context = getLWVCoreContext();
+        if (context && context.getUser()) {
+            return context.getUser().getUsername();
+        }
+        return globalThis.FPA_SESSION && FPA_SESSION.userParams && FPA_SESSION.userParams["X-ORCA-USERNAME"] || undefined;
+    }
+    globalThis.biExportGetUserName = getUserName;
+
+    function getCurrentUserEmail() {
+        try {
+            if (globalThis.sap && sap.fpa && sap.fpa.ui && sap.fpa.ui.infra && sap.fpa.ui.infra.common) {
+                return sap.fpa.ui.infra.common.getContext().getUser().getEmail();
+            }
+            const context = getLWVCoreContext();
+            const user = context && context.getUser();
+            if (user && (user.getEmail || user.getParamValue)) { // the lite viewer UserBase has no getEmail, the email is a user parameter
+                return (user.getEmail ? user.getEmail() : user.getParamValue("EMAIL")) || "";
+            }
+            return globalThis.FPA_SESSION && FPA_SESSION.userParams && FPA_SESSION.userParams.EMAIL || "";
+        } catch (e) {
+            return "";
+        }
+    }
+
+    // #endregion
+
     async function extractTable2WidgetData(widgetControl, component, tablesCellLimit) {
         const planningAdapter = widgetControl.getTablePlanningAdapter();
         if (!planningAdapter) return;
@@ -1639,7 +2001,7 @@
             const includeStyles = tablesCellLimit ? dimensions.row * dimensions.col < tablesCellLimit : true;
             if (includeStyles) {
                 try {
-                    await renderTable2Completely(reactTable);
+                    await renderTable2Completely(reactTable, true);
                 } catch (e) { console.error("Failed to render table2 completely. " + e); }
             }
         }
@@ -1664,9 +2026,9 @@
     }
     /**
      * table2 (UQM): rows / columns are loaded incrementally into the grid data and the react table only renders the visible window.
-     * Load everything (same path SAC uses for Ctrl+End) and disable the windowing so all cells end up in the DOM.
+     * Load everything (same path SAC uses for Ctrl+End) and, when includeStyles, disable the windowing so all cells end up in the DOM.
      */
-    async function renderTable2Completely(reactTable) {
+    async function renderTable2Completely(reactTable, includeStyles) {
         const externalHandler = reactTable.externalHandler;
         // sequentially: when both run concurrently only the rows callback is invoked
         if (!reactTable.allRowsProcessed() && externalHandler.onAppendNewNumberOfRows) {
@@ -1675,6 +2037,8 @@
         if (!reactTable.allColumnsProcessed() && externalHandler.onAppendNewNumberOfColumns) {
             await new Promise(resolve => externalHandler.onAppendNewNumberOfColumns(Number.MAX_SAFE_INTEGER, resolve));
         }
+
+        if (!includeStyles) return; // cachedData is complete, keep the windowed rendering (plain table)
 
         reactTable.cachedData.rowContentLimitFactor = Number.MAX_VALUE;
         reactTable.tableDataWindowing.columnsWindowing.contentLimit = Number.MAX_VALUE;
@@ -1692,9 +2056,7 @@
         const columnCount = cachedData.totalNumberOfColumns || cachedData.columnSettings.length;
 
         const includeStyles = tablesCellLimit ? rowCount * columnCount < tablesCellLimit : true;
-        if (includeStyles) {
-            await renderTable2Completely(reactTable); // make sure table2 is rendered completely
-        }
+        await renderTable2Completely(reactTable, includeStyles); // load all rows / columns; render them completely only when the cell limit is not exceeded (plain table otherwise)
 
         const rows = extractTable2CachedData(reactTable.cachedData);
         while (rows.length > 0 && rows[rows.length - 1].every(c => !c)) {
